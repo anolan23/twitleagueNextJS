@@ -1,0 +1,7 @@
+.dropdown {
+    top: auto !important;
+    left: auto !important;
+    opacity: 100% !important;
+    pointer-events: all !important;
+    margin-top: 2px !important;
+}

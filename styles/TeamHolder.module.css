@@ -1,0 +1,78 @@
+.watch-button{
+    width:75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    border-color: #d7d9dc;
+    background-color: #fff;
+    color: #1c73e4;
+    font-weight: 600;
+    font-size: 13px;
+    border-style: solid;
+    border-width: 1px;
+    text-align: right;
+}
+
+.watch-div{
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.watchers-div{
+    display: flex;
+    align-items: center;
+    font-weight: bolder;
+}
+
+.twit-icon{
+    margin: 0 5px;
+    color: var(--SECONDARY_TEXT);
+}
+
+.twit-drop-button{
+    width:25px;
+    margin-left:5px;
+    margin-top: 0 !important;
+  }
+
+
+.teamname{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.team-image{
+    width: 75px;
+    height: 75px;
+}
+
+.teamname-title{
+    margin-bottom: 0;
+    margin-left: 10px;
+}
+
+.team-attribute{
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.team-attributes{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.view-buttons{
+    margin: 10px 0;
+}
+
+.dropdown{
+    top: auto !important;
+    left: auto !important;
+    opacity: 100% !important;
+    pointer-events: all !important;
+    margin-top: 0 !important;
+}

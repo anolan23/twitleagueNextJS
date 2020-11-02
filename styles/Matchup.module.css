@@ -1,0 +1,14 @@
+.matchup-avatar{
+    width:75px;
+    height: 75px;
+}
+
+.matchup{
+    display:flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+}
+
+.twit-team{
+    text-align: center;
+}

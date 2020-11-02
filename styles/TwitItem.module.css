@@ -1,0 +1,35 @@
+.twit-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 15px;
+}
+
+.twit-item:hover{
+    background-color: var(--BLUE_BACKGROUND);
+}
+
+.team-abbrev{
+    font-weight: 600;
+    color: var(--PRIMARY_TEXT);
+}
+
+.team-name{
+    color: var(--SECONDARY_TEXT);
+    font-size: 13px;
+}
+
+.twit-item-avatar{
+    width: 35px;
+    height: 35px;
+}
+
+.twit-item span{
+    display: block;
+}
+
+.sport{
+    color: var(--SECONDARY_TEXT);
+    font-size: 1.4rem;
+}
+

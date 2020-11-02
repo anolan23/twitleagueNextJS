@@ -1,0 +1,23 @@
+
+
+.link-inactive{
+    color: #101010;
+}
+
+.link-active::after{
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 2px;
+    background-color: #218dff;
+}
+
+.link-active span{
+    font-weight: 700;
+    color: #101010;
+}
+
+.nav-style{
+    font-size: 13px;
+    padding:10px;
+}

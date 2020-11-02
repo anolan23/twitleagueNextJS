@@ -1,0 +1,110 @@
+.post-form{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+}
+
+.placeHolder{
+    display: block;
+    text-align: left;
+    width: 100%;
+    color: #9197a3;
+}
+
+.placeHolder:active{
+    outline: none;
+}
+
+.twit-post{
+    flex-grow:1;
+    margin:20px 10px 20px 0px;  
+    height: auto;
+    width: auto; 
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #f6f6f6;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    overflow: auto;
+}
+
+.twit-post:focus{
+    outline: none;
+}
+
+.twit-content:focus{
+    outline: none;
+}
+
+.twit-content{
+    min-height: 100px;
+    height: auto;
+    width: auto;
+}
+
+.action-bar{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.actions{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.outlook-pressed{
+    margin-right: 5px;
+    width: 47px;
+    height: 24px;
+    opacity: 1;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+}
+
+.outlook{
+    margin-right: 5px;
+    width: 47px;
+    height: 24px;
+    opacity: .4;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.outlook:hover{
+    opacity:1
+}
+
+.outlook:focus{
+    opacity:1;
+    border-color: none;
+    box-shadow: none;
+}
+
+.outlook:active{
+    opacity:1;
+    border-color: none;
+    box-shadow: none;
+}
+
+.icons{
+    width: 20px;
+    height:20px;
+    margin-right: 5px;
+
+}
+
+.gif-div{
+    display: flex;
+    justify-content: flex-end;
+}
