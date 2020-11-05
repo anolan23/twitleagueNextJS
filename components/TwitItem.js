@@ -6,13 +6,13 @@ import Avatar from "./Avatar";
 function TwitItem(props){
 
     return (
-        <div className={styles.twit-item}>
+        <div className={styles["twit-item"]}>
             <div>
-                <span className={styles.team-abbrev}>{props.title}</span>
-                <span className={styles.team-name}>{props.subtitle}</span>
+                <span className={styles["team-abbrev"]}>{props.title}</span>
+                <span className={styles["team-name"]}>{props.subtitle}</span>
             </div>
             <div>
-                <Avatar roundedCircle className={styles.twit-item-avatar} src={props.image}/>
+                <Avatar roundedCircle className={styles["twit-item-avatar"]} src={props.image}/>
             </div>
         </div>
     );

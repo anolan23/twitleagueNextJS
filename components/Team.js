@@ -7,39 +7,32 @@ import TwitInput from "./TwitInput";
 import {fetchTeamAndTeamPosts} from "../actions";
 import {createPost} from "../actions";
 
-class Team extends React.Component {
+function Team(props) {
 
-    componentDidMount(){
-        const teamId = this.props.match.params.teamId;
-        this.props.fetchTeamAndTeamPosts(teamId);
+    // componentDidMount(){
+    //     const teamId = this.props.match.params.teamId;
+    //     this.props.fetchTeamAndTeamPosts(teamId);
         
-    }
+    // }
 
-    onTwitInputSubmit = (event) => {
+    const onTwitInputSubmit = (event) => {
         event.preventDefault();
-        this.props.createPost();
+        props.createPost();
         
     }
 
-    render(){
         return (
             <div >
-                <TeamHolder/>
+                <TeamHolder teamData={props.teamData}/>
                 <TwitInput 
-                    onSubmit={this.onTwitInputSubmit} 
-                    placeHolder={"Share your take on " + this.props.team.teamAbbrev} 
-                    initialValue={this.props.team.teamAbbrev}
+                    onSubmit={onTwitInputSubmit} 
+                    placeHolder={"Share your take on " + props.teamData.teamAbbrev} 
+                    initialValue={props.teamData.teamAbbrev}
                 />
                 <FeedHolder/>
             </div>
         );
-
-        
-    };
 }
 
-const mapStateToProps = (state) => {
-    return {team: state.team}
-}
 
-export default connect(mapStateToProps, {fetchTeamAndTeamPosts, createPost})(Team);
+export default connect(null, {fetchTeamAndTeamPosts, createPost})(Team);

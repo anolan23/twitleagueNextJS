@@ -14,10 +14,10 @@ function Heading(props) {
   const renderButtons = () => { 
     if(props.user.isSignedIn){
       return (
-        <div className="heading-buttons">
-          <i className="fas fa-envelope heading-button"></i>
-          <Link href="/"><i className="fas fa-bell heading-button"></i></Link>
-          <Avatar roundedCircle className="heading-button" style={{width:"40px"}}/>
+        <div className={styles["heading-buttons"]}>
+          <i className={`fas fa-envelope ${styles["heading-button"]}`}></i>
+          <Link href="/notifications"><i className={`fas fa-bell ${styles["heading-button"]}`}></i></Link>
+          <Avatar roundedCircle className={styles["heading-button"]} style={{width:"40px"}}/>
           <Button variant="primary" onClick={props.logOutUser}>Log Out</Button>
         </div>
         
@@ -26,7 +26,7 @@ function Heading(props) {
     }
     else{
       return(
-        <div className="heading-buttons">
+        <div className={styles["heading-buttons"]}>
           <Button variant="outline-primary" onClick={props.toggleLoginModal}>Log In</Button>
           <Button onClick={props.toggleSignUpModal}>Sign Up</Button>
         </div>

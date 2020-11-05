@@ -5,7 +5,7 @@ import Nav from 'react-bootstrap/Nav';
 
 import Post from './Post';
 import {togglePostModal, trackClickedPost} from "../actions";
-import "../styles/FeedHolder.css";
+import styles from "../styles/FeedHolder.module.css";
 
 function FeedHolder(props) {
 
@@ -38,25 +38,25 @@ function FeedHolder(props) {
   
   return (
     <Tab.Container id="feedHolder" defaultActiveKey="first">
-          <Nav className="nav-style">
+          <Nav className={styles["nav-style"]}>
             <Nav.Item>
               <Nav.Link eventKey="first" onSelect={(k) => setActiveLink(k)}>
-                <div className={activeLink === "first" ? "link-active" : "link-inactive twit-link"}>
-                  <span>Team</span>
+                <div className={activeLink === "first" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
+                  <span className="span-block">Team</span>
                 </div>
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link eventKey="second" onSelect={(k) => setActiveLink(k)}>
-                <div className={activeLink === "second" ? "link-active" : "link-inactive twit-link"}>
-                  <span>League</span>
+                <div className={activeLink === "second" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
+                  <span className="span-block">League</span>
                 </div>
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link eventKey="third" onSelect={(k) => setActiveLink(k)}>
-                <div className={activeLink === "third" ? "link-active" : "link-inactive twit-link"}>
-                  <span>Trending</span>
+                <div className={activeLink === "third" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
+                  <span className="span-block">Trending</span>
                 </div>
               </Nav.Link>
             </Nav.Item>

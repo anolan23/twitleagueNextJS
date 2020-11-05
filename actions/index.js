@@ -1,4 +1,4 @@
-import backend from "../../../twitleague/src/apis/backend";
+import backend from "../lib/backend";
 
 //User Action Creators
 export const createUser = formValues => async dispatch => {
@@ -9,19 +9,19 @@ export const createUser = formValues => async dispatch => {
 }
 
 export const fetchUser = () => async dispatch => {
-    const response = await backend.get("/");
+    const response = await backend.get("/api/user");
     dispatch({type: "FETCH_USER", payload: response.data})
 }
 
 export const loginUser = formValues => async dispatch => {
-    const response = await backend.post("/login", formValues);
+    const response = await backend.post("/api/login", formValues);
 
     dispatch({type: "LOGIN_USER", payload: response.data})
     dispatch(toggleLoginModal());
 }
 
 export const logOutUser = () => async dispatch => {
-    const response = await backend.get("/logout");
+    const response = await backend.get("/api/logout");
 
     dispatch({type: "LOGOUT_USER", payload: response.data})
 }
@@ -88,7 +88,7 @@ export const toggleAvatarModal = () => (dispatch, getState) => {
 //Team Action Creators
 export const createTeam = formValues => async (dispatch, getState) => {
     const owner = getState().user._id;
-    const response = await backend.post("/teams", {...formValues, owner: owner});
+    const response = await backend.post("api/team", {...formValues, owner: owner});
 
     dispatch({type: "CREATE_TEAM", payload: response.data})
     dispatch(toggleCreateTeamModal());
@@ -245,7 +245,7 @@ export const fetchTeamPosts = (teamAbbrev) => async dispatch => {
 export const fetchWatchListPosts = () => async (dispatch, getState) => {
     const watchList = getState().user.watchList;
     if(watchList){
-        const response = await backend.get("/posts/watchlist", {
+        const response = await backend.get("api/posts/watchlist", {
             params: {
                 watchList
             }

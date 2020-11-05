@@ -43,7 +43,7 @@ function AutoCompleteInput(props) {
             <FormControl 
                 onChange={props.onChange}
                 onBlur={props.onBlur}
-                value={props.value}
+                // value={props.value}
                 name={props.name}
                 type={props.type}
                 placeholder={props.placeholder} 

@@ -9,6 +9,7 @@ import TwitCard from "./TwitCard";
 import TwitCardBody from "./TwitCardBody";
 import TwitItem from "./TwitItem";
 import {toggleCreateTeamModal,toggleCreateLeagueModal, fetchTeam, fetchTeamAndTeamPosts,fetchLeague} from "../actions";
+import styles from "../styles/FeedHolder.module.css";
 
 class WatchListCard extends React.Component {
 
@@ -121,25 +122,25 @@ class WatchListCard extends React.Component {
     return (
         <React.Fragment>
             <TwitCard body={this.renderBody()}>
-              <Nav className="nav-style justify-content-center">
+              <Nav className={styles["nav-style"] + " justify-content-center"}>
                 <Nav.Item>
                 <Nav.Link eventKey="first" onSelect={(k) => this.setState({activeLink:k})}>
-                    <div className={this.state.activeLink === "first" ? "link-active" : "link-inactive twit-link"}>
-                    <span>Watchlist</span>
+                    <div className={this.state.activeLink === "first" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
+                    <span className="span-block">Watchlist</span>
                     </div>
                 </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                 <Nav.Link eventKey="second" onSelect={(k) => this.setState({activeLink:k})}>
-                    <div className={this.state.activeLink === "second" ? "link-active" : "link-inactive twit-link"}>
-                    <span>My Teams</span>
+                    <div className={this.state.activeLink === "second" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
+                    <span className="span-block">My Teams</span>
                     </div>
                 </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                 <Nav.Link eventKey="third" onSelect={(k) => this.setState({activeLink:k})}>
-                    <div className={this.state.activeLink === "third" ? "link-active" : "link-inactive twit-link"}>
-                    <span>My Leagues</span>
+                    <div className={this.state.activeLink === "third" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
+                    <span className="span-block">My Leagues</span>
                     </div>
                 </Nav.Link>
                 </Nav.Item>
