@@ -194,7 +194,7 @@ export const sendJoinTeamRequest = () => async (dispatch, getState) => {
 //League Action Creators
 export const createLeague = formValues => async (dispatch, getState) => {
     const owner = getState().user._id;
-    const response = await backend.post("/leagues", {...formValues, owner: owner});
+    const response = await backend.post("/api/league", {...formValues, owner: owner});
 
     dispatch({type: "CREATE_LEAGUE", payload: response.data});
     dispatch(toggleCreateLeagueModal());

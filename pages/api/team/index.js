@@ -45,7 +45,7 @@ export default (req,res) => {
                           console.log(err);
                         }
                         else{
-                          console.log("doc", doc);
+                          res.json({message: "successfully created team and sent a join league request notification to the league owner"})
                         }
                       });
                     }
@@ -59,6 +59,6 @@ export default (req,res) => {
 
     }
     else{
-        res.status(405).json({message: "api/posts only supports POST, GET methods"})
+        res.status(405).json({message: "api/team only supports POST, GET methods"})
     }
 }
