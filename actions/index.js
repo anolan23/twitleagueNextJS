@@ -2,7 +2,7 @@ import backend from "../lib/backend";
 
 //User Action Creators
 export const createUser = formValues => async dispatch => {
-    const response = await backend.post("/signup", formValues);
+    const response = await backend.post("/api/signup", formValues);
 
     dispatch({type: "CREATE_USER", payload: response.data});
     dispatch(toggleSignUpModal());

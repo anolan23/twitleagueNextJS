@@ -3,11 +3,13 @@ import {hash} from "bcrypt";
 export default async (req,res) => {
     const method = req.method;
     if(req.method === "POST"){
+        const username = req.body.username;
+        const password = req.body.password;
         const saltRounds = 11;
-        hash(req.body.password, saltRounds, function(err, hash) {
+        hash(password, saltRounds, function(err, hash) {
             // Store hash in your password DB.
             const user = new User({
-                username:req.body.username,
+                username:username,
                 password:hash
               });
             user.save((err, savedUser) => {
