@@ -5,7 +5,7 @@ const dbUrl = () => {
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
       return "mongodb://localhost:27017/twitleagueDB";
   } else {
-      return "mongodb+srv://anolan23:Beta095458!@twitleague.ufvd6.mongodb.net/twitleagueDB?retryWrites=true&w=majority";
+      return "mongodb+srv://anolan23:Beta095458%21@twitleague.ufvd6.mongodb.net/twitleagueDB?retryWrites=true&w=majority";
   }
 }
 
