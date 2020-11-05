@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 import {userSchema, teamSchema, leagueSchema, postSchema} from "./schema";
 
-const connection = mongoose.createConnection(
-    "mongodb://localhost:27017/twitleagueDB",
+const dbUrl = () => {
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+      return "mongodb://localhost:27017/twitleagueDB";
+  } else {
+      return "mongodb+srv://anolan23:Beta095458!@twitleague.ufvd6.mongodb.net/twitleagueDB?retryWrites=true&w=majority";
+  }
+}
+
+const connection = mongoose.createConnection(dbUrl(),
     {
         useNewUrlParser: true, 
         useUnifiedTopology:true
