@@ -12,13 +12,13 @@ a:hover{
 }
   
   h1{
-    font-size: 2rem;
-    font-weight: 600;
+    font-size: 2rem !important;
+    font-weight: 600 !important;
   }
 
   h3{
-    font-size: 1rem;
-    font-weight: 400;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
   }
 
 /* -------------------Class Selectors---------------------- */
@@ -108,6 +108,16 @@ a:hover{
 
   .twit-button{
     margin-right: 10px;
+  }
+
+  .twit-brand{
+    text-decoration: none;
+    color: var(--PRIMARY_TEXT);
+  }
+
+  .twit-brand:hover{
+    text-decoration: none;
+    color: var(--PRIMARY_TEXT);
   }
 
   .nav-style span{

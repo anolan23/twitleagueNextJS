@@ -1,6 +1,7 @@
-import authenticated from "../../../lib/authenticated";
+import {User, Team} from "../../../db/connect";
 
-export default authenticated(async (req,res) => {
+export default (async (req,res) => {
     const teamAbbrev = "$" + req.query.teamAbbrev
-    res.json(req.query.teamAbbrev);
+    
+    
 })

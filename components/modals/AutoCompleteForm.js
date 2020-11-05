@@ -7,6 +7,7 @@ import {connect} from "react-redux";
 import AutoCompleteInput from "./AutoCompleteInput";
 import TwitItem from "../TwitItem";
 import {fetchTeamAndTeamPosts} from "../../actions";
+import backend from "../../lib/backend";
 
 function AutoCompleteForm(props) {
 
@@ -18,19 +19,19 @@ function AutoCompleteForm(props) {
         initialValues: {search: ""}
     });
 
-    // const onChange = (event) => {
-    //     formik.handleChange(event);
+    const onChange = (event) => {
+        formik.handleChange(event);
         
-    //     const search = async () => {
-    //         const {data} = await backend.get("/search", {
-    //             params: {searchTerm: event.target.value}
-    //         });
+        const search = async () => {
+            const {data} = await backend.get("api/search", {
+                params: {searchTerm: event.target.value}
+            });
 
-    //     setOptions(data);
-    //     event.target.value ? setShow(true) : setShow(false);
-    //     }
-    //     search();
-    // }
+        setOptions(data);
+        event.target.value ? setShow(true) : setShow(false);
+        }
+        search();
+    }
 
     const onClick = (team) => {
         props.fetchTeamAndTeamPosts(team._id);
@@ -45,7 +46,7 @@ function AutoCompleteForm(props) {
         return options.teams.map(option => {
             return (
                     // <Dropdown.Item onClick={() => formik.setFieldValue("search", option.teamAbbrev)} key={option._id}>{option.teamAbbrev}</Dropdown.Item>
-                    <Link to={{pathname:"/team/"+option._id}} onClick={() => onClick(option)} key={option._id}>
+                    <Link href={{pathname:"/team/"+option._id}} onClick={() => onClick(option)} key={option._id}>
                         <TwitItem title={option.teamAbbrev.substring(1)} subtitle={option.teamName} image={option.image}/>
                     </Link>
                     );
@@ -59,7 +60,7 @@ function AutoCompleteForm(props) {
         return options.users.map((option, index) => {
             return (
                     // <Dropdown.Item onClick={() => formik.setFieldValue("search", option.teamAbbrev)} key={option._id}>{option.teamAbbrev}</Dropdown.Item>
-                    <Link to={"/users/"+option.username} key={index}>
+                    <Link href={"/users/"+option.username} key={index}>
                         <TwitItem title={option.username} subtitle={option.username} image={option.image}/>
                     </Link>
                     );
@@ -70,7 +71,7 @@ console.log(options);
         return (
             <Form inline={props.inline} onSubmit={formik.handleSubmit}>
                     <AutoCompleteInput
-                        // onChange={onChange}
+                        onChange={onChange}
                         onBlur={() => setShow(false)}
                         value={formik.values.search}
                         name="search" 

@@ -86,12 +86,12 @@ function TeamHolder(props) {
           <h1>4-1</h1>
           <h3>Head Coach: {`@${props.teamData.headCoach}`}</h3>
           <div className={styles["team-attributes"]}>
-            <div className="team-attribute">
+            <div className={styles["team-attribute"]}>
             <i className={"fas fa-map-marker-alt " + styles["twit-icon"]}></i>
             <span>Baton Rouge, LA</span>
             </div>
             <div className={styles["team-attributes"]}>
-            <i className={"fas fa-calendar-alt twit-icon " + styles["twit-icon"]}></i>
+            <i className={"fas fa-calendar-alt " + styles["twit-icon"]}></i>
             <span>Joined Oct 2020</span>
             </div>
           </div>

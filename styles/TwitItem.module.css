@@ -3,10 +3,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 6px 15px;
+    text-decoration: none;
 }
 
 .twit-item:hover{
     background-color: var(--BLUE_BACKGROUND);
+    text-decoration: none;
+    
 }
 
 .team-abbrev{

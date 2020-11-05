@@ -4,10 +4,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 import LeftColumn from './LeftColumn';
-// import Team from "./Team";
-// import League from "./League";
-// import Notifications from "./Notifications";
-// import Home from "./Home";
 
 
 function MainBody({children}) {

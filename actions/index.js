@@ -99,12 +99,8 @@ export const createTeamAndFetchUser = (formValues) => async (dispatch) => {
     dispatch(fetchUser());
 }
 
-export const fetchTeam = (teamId) => async dispatch => {
-    const response = await backend.get("/team", {
-        params: {
-            teamId:teamId
-        }
-    });
+export const fetchTeam = (teamAbbrev) => async dispatch => {
+    const response = await backend.get(`/api/team/${teamAbbrev}`);
     
     dispatch({type: "FETCH_TEAM", payload: response.data})
 }

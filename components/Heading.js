@@ -36,7 +36,7 @@ function Heading(props) {
 
   return (
     <Navbar bg="light" expand="lg">
-      <Navbar.Brand>TwitLeague</Navbar.Brand>
+      <Navbar.Brand><Link href="/" passHref><a className="twit-brand">TwitLeague</a></Link></Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
           <AutoCompleteForm inline placeHolder="$Team or @Username">

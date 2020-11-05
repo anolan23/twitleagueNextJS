@@ -29,7 +29,7 @@ class WatchListCard extends React.Component {
       }
       return this.props.watchListTeams.map(watchListTeam => {
           return (
-                  <Link href="/" onClick={() => this.onTeamClick(watchListTeam)} key={watchListTeam._id}>
+                  <Link href="/" key={watchListTeam._id}>
                       <TwitItem title={watchListTeam.teamAbbrev.substring(1)} subtitle={watchListTeam.teamName} image={watchListTeam.image}/>
                   </Link>
             
@@ -43,7 +43,7 @@ class WatchListCard extends React.Component {
       }
       return this.props.teams.map(team => {
           return (
-                  <Link href="/" onClick={() => this.onTeamClick(team)} key={team._id}>
+                  <Link passHref href={"team/" + team.teamAbbrev.substring(1)} key={team._id}>
                       <TwitItem title={team.teamAbbrev.substring(1)} subtitle={team.teamName} image={team.image}/>
                   </Link>
             
