@@ -7,7 +7,7 @@ import TwitInput from "./TwitInput";
 import {fetchTeamAndTeamPosts} from "../actions";
 import {createPost} from "../actions";
 
-function Team(props) {
+function TeamComponent(props) {
 
     // componentDidMount(){
     //     const teamId = this.props.match.params.teamId;
@@ -35,4 +35,4 @@ function Team(props) {
 }
 
 
-export default connect(null, {fetchTeamAndTeamPosts, createPost})(Team);
+export default connect(null, {fetchTeamAndTeamPosts, createPost})(TeamComponent);
