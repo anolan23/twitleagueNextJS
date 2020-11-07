@@ -43,7 +43,7 @@ class WatchListCard extends React.Component {
       }
       return this.props.teams.map(team => {
           return (
-                  <Link passHref href={"team/" + team.teamAbbrev.substring(1)} key={team._id}>
+                  <Link passHref href={"/team/" + team.teamAbbrev.substring(1)} key={team._id}>
                       <TwitItem title={team.teamAbbrev.substring(1)} subtitle={team.teamName} image={team.image}/>
                   </Link>
             

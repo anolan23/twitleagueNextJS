@@ -105,9 +105,8 @@ export const fetchTeam = (teamAbbrev) => async dispatch => {
     dispatch({type: "FETCH_TEAM", payload: response.data})
 }
 
-export const fetchTeamAndTeamPosts = (teamId) => async (dispatch, getState) => {
-    await dispatch(fetchTeam(teamId));
-    const teamAbbrev = getState().team.teamAbbrev;
+export const fetchTeamAndTeamPosts = (teamAbbrev) => async (dispatch) => {
+    await dispatch(fetchTeam(teamAbbrev));
     dispatch(fetchTeamPosts(teamAbbrev));
 }
 
@@ -222,16 +221,16 @@ export const createPost = () => async (dispatch, getState) => {
     const gifId = getState().post.gif.id;
     const outlook = getState().post.outlook;
     const dataToSend = {author, postText, gifId, outlook, dateTime: Date.now(), likes: {}, retwits: {}, comments: {}}
-    const response = await backend.post("/posts", dataToSend);
+    const response = await backend.post("/api/posts", dataToSend);
 
     dispatch({type: "CREATE_POST", payload: response.data})
     dispatch(emptyPostData());
 }
 
 export const fetchTeamPosts = (teamAbbrev) => async dispatch => {
-    const response = await backend.get("/posts/team", {
+    const response = await backend.get("/api/posts/team", {
         params: {
-            teamAbbrev:teamAbbrev
+            teamAbbrev: teamAbbrev
         }
     });
     
@@ -303,8 +302,6 @@ export const createCommentOnPost = () => async (dispatch, getState) => {
     dispatch({type: "CREATE_COMMENT_ON POST", payload: {parentPostId, comments:response.data}})
     dispatch(emptyPostData());
 }
-
-
 
 //Post Action Creators
 export const saveCurrentPostText = (postText) => {

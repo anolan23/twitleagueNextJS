@@ -16,8 +16,9 @@ function FeedHolder(props) {
     props.togglePostModal();
   }
 
+  const posts = props.posts ? Object.values(props.posts) : null
   const renderTeamPosts = () => {
-    return props.posts.map(post => {
+    return posts.map(post => {
       return (
         <Post 
           key={post._id}
@@ -73,8 +74,4 @@ function FeedHolder(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {posts: state.posts ? Object.values(state.posts) : null}
-}
-
-export default connect(mapStateToProps,{togglePostModal, trackClickedPost})(FeedHolder);
+export default FeedHolder;

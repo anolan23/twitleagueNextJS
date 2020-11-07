@@ -21,7 +21,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 function TeamHolder(props) {
 
   const renderButton = () => {
-    if(props.userId === props.teamData.owner){
+    if(props.userId === props.team.owner){
       return (
       <DropdownButton size="sm" id="manageTeam" title="Manage Team">
         <Dropdown.Item as="button" onClick={props.toggleAddEventModal}>Schedule Event</Dropdown.Item>
@@ -30,7 +30,7 @@ function TeamHolder(props) {
       </DropdownButton>);
     }
     else{
-      if(!props.watchList.includes(props.teamData._id))
+      if(!props.watchList.includes(props.team._id))
       {
         return <Button onClick={() => props.watchTeamAndFetchUser()} className={styles["watch-button"]}>Watch</Button>
       }
@@ -56,10 +56,10 @@ function TeamHolder(props) {
   }
 
   const renderWatchers = () => {
-    if(props.teamData.watchers){
+    if(props.team.watchers){
       return (
         <div className={styles["watchers-div"]}>
-          <span>{props.teamData.watchers.length}</span>
+          <span>{props.team.watchers.length}</span>
           <i className={styles["twit-icon"] + " fas fa-users"}></i>
         </div>
       );
@@ -78,13 +78,13 @@ function TeamHolder(props) {
     <React.Fragment>
       <div className="twit-flex-column" style={{flexDirection:"row" , justifyContent:"space-between"}}>
         <div className="twit-flex-column">
-          <h3>{props.teamData.league}</h3>
+          <h3>{props.team.league}</h3>
           <div className={styles["teamname"]}>
-            <Avatar onClick={props.toggleAvatarModal} rounded className={styles["team-image"]} src={props.teamData.image?props.teamData.image:""} alt="team profile image"/>
-            <h1 className={styles["teamname-title"]}>{props.teamData.teamName}</h1>
+            <Avatar onClick={props.toggleAvatarModal} rounded className={styles["team-image"]} src={props.team.image?props.team.image:""} alt="team profile image"/>
+            <h1 className={styles["teamname-title"]}>{props.team.teamName}</h1>
           </div>
           <h1>4-1</h1>
-          <h3>Head Coach: {`@${props.teamData.headCoach}`}</h3>
+          <h3>Head Coach: {`@${props.team.headCoach}`}</h3>
           <div className={styles["team-attributes"]}>
             <div className={styles["team-attribute"]}>
             <i className={"fas fa-map-marker-alt " + styles["twit-icon"]}></i>

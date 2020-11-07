@@ -1,26 +1,32 @@
+import React, {useEffect} from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
 import {initializeStore} from "../../redux/store";
 
 import MainBody from "../../components/MainBody"
 import TeamComponent from "../../components/Team";
-import {User, Team, League} from "../../db/connect";
+import {User, Team, League, Post} from "../../db/connect";
 
 function TeamPage(props) {
-  console.log("props.initialReduxState", props.initialReduxState)
   const router = useRouter()
 
-  // If the page is not yet generated, this will be displayed
-  // initially until getStaticProps() finishes running
   if (router.isFallback) {
     return <div>Loading...</div>
   }
-  return (
-    <MainBody>
-      <TeamComponent teamData={props.initialReduxState.team}/>
-    </MainBody>
-  )
-}
+
+  if(!props.initialReduxState){
+    return <div>no initial redux state</div>
+  }
+    console.log("props.initialReduxState.posts", props.initialReduxState.posts)
+    return (
+      <MainBody>
+        <TeamComponent 
+          team={props.initialReduxState.team} 
+          posts={props.initialReduxState.posts}
+        />
+      </MainBody>
+    )
+  }
 
 export async function getStaticPaths() {
   return { paths: [], fallback: true };
@@ -31,7 +37,6 @@ export async function getStaticProps(context) {
   const {dispatch} = reduxStore;
 
     const teamAbbrev = "$" + context.params.teamAbbrev;
-    console.log(teamAbbrev);
     const foundTeam = await Team.findOne({teamAbbrev: teamAbbrev});
     const rosterDecoded = await User.find({_id: {$in: foundTeam.roster}});
     const opponentIds = foundTeam.events.map(event => event.opponent); //array of opponent team ids
@@ -52,12 +57,18 @@ export async function getStaticProps(context) {
         headCoach: foundUser.username
       }
 
-    dispatch({type:"FETCH_TEAM", payload: JSON.parse(JSON.stringify(teamData))})
-    
+    const posts = await Post.find({teamAbbrevs: teamAbbrev}).sort({ _id: -1 }).limit(10);
+    const mapped = posts.map(post => ({ [post._id]: post }));
+    const newObj = Object.assign({}, ...mapped );
+
+    await dispatch({type:"FETCH_TEAM", payload: JSON.parse(JSON.stringify(teamData))})
+    await dispatch({type:"FETCH_TEAM_POSTS", payload: JSON.parse(JSON.stringify(newObj))})
+    const newStore = reduxStore.getState();
+    console.log("newStore", newStore)
     return {
         revalidate: 1,
         props: {
-          initialReduxState: reduxStore.getState()
+          initialReduxState: newStore
         } // will be passed to the page component as props
     }  
 

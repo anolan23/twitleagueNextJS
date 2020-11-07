@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }) {
       <AvatarModal/>
       <ScheduleModal/>
       <RosterModal/>
-      <Component {...pageProps} />
+      <Component {...pageProps}/>
     </Provider>
   );
 }
