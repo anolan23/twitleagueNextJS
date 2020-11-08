@@ -74,4 +74,4 @@ function FeedHolder(props) {
   );
 }
 
-export default FeedHolder;
+export default connect(null, {trackClickedPost, togglePostModal})(FeedHolder);

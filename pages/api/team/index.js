@@ -1,6 +1,6 @@
 import {User, Team, League} from "../../../db/connect";
 
-export default (req,res) => {
+export default async (req,res) => {
     const method = req.method;
     if(method === "POST"){
         //create Team
@@ -43,6 +43,7 @@ export default (req,res) => {
                         if(err)
                         {
                           console.log(err);
+                          res.json(err);
                         }
                         else{
                           res.json({message: "successfully created team and sent a join league request notification to the league owner"})
@@ -56,7 +57,8 @@ export default (req,res) => {
           });
     }
     else if(method === "GET"){
-
+      const teams = await Team.find({});
+      res.json(teams);
     }
     else{
         res.status(405).json({message: "api/team only supports POST, GET methods"})

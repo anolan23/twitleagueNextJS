@@ -1,5 +1,5 @@
 import {verify} from "jsonwebtoken";
-import {User, Team, League} from "../../db/connect";
+import {User, Team, League} from "../../../db/connect";
 
 export default async (req,res) => {
     const method = req.method;
@@ -37,7 +37,7 @@ export default async (req,res) => {
                                                 watchListTeams:foundWatchListTeams
                                               }
                                               const {salt, hash, ...dataToSend} = data
-                                              res.send(dataToSend);
+                                              res.json(dataToSend);
                                             }
                                           });
                                       

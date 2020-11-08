@@ -1,27 +1,19 @@
 import React from "react";
 import Button from 'react-bootstrap/Button';
-import {Link} from "react-router-dom";
+import Link from "next/link";
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 
 import Avatar from "./Avatar";
-import backend from "../apis/backend";
+import backend from "../lib/backend";
 import {deleteNotification} from "../actions";
 
 function Notification(props) {
 
-    const linkText = (text) => {
-        const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-          <Link key={match + i} to={"/team/"+ props.data.teamIssuingRequest._id}>${match}</Link>
-        ));
-    
-        return replacedText
-      }
-
     const onAcceptJoinLeagueRequestClick = () => {
         const league = props.data.leagueToJoin;
         const team = props.data.teamIssuingRequest;
-        backend.patch("/league", {league,team});
+        backend.patch("/api/join/league", {league,team});
         props.deleteNotification(props.index);
     }
 
@@ -35,7 +27,7 @@ function Notification(props) {
     const onAcceptJoinTeamRequestClick = () => {
         const teamId = props.data.teamToJoin._id;
         const userId = props.data.userIssuingRequest._id;
-        backend.patch("/team/join", {
+        backend.patch("/api/join/team", {
             teamId,
             userId
         });
@@ -46,19 +38,26 @@ function Notification(props) {
         if(props.type ==="Join League Request" && props.data)
         {
             const text = props.data.teamIssuingRequest.teamAbbrev + " wants to join " + props.data.leagueToJoin.leagueName;
-            
+            const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
+                <Link key={match + i} passHref href={"/team/"+ props.data.teamIssuingRequest.teamAbbrev.substring(1)}><a>${match}</a></Link>
+              ));
             return (
                 <div>
-                    <span>{linkText(text)}</span>
+                    <span>{replacedText}</span>
                     <Button onClick={onAcceptJoinLeagueRequestClick}>Accept</Button>
                     <Button variant="outline-primary">Decline</Button>
                 </div>
             );
         }
         else if(props.type === "Join Team Request"){
+            const text = "@"+props.data.userIssuingRequest.username + " wants to join the " + props.data.teamToJoin.teamName + " roster";
+            const replacedText = reactStringReplace(text, /@(\w+)/g, (match, i) => (
+                <Link key={match + i} passHref href={"/users/"+ props.data.userIssuingRequest.username}><a>@{match}</a></Link>
+              ));
+            
             return (
                 <div>
-                    <span>{props.data.userIssuingRequest.username + " wants to join the " + props.data.teamToJoin.teamName + " roster"}</span>
+                    <span>{replacedText}</span>
                     <Button onClick={onAcceptJoinTeamRequestClick} >Accept</Button>
                     <Button variant="outline-primary">Decline</Button>
                 </div>

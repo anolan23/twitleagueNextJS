@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import Form from 'react-bootstrap/Form';
 import {useFormik} from "formik";
 import Link from "next/link";
@@ -13,11 +13,26 @@ function AutoCompleteForm(props) {
 
     const [options, setOptions] = useState([]);
     const [show, setShow] = useState(false);
-
+    const ref = useRef();
 
     const formik = useFormik({
         initialValues: {search: ""}
     });
+
+    useEffect(() => {
+        document.body.addEventListener("click", clickOutsideInput);
+        return () => {
+            document.body.removeEventListener("click", clickOutsideInput);
+          }
+    }, [])
+
+    const clickOutsideInput = (event) => {
+        console.log("click")
+        if(ref.current.contains(event.target)){
+            return;
+        }
+        setShow(false);
+    }
 
     const onChange = (event) => {
         formik.handleChange(event);
@@ -33,20 +48,13 @@ function AutoCompleteForm(props) {
         search();
     }
 
-    const onClick = (team) => {
-        props.fetchTeamAndTeamPosts(team._id);
-        formik.setFieldValue("search", team.teamAbbrev)
-        setShow(false);
-    }
-
     const renderTeamOptions = () => {
         if(!options.teams || options.teams.length === 0){
             return null;
         }
         return options.teams.map(option => {
             return (
-                    // <Dropdown.Item onClick={() => formik.setFieldValue("search", option.teamAbbrev)} key={option._id}>{option.teamAbbrev}</Dropdown.Item>
-                    <Link href={{pathname:"/team/"+option._id}} onClick={() => onClick(option)} key={option._id}>
+                    <Link passHref href={"/team/" + option.teamAbbrev.substring(1)} key={option._id}>
                         <TwitItem title={option.teamAbbrev.substring(1)} subtitle={option.teamName} image={option.image}/>
                     </Link>
                     );
@@ -59,8 +67,7 @@ function AutoCompleteForm(props) {
         }
         return options.users.map((option, index) => {
             return (
-                    // <Dropdown.Item onClick={() => formik.setFieldValue("search", option.teamAbbrev)} key={option._id}>{option.teamAbbrev}</Dropdown.Item>
-                    <Link href={"/users/"+option.username} key={index}>
+                    <Link passHref href={"/users/"+option.username} key={index}>
                         <TwitItem title={option.username} subtitle={option.username} image={option.image}/>
                     </Link>
                     );
@@ -69,10 +76,10 @@ function AutoCompleteForm(props) {
 
 console.log(options);
         return (
-            <Form inline={props.inline} onSubmit={formik.handleSubmit}>
+            <div ref={ref}>
+                <Form inline={props.inline} onSubmit={formik.handleSubmit}>
                     <AutoCompleteInput
                         onChange={onChange}
-                        onBlur={() => setShow(false)}
                         value={formik.values.search}
                         name="search" 
                         type="text" 
@@ -84,9 +91,11 @@ console.log(options);
                         teamHeader="Team"
                         peopleOptions={renderPeopleOptions()}
                         peopleHeader="People"
-                     /> 
-                {props.children}
-            </Form>
+                    /> 
+                    {props.children}
+                </Form>
+            </div>
+          
             
         );
     }

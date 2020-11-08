@@ -1,19 +1,17 @@
 import React from "react";
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import BannerAd from "../components/BannerAd"
 
 import MainBody from "../components/MainBody"
-import Home from "../components/Home";
+import Notifications from "../components/Notifications";
+import BannerAd from "../components/BannerAd";
 
-export default function HomePage() {
+export default function NotificationPage() {
   return (
     <React.Fragment>
       <BannerAd/>
       <MainBody>
-        <Home/>
+      <Notifications/>
       </MainBody>
     </React.Fragment>
-    
   )
 }

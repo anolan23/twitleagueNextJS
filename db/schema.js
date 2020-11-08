@@ -15,6 +15,10 @@ export const teamSchema = new mongoose.Schema({
   teamName: String,
   teamAbbrev: String,
   league: String,
+  verifiedTeam: {
+    type: Boolean,
+    default: false
+  },
   sport: String,
   owner: String,
   watchers: [String],

@@ -82,6 +82,7 @@ function TeamHolder(props) {
           <div className={styles["teamname"]}>
             <Avatar onClick={props.toggleAvatarModal} rounded className={styles["team-image"]} src={props.team.image?props.team.image:""} alt="team profile image"/>
             <h1 className={styles["teamname-title"]}>{props.team.teamName}</h1>
+            {props.team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
           <h1>4-1</h1>
           <h3>Head Coach: {`@${props.team.headCoach}`}</h3>

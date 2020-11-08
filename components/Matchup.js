@@ -2,7 +2,6 @@ import React from "react";
 import {connect} from "react-redux";
 
 import Avatar from "./Avatar";
-import styles from "../styles/Matchup.module.css"
 
 function Matchup(props){
     const {homeTeam} = props;

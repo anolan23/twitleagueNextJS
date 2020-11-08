@@ -9,8 +9,9 @@ import {createPost, fetchUser} from "../actions";
 function TeamComponent(props) {
 
     useEffect(() => {
-        props.fetchUser();
-        console.log("fetch user")
+        if(!props.user.isSignedIn){
+            props.fetchUser();
+        }
       }, [])
       
     const onTwitInputSubmit = (event) => {
@@ -31,5 +32,8 @@ function TeamComponent(props) {
         );
 }
 
+const mapStateToProps = (state) => {
+    return {user: state.user}
+}
 
-export default connect(null, {fetchUser, createPost})(TeamComponent);
+export default connect(mapStateToProps, {fetchUser, createPost})(TeamComponent);

@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 
-import {fetchTeam} from "../actions";
 import Notification from "./Notification";
 
 class Notifications extends React.Component {
@@ -16,7 +15,11 @@ class Notifications extends React.Component {
        
        }
        else{
-        return null;
+        return (
+            <div>
+                You have no notifications
+            </div>
+        );
         }
        
    }
@@ -38,4 +41,4 @@ const mapStateToProps = (state) => {
     return {notifications: state.user.notifications}
 }
 
-export default connect(mapStateToProps, {fetchTeam})(Notifications);
+export default connect(mapStateToProps)(Notifications);

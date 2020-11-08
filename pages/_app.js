@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@fortawesome/fontawesome-free/css/all.css";
 import { Provider } from 'react-redux'
+import Figure from "react-bootstrap/Figure"
 
 import { useStore } from '../redux/store'
 import Heading from "../components/Heading"

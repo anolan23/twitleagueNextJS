@@ -2,10 +2,12 @@ import React, {useEffect} from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
 import {initializeStore} from "../../redux/store";
+import Figure from "react-bootstrap/Figure"
 
 import MainBody from "../../components/MainBody"
 import TeamComponent from "../../components/Team";
 import {User, Team, League, Post} from "../../db/connect";
+import BannerAd from "../../components/BannerAd";
 
 function TeamPage(props) {
   const router = useRouter()
@@ -19,12 +21,16 @@ function TeamPage(props) {
   }
     console.log("props.initialReduxState.posts", props.initialReduxState.posts)
     return (
-      <MainBody>
-        <TeamComponent 
-          team={props.initialReduxState.team} 
-          posts={props.initialReduxState.posts}
-        />
-      </MainBody>
+      <React.Fragment>
+        <BannerAd/>
+        <MainBody>
+          <TeamComponent 
+            team={props.initialReduxState.team} 
+            posts={props.initialReduxState.posts}
+          />
+        </MainBody>
+      </React.Fragment>
+      
     )
   }
 

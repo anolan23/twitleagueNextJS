@@ -88,9 +88,13 @@ class Post extends React.Component {
 
   renderContent = () => {
     const text = this.props.content;
+    let replacedText;
+    replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
+      <Link key={match + i} href={`/team/${match}`}><a className="twit-link">${match}</a></Link>
+    ));
 
-    const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-      <Link key={match + i} href={`/team/${match}`} className="twit-link"><a>${match}</a></Link>
+    replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
+      <Link key={match + i} href={`/users/${match}`}><a className="twit-link">@{match}</a></Link>
     ));
 
     return replacedText
@@ -114,7 +118,7 @@ class Post extends React.Component {
                 <span className={styles.time}>{this.renderTime()}</span>
               </div>
               
-              <p className="content">{this.renderContent()}</p>
+              <p className={styles.content}>{this.renderContent()}</p>
               {this.renderGif()}
               <div style={{display:"flex" , justifyContent:"space-between"}}>
                 <div className="icon-holder">
@@ -131,7 +135,7 @@ class Post extends React.Component {
                     </div>
                   </div>
                   <div style={{alignSelf:"center"}} href="#icon"> 
-                    <div className={styles.postIcons}>
+                    <div className={styles["post-icons"]}>
                       <i style={{paddingRight:"5px"}} className="fas fa-retweet"></i>
                   
                       <span>{this.props.retwits}</span>

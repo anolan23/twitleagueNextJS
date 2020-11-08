@@ -8,7 +8,7 @@
 
 /* -------------------Element Selectors---------------------- */
 a:hover{
-  text-decoration: none;
+  text-decoration: none !important;
 }
   
   h1{
@@ -23,6 +23,16 @@ a:hover{
 
 /* -------------------Class Selectors---------------------- */
 
+.ad{
+  margin: 25px 0;
+}
+
+.banner-ad{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 0;
+}
 
 .btn-primary:hover{
   color:#1c73e4;
@@ -33,6 +43,10 @@ a:hover{
 .card{
   box-shadow: 0 2px 6px 0 rgba(0,0,0,.12);
   border: none;
+}
+
+.container-fluid{
+  max-width: 80rem;
 }
 
 .form-control:focus{
@@ -83,6 +97,17 @@ a:hover{
     display: block;
   }
 
+  .matchup-avatar{
+    width:75px;
+    height: 75px;
+}
+
+.matchup{
+    display:flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+}
+
   .muted{
     color: var(--SECONDARY_TEXT);
   }
@@ -98,8 +123,8 @@ a:hover{
   }
 
   body{
-    font-family: 'Source Sans Pro', sans-serif;
-    color: var(--PRIMARY_TEXT);
+    font-family: 'Source Sans Pro', sans-serif !important;
+    color: var(--PRIMARY_TEXT) !important;
   }
 
   .twit-icon{
@@ -119,6 +144,11 @@ a:hover{
     text-decoration: none;
     color: var(--PRIMARY_TEXT);
   }
+
+
+.twit-team{
+  text-align: center;
+}
 
   .nav-style span{
     display: block;

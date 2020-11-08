@@ -1,7 +1,8 @@
-import {User, Team} from "../../../../db/connect";
+import {Team} from "../../../../db/connect";
 
-export default (async (req,res) => {
+export default async (req,res) => {
     const teamAbbrev = "$" + req.query.teamAbbrev
-    res.json(teamAbbrev)
+    const team = await Team.findOne({teamAbbrev: teamAbbrev});
+    res.json(team)
     
-})
+}

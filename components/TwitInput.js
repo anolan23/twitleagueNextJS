@@ -13,7 +13,7 @@ function TwitInput(props) {
 
     const [display, setDisplay] = useState(false);
     const [html, setHtml] = useState(null);
-    const ref = useRef(null);
+    const ref = useRef();
     const contentEditable = useRef(null);
 
     useEffect(() => {

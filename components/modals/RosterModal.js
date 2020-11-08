@@ -10,7 +10,7 @@ function RosterModal(props) {
     const renderBody = () => {
         return props.roster.map((player, index) => {
             return (
-                <TwitItem title={player.username} subtitle={player.username} image={player.image}/>
+                <TwitItem key={index} title={player.username} subtitle={player.username} image={player.image}/>
             );
         })
     }

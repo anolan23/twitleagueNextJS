@@ -29,7 +29,7 @@ export const logOutUser = () => async dispatch => {
 export const deleteNotification = indexToDelete => async (dispatch, getState) => {
     const userId = getState().user._id;
     console.log(userId);
-    const response = await backend.delete("/notifications", {
+    const response = await backend.delete("/api/user/notifications", {
                     params: {
                         userId, 
                         indexToDelete
@@ -156,7 +156,7 @@ export const watchTeam = () => async (dispatch, getState) => {
     const userId = getState().user._id;
     const teamId = getState().team._id;
     if(userId && teamId){
-        const response = await backend.patch("/watch", {userId,teamId});
+        const response = await backend.patch("/api/watch/team", {userId,teamId});
         dispatch({type: "WATCH_TEAM", payload: response.data});
     }
 }
@@ -183,7 +183,7 @@ export const unwatchTeamAndFetchUser = () => async (dispatch) => {
 export const sendJoinTeamRequest = () => async (dispatch, getState) => {
     const teamId = getState().team._id;
     const userId = getState().user._id;
-    backend.patch("/notifications", {
+    backend.patch("/api/user/notifications", {
         notificationType: "Join Team Request",
         teamId,
         userId
@@ -280,7 +280,6 @@ export const unlikePost = (postId) => async (dispatch) => {
 }
 
 export const createCommentOnPost = () => async (dispatch, getState) => {
-    console.log("creatingComment");
     const parentPostId = getState().trackedPost._id;
     const author = getState().user.username;
     const postText = getState().post.postText;
@@ -297,7 +296,7 @@ export const createCommentOnPost = () => async (dispatch, getState) => {
         retwits: {}, 
         comments: {}
     }
-    const response = await backend.patch("/posts/comment", dataToSend);
+    const response = await backend.post("api/posts/comment", dataToSend);
 
     dispatch({type: "CREATE_COMMENT_ON POST", payload: {parentPostId, comments:response.data}})
     dispatch(emptyPostData());
