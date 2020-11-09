@@ -4,7 +4,7 @@ import Tab from 'react-bootstrap/Tab';
 import Nav from 'react-bootstrap/Nav';
 
 import Post from './Post';
-import {togglePostModal, trackClickedPost, fetchUserAndWatchListPosts, fetchWatchListPosts} from "../actions";
+import {togglePostModal, trackClickedPost, fetchUserAndWatchListPosts, fetchWatchListPosts, fetchTrendingPosts} from "../actions";
 import styles from "../styles/FeedHolder.module.css";
 
 class HomeFeedHolder extends React.Component {
@@ -39,7 +39,12 @@ class HomeFeedHolder extends React.Component {
     this.props.fetchWatchListPosts();
   }
 
-  renderWatchListPosts = () => {
+  onTrendingSelect = (k) => {
+    this.setState({activeLink:k})
+    this.props.fetchTrendingPosts(10);
+  }
+
+  renderPosts = () => {
     return this.props.posts.map(post => {
       return (
         <Post 
@@ -85,7 +90,7 @@ class HomeFeedHolder extends React.Component {
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link eventKey="trending" onSelect={(k) => this.setState({activeLink:k})}>
+            <Nav.Link eventKey="trending" onSelect={this.onTrendingSelect}>
               <div className={this.state.activeLink === "trending" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
                 <span className="span-block">Trending</span>
               </div>
@@ -94,7 +99,7 @@ class HomeFeedHolder extends React.Component {
         </Nav>
         <Tab.Content>
           <Tab.Pane eventKey="watchList">
-            {this.renderWatchListPosts()}
+            {this.renderPosts()}
           </Tab.Pane>
           <Tab.Pane eventKey="people">
             {/* <Sonnet /> */}
@@ -103,7 +108,7 @@ class HomeFeedHolder extends React.Component {
             {/* <Sonnet /> */}
           </Tab.Pane>
           <Tab.Pane eventKey="trending">
-            {/* <Sonnet /> */}
+            {this.renderPosts()}
           </Tab.Pane>
         </Tab.Content>
       </Tab.Container>
@@ -122,4 +127,6 @@ export default connect(mapStateToProps, {
   togglePostModal, 
   trackClickedPost, 
   fetchUserAndWatchListPosts, 
-  fetchWatchListPosts})(HomeFeedHolder);
+  fetchWatchListPosts,
+  fetchTrendingPosts
+})(HomeFeedHolder);

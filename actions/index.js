@@ -250,6 +250,16 @@ export const fetchWatchListPosts = () => async (dispatch, getState) => {
     }
 }
 
+export const fetchTrendingPosts = (num) => async (dispatch) => {
+        const response = await backend.get("/api/posts/trending", {
+            params: {
+                num
+            }
+        });
+        
+        dispatch({type: "FETCH_TRENDING_POSTS", payload: response.data});
+}
+
 export const fetchUserAndWatchListPosts = () => async (dispatch) => {
     await dispatch(fetchUser());
     dispatch(fetchWatchListPosts());
@@ -260,7 +270,7 @@ export const fetchUserAndWatchListPosts = () => async (dispatch) => {
 export const likePost = (postId) => async (dispatch, getState) => {
     const username = getState().user.username;
     const userId = getState().user._id;
-    const response = await backend.patch("/posts/like", {
+    const response = await backend.patch("/api/posts/like", {
         postId,
         username,
         userId 
@@ -270,7 +280,7 @@ export const likePost = (postId) => async (dispatch, getState) => {
 }
 
 export const unlikePost = (postId) => async (dispatch) => {
-    const response = await backend.patch("/posts/unlike", {
+    const response = await backend.patch("/api/posts/like", {
         params: {
             postId
         }

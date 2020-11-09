@@ -14,6 +14,8 @@ const postsReducer = (state = INITIAL_STATE, action) => {
             return {...state, [action.payload.parentPostId]: {...state[action.payload.parentPostId],comments: action.payload.comments}}
         case "FETCH_WATCHLIST_POSTS":
             return action.payload;
+        case "FETCH_TRENDING_POSTS":
+            return action.payload;
             default:
             return state;
     }

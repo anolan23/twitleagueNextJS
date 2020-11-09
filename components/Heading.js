@@ -3,6 +3,9 @@ import {connect} from "react-redux";
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Link from "next/link";
+import Dropdown from "react-bootstrap/Dropdown";
+import NavItem from "react-bootstrap/NavItem";
+import NavLink from "react-bootstrap/NavLink";
 
 import {logOutUser, toggleSignUpModal, toggleLoginModal} from "../actions";
 import AutoCompleteForm from "./modals/AutoCompleteForm";
@@ -10,14 +13,23 @@ import Avatar from "./Avatar";
 import styles from "../styles/Heading.module.css"
 
 function Heading(props) {
+  
 
   const renderButtons = () => { 
     if(props.user.isSignedIn){
       return (
         <div className={styles["heading-buttons"]}>
           <i className={`fas fa-envelope ${styles["heading-button"]}`}></i>
-          <Link href="/notifications"><i className={`fas fa-bell ${styles["heading-button"]}`}></i></Link>
-          <Avatar roundedCircle className={styles["heading-button"]} style={{width:"40px"}}/>
+          <Link passHref href="/notifications"><a><i className={`fas fa-bell ${styles["heading-button"]}`}></i></a></Link>
+          <Dropdown as={NavItem}>
+            <Dropdown.Toggle as={NavLink}><Avatar roundedCircle className={styles["heading-button"]} style={{width:"40px"}}/></Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item>View Profile</Dropdown.Item>
+              <Dropdown.Item>Edit Profile</Dropdown.Item>
+              <Dropdown.Item>Settings</Dropdown.Item>
+              <Dropdown.Item>Sign Out</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
           <Button variant="primary" onClick={props.logOutUser}>Log Out</Button>
         </div>
         

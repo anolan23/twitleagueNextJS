@@ -20,7 +20,7 @@ export default async (req,res) => {
           });
     }
     else if(method === "GET"){
-
+      
     }
     else{
         res.status(405).json({message: "api/league only supports POST"})
