@@ -4,7 +4,7 @@ import Tab from 'react-bootstrap/Tab';
 import Nav from 'react-bootstrap/Nav';
 
 import Post from './Post';
-import {togglePostModal, trackClickedPost} from "../actions";
+import {togglePostModal, trackClickedPost, fetchTeamPosts, fetchLeaguePosts} from "../actions";
 import styles from "../styles/FeedHolder.module.css";
 
 function FeedHolder(props) {
@@ -16,9 +16,8 @@ function FeedHolder(props) {
     props.togglePostModal();
   }
 
-  const posts = props.posts ? Object.values(props.posts) : null
-  const renderTeamPosts = () => {
-    return posts.map(post => {
+  const renderPosts = () => {
+    return props.posts.map(post => {
       return (
         <Post 
           key={post._id}
@@ -36,19 +35,29 @@ function FeedHolder(props) {
       );
     })
   }
+
+  const onTeamSelect = (k) => {
+    setActiveLink(k);
+    props.fetchTeamPosts();
+  }
+
+  const onLeagueSelect = (k) => {
+    setActiveLink(k);
+    props.fetchLeaguePosts();
+  }
   
   return (
     <Tab.Container id="feedHolder" defaultActiveKey="first">
           <Nav className={styles["nav-style"]}>
             <Nav.Item>
-              <Nav.Link eventKey="first" onSelect={(k) => setActiveLink(k)}>
+              <Nav.Link eventKey="first" onSelect={onTeamSelect}>
                 <div className={activeLink === "first" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
                   <span className="span-block">Team</span>
                 </div>
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="second" onSelect={(k) => setActiveLink(k)}>
+              <Nav.Link eventKey="second" onSelect={onLeagueSelect}>
                 <div className={activeLink === "second" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
                   <span className="span-block">League</span>
                 </div>
@@ -64,14 +73,18 @@ function FeedHolder(props) {
           </Nav>
           <Tab.Content>
             <Tab.Pane eventKey="first">
-              {renderTeamPosts()}
+              {renderPosts()}
             </Tab.Pane>
             <Tab.Pane eventKey="second">
-              {/* <Sonnet /> */}
+              {renderPosts()}
             </Tab.Pane>
           </Tab.Content>
     </Tab.Container>
   );
 }
 
-export default connect(null, {trackClickedPost, togglePostModal})(FeedHolder);
+const mapStateToProps = (state) => {
+  return {posts: state.posts ? Object.values(state.posts) : []}
+}
+
+export default connect(mapStateToProps, {trackClickedPost, togglePostModal, fetchTeamPosts, fetchLeaguePosts})(FeedHolder);

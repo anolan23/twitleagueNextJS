@@ -227,10 +227,11 @@ export const createPost = () => async (dispatch, getState) => {
     dispatch(emptyPostData());
 }
 
-export const fetchTeamPosts = (teamAbbrev) => async dispatch => {
+export const fetchTeamPosts = () => async (dispatch, getState) => {
+    const teamAbbrev = getState().team.teamAbbrev;
     const response = await backend.get("/api/posts/team", {
         params: {
-            teamAbbrev: teamAbbrev
+            teamAbbrev
         }
     });
     
@@ -258,6 +259,17 @@ export const fetchTrendingPosts = (num) => async (dispatch) => {
         });
         
         dispatch({type: "FETCH_TRENDING_POSTS", payload: response.data});
+}
+
+export const fetchLeaguePosts = () => async (dispatch, getState) => {
+    const league = getState().team.league;
+    const response = await backend.get("/api/posts/league", {
+        params: {
+            league
+        }
+    });
+    
+    dispatch({type: "FETCH_LEAGUE_POSTS", payload: response.data});
 }
 
 export const fetchUserAndWatchListPosts = () => async (dispatch) => {

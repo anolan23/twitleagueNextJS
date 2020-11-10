@@ -16,6 +16,8 @@ const postsReducer = (state = INITIAL_STATE, action) => {
             return action.payload;
         case "FETCH_TRENDING_POSTS":
             return action.payload;
+        case "FETCH_LEAGUE_POSTS":
+            return action.payload;
             default:
             return state;
     }
