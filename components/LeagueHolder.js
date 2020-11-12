@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
-import {Link} from "react-router-dom";
-import {connect} from "react-redux";
+import Link from "next/link";
 import reactStringReplace from "react-string-replace";
 
 function LeagueHolder(props) {
@@ -10,7 +9,7 @@ function LeagueHolder(props) {
     const owner = props.league.owner;
     const text = "@" + owner;
     const replacedText = reactStringReplace(text, /@(\w+)/g, (match, i) => (
-      <Link key={match + i} to={"/users/" + owner}>@{match}</Link>
+      <Link passHref key={match + i} href={"/users/" + owner}><a>@{match}</a></Link>
     ));
 
     return <h3>owner: {replacedText}</h3>
@@ -35,8 +34,4 @@ function LeagueHolder(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {league: state.league}
-}
-
-export default connect(mapStateToProps)(LeagueHolder);
+export default LeagueHolder;

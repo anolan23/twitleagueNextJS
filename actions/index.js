@@ -204,12 +204,8 @@ export const createLeagueAndFetchUser = (formValues) => async (dispatch) => {
     dispatch(fetchUser());
 }
 
-export const fetchLeague = (leagueId) => async dispatch => {
-    const response = await backend.get("/league", {
-        params: {
-            leagueId: leagueId
-        }
-    });
+export const fetchLeague = (leagueName) => async dispatch => {
+    const response = await backend.get(`/api/league/${leagueName}`);
     
     dispatch({type: "FETCH_LEAGUE", payload: response.data})
 }

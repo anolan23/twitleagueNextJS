@@ -57,11 +57,9 @@ class WatchListCard extends React.Component {
       }
       return this.props.leagues.map(league => {
           return (
-              <ListGroup.Item key={league._id}>
-                  <Link href="/" onClick={() => this.onLeagueClick(league)}>
-                      {league.leagueName}
+                  <Link passHref href={"/league/"+league.leagueName} onClick={() => this.onLeagueClick(league)}>
+                    <TwitItem title={league.leagueName} subtitle={league.sport} image={null}/>
                   </Link>
-              </ListGroup.Item>
           );
       }); 
   }
