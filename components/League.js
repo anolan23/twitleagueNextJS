@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 import LeagueHolder from "./LeagueHolder";
 import TwitItem from "./TwitItem";
@@ -9,7 +10,11 @@ function League({league}) {
         if(league.teams)
         {
             return league.teams.map((team, index) => {
-                return <TwitItem key={index} title={team.teamAbbrev} subtitle={team.teamName}/>
+                return (
+                    <Link passHref href={"/team/" + team.teamAbbrev.substring(1)} key={index}>
+                       <TwitItem key={index} title={team.teamAbbrev} subtitle={team.teamName}/>
+                    </Link>
+                )
             });
         }
         else{

@@ -24,7 +24,7 @@ function AvatarModal(props) {
     const renderForm = () => {
         return (
             <React.Fragment>
-                <Image rounded className="avatar-image" src={formik.values.imageUrl}/>
+                <Image rounded className={styles["avatar-image"]} src={formik.values.imageUrl}/>
                 <Form.Group controlId="date">
                     <Form.Label>
                         Image url

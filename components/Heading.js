@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
+import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Link from "next/link";
@@ -21,15 +22,7 @@ function Heading(props) {
         <div className={styles["heading-buttons"]}>
           <i className={`fas fa-envelope ${styles["heading-button"]}`}></i>
           <Link passHref href="/notifications"><a><i className={`fas fa-bell ${styles["heading-button"]}`}></i></a></Link>
-          <Dropdown as={NavItem}>
-            <Dropdown.Toggle as={NavLink}><Avatar roundedCircle className={styles["heading-button"]} style={{width:"40px"}}/></Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item>View Profile</Dropdown.Item>
-              <Dropdown.Item>Edit Profile</Dropdown.Item>
-              <Dropdown.Item>Settings</Dropdown.Item>
-              <Dropdown.Item>Sign Out</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          <Avatar roundedCircle className={styles["heading-button"]} style={{width:"40px"}}/>
           <Button variant="primary" onClick={props.logOutUser}>Log Out</Button>
         </div>
         
@@ -47,16 +40,20 @@ function Heading(props) {
   }
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar expand="lg" bg="light" sticky="top">
       <Navbar.Brand><Link href="/" passHref><a className="twit-brand">TwitLeague</a></Link></Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-          <AutoCompleteForm inline placeHolder="$Team or @Username">
-            <Button variant="outline-success">Search</Button>
-          </AutoCompleteForm>
+        <Nav className="mr-auto">
+          <Nav.Link href="/">Home</Nav.Link>
+          <Nav.Link href="#link">Rankings</Nav.Link>
+        </Nav>
+        <AutoCompleteForm inline placeHolder="$Team or @Username">
+          <Button variant="outline-success">Search</Button>
+        </AutoCompleteForm>
         {renderButtons()}
       </Navbar.Collapse>
-</Navbar>
+    </Navbar>
   );
 }
 

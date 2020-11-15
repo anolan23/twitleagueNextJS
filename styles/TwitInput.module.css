@@ -1,3 +1,9 @@
+.avatar{
+    width: 46px;
+    height: 46px;
+    margin: 20px
+}
+
 .post-form{
     display: flex;
     justify-content: space-between;
@@ -45,6 +51,11 @@
     min-height: 100px;
     height: auto;
     width: auto;
+}
+
+.twit-input{
+    display: flex;
+    align-items: center;
 }
 
 .action-bar{

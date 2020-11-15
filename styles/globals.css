@@ -1,14 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;700;900&display=swap');
+
 :root{
   --PRIMARY_TEXT: #101010;
   --SECONDARY_TEXT: #767676;
   --BLUE_TEXT: #218dff;
+  --GREEN_TEXT: #0aba74;
+  --RED_TEXT: #ff3e3e;
   --HIGHLIGHT: #f6f6f;
   --BLUE_BACKGROUND: #e8f3ff;
+  --GREEN_BACKGROUND:#e6f8f1;
+  --RED_BACKGROUND: #ffecec;
+ 
 }
 
 /* -------------------Element Selectors---------------------- */
 a:hover{
   text-decoration: none !important;
+}
+
+body{
+  font-family: 'Source Sans Pro', sans-serif;
+  color: var(--PRIMARY_TEXT);
 }
   
   h1{
@@ -34,6 +46,16 @@ a:hover{
   margin: 25px 0;
 }
 
+.bullish{
+  color: var(--GREEN_TEXT);
+  background-color: var(--GREEN_BACKGROUND);
+}
+
+.bearish{
+  color: var(--RED_TEXT);
+  background-color: var(--RED_BACKGROUND);
+}
+
 .btn-primary:hover{
   color:#1c73e4;
   background-color:#dbeffc;
@@ -43,6 +65,10 @@ a:hover{
 .card{
   box-shadow: 0 2px 6px 0 rgba(0,0,0,.12);
   border: none;
+}
+
+.card-header{
+  padding: 10px;
 }
 
 .container-fluid{
@@ -95,6 +121,10 @@ a:hover{
     text-decoration: none;
   }
 
+  .invalid-feedback{
+    display: block;
+}
+ 
   .social-icon{
     padding-right: 0 15px;
   }
@@ -128,11 +158,6 @@ a:hover{
     font-size: 13px;
   }
 
-  body{
-    font-family: 'Source Sans Pro', sans-serif !important;
-    color: var(--PRIMARY_TEXT) !important;
-  }
-
   .twit-icon{
     margin-right: 5px;
   }
@@ -150,8 +175,7 @@ a:hover{
     text-decoration: none;
     color: var(--PRIMARY_TEXT);
   }
-
-
+  
 .twit-team{
   text-align: center;
 }

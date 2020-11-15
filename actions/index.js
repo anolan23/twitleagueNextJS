@@ -139,10 +139,9 @@ export const addTeamEventAndFetchTeam = (values) => async (dispatch, getState) =
 export const saveTeamImage = imageUrl => async (dispatch, getState) => {
     const userId = getState().user._id;
     const owner = getState().team.owner;
-    const teamId = getState().team._id;
+    const teamAbbrev = getState().team.teamAbbrev.substring(1);
     if(owner === userId){
-        const response = await backend.patch("/team/image", {
-                teamId,
+        const response = await backend.patch(`api/team/${teamAbbrev}`, {
                 imageUrl
         });
         dispatch({type:"SAVE_TEAM_IMAGE", payload: response.data});

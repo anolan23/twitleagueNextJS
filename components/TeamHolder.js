@@ -44,7 +44,9 @@ function TeamHolder(props) {
               <Dropdown.Toggle className={`${styles["watch-button"]} ${styles["twit-drop-button"]}`} id="dropdown-custom-1"></Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item onClick={props.sendJoinTeamRequest} eventKey="1">Join team</Dropdown.Item>
-                <Dropdown.Item eventKey="2">Direct Message</Dropdown.Item>
+                <Dropdown.Item onClick={props.toggleScheduleModal} eventKey="2">View Schedule</Dropdown.Item>
+                <Dropdown.Item onClick={props.toggleRosterModal} eventKey="3">View Roster</Dropdown.Item>
+                <Dropdown.Item eventKey="4">Direct Message</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>
@@ -76,17 +78,18 @@ function TeamHolder(props) {
 
   return (
     <React.Fragment>
+      <div className={styles.banner}></div>
       <div className="twit-flex-column" style={{flexDirection:"row" , justifyContent:"space-between"}}>
         <div className="twit-flex-column">
           <h3>{props.team.league}</h3>
           <div className={styles["teamname"]}>
-            <Avatar onClick={props.toggleAvatarModal} rounded className={styles["team-image"]} src={props.team.image?props.team.image:""} alt="team profile image"/>
+            <Avatar roundedCircle onClick={props.toggleAvatarModal} rounded className={styles["team-image"]} src={props.team.image?props.team.image:""} alt="team profile image"/>
             <h1 className={styles["teamname-title"]}>{props.team.teamName}</h1>
             {props.team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
-          <h1>4-1</h1>
-          <h3>Head Coach: {`@${props.team.headCoach}`}</h3>
-          <div className={styles["team-attributes"]}>
+          <h3 className="muted">Official TwitLeague account of the Chicago White Sox</h3>
+          <h3 className="muted">Head Coach: {`@${props.team.headCoach}`}</h3>
+          <div className={styles["team-attributes"] + " muted"}>
             <div className={styles["team-attribute"]}>
             <i className={"fas fa-map-marker-alt " + styles["twit-icon"]}></i>
             <span>Baton Rouge, LA</span>
@@ -97,8 +100,6 @@ function TeamHolder(props) {
             </div>
           </div>
           <div className={styles["view-buttons"]}>
-          <Button onClick={props.toggleScheduleModal} variant="outline-secondary" size="sm" className="twit-button">View Schedule</Button>
-          <Button onClick={props.toggleRosterModal} variant="outline-secondary" size="sm" className="twit-button"> View Roster</Button>
           </div>
           
         </div>

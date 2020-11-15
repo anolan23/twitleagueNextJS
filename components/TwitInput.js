@@ -8,6 +8,7 @@ import ContentEditable from "react-contenteditable";
 import styles from "../styles/TwitInput.module.css";
 import {toggleGifModal, saveCurrentPostText, saveCurrentOutlook} from "../actions";
 import GifThumb from "./GifThumb";
+import Avatar from "../components/Avatar";
 
 function TwitInput(props) {
 
@@ -132,55 +133,58 @@ function TwitInput(props) {
     }
 
         return (
-            <Form 
-                onSubmit={props.onSubmit} 
-                className={styles["post-form"]} 
-                style={{display: props.hide ? "none" : "flex"}}
-            >
-                <div onClick={onClick} className={styles["twit-post"]} ref={ref}>
-                    <ContentEditable 
-                        html={html || renderInitials()}
-                        onChange={handleChange} 
-                        innerRef={contentEditable}
-                        style={{display: display || props.expanded ? "block" : "none"}} 
-                        className={styles["twit-content"]} 
-                        onFocus={onContentEditableFocus}
-                        aria-expanded={display} 
-                        spellCheck="true" 
-                        id="my-content" 
-                        >
-                    </ContentEditable>
-                    <div className={styles["gif-div"]}>
-                    {renderGifThumbnail()}
-                    </div>
-                    <div className={styles["action-bar"]}>
-                        <div 
-                            contentEditable="false" 
-                            className = {styles.placeHolder}
-                            id="placeHolder"
-                            style={{display: display ? "none" : "block"}}
-                            suppressContentEditableWarning={true}
-                        >
-                        {props.placeHolder}
+            <div className={styles["twit-input"]}>
+                <Avatar roundedCircle className={styles.avatar}/>
+                    <Form 
+                    onSubmit={props.onSubmit} 
+                    className={styles["post-form"]} 
+                    style={{display: props.hide ? "none" : "flex"}}
+                    >
+                    <div onClick={onClick} className={styles["twit-post"]} ref={ref}>
+                        <ContentEditable 
+                            html={html || renderInitials()}
+                            onChange={handleChange} 
+                            innerRef={contentEditable}
+                            style={{display: display || props.expanded ? "block" : "none"}} 
+                            className={styles["twit-content"]} 
+                            onFocus={onContentEditableFocus}
+                            aria-expanded={display} 
+                            spellCheck="true" 
+                            id="my-content" 
+                            >
+                        </ContentEditable>
+                        <div className={styles["gif-div"]}>
+                        {renderGifThumbnail()}
                         </div>
-                        <div className={styles["actions"]}>
-                            <Button onClick={onBullishClick} variant="success" className={props.outlook === "bullish" ? styles["outlook-pressed"] : styles.outlook}>
-                            Bullish
-                            </Button>
-                            <Button onClick={onBearishClick} variant="danger" className={props.outlook === "bearish" ? styles["outlook-pressed"] : styles.outlook}>
-                            Bearish
-                            </Button>
-                            <i onClick={props.toggleGifModal} className={"far fa-image " + styles.icons}></i>                        
+                        <div className={styles["action-bar"]}>
+                            <div 
+                                contentEditable="false" 
+                                className = {styles.placeHolder}
+                                id="placeHolder"
+                                style={{display: display ? "none" : "block"}}
+                                suppressContentEditableWarning={true}
+                            >
+                            {props.placeHolder}
+                            </div>
+                            <div className={styles["actions"]}>
+                                <Button onClick={onBullishClick} variant="success" className={props.outlook === "bullish" ? styles["outlook-pressed"] : styles.outlook}>
+                                Bullish
+                                </Button>
+                                <Button onClick={onBearishClick} variant="danger" className={props.outlook === "bearish" ? styles["outlook-pressed"] : styles.outlook}>
+                                Bearish
+                                </Button>
+                                <i onClick={props.toggleGifModal} className={"far fa-image " + styles.icons}></i>                        
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <textarea id="my-textarea" style={{display:"none"}}></textarea>   
-                    
-                <Button type="submit">
-                    Post
-                </Button>
-            </Form>
+                    <textarea id="my-textarea" style={{display:"none"}}></textarea>   
+                        
+                    <Button type="submit">
+                        Post
+                    </Button>
+                </Form>
+            </div>
         );
     
 

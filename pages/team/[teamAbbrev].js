@@ -7,7 +7,6 @@ import Figure from "react-bootstrap/Figure"
 import MainBody from "../../components/MainBody"
 import TeamComponent from "../../components/Team";
 import {User, Team, League, Post} from "../../db/connect";
-import BannerAd from "../../components/BannerAd";
 
 function TeamPage(props) {
   const router = useRouter()
@@ -22,7 +21,6 @@ function TeamPage(props) {
     console.log("props.initialReduxState.posts", props.initialReduxState.posts)
     return (
       <React.Fragment>
-        <BannerAd/>
         <MainBody>
           <TeamComponent 
             team={props.initialReduxState.team} 

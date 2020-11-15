@@ -5,7 +5,6 @@ import {initializeStore} from "../../redux/store";
 
 import MainBody from "../../components/MainBody"
 import LeagueComponent from "../../components/League";
-import BannerAd from "../../components/BannerAd";
 import {getLeague} from "../api/league/[leagueName]";
 
 export default function LeaguePage(props) {
@@ -20,7 +19,6 @@ export default function LeaguePage(props) {
   }
     return (
       <React.Fragment>
-        <BannerAd/>
         <MainBody>
           <LeagueComponent league={props.initialReduxState.league}/>
         </MainBody>

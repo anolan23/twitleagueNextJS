@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import TwitFormModal from "./TwitFormModal";
 import {toggleCreateLeagueModal, createLeagueAndFetchUser} from "../../actions";
 import styles from "../../styles/CreateLeagueModal.module.css"
+import backend from "../../lib/backend";
 
 function CreateLeagueModal(props){
 
@@ -18,18 +19,17 @@ function CreateLeagueModal(props){
 
   const validate = values => {
     let errors ={};
-    // return backend.get("/leaguesearch", {
-    //       params: {league: values.leagueName}
-    //   }).then((response) => {
-    //     if(!values.leagueName){
-    //       errors.leagueName = "Required";
-    //     }
-    //     else if(response.data.activeLeague){
-    //       errors.leagueName = "League Name already taken";
-    //     }
+    if(!values.leagueName){
+      return errors.leagueName = "Required";
+    }
+    return backend.get("/api/league/"+values.leagueName)
+      .then((response) => {
+        if(response.data.leagueName === values.leagueName){
+          errors.leagueName = "League Name already taken";
+        }
       
-    //     return errors;
-    //   });
+        return errors;
+      });
     
 }
 
@@ -124,6 +124,7 @@ function CreateLeagueModal(props){
       
         );
       }
+      console.log(formik.errors);
 
     return (
         <TwitFormModal

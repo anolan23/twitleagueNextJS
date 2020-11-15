@@ -2,6 +2,9 @@ import {League, User, Team} from "../../../db/connect";
 
 export const getLeague = async (leagueName) => {
     const league = await League.findOne({leagueName:leagueName});
+    if(!league){
+        return {};
+    }
     const userId = league.owner;
     const user =  await User.findById(userId);
     const teams = await Team.find({ _id: { $in: league.teams}});

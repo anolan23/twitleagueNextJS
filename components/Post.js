@@ -76,10 +76,10 @@ class Post extends React.Component {
 
   renderBadge = () => {
     if(this.props.outlook === "bullish"){
-      return <Badge pill variant="success">Bullish</Badge>
+      return <Badge className="bullish" pill variant="success">Bullish</Badge>
     }
     else if(this.props.outlook === "bearish"){
-      return <Badge pill variant="danger">Bearish</Badge>
+      return <Badge className="bearish" pill variant="danger">Bearish</Badge>
     }
     else{
       return null;
@@ -109,9 +109,9 @@ class Post extends React.Component {
           <Avatar roundedCircle className={styles["avatar-post"]}/>
           <div style={{width:"100%"}}>
               <div className={styles["post-heading-div"]}>
-                <div className={styles["post-deading-div-left"]}>
-                  <Link className={styles.username} href={"/users/" + this.props.author}>{this.props.author}</Link>
-                  <div className={styles.badgeDiv}>
+                <div className={styles["post-heading-div-left"]}>
+                  <Link passHref href={"/users/" + this.props.author}><a className={styles["username"]}>{this.props.author}</a></Link>
+                  <div className={styles["badge-div"]}>
                     {this.renderBadge()}
                   </div>
                 </div>
