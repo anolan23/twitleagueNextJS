@@ -6,16 +6,18 @@ import Form from 'react-bootstrap/Form';
 import {useFormik} from "formik";
 
 import TwitFormModal from "./TwitFormModal";
-import {toggleAvatarModal, saveTeamImage} from "../../actions";
+import {toggleAvatarModal, saveTeamImages} from "../../actions";
 import styles from "../../styles/AvatarModal.module.css"
 
 function AvatarModal(props) {
     
     const formik = useFormik({
         initialValues: {
-            imageUrl: ""
+            teamImageUrl: "",
+            bannerImageUrl: ""
         },
         onSubmit: () => {
+            props.saveTeamImage(formik.values.teamImageUrl, formik.values.bannerImageUrl);
             console.log("saved image");
         }
 
@@ -24,12 +26,22 @@ function AvatarModal(props) {
     const renderForm = () => {
         return (
             <React.Fragment>
-                <Image rounded className={styles["avatar-image"]} src={formik.values.imageUrl}/>
-                <Form.Group controlId="date">
+                <Image rounded className={styles["avatar-image"]} src={formik.values.teamImageUrl}/>
+                <Form.Group>
                     <Form.Label>
-                        Image url
+                        Team Image url
                     </Form.Label>
-                    <Form.Control name="imageUrl" onChange={formik.handleChange} value={formik.values.imageUrl} type="url" placeholder="Enter url" />
+                    <Form.Control name="teamImageUrl" onChange={formik.handleChange} value={formik.values.teamImageUrl} type="url" placeholder="Enter url" />
+                </Form.Group>
+                <Form.Group>
+                    <Form.File id="exampleFormControlFile1" label="Example file input" />
+                </Form.Group>
+                <Image rounded className={styles["avatar-image"]} src={formik.values.bannerImageUrl}/>
+                <Form.Group>
+                    <Form.Label>
+                        Banner Image url
+                    </Form.Label>
+                    <Form.Control name="bannerImageUrl" onChange={formik.handleChange} value={formik.values.bannerImageUrl} type="url" placeholder="Enter url" />
                 </Form.Group>
                 <Form.Group>
                     <Form.File id="exampleFormControlFile1" label="Example file input" />
@@ -46,7 +58,7 @@ function AvatarModal(props) {
                 <Button variant="secondary" onClick={props.toggleAvatarModal}>
                     Close
                 </Button>
-                <Button onClick={() => props.saveTeamImage(formik.values.imageUrl)} variant="primary" type="submit">
+                <Button variant="primary" type="submit">
                     Save
                 </Button>
           </React.Fragment>
@@ -69,4 +81,4 @@ const mapStateToProps = (state) => {
     return {showAvatarModal: state.modals.showAvatarModal}
 }
 
-export default connect(mapStateToProps, {toggleAvatarModal, saveTeamImage})(AvatarModal);
+export default connect(mapStateToProps, {toggleAvatarModal, saveTeamImage: saveTeamImages})(AvatarModal);

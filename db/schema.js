@@ -30,7 +30,8 @@ export const teamSchema = new mongoose.Schema({
     type: Array,
     default: []
   },
-  image: String
+  image: String,
+  banner: String
   }
 );
 

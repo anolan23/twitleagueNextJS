@@ -4,15 +4,17 @@ export default async (req,res) => {
     const method = req.method;
     const teamAbbrev = "$" + req.query.teamAbbrev
     if(method === "PATCH"){
-       const imageUrl = req.body.imageUrl;
+       const teamImageUrl = req.body.teamImageUrl;
+       const bannerImageUrl = req.body.bannerImageUrl;
        const team = await Team.findOne({teamAbbrev: teamAbbrev});
-       team.image = imageUrl;
+       team.image = teamImageUrl;
+       team.banner = bannerImageUrl;
        team.save(err => {
            if(err){
                ref.status(405).json(err);
            }
            else{
-               res.json(imageUrl)
+               res.json(team);
            }
        })
     }

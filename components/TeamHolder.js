@@ -78,34 +78,39 @@ function TeamHolder(props) {
 
   return (
     <React.Fragment>
-      <div className={styles.banner}></div>
+      <div className={styles.banner}><img className={styles["banner-image"]} src={props.team.banner? props.team.banner : null}></img></div>
+      <div style={{display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap:"wrap"}}>
+        <div className="team-image">
+          <Avatar roundedCircle onClick={props.toggleAvatarModal} rounded className={styles["team-image"]} src={props.team.image?props.team.image:""} alt="team profile image"/>
+        </div>
+        {renderButton()}
+      </div>
       <div className="twit-flex-column" style={{flexDirection:"row" , justifyContent:"space-between"}}>
         <div className="twit-flex-column">
-          <h3>{props.team.league}</h3>
           <div className={styles["teamname"]}>
-            <Avatar roundedCircle onClick={props.toggleAvatarModal} rounded className={styles["team-image"]} src={props.team.image?props.team.image:""} alt="team profile image"/>
             <h1 className={styles["teamname-title"]}>{props.team.teamName}</h1>
             {props.team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
+          <h3>{props.team.league}</h3>
           <h3 className="muted">Official TwitLeague account of the Chicago White Sox</h3>
           <h3 className="muted">Head Coach: {`@${props.team.headCoach}`}</h3>
-          <div className={styles["team-attributes"] + " muted"}>
+          <h3 className={styles["team-attributes"] + " muted"}>
             <div className={styles["team-attribute"]}>
             <i className={"fas fa-map-marker-alt " + styles["twit-icon"]}></i>
             <span>Baton Rouge, LA</span>
             </div>
-            <div className={styles["team-attributes"]}>
+            <div className={styles["team-attribute"]}>
             <i className={"fas fa-calendar-alt " + styles["twit-icon"]}></i>
             <span>Joined Oct 2020</span>
             </div>
-          </div>
-          <div className={styles["view-buttons"]}>
+          </h3>
+          <div style={{width: "100%"}}>
+            <h3>
+              <span style={{fontWeight:900, marginRight:"3px"}}>{props.team.watchers.length}</span>
+              <span className="muted">Followers</span>
+            </h3>
           </div>
           
-        </div>
-        <div className={styles["watch-div"]}>
-          {renderWatchers()}
-          {renderButton()}
         </div>
       </div>
     </React.Fragment>

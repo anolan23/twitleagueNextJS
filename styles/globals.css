@@ -148,6 +148,20 @@ body{
     color: var(--SECONDARY_TEXT);
   }
 
+  .team-image{
+    position: relative;
+    margin-top: -10%;
+    margin-left: 10px;
+    margin-bottom: -4px;
+    width: 125px;
+    height: 125px;
+    min-width: 49px;
+    border-width: 4px;
+    border-color: white;
+    border-style: solid;
+    border-radius: 9999px;
+  }
+
   .twit-flex-column{
     display:flex;
     flex-direction: column;
