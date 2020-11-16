@@ -1,5 +1,5 @@
 .avatar-post{
-  margin-right: 20px;
+  margin-right: 10px;
   width: 50px;
 }
 
@@ -13,10 +13,10 @@
 .post{
     display: flex;
     align-items: flex-start;
-    padding: 15px;
+    padding: 10px;
     border-top-style: solid;
     border-top-width: 1px;
-    border-color: #f6f6f6;
+    border-color: rgb(230, 236, 240);
 }
 
 .post:hover{
