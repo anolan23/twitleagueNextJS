@@ -1,17 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;700;900&display=swap');
 
-:root{
-  --PRIMARY_TEXT: #101010;
-  --SECONDARY_TEXT: #767676;
-  --BLUE_TEXT: #218dff;
-  --GREEN_TEXT: #0aba74;
-  --RED_TEXT: #ff3e3e;
-  --HIGHLIGHT: #f6f6f;
-  --BLUE_BACKGROUND: #e8f3ff;
-  --GREEN_BACKGROUND:#e6f8f1;
-  --RED_BACKGROUND: #ffecec;
- 
-}
 
 /* -------------------Element Selectors---------------------- */
 a:hover{
@@ -22,16 +10,6 @@ body{
   font-family: 'Source Sans Pro', sans-serif;
   color: var(--PRIMARY_TEXT);
 }
-  
-  h1{
-    font-size: 2rem !important;
-    font-weight: 600 !important;
-  }
-
-  h3{
-    font-size: 1rem !important;
-    font-weight: 400 !important;
-  }
 
 /* -------------------Class Selectors---------------------- */
 
@@ -44,16 +22,6 @@ body{
   justify-content: center;
   align-items: center;
   margin: 25px 0;
-}
-
-.bullish{
-  color: var(--GREEN_TEXT);
-  background-color: var(--GREEN_BACKGROUND);
-}
-
-.bearish{
-  color: var(--RED_TEXT);
-  background-color: var(--RED_BACKGROUND);
 }
 
 .btn-primary:hover{
@@ -86,16 +54,9 @@ body{
   border-color: transparent;
 }
 
-.twit-link{
-  color: var(--BLUE_TEXT);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.twit-link:hover{
-    color:#00baff;
-    text-decoration: none;
-    transition: color .1s ease-in-out;
+.flex-column{
+  display: flex;
+  flex-direction: column;
 }
   
 .navbar-collapse{
@@ -144,30 +105,6 @@ body{
     flex-direction: row;
 }
 
-  .muted{
-    color: var(--SECONDARY_TEXT);
-  }
-
-  .team-image{
-    position: relative;
-    margin-top: -10%;
-    margin-left: 10px;
-    margin-bottom: -4px;
-    width: 125px;
-    height: 125px;
-    min-width: 49px;
-    border-width: 4px;
-    border-color: white;
-    border-style: solid;
-    border-radius: 9999px;
-  }
-
-  .twit-flex-column{
-    display:flex;
-    flex-direction: column;
-    align-items: flex-start
-  }
-
   .twit-small-text{
     font-size: 13px;
   }
@@ -200,4 +137,11 @@ body{
 
   .block-span{
     display:block;
+  }
+
+  .user-toggle{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    line-height: 1;
   }

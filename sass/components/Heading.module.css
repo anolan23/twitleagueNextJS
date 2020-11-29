@@ -1,0 +1,15 @@
+.heading-button{
+    margin: 0 10px;
+    font-size: 24px;
+    color:var(--SECONDARY_TEXT);
+}
+
+.heading-buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon{
+    font-size: 36px;
+}

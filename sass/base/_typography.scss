@@ -1,0 +1,38 @@
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    /* font-size: 16px; */
+    line-height: 1.5;
+    color: var(--PRIMARY_TEXT);
+}
+
+.heading-1{
+    line-height: 1;
+    font-size: 3.2rem;
+    font-weight: 600;
+}
+.heading-2{
+    font-size: 4rem;
+    line-height: 1;
+}
+.heading-3{
+    font-size: 1.6rem;
+    font-weight: 400;
+}
+.heading-4{
+    font-size: 1.9rem;
+}
+
+.twit-link{
+    color: var(--BLUE_TEXT);
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover{
+        color:#00baff;
+        text-decoration: none;
+        transition: color .1s ease-in-out;
+    }
+}
+
+

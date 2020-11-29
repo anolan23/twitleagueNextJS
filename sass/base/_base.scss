@@ -1,0 +1,38 @@
+:root{
+    --PRIMARY_TEXT: #101010;
+    --SECONDARY_TEXT: #767676;
+    --BLUE_TEXT: #218dff;
+    --GREEN_TEXT: #0aba74;
+    --RED_TEXT: #ff3e3e;
+    --HIGHLIGHT: #f6f6f;
+    --BLUE_BACKGROUND: #e8f3ff;
+    --GREEN_BACKGROUND:#e6f8f1;
+    --RED_BACKGROUND: #ffecec;
+  }
+
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit
+}
+
+html {
+    font-size: 62.5%; //1rem = 10px
+    @media only screen and (max-width: 1200px){
+        font-size: 50%;
+    }
+}
+
+body {
+    box-sizing: border-box;
+    padding: 0rem;
+}
+
+.twit-container{
+    min-height: 100vh;
+
+    display: grid;
+    grid-template-columns: 1fr minmax(min-content, 600px) 1fr;
+}

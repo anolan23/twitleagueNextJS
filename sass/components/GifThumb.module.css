@@ -1,0 +1,13 @@
+.gif-thumb{
+    border-radius: 5px;
+    width: 75px;
+    opacity: 50%;
+    margin: 10px 0;
+    border-color: grey;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.gif-thumb:hover{
+    opacity: 100%;
+}

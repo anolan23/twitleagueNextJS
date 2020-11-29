@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "@fortawesome/fontawesome-free/css/all.css";
 import '../styles/globals.css'
+import "../sass/_main.scss";
 import { Provider } from 'react-redux'
 import Figure from "react-bootstrap/Figure"
 
@@ -21,7 +22,6 @@ function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
   return (
     <Provider store={store}>
-      <Heading/>
       <SignUp/>
       <Login/>
       <CreateTeamModal/>

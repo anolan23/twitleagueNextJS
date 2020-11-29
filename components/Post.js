@@ -9,7 +9,7 @@ import reactStringReplace from "react-string-replace";
 
 
 import {likePost} from "../actions";
-import styles from "../styles/Post.module.css";
+import post from "../sass/components/Post.module.scss";
 
 class Post extends React.Component {
 
@@ -104,60 +104,44 @@ class Post extends React.Component {
   
   render() {
     return (
-      <div onClick={this.props.onClick} className={this.props.selected ? `${styles.post} ${styles.selected}` : styles.post}>
+      <div onClick={this.props.onClick} className={this.props.selected ? `${post.post} ${post["post__selected"]}` : post.post}>
   
-          <Avatar roundedCircle className={styles["avatar-post"]}/>
+          <Avatar roundedCircle className={post["post__image"]}/>
           <div style={{width:"100%"}}>
-              <div className={styles["post-heading-div"]}>
-                <div className={styles["post-heading-div-left"]}>
-                  <Link passHref href={"/users/" + this.props.author}><a className={styles["username"]}>{this.props.author}</a></Link>
-                  <div className={styles["badge-div"]}>
-                    {this.renderBadge()}
-                  </div>
+              <div className={post["post__heading"]}>
+                <div className={post["post__heading-text"]}>
+                  <Link passHref href={"/users/" + this.props.author}><a className={post["post__username"]}>{this.props.author}</a></Link>
+                  {this.renderBadge()}
                 </div>
-                <span className={styles.time}>{this.renderTime()}</span>
+                <span className={post["post__time"]}>{this.renderTime()}</span>
               </div>
               
-              <p className={styles.content}>{this.renderContent()}</p>
+              <p className={post["post__content"]}>{this.renderContent()}</p>
               {this.renderGif()}
-              <div style={{display:"flex" , justifyContent:"space-between"}}>
-                <div className="icon-holder">
-                  <div style={{alignSelf:"center"}}> 
-                    <div onClick={() => this.props.likePost(this.props.id)} style={this.styleLikedPost(this.props.id)} className={styles["post-icons"]}>
-                      <i style={{paddingRight:"5px"}} className="fas fa-thumbs-up"></i>
-                  
-                      <span>{this.props.likes}</span>
-                    </div>
-                  </div>
-                  <div style={{alignSelf:"center"}} href="#icon"> 
-                    <div className={styles["post-icons"]}>
-                      <i style={{paddingRight:"5px"}} className="fas fa-reply"></i>
-                    </div>
-                  </div>
-                  <div style={{alignSelf:"center"}} href="#icon"> 
-                    <div className={styles["post-icons"]}>
-                      <i style={{paddingRight:"5px"}} className="fas fa-retweet"></i>
-                  
-                      <span>{this.props.retwits}</span>
-                    </div>
-                  </div>
-                  <div style={{alignSelf:"center"}} href="#icon"> 
-                    <div className={styles["post-icons"]}>
-                      <i style={{paddingRight:"5px"}} className="fas fa-ellipsis-h"></i>
-                    </div>
+              <div className={post["post__icons"]}>
+                <div style={{alignSelf:"center"}}> 
+                  <div onClick={() => this.props.likePost(this.props.id)} style={this.styleLikedPost(this.props.id)} className={post["post__icon"]}>
+                    <i style={{paddingRight:"5px"}} className="fas fa-thumbs-up"></i>
+                
+                    <span>{this.props.likes}</span>
                   </div>
                 </div>
-                  <div style={{marginRight:"0"}}>
-                    <div style={{alignSelf:"center"}} href="#icon"> 
-                      <div className={styles["post-icons"]}>
-                        <i style={{paddingRight:"5px"}} className="fas fa-comment"></i>
-                        <span>{this.props.comments}</span>
-                      </div>
-                    </div>
-                  </div>
+                <div className={post["post__icon"]}>
+                  <i style={{paddingRight:"5px"}} className="fas fa-reply"></i>
+                </div>
+                <div className={post["post__icon"]}>
+                  <i style={{paddingRight:"5px"}} className="fas fa-retweet"></i>
+                  <span>{this.props.retwits}</span>
+                </div>
+                <div className={post["post__icon"]}>
+                  <i style={{paddingRight:"5px"}} className="fas fa-ellipsis-h"></i>
+                </div>
+                <div className={`${post["post__icon"]} ${post["post__comment"]}`}>
+                  <i style={{paddingRight:"5px"}} className="fas fa-comment"></i>
+                  <span>{this.props.comments}</span>
+                </div>
               </div>
             
-              
           </div>
       </div>
   );

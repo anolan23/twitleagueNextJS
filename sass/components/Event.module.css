@@ -1,0 +1,27 @@
+.event-date{
+    
+}
+
+.event{
+    display: flex;
+    text-align: center;
+}
+
+.event-info{
+    width: 100%;
+    text-align: center;
+}
+
+.event-type{
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.day{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.month{
+    color: var(--SECONDARY_TEXT);
+}

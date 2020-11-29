@@ -1,0 +1,40 @@
+.twit-nav-item{
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.3125;
+
+    &__holder{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        transition-duration: .2s;
+
+        &:hover{
+            background-color: rgba(29, 161, 242,0.1);
+            border-radius: 9999px;
+            color: #1DA1F2;
+        }
+    }
+
+    &__icon{
+        font-size: 1.75rem;
+        color:inherit;
+        width: 2.5rem;
+    }
+
+    &__text-holder{
+        margin-left: 2rem;
+        margin-right: 1.5rem;
+        color: inherit;
+    }
+
+    &__text{
+        font-size: 1.9rem;
+        font-weight: 700;
+        color:rgb(20, 23, 26);
+        color: inherit;
+    }
+    
+}
+
