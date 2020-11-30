@@ -24,3 +24,12 @@
         };
     }
 }
+
+@mixin highlight($color) {
+    &:hover::before{
+        width: 110%;
+        height: 110%;
+        background-color: $color;
+    }
+    
+}

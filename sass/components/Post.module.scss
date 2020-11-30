@@ -4,9 +4,7 @@
 
   font-size: 1.6rem;
   padding: 1rem;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-color: rgb(230, 236, 240);
+  border-bottom: var(--border);
 
   &:hover{
     background-color:#f9fbfe;
@@ -51,11 +49,12 @@
     align-self: center;
     padding: 0 1.5rem;
     color: rgb(182, 182, 182);
+    position: relative;
+    transition: all .2s;
 
     &:hover{
       color:#00baff;
       text-decoration: none;
-      transition: color .2s ease-in-out;
     }
   }
 

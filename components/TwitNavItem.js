@@ -5,9 +5,7 @@ function TwitNavItem(props){
     return (
         <div className={styles["twit-nav-item"]}>
             <div className={styles["twit-nav-item__holder"]}>
-                <div className={styles["twit-nav-item__icon"]}>
-                    {props.children} 
-                </div>     
+                {props.children} 
                 <div className={styles["twit-nav-item__text-holder"]}>
                     <span className={styles["twit-nav-item__text"]}>{props.title}</span>
                 </div>     

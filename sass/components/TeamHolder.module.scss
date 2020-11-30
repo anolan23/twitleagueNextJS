@@ -1,5 +1,5 @@
 .team-holder{
-    
+    font-size: 1.5rem;
 
     &__banner{
         background-color: lightgrey;
@@ -35,7 +35,8 @@
     &__info{
         display:flex;
         flex-direction: column;
-        align-items: flex-start
+        align-items: flex-start;
+        padding: 0 1rem;
     }
 
     &__teamname-box{

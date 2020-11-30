@@ -4,12 +4,14 @@ import Tab from 'react-bootstrap/Tab';
 import Nav from 'react-bootstrap/Nav';
 
 import Post from './Post';
+import TwitTabs from "./TwitTabs";
+import TwitTab from "./TwitTab";
 import {togglePostModal, trackClickedPost, fetchTeamPosts, fetchLeaguePosts} from "../actions";
 import styles from "../styles/FeedHolder.module.css";
 
 function FeedHolder(props) {
 
-  const [activeLink, setActiveLink] = useState("first")
+  const [activeLink, setActiveLink] = useState("team")
 
   const onPostClick = (post) => {
     props.trackClickedPost(post)
@@ -37,49 +39,26 @@ function FeedHolder(props) {
   }
 
   const onTeamSelect = (k) => {
-    setActiveLink(k);
+    setActiveLink(k.target.id);
     props.fetchTeamPosts();
   }
 
   const onLeagueSelect = (k) => {
-    setActiveLink(k);
+    setActiveLink(k.target.id);
     props.fetchLeaguePosts();
   }
-  
+
   return (
-    <Tab.Container id="feedHolder" defaultActiveKey="first">
-          <Nav className={styles["nav-style"]}>
-            <Nav.Item>
-              <Nav.Link eventKey="first" onSelect={onTeamSelect}>
-                <div className={activeLink === "first" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
-                  <span className="span-block">Team</span>
-                </div>
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link eventKey="second" onSelect={onLeagueSelect}>
-                <div className={activeLink === "second" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
-                  <span className="span-block">League</span>
-                </div>
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link eventKey="third" onSelect={(k) => setActiveLink(k)}>
-                <div className={activeLink === "third" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
-                  <span className="span-block">Trending</span>
-                </div>
-              </Nav.Link>
-            </Nav.Item>
-          </Nav>
-          <Tab.Content>
-            <Tab.Pane eventKey="first">
-              {renderPosts()}
-            </Tab.Pane>
-            <Tab.Pane eventKey="second">
-              {renderPosts()}
-            </Tab.Pane>
-          </Tab.Content>
-    </Tab.Container>
+    <React.Fragment>
+      <TwitTabs>
+        <TwitTab onClick={onTeamSelect} id={"team"} active={activeLink === "team" ? true : false} title="Team"/>
+        <TwitTab onClick={onLeagueSelect} id={"league"} active={activeLink === "league" ? true : false} title="League"/>
+        <TwitTab onClick={(k) => setActiveLink(k.target.id)} id={"trending"} active={activeLink === "trending" ? true : false} title="Trending"/>
+        <TwitTab onClick={(k) => setActiveLink(k.target.id)} id={"media"} active={activeLink === "media" ? true : false} title="Media"/>
+
+    </TwitTabs>
+    {renderPosts()}
+    </React.Fragment>
   );
 }
 

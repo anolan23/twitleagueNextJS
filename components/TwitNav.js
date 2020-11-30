@@ -1,30 +1,44 @@
 import React from "react";
 import TwitNavItem from "./TwitNavItem";
-import styles from "../sass/components/TwitNav.module.scss"
+import twitNav from "../sass/components/TwitNav.module.scss"
 
 function TwitNav() {
     return(
-        <div className={styles["twit-nav"]}>
+        <div className={twitNav["twit-nav"]}>
             <TwitNavItem title="Home">
-                <i className="fas fa-home"></i>
+                <svg className={twitNav["twit-nav__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-home"/>
+                </svg>
             </TwitNavItem>
             <TwitNavItem title="Notifications">
-                <i className="far fa-bell"></i>
+                <svg className={twitNav["twit-nav__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-bell"/>
+                </svg>
             </TwitNavItem>
             <TwitNavItem title="Messages">
-                <i className="far fa-envelope"></i>
+                <svg className={twitNav["twit-nav__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-mail"/>
+                </svg>
             </TwitNavItem>
             <TwitNavItem title="My Teams">
-                <i className="far fa-list-alt"></i>
+                <svg className={twitNav["twit-nav__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-server"/>
+                </svg>
             </TwitNavItem>
             <TwitNavItem title="My Leagues">
-                <i className="far fa-list-alt"></i>
+                <svg className={twitNav["twit-nav__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-trending-up"/>
+                </svg>
             </TwitNavItem>
             <TwitNavItem title="User Profile">
-                <i className="far fa-user"></i>
+                <svg className={twitNav["twit-nav__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-user"/>
+                </svg>
             </TwitNavItem>
             <TwitNavItem title="More">
-                <i className="fas fa-ellipsis-h"></i>
+                <svg className={twitNav["twit-nav__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-plus-circle"/>
+                </svg>
             </TwitNavItem>
         </div>
     );

@@ -121,23 +121,23 @@ class Post extends React.Component {
               <div className={post["post__icons"]}>
                 <div style={{alignSelf:"center"}}> 
                   <div onClick={() => this.props.likePost(this.props.id)} style={this.styleLikedPost(this.props.id)} className={post["post__icon"]}>
-                    <i style={{paddingRight:"5px"}} className="fas fa-thumbs-up"></i>
+                    <i className="fas fa-thumbs-up highlight"></i>
                 
                     <span>{this.props.likes}</span>
                   </div>
                 </div>
                 <div className={post["post__icon"]}>
-                  <i style={{paddingRight:"5px"}} className="fas fa-reply"></i>
+                  <i className="fas fa-reply highlight"></i>
                 </div>
                 <div className={post["post__icon"]}>
-                  <i style={{paddingRight:"5px"}} className="fas fa-retweet"></i>
+                  <i className="fas fa-retweet highlight"></i>
                   <span>{this.props.retwits}</span>
                 </div>
                 <div className={post["post__icon"]}>
-                  <i style={{paddingRight:"5px"}} className="fas fa-ellipsis-h"></i>
+                  <i className="fas fa-ellipsis-h highlight"></i>
                 </div>
                 <div className={`${post["post__icon"]} ${post["post__comment"]}`}>
-                  <i style={{paddingRight:"5px"}} className="fas fa-comment"></i>
+                  <i className="fas fa-comment highlight"></i>
                   <span>{this.props.comments}</span>
                 </div>
               </div>

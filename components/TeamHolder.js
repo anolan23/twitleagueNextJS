@@ -89,14 +89,14 @@ function TeamHolder(props) {
         {renderButton()}
       </div>
       <div className={teamHolder["team-holder__info"]}>
-          <div className={teamHolder["team-holder__teamname-box"]}>
+          <div className={`${teamHolder["team-holder__teamname-box"]} u-margin-top-tiny`}>
             <h1 className="heading-1">{props.team.teamName}</h1>
             {props.team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
-          <h3 className="heading-3">{props.team.league}</h3>
-          <h3 className="heading-3 muted">Official TwitLeague account of the Chicago White Sox</h3>
-          <h3 className="heading-3 muted">Head Coach: {`@${props.team.headCoach}`}</h3>
-          <h3 className={teamHolder["team-holder__attributes"] + " heading-3 muted"}>
+          <h3>{props.team.league}</h3>
+          <h3 className="muted">Official TwitLeague account of the Chicago White Sox</h3>
+          <h3 className="muted">Head Coach: {`@${props.team.headCoach}`}</h3>
+          <h3 className={teamHolder["team-holder__attributes"] + " muted"}>
             <div className={teamHolder["team-holder__attribute"]}>
             <i className={"fas fa-map-marker-alt " + teamHolder["team-holder__icon"]}></i>
             <span>Baton Rouge, LA</span>
@@ -107,7 +107,7 @@ function TeamHolder(props) {
             </div>
           </h3>
           <div style={{width: "100%"}}>
-            <h3 className="heading-3">
+            <h3>
               <span style={{fontWeight:900, marginRight:"3px"}}>{props.team.watchers.length}</span>
               <span className="muted">Followers</span>
             </h3>
