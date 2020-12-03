@@ -38,7 +38,7 @@ body {
 
     display: grid;
     grid-template-columns: 1fr 600px 1fr;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: min-content 1fr;
     @media only screen and (max-width: 1240px){
     
     }
@@ -80,9 +80,10 @@ body {
     }
 
     &__logo{
-        align-self: flex-start;
+        align-self: center;
         padding: 10px;
         color: var(--BLUE_TEXT);
+        text-decoration: none;
         cursor: pointer;
         @media only screen and (max-width: 1240px){
             display: none;
@@ -135,15 +136,14 @@ body {
 }
 
 .top-bar{
+    grid-column: 2/span 1;
     height: 50px;
-    width: 600px;
-    
+    width: 100%;
     position: relative;
 
     &__box{
         position: fixed;
-        height: inherit;
-        width: inherit;
+        width: 600px;
         background-color: white;
         border-bottom: var(--border);
         z-index: 1;
