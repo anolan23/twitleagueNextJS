@@ -1,13 +1,16 @@
 .post{
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  column-gap: 1rem;
+  row-gap: 1rem;
 
-  font-size: 1.6rem;
-  padding: 1rem;
+  font-size: 1.5rem;
+  line-height: 1.3125;
+  padding: 1rem 1.5rem;
   border-bottom: var(--border);
 
   &:hover{
-    background-color:#f9fbfe;
+    background-color:var(--BLUE_BACKGROUND);
   }
 
   &__selected &__content{
@@ -15,12 +18,17 @@
   }
 
   &__image{
-    margin-right: 1rem;
     width: 5rem;
+  }
+
+  &__content{
+    width:100%;
   }
 
   &__heading{
     display:flex;
+    align-items: center;
+    margin-bottom: 2px;
   }
 
   &__heading-text{
@@ -34,21 +42,34 @@
     color: var(--SECONDARY_TEXT);
   }
 
-  &__content{
+  &__text{
+    margin-bottom: 0;
+  }
 
+  &__gif{
+    border-radius: 1.6rem;
+    overflow: hidden;
+    border: 1px solid grey;
+    width: 100%;
+    margin-top: 1rem;
   }
 
   &__icons{
+    grid-column: 1/-1;
     display: flex;
+    justify-content: space-evenly;
   }
 
   &__icon{
     display: flex;
     align-items: center;
+    justify-content: center;
 
+    cursor: pointer;
     align-self: center;
-    padding: 0 1.5rem;
-    color: rgb(182, 182, 182);
+    height: 18px;
+    width: 18px;
+    fill: var(--SECONDARY_TEXT);
     position: relative;
     transition: all .2s;
 
@@ -62,17 +83,20 @@
     margin-left: auto;
   }
 
-  &__username{
+  &__display-name{
     font-weight: 700;
     color:#101010;
     text-decoration: none;
     display:inline-block;
-    margin-right: 1rem;
 
     &:hover{
       color:#00baff;
       text-decoration: none;
       transition: color .2s ease-in-out;
     }
+  }
+
+  &__username{
+    margin: 0 .5rem;
   }
 }

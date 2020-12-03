@@ -1,22 +1,15 @@
 import React from "react";
-import Card from 'react-bootstrap/Card';
-import Tab from 'react-bootstrap/Tab';
 
-import styles from "../styles/TwitCard.module.css";
+import twitCard from "../sass/components/TwitCard.module.scss";
 
 function TwitCard(props) {
 
     return (
-        <Card>
-            <Tab.Container id="feedHolder" defaultActiveKey="first">
-                <Card.Header className={styles.cardHeader}>
-                    {props.children}
-                </Card.Header>
-                <Card.Body>
-                    {props.body}
-                </Card.Body>
-            </Tab.Container>
-        </Card>
+        <div className={twitCard["twit-card"]}>
+            <div className={twitCard["twit-card__title"] + " heading-2"}>{props.title}</div>
+            {props.children}
+            <div className={twitCard["twit-card__footer"]}>{props.footer}</div>
+        </div>
     );
 }
 

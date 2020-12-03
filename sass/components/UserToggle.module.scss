@@ -3,8 +3,53 @@
     flex-direction: row;
     align-items: center;
 
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     line-height: 1;
+    background-color: white;
+    padding: 1rem;
     margin: 2rem 0;
+    border-radius: 9999px;
     cursor: pointer;
+    transition: all .2s;
+
+    &__image{
+      width: 40px;
+      height: 40px;
+    }
+
+    &__textbox{
+      display: flex;
+      flex-direction: column;
+      margin: 0 1rem;
+      line-height: 1.9rem;
+    }
+
+    &__dropdown{
+      width:100%;
+      padding:0 1rem;
+    }
+
+    &__icon{
+      flex:1;
+      display: flex;
+      justify-content: flex-end;
+      fill: var(--PRIMARY_TEXT);
+    }
+
+    &__username{
+      font-weight: 700;
+    }
+
+    &__menu{
+      width: 30rem;
+      min-width: 26rem;
+    }
+
+    &__item{
+      font-size: 1.5rem;
+    }
+
+    &:hover{
+      background-color: var(--BLUE_BACKGROUND);
+    }
   }

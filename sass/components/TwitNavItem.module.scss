@@ -2,6 +2,9 @@
     display: flex;
     align-items: flex-start;
     line-height: 1.3125;
+    @media only screen and (max-width: 1240px){
+        justify-content: center;
+    }
 
     &__holder{
         display: flex;
@@ -11,7 +14,8 @@
         transition-duration: .2s;
         cursor: pointer;
 
-        &:hover{
+        &:hover,
+        &:active{
             background-color: rgba(29, 161, 242,0.1);
             border-radius: 9999px;
             color: #1DA1F2;
@@ -28,6 +32,9 @@
         margin-left: 2rem;
         margin-right: 1.5rem;
         color: inherit;
+        @media only screen and (max-width: 1240px){
+            display: none;
+        }
     }
 
     &__text{

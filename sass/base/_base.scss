@@ -1,6 +1,6 @@
 :root{
     --PRIMARY_TEXT: #101010;
-    --SECONDARY_TEXT: #767676;
+    --SECONDARY_TEXT: rgb(91, 112, 131);
     --BLUE_TEXT: #218dff;
     --GREEN_TEXT: #0aba74;
     --RED_TEXT: #ff3e3e;
@@ -8,8 +8,11 @@
     --BLUE_BACKGROUND: #e8f3ff;
     --GREEN_BACKGROUND:#e6f8f1;
     --RED_BACKGROUND: #ffecec;
+    --color-card: rgb(247, 249, 250);
+    --color-light-gray: rgba(235, 238, 240,1.0);
 
-    --border: 1px solid rgb(235, 238, 240);
+    --border: 1px solid var(--color-light-gray);
+    --box-shadow: rgba(101, 119, 134, 0.2) 0px 0px 15px, rgba(101, 119, 134, 0.15) 0px 0px 3px 1px;
   }
 
 *,
@@ -22,9 +25,7 @@
 
 html {
     font-size: 62.5%; //1rem = 10px
-    @media only screen and (max-width: 1200px){
-        font-size: 50%;
-    }
+
 }
 
 body {
@@ -36,8 +37,18 @@ body {
     min-height: 100vh;
 
     display: grid;
-    grid-template-columns: 1fr minmax(min-content, 600px) 1fr;
+    grid-template-columns: 1fr 600px 1fr;
     grid-template-rows: 50px 1fr;
+    @media only screen and (max-width: 1240px){
+    
+    }
+    @media only screen and (max-width: 1000px){
+       
+    }
+    @media only screen and (max-width: 760px){
+        grid-template-columns: 7.5rem 1fr;
+    }
+    
 }
 
 .header{
@@ -45,6 +56,10 @@ body {
     grid-row: 1/-1;
     display: flex;
     justify-content: flex-end;
+    @media only screen and (max-width: 1240px){
+        justify-content: flex-end;
+    }
+    
 
     border-right: var(--border);
 
@@ -54,8 +69,14 @@ body {
         justify-content: flex-start;
         position: fixed;
         height: 100vh;
-        width: 25rem;
+        margin-right: 5rem;
+        
         align-items: center;
+        @media only screen and (max-width: 1240px){
+            margin-right: 1rem;
+            margin-top: 5rem;
+        }
+        
     }
 
     &__logo{
@@ -63,26 +84,60 @@ body {
         padding: 10px;
         color: var(--BLUE_TEXT);
         cursor: pointer;
+        @media only screen and (max-width: 1240px){
+            display: none;
+        }
     }
 }
 
 .main{
     grid-row: 2/-1;
     grid-column: 2/3;
+    width: 600px;
+    @media only screen and (max-width: 760px){
+        width: 100%;
+    }
 }
 
 .right-bar{
-    // background-color: green;
     grid-row: 1/-1;
     grid-column: 3/4;
     border-left: var(--border);
+
+    &__right-column{
+        height: 100vh; //will remove
+        max-width: 35rem;
+        align-items: center;
+        padding: 0 1.5rem;
+        @media only screen and (max-width: 990px){
+        display: none;
+    }
+
+        &__input-box{
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: var(--color-light-gray);
+            width: 100%;
+            height: min-content;
+            margin: 1.5rem 0;
+            border-radius: 100px;
+        }
+
+        &__icon{
+            height: 2rem;
+            width: 2rem;
+            margin-left: 1.5rem;
+            fill: var(--SECONDARY_TEXT);
+        }
+
+    }
 }
 
 .top-bar{
     height: 50px;
     width: 600px;
     
-    background-color: red;
     position: relative;
 
     &__box{
@@ -106,12 +161,12 @@ body {
 
     &__text{
 
-        &-main{
+        &--main{
 
         }
 
-        &-sub{
-
+        &--sub{
+            font-size: 1.5rem;
         }
     }
 }

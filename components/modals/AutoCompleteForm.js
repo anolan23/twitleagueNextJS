@@ -1,12 +1,9 @@
 import React, {useState, useEffect, useRef} from "react";
-import Form from 'react-bootstrap/Form';
 import {useFormik} from "formik";
 import Link from "next/link";
-import {connect} from "react-redux";
 
 import AutoCompleteInput from "./AutoCompleteInput";
 import TwitItem from "../TwitItem";
-import {fetchTeamAndTeamPosts} from "../../actions";
 import backend from "../../lib/backend";
 
 function AutoCompleteForm(props) {
@@ -73,31 +70,25 @@ function AutoCompleteForm(props) {
                     );
         });
     }
-
-console.log(options);
         return (
-            <div ref={ref}>
-                <Form inline={props.inline} onSubmit={formik.handleSubmit}>
-                    <AutoCompleteInput
-                        onChange={onChange}
-                        value={formik.values.search}
-                        name="search" 
-                        type="text" 
-                        placeholder={props.placeHolder} 
-                        className="mr-sm-2" 
-                        autoComplete="off"
-                        show={show}
-                        teamOptions={renderTeamOptions()}
-                        teamHeader="Team"
-                        peopleOptions={renderPeopleOptions()}
-                        peopleHeader="People"
-                    /> 
-                    {props.children}
-                </Form>
+            <div ref={ref} style={{width:"100%", position:"relative"}}>
+                <AutoCompleteInput
+                    onChange={onChange}
+                    value={formik.values.search}
+                    name="search" 
+                    type="text" 
+                    placeholder={props.placeHolder}  
+                    autoComplete="off"
+                    show={show}
+                    teamOptions={renderTeamOptions()}
+                    teamHeader="Team"
+                    peopleOptions={renderPeopleOptions()}
+                    peopleHeader="People"
+                /> 
             </div>
           
             
         );
     }
 
-export default connect(null,{fetchTeamAndTeamPosts})(AutoCompleteForm);
+export default AutoCompleteForm;

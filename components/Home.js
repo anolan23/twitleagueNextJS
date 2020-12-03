@@ -16,6 +16,7 @@ class Home extends React.Component {
         return (
             <div >
                 <TwitInput onSubmit={this.onTwitInputSubmit} placeHolder={"Share your take on " + this.props.team.teamAbbrev} value={this.props.team.teamAbbrev}/>
+                
                 <HomeFeedHolder/>
             </div>
         );

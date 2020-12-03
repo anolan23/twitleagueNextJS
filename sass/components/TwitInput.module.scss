@@ -1,0 +1,60 @@
+.twit-input{
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    column-gap: 1rem;
+    padding: .5rem 1.5rem;
+
+    &__image{
+        width: 50px;
+        height: 50px;
+        grid-row: 1/3;
+    }
+
+    &__text-area{
+        font-size: 1.9rem;
+        padding: 1rem 0;
+        cursor: text;
+        border-bottom: 1px solid transparent;
+        transition: all .4s;
+
+        &:focus{
+            outline: none;
+            border-bottom: var(--border);
+        }
+    }
+
+    &__actions{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__media-types{
+        display: flex;
+        align-items: center;
+    }
+
+    &__media-type{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 37px;
+        width: 37px;
+    }
+
+    &__icon{
+        height: 22.5px;
+        width: 22.5px;
+        fill: var(--BLUE_TEXT);
+    }
+
+    &__action{
+
+    }
+
+    [contenteditable][placeholder]:empty:before {
+        content: attr(placeholder);
+        position: absolute;
+        color: var(--SECONDARY_TEXT);
+        background-color: transparent;
+      }
+}

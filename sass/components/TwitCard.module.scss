@@ -1,0 +1,52 @@
+.twit-card{
+    background-color: var(--color-card);
+    display: flex;
+    flex-direction: column;
+    
+    margin-bottom: 1.5rem;
+    border-radius: 1.6rem;
+
+    &__title{
+        padding: 1rem 1.5rem;
+        border-bottom: var(--border);
+    }
+
+    &__footer{
+        padding: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+
+    &__item{
+        font-size: 1.5rem;
+        line-height: 1.3125;
+        border-bottom: var(--border);
+
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 1rem 1.5rem;
+
+        &__image{
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+        }
+
+        &__text-box{
+
+        }
+
+        &__text--main{
+
+        }
+
+        &__text--sub{
+            
+        }
+
+        &__action{
+            margin-left: auto;
+        }
+    }
+}

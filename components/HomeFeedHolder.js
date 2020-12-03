@@ -5,6 +5,8 @@ import Nav from 'react-bootstrap/Nav';
 
 import Post from './Post';
 import {togglePostModal, trackClickedPost, fetchUserAndWatchListPosts, fetchWatchListPosts, fetchTrendingPosts} from "../actions";
+import TwitTabs from "./TwitTabs";
+import TwitTab from "./TwitTab";
 import styles from "../styles/FeedHolder.module.css";
 
 class HomeFeedHolder extends React.Component {
@@ -35,12 +37,12 @@ class HomeFeedHolder extends React.Component {
   }
 
   onWatchListSelect = (k) => {
-    this.setState({activeLink:k})
+    this.setState({activeLink:k.target.id})
     this.props.fetchWatchListPosts();
   }
 
   onTrendingSelect = (k) => {
-    this.setState({activeLink:k})
+    this.setState({activeLink:k.target.id})
     this.props.fetchTrendingPosts(10);
   }
 
@@ -66,52 +68,15 @@ class HomeFeedHolder extends React.Component {
   
   render(){
     return (
-      <Tab.Container id="homeFeedHolder" defaultActiveKey={this.state.activeLink}>
-        <Nav className={styles["nav-style"]}>
-          <Nav.Item>
-            <Nav.Link eventKey="watchList" onSelect={this.onWatchListSelect}>
-              <div className={this.state.activeLink === "watchList" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
-                <span className="span-block">Watchlist</span>
-              </div>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="people" onSelect={(k) => this.setState({activeLink:k})}>
-              <div className={this.state.activeLink === "people" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
-                <span className="span-block">People</span>
-              </div>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="suggestions" onSelect={(k) => this.setState({activeLink:k})}>
-              <div className={this.state.activeLink === "suggestions" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
-                <span className="span-block">Suggestions</span>
-              </div>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="trending" onSelect={this.onTrendingSelect}>
-              <div className={this.state.activeLink === "trending" ? styles["link-active"] : styles["link-inactive"] + " " + styles["twit-link"]}>
-                <span className="span-block">Trending</span>
-              </div>
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-        <Tab.Content>
-          <Tab.Pane eventKey="watchList">
-            {this.renderPosts()}
-          </Tab.Pane>
-          <Tab.Pane eventKey="people">
-            {/* <Sonnet /> */}
-          </Tab.Pane>
-          <Tab.Pane eventKey="suggestions">
-            {/* <Sonnet /> */}
-          </Tab.Pane>
-          <Tab.Pane eventKey="trending">
-            {this.renderPosts()}
-          </Tab.Pane>
-        </Tab.Content>
-      </Tab.Container>
+      <React.Fragment>
+        <TwitTabs>
+          <TwitTab onClick={this.onWatchListSelect} id={"watchlist"} active={this.state.activeLink === "watchlist" ? true : false} title="Watching"/>
+          <TwitTab onClick={(k) => this.setState({activeLink: k.target.id})} id={"people"} active={this.state.activeLink === "people" ? true : false} title="People"/>
+          <TwitTab onClick={(k) => this.setState({activeLink: k.target.id})} id={"suggestions"} active={this.state.activeLink === "suggestions" ? true : false} title="Suggestions"/>
+          <TwitTab onClick={(k) => this.setState({activeLink: k.target.id})} id={"trending"} active={this.state.activeLink === "trending" ? true : false} title="Trending"/>
+        </TwitTabs>
+        {this.renderPosts()}
+      </React.Fragment>
     );
   }
   

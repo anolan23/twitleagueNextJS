@@ -2,7 +2,7 @@ import React from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
 import FormControl from 'react-bootstrap/FormControl';
 
-import styles from "../../styles/AutoCompleteForm.module.css"
+import autoCompleteInput from "../../sass/components/AutoCompleteInput.module.scss"
 
 function AutoCompleteInput(props) {
 
@@ -39,22 +39,22 @@ function AutoCompleteInput(props) {
     }
 
     return (
-        <div>
-            <FormControl 
+        <React.Fragment>
+            <input 
                 onChange={props.onChange}
                 // value={props.value}
                 name={props.name}
                 type={props.type}
                 placeholder={props.placeholder} 
-                className={props.className} 
+                className={autoCompleteInput["auto-complete-input"]} 
                 autoComplete={props.autoComplete}
-                isValid={props.isValid}
-                 />
-            <Dropdown.Menu show={props.show  && (props.peopleOptions || props.teamOptions)} className={styles.dropdown}>
+                    />
+            <Dropdown.Menu show={props.show  && (props.peopleOptions || props.teamOptions)} className={autoCompleteInput["auto-complete-input__dropdown"]}>
                 {renderTeamOptions()}
                 {renderPeopleOptions()}
             </Dropdown.Menu>
-        </div>
+        </React.Fragment>
+        
     );
 }
 

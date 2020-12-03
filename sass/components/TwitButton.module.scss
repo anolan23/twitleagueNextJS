@@ -1,0 +1,56 @@
+.twit-button{
+        font-size: 1.6rem;
+        font-weight: 700;
+        padding: .5rem 1.5rem;
+        margin: .5rem;
+        width: max-content;
+        min-width: 7.5rem;
+        border-radius: 1000px;
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    &--white{
+        color: var(--BLUE_TEXT);
+        background-color: white;
+        transition: all .2s;
+
+        &:hover{
+            opacity: .5;
+            color: var(--BLUE_TEXT);
+        }
+        &--outline{
+            border: 1px solid white;
+            color: white;
+            background-color: transparent;
+            transition: all .2s;
+
+            &:hover{
+                opacity: .5;
+                color: white;
+            }
+        }
+    }
+
+    &--primary{
+        color: white;
+        background-color:var(--BLUE_TEXT);
+        transition: all .2s;
+
+        &:hover{
+            opacity: .5;
+        }
+        &--outline{
+            border: 1px solid var(--BLUE_TEXT);
+            color: var(--BLUE_TEXT);
+            background-color: transparent;
+            transition: all .2s;
+
+            &:hover{
+                opacity: .5;
+            }
+        }
+    }
+}

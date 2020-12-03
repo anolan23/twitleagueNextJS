@@ -44,11 +44,13 @@ class Post extends React.Component {
     }
   }
 
-  renderGif = () => {
+  renderMedia = () => {
     if(this.state.gif)
     {
       return (
-        <Gif gif={this.state.gif} width={200}/>
+        <div className={post["post__gif"]}>
+          <Gif gif={this.state.gif} width="100%"/>
+        </div>
       );
     }
     else{
@@ -107,42 +109,36 @@ class Post extends React.Component {
       <div onClick={this.props.onClick} className={this.props.selected ? `${post.post} ${post["post__selected"]}` : post.post}>
   
           <Avatar roundedCircle className={post["post__image"]}/>
-          <div style={{width:"100%"}}>
+          <div className={post["post__content"]}>
               <div className={post["post__heading"]}>
                 <div className={post["post__heading-text"]}>
-                  <Link passHref href={"/users/" + this.props.author}><a className={post["post__username"]}>{this.props.author}</a></Link>
+                  <Link passHref href={"/users/" + this.props.author}><a className={post["post__display-name"]}>{this.props.author}</a></Link>
+                  <span className={post["post__username"] + " muted"}>@{this.props.author}</span>
                   {this.renderBadge()}
                 </div>
                 <span className={post["post__time"]}>{this.renderTime()}</span>
               </div>
               
-              <p className={post["post__content"]}>{this.renderContent()}</p>
-              {this.renderGif()}
-              <div className={post["post__icons"]}>
-                <div style={{alignSelf:"center"}}> 
-                  <div onClick={() => this.props.likePost(this.props.id)} style={this.styleLikedPost(this.props.id)} className={post["post__icon"]}>
-                    <i className="fas fa-thumbs-up highlight"></i>
-                
-                    <span>{this.props.likes}</span>
-                  </div>
-                </div>
-                <div className={post["post__icon"]}>
-                  <i className="fas fa-reply highlight"></i>
-                </div>
-                <div className={post["post__icon"]}>
-                  <i className="fas fa-retweet highlight"></i>
-                  <span>{this.props.retwits}</span>
-                </div>
-                <div className={post["post__icon"]}>
-                  <i className="fas fa-ellipsis-h highlight"></i>
-                </div>
-                <div className={`${post["post__icon"]} ${post["post__comment"]}`}>
-                  <i className="fas fa-comment highlight"></i>
-                  <span>{this.props.comments}</span>
-                </div>
-              </div>
-            
+              <p className={post["post__text"]}>{this.renderContent()}</p>
+              {this.renderMedia()} 
           </div>
+          <div className={post["post__icons"]}>
+                  <svg className={post["post__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-thumbs-up"/>
+                  </svg>
+                  <svg className={post["post__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-corner-up-right"/>
+                  </svg>
+                  <svg className={post["post__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-repeat"/>
+                  </svg>
+                  <div className={post["post__icon"]}>
+                    <i className="fas fa-ellipsis-h highlight"></i>
+                  </div>
+                  <svg className={post["post__icon"]}>
+                    <use xlinkHref="/sprites.svg#icon-message-square"/>
+                  </svg>
+            </div>
       </div>
   );
   }

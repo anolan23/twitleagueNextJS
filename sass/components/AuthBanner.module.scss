@@ -1,0 +1,23 @@
+.auth-banner{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--BLUE_TEXT);
+    color: white;
+    z-index: 5;
+
+    &__text{
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__actions{
+        display: flex;
+    }
+}

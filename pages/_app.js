@@ -17,11 +17,13 @@ import GifModal from "../components/modals/GifModal";
 import AvatarModal from "../components/modals/AvatarModal";
 import ScheduleModal from "../components/modals/ScheduleModal";
 import RosterModal from '../components/modals/RosterModal';
+import AuthBanner from '../components/AuthBanner';
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
   return (
     <Provider store={store}>
+      <AuthBanner/>
       <SignUp/>
       <Login/>
       <CreateTeamModal/>

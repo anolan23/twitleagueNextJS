@@ -6,6 +6,7 @@ import Figure from "react-bootstrap/Figure"
 import Image from "next/image";
 
 import LeftColumn from './LeftColumn';
+import RightColumn from "./RightColumn";
 
 
 function MainBody({children}) {
@@ -20,8 +21,8 @@ function MainBody({children}) {
                 <use xlinkHref="/sprites.svg#icon-arrow-left"/>
             </svg>
             <div className="top-bar__text">
-              <div className="top-bar__text-main heading-1">White Sox</div>
-              <div className="heading-3 muted">12.1k Tweets</div>
+              <div className="top-bar__text--main heading-1">White Sox</div>
+              <div className="top-bar__text--sub muted">12.1k Tweets</div>
             </div>
           </div>
         </div>
@@ -29,7 +30,7 @@ function MainBody({children}) {
           {children}
         </main>
         <div className="right-bar">
-         Right Bar
+         <RightColumn/>
         </div>
     </div>
   );
