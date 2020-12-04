@@ -53,7 +53,6 @@ function FeedHolder(props) {
       <TwitTabs>
         <TwitTab onClick={onTeamSelect} id={"team"} active={activeLink === "team" ? true : false} title="Team"/>
         <TwitTab onClick={onLeagueSelect} id={"league"} active={activeLink === "league" ? true : false} title="League"/>
-        <TwitTab onClick={(k) => setActiveLink(k.target.id)} id={"trending"} active={activeLink === "trending" ? true : false} title="Trending"/>
         <TwitTab onClick={(k) => setActiveLink(k.target.id)} id={"media"} active={activeLink === "media" ? true : false} title="Media"/>
 
     </TwitTabs>

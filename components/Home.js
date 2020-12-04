@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import HomeFeedHolder from "./HomeFeedHolder";
 import TwitInput from "./TwitInput";
 import {createPost} from "../actions";
+import TopBar from "./TopBar";
 
 class Home extends React.Component {
 
@@ -15,8 +16,8 @@ class Home extends React.Component {
     render(){
         return (
             <div >
+                <TopBar/>
                 <TwitInput onSubmit={this.onTwitInputSubmit} placeHolder={"Share your take on " + this.props.team.teamAbbrev} value={this.props.team.teamAbbrev}/>
-                
                 <HomeFeedHolder/>
             </div>
         );

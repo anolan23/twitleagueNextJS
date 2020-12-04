@@ -3,7 +3,14 @@
     flex-direction: column;
     justify-content: flex-start;
     width: 100%;
-    margin-bottom: auto;
+    margin-bottom: 2rem;
+    margin-top: 5rem;
+    @media only screen and (max-width: 500px){
+      flex-direction: row;
+      justify-content: space-evenly;
+      align-items: flex-start;
+      margin:0;
+  }
 
     &__icon{
       height: 2.6rem;

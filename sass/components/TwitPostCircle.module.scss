@@ -1,0 +1,23 @@
+.twit-post-circle{
+    height: 50px;
+    width: 50px;
+    background-color: var(--BLUE_TEXT);
+    border-radius: 50%;
+    display: none;
+    box-shadow: var(--box-shadow-light);
+    @media only screen and (max-width: 1240px){
+        display: block;
+    }
+    @media only screen and (max-width: 500px){
+        display: none;
+    }
+
+    &__icon{
+        height: 100%;
+        width: 100%;
+        
+        padding: 1.3rem;
+        fill: white;
+
+    }
+}

@@ -14,7 +14,7 @@ function TwitCardItem(props) {
                 <div className={twitCard["twit-card__item__text--sub"] + " muted"}>{props.subText}</div>
             </div>
             <div className={twitCard["twit-card__item__action"]}>
-                <TwitButton variant="twit-button--primary">Scout</TwitButton>
+                <TwitButton color="twit-button--primary">Scout</TwitButton>
             </div>
         </div>
     );

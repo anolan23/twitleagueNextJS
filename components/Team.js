@@ -5,6 +5,7 @@ import TeamHolder from "./TeamHolder";
 import FeedHolder from "./FeedHolder";
 import TwitInput from "./TwitInput";
 import {createPost, fetchUser} from "../actions";
+import TopBar from "./TopBar";
 
 function TeamComponent(props) {
 
@@ -21,6 +22,7 @@ function TeamComponent(props) {
     }
         return (
             <div >
+                <TopBar/>
                 <TeamHolder team={props.team}/>
                 <TwitInput 
                     onSubmit={onTwitInputSubmit} 

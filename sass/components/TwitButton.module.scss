@@ -4,13 +4,13 @@
         padding: .5rem 1.5rem;
         margin: .5rem;
         width: max-content;
-        min-width: 7.5rem;
         border-radius: 1000px;
         cursor: pointer;
 
         display: flex;
         align-items: center;
         justify-content: center;
+        box-shadow: var(--box-shadow-light);
 
     &--white{
         color: var(--BLUE_TEXT);
@@ -42,6 +42,7 @@
         &:hover{
             opacity: .5;
         }
+      
         &--outline{
             border: 1px solid var(--BLUE_TEXT);
             color: var(--BLUE_TEXT);
@@ -51,6 +52,32 @@
             &:hover{
                 opacity: .5;
             }
+
+            &--large{
+                padding: 1rem 3rem;
+                &--expanded{
+                    width: 100%;
+                }
+            }    
         }
+    }
+
+    &--expanded{
+        width: 100%;
+        &-large{
+            width: 100%;
+            padding: 1rem 3rem;
+        }
+    }
+
+    &--large{
+        padding: 1rem 3rem;
+    }
+
+    &--collapse{
+        @media only screen and (max-width: 1240px){
+            display: none;
+        }
+        
     }
 }

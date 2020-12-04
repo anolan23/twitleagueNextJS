@@ -28,16 +28,6 @@ function TwitInput(){
                             <use xlinkHref="/sprites.svg#icon-image"/>
                         </svg>
                     </div>
-                    <div className={twitInput["twit-input__media-type"]}>
-                        <svg className={twitInput["twit-input__icon"]}>
-                            <use xlinkHref="/sprites.svg#icon-image"/>
-                        </svg>
-                    </div>
-                    <div className={twitInput["twit-input__media-type"]}>
-                        <svg className={twitInput["twit-input__icon"]}>
-                            <use xlinkHref="/sprites.svg#icon-image"/>
-                        </svg>
-                    </div>
                 </div>
                 <div className={twitInput["twit-input__action"]}>
                     <TwitButton variant="twit-button--primary">Post</TwitButton>

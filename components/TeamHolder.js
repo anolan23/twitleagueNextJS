@@ -93,9 +93,9 @@ function TeamHolder(props) {
             <h1 className="heading-1">{props.team.teamName}</h1>
             {props.team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
-          <h3>{props.team.league}</h3>
-          <h3 className="muted">Official TwitLeague account of the Chicago White Sox</h3>
-          <h3 className="muted">Head Coach: {`@${props.team.headCoach}`}</h3>
+          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{props.team.league}</h3>
+          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Official TwitLeague account of the Chicago White Sox</h3>
+          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${props.team.headCoach}`}</h3>
           <h3 className={teamHolder["team-holder__attributes"] + " muted"}>
             <div className={teamHolder["team-holder__attribute"]}>
             <i className={"fas fa-map-marker-alt " + teamHolder["team-holder__icon"]}></i>
@@ -107,10 +107,10 @@ function TeamHolder(props) {
             </div>
           </h3>
           <div style={{width: "100%"}}>
-            <h3>
+            <div>
               <span style={{fontWeight:900, marginRight:"3px"}}>{props.team.watchers.length}</span>
-              <span className="muted">Followers</span>
-            </h3>
+              <span className={teamHolder["team-holder__info__bio"] + " muted"}>Followers</span>
+            </div>
           </div>
       </div>
     </div>

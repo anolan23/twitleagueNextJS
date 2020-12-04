@@ -13,8 +13,8 @@
     transition: all .2s;
 
     &__image{
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
     }
 
     &__textbox{
@@ -27,6 +27,10 @@
     &__dropdown{
       width:100%;
       padding:0 1rem;
+      margin-top: auto;
+      @media only screen and (max-width: 1240px){
+        display: none;
+    }
     }
 
     &__icon{
