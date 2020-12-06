@@ -1,0 +1,22 @@
+.notification{
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: var(--border);
+    transition: background-color .2s;
+
+    &:hover{
+        background-color:var(--GRAY_BACKGROUND);
+      }
+
+    &__image{
+        height: 50px;
+        width: 50px;
+        margin-right: 1rem;
+    }
+
+    &__text{
+        font-size: 1.5rem;
+        margin-right: auto;
+    }
+}

@@ -45,10 +45,38 @@
         height: 22.5px;
         width: 22.5px;
         fill: var(--BLUE_TEXT);
+        cursor: pointer;
+    }
+
+    &__gif{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--BLUE_TEXT);
+        border-radius: 3px;
+        height: 18.75px;
+        width: 18.75px;
+        color: white;
     }
 
     &__action{
+        display: flex;
+        align-items: center;
 
+        &__char-count{
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin: 0 1rem;
+
+            &:disabled,
+            &[disabled]{
+                color: red;
+            }
+        }
+    }
+
+    &__initial-value{
+        color: blue;
     }
 
     [contenteditable][placeholder]:empty:before {

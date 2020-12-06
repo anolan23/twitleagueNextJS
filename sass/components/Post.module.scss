@@ -7,12 +7,13 @@
   font-size: 1.5rem;
   line-height: 1.3125;
   padding: 1rem 1.5rem;
+  transition: background-color .2s;
   &:not(:last-child){
     border-bottom: var(--border);
   }
 
   &:hover{
-    background-color:var(--BLUE_BACKGROUND);
+    background-color:var(--GRAY_BACKGROUND);
   }
 
   &__selected &__content{

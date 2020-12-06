@@ -21,8 +21,10 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 function TeamHolder(props) {
 
+  const team = props.team;
+
   const renderButton = () => {
-    if(props.userId === props.team.owner){
+    if(props.userId === team.owner){
       return (
       <DropdownButton size="sm" id="manageTeam" title="Manage Team">
         <Dropdown.Item as="button" onClick={props.toggleAddEventModal}>Schedule Event</Dropdown.Item>
@@ -31,7 +33,7 @@ function TeamHolder(props) {
       </DropdownButton>);
     }
     else{
-      if(!props.watchList.includes(props.team._id))
+      if(!props.watchList.includes(team._id))
       {
         return <Button onClick={() => props.watchTeamAndFetchUser()} className={button["button--watch"]}>Watch</Button>
       }
@@ -58,44 +60,25 @@ function TeamHolder(props) {
     
   }
 
-  const renderWatchers = () => {
-    if(props.team.watchers){
-      return (
-        <div className={teamHolder["team-holder__watchers"]}>
-          <span>{props.team.watchers.length}</span>
-          <i className={teamHolder["twit-icon"] + " fas fa-users"}></i>
-        </div>
-      );
-    }
-    else{
-      return (
-        <div className={teamHolder["team-holder__watchers"]}>
-          <span>0</span>
-          <i className={teamHolder["team-holder__icon"] + " fas fa-users"}></i>
-        </div>
-      );
-    }
-  }
-
   return (
     <div className={teamHolder["team-holder"]}>
       <div className={teamHolder["team-holder__banner"]}>
-        <img className={teamHolder["team-holder__banner-image"]} src={props.team.banner? props.team.banner : null}></img>
+        <img className={teamHolder["team-holder__banner-image"]} src={team.banner? team.banner : null}></img>
       </div>
       <div style={{display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap:"wrap"}}>
         <div className={teamHolder["team-holder__team-image"]}>
-          <Avatar roundedCircle onClick={props.toggleAvatarModal} rounded className={teamHolder["team-holder__image"]} src={props.team.image?props.team.image:""} alt="team profile image"/>
+          <Avatar onClick={props.toggleAvatarModal} className={teamHolder["team-holder__image"]} src={team.image?team.image:""} alt="team profile image"/>
         </div>
         {renderButton()}
       </div>
       <div className={teamHolder["team-holder__info"]}>
           <div className={`${teamHolder["team-holder__teamname-box"]} u-margin-top-tiny`}>
-            <h1 className="heading-1">{props.team.teamName}</h1>
-            {props.team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
+            <h1 className="heading-1">{team.teamName}</h1>
+            {team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
-          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{props.team.league}</h3>
+          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{team.league}</h3>
           <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Official TwitLeague account of the Chicago White Sox</h3>
-          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${props.team.headCoach}`}</h3>
+          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${team.headCoach}`}</h3>
           <h3 className={teamHolder["team-holder__attributes"] + " muted"}>
             <div className={teamHolder["team-holder__attribute"]}>
             <i className={"fas fa-map-marker-alt " + teamHolder["team-holder__icon"]}></i>
@@ -108,7 +91,7 @@ function TeamHolder(props) {
           </h3>
           <div style={{width: "100%"}}>
             <div>
-              <span style={{fontWeight:900, marginRight:"3px"}}>{props.team.watchers.length}</span>
+              <span style={{fontWeight:900, marginRight:"3px"}}>{team.watchers ? team.watchers.length : 0}</span>
               <span className={teamHolder["team-holder__info__bio"] + " muted"}>Followers</span>
             </div>
           </div>

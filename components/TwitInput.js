@@ -11,11 +11,49 @@ import {toggleGifModal, saveCurrentPostText, saveCurrentOutlook} from "../action
 import GifThumb from "./GifThumb";
 import Avatar from "../components/Avatar";
 
-function TwitInput(){
+function TwitInput(props){
+
+    const contentEditable = useRef(null);
+    const allowableChars = 300;
+    const chars = props.postText.length;
+
+    const handleInput = (event) => {
+                const innerText = event.target.innerText;
+                console.log(innerText);
+                props.saveCurrentPostText(innerText);
+    };
+
+    const onContentEditableFocus = (event) => {
+                if(chars > 0){
+                    return;
+                }
+                const initialValue = props.initialValue;
+                contentEditable.current.innerHTML = `<span class="twit-link" contenteditable="false">${initialValue}&nbsp;</span>`;
+    }
+
+    const disabled = () => {
+        return chars === 0 || chars > allowableChars;
+    }
+
+    const onSubmit = (event) => {
+        props.onSubmit(event);
+        contentEditable.current.innerHTML = "";
+        props.saveCurrentPostText("");
+    }
+
     return(
-        <div className={twitInput["twit-input"]}>
+        <form className={twitInput["twit-input"]} onSubmit={onSubmit}>
             <Avatar roundedCircle className={twitInput["twit-input__image"]}/>
-            <div className={twitInput["twit-input__text-area"]} contentEditable="true" placeholder="What's happening?"></div>
+            <div 
+                className={twitInput["twit-input__text-area"]} 
+                contentEditable="true" 
+                placeholder={props.placeHolder}
+                onInput={handleInput}
+                onFocus={onContentEditableFocus}
+                ref={contentEditable}
+                >
+
+                </div>
             <div className={twitInput["twit-input__actions"]}>
                 <div className={twitInput["twit-input__media-types"]}>
                     <div className={twitInput["twit-input__media-type"]}>
@@ -24,17 +62,21 @@ function TwitInput(){
                         </svg>
                     </div>
                     <div className={twitInput["twit-input__media-type"]}>
-                        <svg className={twitInput["twit-input__icon"]}>
+                    <div className={`${twitInput["twit-input__icon"]} ${twitInput["twit-input__gif"]}`}>
+                    GIF
+                    </div>
+                        {/* <svg className={twitInput["twit-input__icon"]}>
                             <use xlinkHref="/sprites.svg#icon-image"/>
-                        </svg>
+                        </svg> */}
                     </div>
                 </div>
                 <div className={twitInput["twit-input__action"]}>
-                    <TwitButton variant="twit-button--primary">Post</TwitButton>
+                    <div className={twitInput["twit-input__action__char-count"]} disabled={chars>allowableChars}>{allowableChars - chars}</div>
+                    <TwitButton disabled={disabled()} color="twit-button--primary">Post</TwitButton>
                 </div>
 
             </div>
-        </div>
+        </form>
     )
 }
 

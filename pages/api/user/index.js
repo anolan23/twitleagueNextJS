@@ -1,5 +1,6 @@
 import {verify} from "jsonwebtoken";
-import {User, Team, League} from "../../../db/connect";
+
+import {getUser} from "../../../lib/apiHelpers";
 
 export default async (req,res) => {
     const method = req.method;
@@ -7,49 +8,8 @@ export default async (req,res) => {
             verify(req.cookies.auth, process.env.AUTH_TOKEN_SECRET, async function(err, decoded) {
                 if (!err && decoded) {
                     const username = decoded.username;
-                    User
-                        .findOne({username:username})
-                        .exec((err,user) => {
-                            if(err){
-                                res.status(500).json({message: "find User Error"})
-                            }
-                            else{
-                                Team.find({ owner: user._id}, function (err, teams) {
-                                    if(err){
-                                      console.log(err);
-                                    }
-                                    else{
-                                      League.find({ owner: user._id}, function (err, leagues) {
-                                        if(err){
-                                          console.log(err);
-                                        }
-                                        else{
-                                          Team.find({ _id: { $in: user.watchList}}, function(err, foundWatchListTeams){
-                                            if(err){
-                                              console.log(err);
-                                            }
-                                            else{
-                                              const data = {
-                                                ...user._doc,
-                                                isSignedIn: true,
-                                                teams,
-                                                leagues,
-                                                watchListTeams:foundWatchListTeams
-                                              }
-                                              const {salt, hash, ...dataToSend} = data
-                                              res.json(dataToSend);
-                                            }
-                                          });
-                                      
-                                        }
-                                      
-                                      });
-                                    }
-                                  
-                                });
-                            }
-                            
-                        })
+                    const user = await getUser(username);
+                    res.json(user);
                 }
                 else {
                     res.send("User is not signed in")

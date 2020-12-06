@@ -1,8 +1,7 @@
 import React from "react";
-import Card from "react-bootstrap/Card";
 import {connect} from "react-redux";
 
-import styles from "../styles/Event.module.css";
+import event from "../sass/components/Event.module.scss";
 import Matchup from "./Matchup";
 
 function Event(props) {
@@ -24,21 +23,18 @@ function Event(props) {
     months[12] = "dec";
 
     return(
-        <Card body>
-            <div className="event">
-                <div className="event-date">
-                    <span className="day block-span">{day}</span>
-                    <span className="month block-span">{months[month]}</span>
+            <div className={event["event"]} key={props.key}>
+                <div className={event["event__date"]}>
+                    <span className={event["event__date--day"]}>{day}</span>
+                    <span className={event["event__date--month"]}>{months[month]}</span>
                 </div>
-                <div className="event-info">
-                    <span className="event-type">{props.eventType}</span>
+                <div className={event["event__info"]}>
+                    <span className={event["event__type"]}>{props.eventType}</span>
+                    <span className={event["event__time"]}>{props.time}</span>
+                    <span className={event["event__location"]}>{props.location}</span>
                     {props.eventType === "Game" ? <Matchup homeTeam={props.isHomeTeam ? props.team : props.opponent} awayTeam={props.isHomeTeam ? props.opponent : props.team}/> : null}
-                    <span className="muted block-span">{props.time}</span>
-                    <span className="muted twit-small-text block-span">{props.location}</span>
                 </div>
             </div>
-            
-        </Card>
     );
 }
 

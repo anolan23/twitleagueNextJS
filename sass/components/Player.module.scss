@@ -1,0 +1,46 @@
+.player{
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    padding: 1rem 1.5rem;
+    border-bottom: var(--border);
+    transition: background-color .2s;
+
+    &:hover{
+        background-color:var(--GRAY_BACKGROUND);
+      }
+
+    &__image{
+        height: 50px;
+        width: 50px;
+
+    }
+
+    &__text{
+        line-height: 1.3125;
+        margin-left: 1rem;
+        margin-right: auto;
+
+        &--main{
+            font-weight: 700;
+        }
+
+        &--sub{
+
+        }
+    }
+
+    &__actions{
+        text-align: center;
+    }
+
+    &__rating{
+        font-size: 2.5rem;
+        font-weight: 300;
+
+        &__label{
+            text-transform: uppercase;
+            
+        }
+    }
+}

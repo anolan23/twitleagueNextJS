@@ -2,25 +2,22 @@ import React from "react";
 import {connect} from "react-redux";
 
 import Avatar from "./Avatar";
+import matchup from "../sass/components/Matchup.module.scss";
 
 function Matchup(props){
     const {homeTeam} = props;
-    const {awayTeam} = props
-    console.log("homeTeam.teamName", homeTeam ? homeTeam.teamName : null);
-    console.log("awayTeam.teamName", awayTeam ? awayTeam.teamName : null);
+    const {awayTeam} = props;
 
     return (
-        <div className="matchup">
-            <div className="twit-team twit-small-text">
-            <Avatar rounded className="matchup-avatar" src={homeTeam ? homeTeam.image : null}/>
-            <span className="block-span">{homeTeam ? homeTeam.teamName : null}</span>
+        <div className={matchup["matchup"]}>
+            <div className={matchup["matchup__team"]}>
+                <Avatar className={matchup["matchup__image"]} src={homeTeam ? homeTeam.image : null}/>
+                <span className={matchup["matchup__teamname"]}>{homeTeam ? homeTeam.teamAbbrev : null}</span>
             </div>
-            
-            <span className="muted">vs</span>
-            
-            <div className="twit-team twit-small-text">
-            <Avatar rounded className="matchup-avatar" src={awayTeam ? awayTeam.image : null}/>
-            <span className="block-span">{awayTeam ? awayTeam.teamName : null}</span>
+            <span className="muted heading-1">vs</span>
+            <div className={matchup["matchup__team"]}>
+                <Avatar className={matchup["matchup__image"]} src={awayTeam ? awayTeam.image : null}/>
+                <span className={matchup["matchup__teamname"]}>{awayTeam ? awayTeam.teamAbbrev : null}</span>
             </div>
         </div>
     )

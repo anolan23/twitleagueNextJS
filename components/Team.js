@@ -22,7 +22,7 @@ function TeamComponent(props) {
     }
         return (
             <div >
-                <TopBar/>
+                <TopBar main={props.team.teamName} sub="32.5k Twits"/>
                 <TeamHolder team={props.team}/>
                 <TwitInput 
                     onSubmit={onTwitInputSubmit} 

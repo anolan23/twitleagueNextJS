@@ -1,44 +1,41 @@
 import React from "react";
 import {connect} from "react-redux";
 
+import notifications from "../sass/components/Notifications.module.scss";
 import Notification from "./Notification";
+import TopBar from "./TopBar";
 
-class Notifications extends React.Component {
+function Notifications(props) {
 
-   renderNotifications = () => {
-       if(this.props.notifications){
-        return this.props.notifications.map((notification, index) => {
-            console.log(this.props.notifications);
+   const renderNotifications = () => {
+       if(props.notifications.length > 0){
+        return props.notifications.map((notification, index) => {
+            console.log(props.notifications);
             return <Notification key={index} data={notification.data} type={notification.type} index={index}/>
         }
-       )
+       );
        
        }
        else{
         return (
-            <div>
-                You have no notifications
+            <div className={notifications["notifications__empty"]}>
+                You have no notifications.
             </div>
         );
-        }
-       
+        }    
    }
-
-    render(){
-        
         return (
-            <div >
-                Notifications
-                {this.renderNotifications()}
+            <div className={notifications["notifications"]}>
+                <TopBar main="Notifications"/>
+                <div className={notifications["notifications__holder"]}>
+                    {renderNotifications()}
+                </div>
             </div>
         );
-
-        
-    };
-}
+    }
 
 const mapStateToProps = (state) => {
-    return {notifications: state.user.notifications}
+    return {notifications: state.user.notifications ? state.user.notifications : []}
 }
 
 export default connect(mapStateToProps)(Notifications);

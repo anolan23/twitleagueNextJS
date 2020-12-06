@@ -3,10 +3,8 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import '../styles/globals.css'
 import "../sass/_main.scss";
 import { Provider } from 'react-redux'
-import Figure from "react-bootstrap/Figure"
 
 import { useStore } from '../redux/store'
-import Heading from "../components/Heading"
 import SignUp from "../components/modals/SignUp";
 import Login from "../components/modals/Login";
 import CreateTeamModal from "../components/modals/CreateTeamModal";
@@ -15,7 +13,6 @@ import TwitPostModal from "../components/modals/TwitPostModal";
 import AddEventModal from "../components/modals/AddEventModal";
 import GifModal from "../components/modals/GifModal";
 import AvatarModal from "../components/modals/AvatarModal";
-import ScheduleModal from "../components/modals/ScheduleModal";
 import RosterModal from '../components/modals/RosterModal';
 import AuthBanner from '../components/AuthBanner';
 
@@ -32,7 +29,6 @@ function MyApp({ Component, pageProps }) {
       <TwitPostModal/>
       <AddEventModal/>
       <AvatarModal/>
-      <ScheduleModal/>
       <RosterModal/>
       <Component {...pageProps}/>
     </Provider>

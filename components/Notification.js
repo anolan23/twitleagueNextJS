@@ -1,9 +1,10 @@
 import React from "react";
-import Button from 'react-bootstrap/Button';
 import Link from "next/link";
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 
+import notification from "../sass/components/Notification.module.scss";
+import TwitButton from "./TwitButton";
 import Avatar from "./Avatar";
 import backend from "../lib/backend";
 import {deleteNotification} from "../actions";
@@ -42,11 +43,11 @@ function Notification(props) {
                 <Link key={match + i} passHref href={"/team/"+ props.data.teamIssuingRequest.teamAbbrev.substring(1)}><a>${match}</a></Link>
               ));
             return (
-                <div>
-                    <span>{replacedText}</span>
-                    <Button onClick={onAcceptJoinLeagueRequestClick}>Accept</Button>
-                    <Button variant="outline-primary">Decline</Button>
-                </div>
+                <React.Fragment>
+                    <span className={notification["notification__text"]}>{replacedText}</span>
+                    <TwitButton onClick={onAcceptJoinLeagueRequestClick} color="twit-button--primary">Accept</TwitButton>
+                    <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
+                </React.Fragment>
             );
         }
         else if(props.type === "Join Team Request"){
@@ -56,11 +57,11 @@ function Notification(props) {
               ));
             
             return (
-                <div>
-                    <span>{replacedText}</span>
-                    <Button onClick={onAcceptJoinTeamRequestClick} >Accept</Button>
-                    <Button variant="outline-primary">Decline</Button>
-                </div>
+                <React.Fragment>
+                    <span className={notification["notification__text"]}>{replacedText}</span>
+                    <TwitButton onClick={onAcceptJoinTeamRequestClick} color="twit-button--primary">Accept</TwitButton>
+                    <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
+                </React.Fragment>
             );
         }
 
@@ -70,11 +71,9 @@ function Notification(props) {
     }
   
         return (
-            <div className="post">
-                <Avatar roundedCircle style={{marginRight:"15px", width:"65px"}}/>
-                <div style={{width:"100%"}}>
-                    {renderNotification()}
-                </div>
+            <div className={notification["notification"]}>
+                <Avatar className={notification["notification__image"]}/>
+                {renderNotification()}
             </div>
         );
 }

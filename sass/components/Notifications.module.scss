@@ -1,0 +1,15 @@
+.notifications{
+
+    &__holder{
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__empty{
+        justify-self: center;
+        align-self: center;
+        padding: 3rem 6rem;
+        font-size: 2rem;
+        color: var(--SECONDARY_TEXT);
+    }
+}

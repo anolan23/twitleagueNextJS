@@ -1,6 +1,7 @@
 .twit-nav-item{
     display: flex;
     align-items: flex-start;
+    position: relative;
     line-height: 1.3125;
     @media only screen and (max-width: 1240px){
         justify-content: center;
@@ -13,7 +14,8 @@
         padding: 1rem;
         transition-duration: .2s;
         cursor: pointer;
-
+        color: var(--PRIMARY_TEXT);
+        
         &:hover,
         &:active{
             background-color: rgba(29, 161, 242,0.1);
@@ -42,7 +44,6 @@
         font-weight: 700;
         color:rgb(20, 23, 26);
         color: inherit;
-    }
-    
+    } 
 }
 

@@ -112,15 +112,14 @@ export const fetchTeamAndTeamPosts = (teamAbbrev) => async (dispatch) => {
 
 export const addTeamEvent = values => async (dispatch, getState) => {
     const userId = getState().user._id;
-    const owner = getState().team.owner;
-    const teamId = getState().team._id;
-    const opponents = getState().team.opponents; //Array of teams in league
-    console.log("values", values)
+    const team = getState().team;
+    const owner = team.owner;
+    const teamAbbrev = team.teamAbbrev.substring(1);
+    const opponents = team.opponents; //Array of teams in league
+    
     const opponent = opponents.find(opponent => opponent.teamAbbrev === values.opponent);
-    console.log(opponent);
     if(owner === userId){
-        const response = await backend.post("/team/event", {
-            teamId,
+        const response = await backend.post(`api/events/team/${teamAbbrev}`, {
             values: {...values, opponent: opponent._id}
         });
         dispatch({type:"ADD_TEAM_EVENT", payload: response.data});
@@ -131,9 +130,9 @@ export const addTeamEvent = values => async (dispatch, getState) => {
 }
 
 export const addTeamEventAndFetchTeam = (values) => async (dispatch, getState) => {
-    const teamId = getState().team._id;
+    const teamAbbrev = getState().team.teamAbbrev.substring(1);
     await dispatch(addTeamEvent(values));
-    dispatch(fetchTeam(teamId));
+    dispatch(fetchTeam(teamAbbrev));
 }
 
 export const saveTeamImages = (teamImageUrl, bannerImageUrl) => async (dispatch, getState) => {

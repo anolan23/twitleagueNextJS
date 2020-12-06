@@ -6,22 +6,20 @@ import TwitInput from "./TwitInput";
 import {createPost} from "../actions";
 import TopBar from "./TopBar";
 
-class Home extends React.Component {
+function Home(props) {
 
-    onTwitInputSubmit = (event) => {
+    const onTwitInputSubmit = (event) => {
         event.preventDefault();
-        this.props.createPost();
+        props.createPost();
     }
 
-    render(){
         return (
             <div >
-                <TopBar/>
-                <TwitInput onSubmit={this.onTwitInputSubmit} placeHolder={"Share your take on " + this.props.team.teamAbbrev} value={this.props.team.teamAbbrev}/>
+                <TopBar main="Home"/>
+                <TwitInput onSubmit={onTwitInputSubmit} placeHolder="What's your take?"/>
                 <HomeFeedHolder/>
             </div>
         );
-    };
 }
 
 const mapStateToProps = (state) => {

@@ -8,9 +8,7 @@ function Avatar(props) {
         <img 
           onClick={props.onClick}
           style={props.style} 
-          className={`${props.className} ${avatar["avatar"]}`} 
-          roundedCircle={props.roundedCircle} 
-          rounded={props.rounded} 
+          className={`${props.className} ${avatar["avatar"]}`}  
           src={props.src?props.src:defaultImageUrl} 
           alt="user avatar image"
         >

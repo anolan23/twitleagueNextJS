@@ -1,46 +1,65 @@
 import React from "react";
+import {connect} from "react-redux";
+
 import TwitNavItem from "./TwitNavItem";
 import twitNav from "../sass/components/TwitNav.module.scss"
 
-function TwitNav() {
+function TwitNav(props) {
+
+    const unseenNotifications = props.notifications.length;
+    const renderUnseenNotifcations = () => {
+        if(unseenNotifications > 0){
+            return <div className={twitNav["twit-nav__tagged"]}>{unseenNotifications}</div>;
+        }
+        else{
+            return null;
+        }
+    }
+
     return(
-        <div className={twitNav["twit-nav"]}>
-            <TwitNavItem title="Home">
+        <nav className={twitNav["twit-nav"]}>
+            <TwitNavItem href="/" title="Home">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-home"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem title="Notifications">
+            <TwitNavItem href="/notifications" title="Notifications">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-bell"/>
                 </svg>
+                {renderUnseenNotifcations()}
             </TwitNavItem>
-            <TwitNavItem title="Messages">
+            <TwitNavItem href="/messages" title="Messages">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-mail"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem title="My Teams">
+            <TwitNavItem href="/user/teams" title="My Teams">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-server"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem title="My Leagues">
+            <TwitNavItem href="/user/leagues" title="My Leagues">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-trending-up"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem title="User Profile">
+            <TwitNavItem href="/user" title="User Profile">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-user"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem title="More">
+            <TwitNavItem href="/more" title="More">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-plus-circle"/>
                 </svg>
             </TwitNavItem>
-        </div>
+        </nav>
     );
 }
-export default TwitNav;
+
+const mapStateToProps = (state) => {
+    return {notifications: state.user.notifications ? state.user.notifications : []}
+}
+
+export default connect(mapStateToProps)(TwitNav);

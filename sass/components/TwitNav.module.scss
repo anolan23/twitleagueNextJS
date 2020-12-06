@@ -20,4 +20,22 @@
         // fill: var(--SECONDARY_TEXT);
     }
     }
+
+    &__tagged{
+      background-color: var(--BLUE_TEXT);
+      position: absolute;
+      padding: 0 .24rem;
+      top: 1rem;
+      left: 2.5rem;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid white;
+      color: white;
+      min-width: 1.5rem;
+      height: 1.5rem;
+      white-space: nowrap;
+      font-size: 1.1rem;
+    }
   }
