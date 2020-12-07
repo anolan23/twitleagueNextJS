@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 
 import TeamHolder from "./TeamHolder";
 import FeedHolder from "./FeedHolder";
-import TwitInput from "./TwitInput";
 import {createPost, fetchUser} from "../actions";
 import TopBar from "./TopBar";
 
@@ -24,11 +23,6 @@ function TeamComponent(props) {
             <div >
                 <TopBar main={props.team.teamName} sub="32.5k Twits"/>
                 <TeamHolder team={props.team}/>
-                <TwitInput 
-                    onSubmit={onTwitInputSubmit} 
-                    placeHolder={"Share your take on " + props.team.teamAbbrev} 
-                    initialValue={props.team.teamAbbrev}
-                />
                 <FeedHolder posts={props.posts}/>
             </div>
         );

@@ -7,6 +7,7 @@
   font-size: 1.5rem;
   line-height: 1.3125;
   padding: 1rem 1.5rem;
+  cursor: pointer;
   transition: background-color .2s;
   &:not(:last-child){
     border-bottom: var(--border);

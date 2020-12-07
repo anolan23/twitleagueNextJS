@@ -76,6 +76,11 @@ export const toggleRosterModal = () => {
     return {type: "TOGGLE_ROSTER_MODAL"};
 }
 
+export const togglePopupCompose = () => {
+    return {type: "TOGGLE_POPUP_COMPOSE"};
+}
+
+
 
 export const toggleAvatarModal = () => (dispatch, getState) => {
     const userId = getState().user._id;

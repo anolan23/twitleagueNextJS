@@ -15,6 +15,7 @@ import GifModal from "../components/modals/GifModal";
 import AvatarModal from "../components/modals/AvatarModal";
 import RosterModal from '../components/modals/RosterModal';
 import AuthBanner from '../components/AuthBanner';
+import PopupCompose from '../components/modals/PopupCompose';
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
@@ -30,6 +31,7 @@ function MyApp({ Component, pageProps }) {
       <AddEventModal/>
       <AvatarModal/>
       <RosterModal/>
+      <PopupCompose/>
       <Component {...pageProps}/>
     </Provider>
   );

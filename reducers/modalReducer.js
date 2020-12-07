@@ -8,7 +8,8 @@ const INITIAL_STATE = {
     showAddEventModal: false,
     showAvatarModal: false,
     showScheduleModal: false,
-    showRosterModal: false
+    showRosterModal: false,
+    showPopupCompose: false
 }
 
 const modalReducer = (state = INITIAL_STATE, action) => {
@@ -33,6 +34,8 @@ const modalReducer = (state = INITIAL_STATE, action) => {
             return {...state, showScheduleModal: !state.showScheduleModal} 
         case "TOGGLE_ROSTER_MODAL":
             return {...state, showRosterModal: !state.showRosterModal} 
+        case "TOGGLE_POPUP_COMPOSE":
+            return {...state, showPopupCompose: !state.showPopupCompose} 
         default:
             return state;
     }

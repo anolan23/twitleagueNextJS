@@ -1,7 +1,9 @@
 import React from 'react';
 import Image from "next/image";
 import Link from "next/link"
+import {connect} from "react-redux";
 
+import {togglePopupCompose} from "../actions";
 import TwitNav from "./TwitNav";
 import UserToggle from "./UserToggle";
 import TwitButton from "./TwitButton";
@@ -10,7 +12,7 @@ import Avatar from './Avatar';
 
 
 
-function LeftColumn() {
+function LeftColumn(props) {
   return(
       <div className="header__left-column">
         <Link href="/" passHref>
@@ -18,17 +20,18 @@ function LeftColumn() {
         </Link>
         <TwitNav/>
         <TwitButton 
+          onClick={props.togglePopupCompose}
           color="twit-button--primary" 
           size="twit-button--expanded-large"
           collapse="twit-button--collapse"
           >
           New Post
         </TwitButton>
-        <TwitPostCircle/>
+        <TwitPostCircle onClick={props.togglePopupCompose}/>
         <UserToggle/>
         <Avatar className="header__avatar"/>
       </div>
   )
 }
 
-export default LeftColumn;
+export default connect(null, {togglePopupCompose})(LeftColumn);
