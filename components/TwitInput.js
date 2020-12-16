@@ -7,7 +7,7 @@ import ContentEditable from "react-contenteditable";
 
 import twitInput from "../sass/components/TwitInput.module.scss";
 import TwitButton from "./TwitButton";
-import {toggleGifModal, saveCurrentPostText, saveCurrentOutlook} from "../actions";
+import {toggleGifModal, saveCurrentPostText, saveCurrentOutlook, createPost, togglePopupCompose} from "../actions";
 import GifThumb from "./GifThumb";
 import Avatar from "../components/Avatar";
 
@@ -16,6 +16,7 @@ function TwitInput(props){
     const contentEditable = useRef(null);
     const allowableChars = 300;
     const chars = props.postText.length;
+    const expanded = props.expanded?twitInput["twit-input__text-area--expanded"]: null;
 
     const handleInput = (event) => {
                 const innerText = event.target.innerText;
@@ -36,16 +37,18 @@ function TwitInput(props){
     }
 
     const onSubmit = (event) => {
-        props.onSubmit(event);
+        event.preventDefault();
+        props.createPost();
         contentEditable.current.innerHTML = "";
         props.saveCurrentPostText("");
+        props.togglePopupCompose();
     }
 
     return(
         <form className={twitInput["twit-input"]} onSubmit={onSubmit}>
             <Avatar roundedCircle className={twitInput["twit-input__image"]}/>
             <div 
-                className={twitInput["twit-input__text-area"]} 
+                className={`${twitInput["twit-input__text-area"]} ${expanded}`} 
                 contentEditable="true" 
                 placeholder={props.placeHolder}
                 onInput={handleInput}
@@ -270,4 +273,4 @@ const mapStateToProps = (state) => {
         }
 }
 
-export default connect(mapStateToProps, {toggleGifModal, saveCurrentPostText, saveCurrentOutlook})(TwitInput);
+export default connect(mapStateToProps, {toggleGifModal, saveCurrentPostText, saveCurrentOutlook, createPost, togglePopupCompose})(TwitInput);

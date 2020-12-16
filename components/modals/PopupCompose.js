@@ -8,7 +8,7 @@ import TwitInput from "../TwitInput";
 function PopupCompose(props){
     
     const renderBody = () => {
-        return <TwitInput placeHolder="What's happening?" initialValue=""/>
+        return <TwitInput expanded placeHolder="What's happening?" initialValue=""/>
     }
     
     return (

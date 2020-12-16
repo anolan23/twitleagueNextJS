@@ -132,9 +132,6 @@ class Post extends React.Component {
                   <svg className={post["post__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-repeat"/>
                   </svg>
-                  <div className={post["post__icon"]}>
-                    <i className="fas fa-ellipsis-h highlight"></i>
-                  </div>
                   <svg className={post["post__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-message-square"/>
                   </svg>

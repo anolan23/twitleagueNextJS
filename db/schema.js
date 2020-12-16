@@ -50,6 +50,7 @@ export const postSchema = new mongoose.Schema({
   gifId: String,
   outlook: String,
   dateTime: String,
+  threadId: String,
   teamAbbrevs: [String],
   likes: {
     type: Object,
@@ -62,6 +63,6 @@ export const postSchema = new mongoose.Schema({
   comments: {
     type: Object,
     default: null
-  }
+  },
   }
 );
