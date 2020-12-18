@@ -1,25 +1,21 @@
-import {User} from "../../db/connect";
+import Users from "../../db/repos/Users";
 import {hash} from "bcrypt";
 import {sign} from "jsonwebtoken";
 import cookie from "cookie";
 
-import {getUser} from "../../lib/apiHelpers";
-
 export default async (req,res) => {
     const method = req.method;
     if(req.method === "POST"){
-        const username = req.body.username;
-        const password = req.body.password;
         const saltRounds = 11;
-        const hashed = await hash(password, saltRounds);
-        const user = new User({
-            username:username,
-            password:hashed
-          });
-        user.save();
+        const hashed = await hash(req.body.password, saltRounds);
+        let user = req.body;
+        user = {...user, password:hashed};
+        let createdUser = await Users.create(user);
+        createdUser = {...createdUser, isSignedIn: true};
+
         const claims = {
-            sub: user.id,
-            username: user.username
+            sub: createdUser.id,
+            username: createdUser.username
         }
         const jwt = sign(claims, process.env.AUTH_TOKEN_SECRET, {expiresIn: "1h"});
         res.setHeader('Set-Cookie', cookie.serialize('auth', jwt, {
@@ -29,9 +25,8 @@ export default async (req,res) => {
             maxAge: 3600,
             path: '/'
           }));
-          
-        const userToSend = await getUser(user.username);
-        res.send(userToSend);
+
+        res.send(createdUser);
     }
     else{
         res.status(405).json({message: "api/signup only supports POST method"})

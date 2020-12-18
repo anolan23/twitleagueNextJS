@@ -216,22 +216,22 @@ export const fetchLeague = (leagueName) => async dispatch => {
 
 //Posts Action Creators
 export const createPost = () => async (dispatch, getState) => {
-    const author = getState().user.username;
-    const postText = getState().post.postText;
-    const gifId = getState().post.gif.id;
+    const userId = getState().user.id;
+    const body = getState().post.postText;
+    const gif = getState().post.gif.id;
     const outlook = getState().post.outlook;
-    const dataToSend = {author, postText, gifId, outlook, dateTime: Date.now(), likes: {}, retwits: {}, comments: {}}
-    const response = await backend.post("/api/posts", dataToSend);
+    const post = {userId, body, gif, outlook}
+    const response = await backend.post("/api/posts", post);
 
     dispatch({type: "CREATE_POST", payload: response.data})
     dispatch(emptyPostData());
 }
 
 export const fetchTeamPosts = () => async (dispatch, getState) => {
-    const teamAbbrev = getState().team.teamAbbrev;
+    const teamId = getState().team.id;
     const response = await backend.get("/api/posts/team", {
         params: {
-            teamAbbrev
+            teamId: teamId
         }
     });
     

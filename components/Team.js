@@ -21,9 +21,9 @@ function TeamComponent(props) {
     }
         return (
             <div >
-                <TopBar main={props.team.teamName} sub="32.5k Twits"/>
+                <TopBar main={props.team.team_name} sub="32.5k Twits"/>
                 <TeamHolder team={props.team}/>
-                <FeedHolder posts={props.posts}/>
+                <FeedHolder/>
             </div>
         );
 }

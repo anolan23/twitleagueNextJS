@@ -11,7 +11,7 @@ import TwitFormModal from "./TwitFormModal";
  function SignUp(props) {
 
   const SignupSchema = Yup.object().shape({
-    fullName: Yup.string()
+    name: Yup.string()
       .min(2, 'Too Short!')
       .max(50, 'Too Long!')
       .required('Required'),
@@ -27,7 +27,7 @@ import TwitFormModal from "./TwitFormModal";
 
   const formik = useFormik({
     initialValues: {
-      fullName: "",
+      name: "",
       email: "",
       username: "",
       password: ""
@@ -42,21 +42,21 @@ import TwitFormModal from "./TwitFormModal";
   function renderForm(){
     return (
       <React.Fragment>
-       <Form.Group controlId="fullName">
-              <Form.Label>Full Name</Form.Label>
+       <Form.Group controlId="name">
+              <Form.Label>Name</Form.Label>
               <Form.Control 
-                name="fullName" 
+                name="name" 
                 onChange={formik.handleChange} 
                 onBlur={formik.handleBlur} 
-                value={formik.values.fullName}
-                isValid={formik.values.fullName && !formik.errors.fullName} 
-                isInvalid={formik.touched.fullName && formik.errors.fullName}
+                value={formik.values.name}
+                isValid={formik.values.name && !formik.errors.name} 
+                isInvalid={formik.touched.name && formik.errors.name}
                 type="text" 
-                placeholder="Full name" 
+                placeholder="name" 
                 autoComplete="off"
               />
               <Form.Control.Feedback type="invalid">
-                {formik.errors.fullName && formik.touched.fullName ? formik.errors.fullName : null}
+                {formik.errors.name && formik.touched.name ? formik.errors.name : null}
               </Form.Control.Feedback>
             </Form.Group>
         

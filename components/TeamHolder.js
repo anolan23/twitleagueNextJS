@@ -67,18 +67,18 @@ function TeamHolder(props) {
       </div>
       <div style={{display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap:"wrap"}}>
         <div className={teamHolder["team-holder__team-image"]}>
-          <Avatar onClick={props.toggleAvatarModal} className={teamHolder["team-holder__image"]} src={team.image?team.image:""} alt="team profile image"/>
+          <Avatar onClick={props.toggleAvatarModal} className={teamHolder["team-holder__image"]} src={team.avatar?team.avatar:""} alt="team profile image"/>
         </div>
         {renderButton()}
       </div>
       <div className={teamHolder["team-holder__info"]}>
           <div className={`${teamHolder["team-holder__teamname-box"]} u-margin-top-tiny`}>
-            <h1 className="heading-1">{team.teamName}</h1>
+            <h1 className="heading-1">{team.team_name}</h1>
             {team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
-          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{team.league}</h3>
+          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{team.league_name}</h3>
           <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Official TwitLeague account of the Chicago White Sox</h3>
-          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${team.headCoach}`}</h3>
+          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${team.head_coach}`}</h3>
           <h3 className={teamHolder["team-holder__attributes"] + " muted"}>
             <div className={teamHolder["team-holder__attribute"]}>
             <i className={"fas fa-map-marker-alt " + teamHolder["team-holder__icon"]}></i>
@@ -91,7 +91,7 @@ function TeamHolder(props) {
           </h3>
           <div style={{width: "100%"}}>
             <div>
-              <span style={{fontWeight:900, marginRight:"3px"}}>{team.watchers ? team.watchers.length : 0}</span>
+              <span style={{fontWeight:900, marginRight:"3px"}}>{team.followers ? team.followers.length : 0}</span>
               <span className={teamHolder["team-holder__info__bio"] + " muted"}>Followers</span>
             </div>
           </div>

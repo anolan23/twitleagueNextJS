@@ -1,15 +1,14 @@
-import {User, Team, League} from "../../db/connect";
+import Users from "../../db/repos/Users";
 import {compare} from "bcrypt";
 import {sign} from "jsonwebtoken";
 import cookie from "cookie";
-
-import {getUser} from "../../lib/apiHelpers";
 
 export default async (req,res) => {
     const method = req.method;
     const {username, password} = req.body;
     if(method === "POST"){
-        const user = await User.findOne({username});
+        let user = await Users.findOne(username);
+        user = {...user, isSignedIn: true};
         const result = await compare(password, user.password);
         console.log("result", result)
         if(result){
@@ -25,8 +24,7 @@ export default async (req,res) => {
                 maxAge: 3600,
                 path: '/'
                 }));
-            const userToSend = await getUser(user.username);
-            res.send(userToSend);
+            res.send(user);
         }
         else{
             res.json({message: "something wrong with password"});

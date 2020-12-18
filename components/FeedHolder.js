@@ -23,18 +23,19 @@ function FeedHolder(props) {
       return null;
     }
 
-    return props.posts.map(post => {
+    return props.posts.map((post, index) => {
       return (
         <Post 
-          key={post._id}
-          id={post._id}
-          author={post.author} 
-          content={post.postText} 
+          key={index}
+          id={post.id}
+          name={post.name} 
+          username={post.username}
+          content={post.body} 
           likes={post.likes ? Object.keys(post.likes).length : 0} 
           retwits={post.retwits}
           comments={post.comments ? Object.keys(post.comments).length : 0}
-          gifId={post.gifId}
-          time={post.dateTime}
+          gif={post.gif}
+          created_at={post.created_at}
           outlook={post.outlook}
           onClick={() => onPostClick(post)}
           />

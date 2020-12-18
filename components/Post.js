@@ -16,32 +16,15 @@ class Post extends React.Component {
   state = {gif: null};
 
   componentDidMount(){
-    if(this.props.gifId){
+    if(this.props.gif){
       this.fetchGif();
     }
   }
 
   fetchGif = async () => {
     const giphyFetch = new GiphyFetch("G2kN8IH9rTIuaG2IZGKO9il0kWamzKmX");
-    const {data} = await giphyFetch.gif(this.props.gifId);
+    const {data} = await giphyFetch.gif(this.props.gif);
     this.setState({gif: data});
-  }
-
-  styleLikedPost = (postId) => {
-    if(!this.props.posts[postId]){
-      return null;
-    }
-    if(!this.props.posts[postId].likes)
-    {
-      return null;
-    }
-    if(this.props.posts[postId].likes[this.props.username]){
-      return {
-        color:"#00baff",
-        textDecoration: "none",
-        transition: "color .2s ease-in-out"
-      }
-    }
   }
 
   renderMedia = () => {
@@ -58,23 +41,6 @@ class Post extends React.Component {
     }
   }
 
-  renderTime = () => {
-    const currentDate = new Date();
-    const currentDayofMonth = currentDate.getDate();
-    // const currentTime = currentDate.getTime();
-    const postDate = new Date(parseInt(this.props.time));
-    const postDayofMonth = postDate.getDate();
-    // const postTime = postDate.getTime();
-
-    if(postDayofMonth !== currentDayofMonth)
-    {
-      return postDate.toDateString();
-    }
-    else {
-      return postDate.toLocaleTimeString();
-    }
-
-  }
 
   renderBadge = () => {
     if(this.props.outlook === "bullish"){
@@ -112,11 +78,11 @@ class Post extends React.Component {
           <div className={post["post__content"]}>
               <div className={post["post__heading"]}>
                 <div className={post["post__heading-text"]}>
-                  <Link passHref href={"/users/" + this.props.author}><a className={post["post__display-name"]}>{this.props.author}</a></Link>
-                  <span className={post["post__username"] + " muted"}>@{this.props.author}</span>
+                  <Link passHref href={"/users/" + this.props.author}><a className={post["post__display-name"]}>{this.props.name}</a></Link>
+                  <span className={post["post__username"] + " muted"}>@{this.props.username}</span>
                   {this.renderBadge()}
                 </div>
-                <span className={post["post__time"]}>{this.renderTime()}</span>
+                <span className={post["post__time"]}>{this.props.created_at}</span>
               </div>
               
               <p className={post["post__text"]}>{this.renderContent()}</p>
@@ -145,8 +111,7 @@ class Post extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    posts: state.posts,
-    username: state.user.username
+    posts: state.posts
   }
 }
 
