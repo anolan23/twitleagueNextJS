@@ -34,7 +34,7 @@ function TwitNav(props) {
                     <use xlinkHref="/sprites.svg#icon-mail"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem href="/user/teams" title="My Teams">
+            <TwitNavItem href="/myTeams" title="My Teams">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-server"/>
                 </svg>

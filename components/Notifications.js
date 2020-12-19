@@ -18,7 +18,7 @@ function Notifications(props) {
        }
        else{
         return (
-            <div className={notifications["notifications__empty"]}>
+            <div className="u-empty">
                 You have no notifications.
             </div>
         );

@@ -1,0 +1,50 @@
+.twit-form{
+    font-size: 1.5rem;
+    padding: 0 2rem;
+    color: var(--PRIMARY_TEXT);
+
+    &__group{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        margin: 4rem 0;
+    }
+
+    &__label{
+
+    }
+
+    &__input{
+        font-size: 1.9rem;
+        padding: .75rem 1.5rem;
+        // background-color: var(--color-light-gray);
+        border: 1px solid lightgray;
+        border-radius: 3px;
+        
+
+        &:focus{
+            outline: none;
+            border: 1px solid gray;
+        }
+
+        &--errors{
+            font-size: 1.9rem;
+            padding: .75rem 1.5rem;
+            // background-color: var(--color-light-gray);
+            border-radius: 3px;
+            border: 1px solid red;
+            
+            &:focus{
+                outline: none;
+            }
+        }
+    }
+
+    &__errors{
+        position: absolute;
+        bottom: -25px;
+        left: 0;
+        color: red;
+        font-size: 1.3rem;
+    }
+}

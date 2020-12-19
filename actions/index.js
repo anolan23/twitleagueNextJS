@@ -262,10 +262,10 @@ export const fetchTrendingPosts = (num) => async (dispatch) => {
 }
 
 export const fetchLeaguePosts = () => async (dispatch, getState) => {
-    const league = getState().team.league;
+    const leagueId = getState().team.league_id;
     const response = await backend.get("/api/posts/league", {
         params: {
-            league
+            leagueId: leagueId
         }
     });
     

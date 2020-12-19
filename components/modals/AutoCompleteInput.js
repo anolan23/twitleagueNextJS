@@ -46,7 +46,7 @@ function AutoCompleteInput(props) {
                 name={props.name}
                 type={props.type}
                 placeholder={props.placeholder} 
-                className={autoCompleteInput["auto-complete-input"]} 
+                className={props.className?props.className:autoCompleteInput["auto-complete-input"]} 
                 autoComplete={props.autoComplete}
                     />
             <Dropdown.Menu show={props.show  && (props.peopleOptions || props.teamOptions)} className={autoCompleteInput["auto-complete-input__dropdown"]}>

@@ -52,6 +52,23 @@ class Posts {
         return rows;
     }
 
+    static async findByLeagueId(leagueId) {
+        const {rows} = await pool.query(`
+        SELECT posts.created_at, users.name, users.username, body, gif, outlook
+        FROM posts
+        JOIN (
+        SELECT DISTINCT post_id
+        FROM team_mentions
+        WHERE team_id IN (
+            SELECT id 
+            FROM teams
+            WHERE league_id = $1
+        )
+        ) AS p1 ON p1.post_id = posts.id
+        JOIN users ON posts.author_id = users.id`, [leagueId]);
+        return rows;
+    }
+
 
 }
 
