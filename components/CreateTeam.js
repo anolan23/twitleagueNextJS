@@ -39,7 +39,7 @@ function CreateTeam(props){
  
     const validate = async values => {
         let errors ={};
-        return backend.get(`/api/league/${values.league}`).then((results) => {
+        return backend.get(`/api/leagues/${values.league}`).then((results) => {
             console.log("results.data", results.data);
             console.log("Object.keys(results.data).length", Object.keys(results.data).length);
             if (Object.keys(results.data).length === 0) {
@@ -75,7 +75,7 @@ function CreateTeam(props){
 
     const onAutoCompleteChange = async (event) => {
         formik.handleChange(event);
-        const results = await backend.get("/api/league", {
+        const results = await backend.get("/api/leagues", {
             params: {leagueName: event.target.value}
         })
         setOptions(results.data);

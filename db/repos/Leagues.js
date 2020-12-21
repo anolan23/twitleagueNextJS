@@ -2,11 +2,12 @@ import pool  from "../pool";
 
 class Leagues {
 
-    static async create(team) {
-        // const {rows} = await pool.query(`
-        // INSERT INTO teams (owner_id, team_name, abbrev, city, state)
-        // VALUES
-        // (1$, $2, $3, $4, $5)`, [team.ownerId, team.teamName, team.abbrev, team.city, team.state]);
+    static async create(leagueData) {
+        const {ownerId, leagueName, sport} = leagueData;
+        const {rows} = await pool.query(`
+        INSERT INTO leagues (owner_id, league_name, sport)
+        VALUES
+        ($1, $2, $3)`, [ownerId, leagueName, sport]);
     }
 
     static async findOne(leagueName) {
@@ -18,7 +19,23 @@ class Leagues {
         return rows[0];
     }
 
-    static async find(leagueName) {
+    static async findByOwnerId(ownerId) {
+        const leagues = await pool.query(`
+        SELECT *
+        FROM leagues
+        WHERE owner_id = $1`, [ownerId]);
+        return leagues.rows;
+    }
+
+    static async find() {
+        const leagues = await pool.query(`
+        SELECT *
+        FROM leagues
+        `);
+        return leagues.rows;
+    }
+
+    static async findAllLike(leagueName) {
         if(!leagueName)
         {
             return []

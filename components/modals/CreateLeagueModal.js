@@ -22,7 +22,7 @@ function CreateLeagueModal(props){
     if(!values.leagueName){
       return errors.leagueName = "Required";
     }
-    return backend.get("/api/league/"+values.leagueName)
+    return backend.get("/api/leagues/"+values.leagueName)
       .then((response) => {
         if(response.data.leagueName === values.leagueName){
           errors.leagueName = "League Name already taken";
@@ -36,8 +36,7 @@ function CreateLeagueModal(props){
   const formik = useFormik({
     initialValues: {
       sport: "Baseball",
-      leagueName: "",
-      numTeams: "4"
+      leagueName: ""
     },
     onSubmit: values => {
       props.createLeagueAndFetchUser(values);
@@ -47,15 +46,6 @@ function CreateLeagueModal(props){
 
   })
  
-  function renderNumTeams(){
-    const arr = [];
-    for (let i = 4; i <= 32; i++) {
-      arr.push(<option key={i}>{i}</option>);
-    }
-    return arr;
-  } 
-  
-  
   function renderForm(){
         return (
           <React.Fragment>

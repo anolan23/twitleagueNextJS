@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
     isSignedIn: null,
-    teams: []
+    teams: [],
+    leagues: []
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -23,6 +24,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
             return {...state, notifications: action.payload};
         case "FETCH_TEAMS":
             return {...state, teams: action.payload};
+        case "FETCH_LEAGUES":
+            return {...state, leagues: action.payload};
         
         default:
             return state;

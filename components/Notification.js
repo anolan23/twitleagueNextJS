@@ -40,7 +40,7 @@ function Notification(props) {
         {
             const text = props.data.teamIssuingRequest.teamAbbrev + " wants to join " + props.data.leagueToJoin.leagueName;
             const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-                <Link key={match + i} passHref href={"/team/"+ props.data.teamIssuingRequest.teamAbbrev.substring(1)}><a>${match}</a></Link>
+                <Link key={match + i} passHref href={"/teams/"+ props.data.teamIssuingRequest.teamAbbrev.substring(1)}><a>${match}</a></Link>
               ));
             return (
                 <React.Fragment>

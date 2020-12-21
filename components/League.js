@@ -11,7 +11,7 @@ function League({league}) {
         {
             return league.teams.map((team, index) => {
                 return (
-                    <Link passHref href={"/team/" + team.teamAbbrev.substring(1)} key={index}>
+                    <Link passHref href={"/teams/" + team.teamAbbrev.substring(1)} key={index}>
                        <TwitItem key={index} title={team.teamAbbrev} subtitle={team.teamName}/>
                     </Link>
                 )

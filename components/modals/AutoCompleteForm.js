@@ -51,7 +51,7 @@ function AutoCompleteForm(props) {
         }
         return options.teams.map(option => {
             return (
-                    <Link passHref href={"/team/" + option.teamAbbrev.substring(1)} key={option._id}>
+                    <Link passHref href={"/teams/" + option.teamAbbrev.substring(1)} key={option._id}>
                         <TwitItem title={option.teamAbbrev.substring(1)} subtitle={option.teamName} image={option.image}/>
                     </Link>
                     );

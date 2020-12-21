@@ -58,7 +58,7 @@ class Post extends React.Component {
     const text = this.props.content;
     let replacedText;
     replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-      <Link key={match + i} href={`/team/${match}`}><a className="twit-link">${match}</a></Link>
+      <Link key={match + i} href={`/teams/${match}`}><a className="twit-link">${match}</a></Link>
     ));
 
     replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (

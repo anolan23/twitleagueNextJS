@@ -5,10 +5,6 @@ import "../sass/_main.scss";
 import { Provider } from 'react-redux'
 
 import { useStore } from '../redux/store'
-import SignUp from "../components/modals/SignUp";
-import Login from "../components/modals/Login";
-import CreateTeamModal from "../components/modals/CreateTeamModal";
-import CreateLeagueModal from "../components/modals/CreateLeagueModal";
 import TwitPostModal from "../components/modals/TwitPostModal";
 import AddEventModal from "../components/modals/AddEventModal";
 import GifModal from "../components/modals/GifModal";
@@ -22,10 +18,6 @@ function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <AuthBanner/>
-      <SignUp/>
-      <Login/>
-      <CreateTeamModal/>
-      <CreateLeagueModal/>
       <GifModal/>
       <TwitPostModal/>
       <AddEventModal/>

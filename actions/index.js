@@ -209,11 +209,8 @@ export const sendJoinTeamRequest = () => async (dispatch, getState) => {
 
 //League Action Creators
 export const createLeague = formValues => async (dispatch, getState) => {
-    const owner = getState().user._id;
-    const response = await backend.post("/api/league", {...formValues, owner: owner});
-
-    dispatch({type: "CREATE_LEAGUE", payload: response.data});
-    dispatch(toggleCreateLeagueModal());
+    const ownerId = getState().user.id;
+    backend.post("/api/leagues", {...formValues, ownerId});
 }
 
 export const createLeagueAndFetchUser = (formValues) => async (dispatch) => {
@@ -222,9 +219,23 @@ export const createLeagueAndFetchUser = (formValues) => async (dispatch) => {
 }
 
 export const fetchLeague = (leagueName) => async dispatch => {
-    const response = await backend.get(`/api/league/${leagueName}`);
+    const response = await backend.get(`/api/leagues/${leagueName}`);
     
     dispatch({type: "FETCH_LEAGUE", payload: response.data})
+}
+
+export const fetchLeagues = () => async (dispatch, getState) => {
+    const user = getState().user;
+    if(!user.isSignedIn){
+        return;
+    }
+    const response = await backend.get("/api/leagues", {
+        params: {
+            ownerId: user.id
+        }
+    });
+    
+    dispatch({type: "FETCH_LEAGUES", payload: response.data})
 }
 
 //Posts Action Creators
