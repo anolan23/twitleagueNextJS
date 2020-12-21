@@ -41,14 +41,16 @@ export async function getStaticProps(context) {
 
     const teamAbbrev = "$" + context.params.teamAbbrev;
     let team = await Teams.findOne(teamAbbrev);
+    console.log("team.id", team);
     const followers = await Followers.findByTeamId(team.id);
+    
     team = {...team, followers: followers};
 
 
     await dispatch({type:"FETCH_TEAM", payload: JSON.parse(JSON.stringify(team))});
 
     const newStore = reduxStore.getState();
-    console.log("newStore", newStore)
+    
     return {
         revalidate: 1,
         props: {

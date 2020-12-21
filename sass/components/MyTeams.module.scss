@@ -1,21 +1,4 @@
 .my-teams{
 
-    &__create{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem;
-        border-bottom: var(--border);
-        font-size: 1.9rem;
-        font-weight: 700;
-        background-color: var(--BLUE_TEXT);
-        color: white;
-        transition: all .2s;
-        cursor: pointer;
-
-        &:hover{
-            filter: brightness(80%);
-            
-        }
-    }
+    
 }

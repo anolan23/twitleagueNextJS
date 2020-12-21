@@ -51,10 +51,10 @@ $button-brightness: 80%;
         transition: all .2s;
       
         &--outline{
-            border: 1px solid var(--BLUE_TEXT);
-            color: var(--BLUE_TEXT);
-            background-color: transparent;
-            transition: all .2s;
+            border: 1px solid var(--BLUE_TEXT) !important;
+            color: var(--BLUE_TEXT) !important;
+            background-color: transparent !important;
+            transition: all .2s !important;
 
             &--large{
                 padding: 1rem 3rem;
@@ -83,4 +83,24 @@ $button-brightness: 80%;
         }
         
     }
+}
+
+.twit-button--square{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: var(--border);
+        font-size: 1.9rem;
+        font-weight: 700;
+        background-color: var(--BLUE_TEXT);
+        color: white;
+        transition: all .2s;
+        cursor: pointer;
+        border: none;
+        width: 100%;
+
+        &:hover{
+            filter: brightness($button-brightness); 
+        }
 }

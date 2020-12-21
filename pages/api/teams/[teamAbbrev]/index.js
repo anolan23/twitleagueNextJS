@@ -23,6 +23,6 @@ export default async (req,res) => {
         res.json(team)
     }
     else{
-        res.status(405).json({message: "api/team/[teamAbbrev] only supports PATCH, GET methods"})
+        res.status(405).json({message: "api/teams/[teamAbbrev] only supports PATCH, GET methods"})
     } 
 }

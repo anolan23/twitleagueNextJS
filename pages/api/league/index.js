@@ -1,4 +1,5 @@
 import {League} from "../../../db/connect";
+import Leagues from "../../../db/repos/Leagues";
 
 export default async (req,res) => {
     const method = req.method;
@@ -20,8 +21,18 @@ export default async (req,res) => {
           });
     }
     else if(method === "GET"){
-      
+      const leagueName = req.query.leagueName;
+      const leagues = await Leagues.find(leagueName);
+      console.log("leagues", leagues)
+      if(!leagues){
+        res.send([]);
+      }
+      else{
+        console.log("leagues", leagues)
+        res.send(leagues);
+      }
     }
+    
     else{
         res.status(405).json({message: "api/league only supports POST"})
     }

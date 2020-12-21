@@ -92,11 +92,10 @@ export const toggleAvatarModal = () => (dispatch, getState) => {
 
 //Team Action Creators
 export const createTeam = formValues => async (dispatch, getState) => {
-    const owner = getState().user._id;
-    const response = await backend.post("api/team", {...formValues, owner: owner});
+    const owner = getState().user.id;
+    const response = await backend.post("api/teams", {...formValues, owner: owner});
 
-    dispatch({type: "CREATE_TEAM", payload: response.data})
-    dispatch(toggleCreateTeamModal());
+    // dispatch({type: "CREATE_TEAM", payload: response.data})
 }
 
 export const createTeamAndFetchUser = (formValues) => async (dispatch) => {
@@ -105,9 +104,23 @@ export const createTeamAndFetchUser = (formValues) => async (dispatch) => {
 }
 
 export const fetchTeam = (teamAbbrev) => async dispatch => {
-    const response = await backend.get(`/api/team/${teamAbbrev}`);
+    const response = await backend.get(`/api/teams/${teamAbbrev}`);
     
     dispatch({type: "FETCH_TEAM", payload: response.data})
+}
+
+export const fetchTeams = () => async (dispatch, getState) => {
+    const user = getState().user;
+    if(!user.isSignedIn){
+        return;
+    }
+    const response = await backend.get("/api/teams", {
+        params: {
+            ownerId: user.id
+        }
+    });
+    
+    dispatch({type: "FETCH_TEAMS", payload: response.data})
 }
 
 export const fetchTeamAndTeamPosts = (teamAbbrev) => async (dispatch) => {
@@ -145,7 +158,7 @@ export const saveTeamImages = (teamImageUrl, bannerImageUrl) => async (dispatch,
     const owner = getState().team.owner;
     const teamAbbrev = getState().team.teamAbbrev.substring(1);
     if(owner === userId){
-        const response = await backend.patch(`api/team/${teamAbbrev}`, {
+        const response = await backend.patch(`api/teams/${teamAbbrev}`, {
                 teamImageUrl,
                 bannerImageUrl
         });
@@ -344,6 +357,21 @@ export const emptyPostData = () => {
 //Tracked Post Action Creators
 export const trackClickedPost = (post) => {
     return {type: "TRACK_CLICKED_POST", payload: post};
+}
+
+//Notifications Action Creators
+export const fetchNotifications = () => async (dispatch, getState) => {
+    const user = getState().user;
+    if(!user.isSignedIn){
+        return;
+    }
+    const response = await backend.get("/api/notifications", {
+        params: {
+            userId: user.id
+        }
+    });
+    console.log("response", response);
+    dispatch({type: "FETCH_NOTIFICATIONS", payload: response.data})
 }
 
 

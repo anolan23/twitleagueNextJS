@@ -1,15 +1,4 @@
-import {League, User, Team} from "../../../db/connect";
-
-export const getLeague = async (leagueName) => {
-    const league = await League.findOne({leagueName:leagueName});
-    if(!league){
-        return {};
-    }
-    const userId = league.owner;
-    const user =  await User.findById(userId);
-    const teams = await Team.find({ _id: { $in: league.teams}});
-    return {...league._doc, owner: user.username, teams: teams};
-}
+import Leagues from "../../../db/repos/Leagues";
 
 export default async (req,res) => {
     const method = req.method;
@@ -18,8 +7,15 @@ export default async (req,res) => {
     }
     else if(method === "GET"){
       const leagueName = req.query.leagueName;
-      const league = await getLeague(leagueName);
-      res.json(league);
+      const league = await Leagues.findOne(leagueName);
+      if(!league){
+          res.send({});
+      }
+      else{
+        console.log("league", league)
+        res.send(league);
+      }
+      
     }
     else{
         res.status(405).json({message: "api/league/[leagueName] only supports GET"});

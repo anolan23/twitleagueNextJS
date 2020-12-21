@@ -1,15 +1,25 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Head from 'next/head'
+import {connect} from "react-redux";
 
 import MainBody from "../components/MainBody"
 import Notifications from "../components/Notifications";
+import {fetchNotifications} from "../actions"
 
-export default function NotificationPage() {
-  return (
+function NotificationPage(props){
+
+  useEffect(() => {
+    props.fetchNotifications();
+    console.log("componentDidMount")
+  }, []);
+
+  return(
     <React.Fragment>
       <MainBody>
-      <Notifications/>
+        <Notifications/>
       </MainBody>
     </React.Fragment>
   )
 }
+
+export default connect(null, {fetchNotifications})(NotificationPage);

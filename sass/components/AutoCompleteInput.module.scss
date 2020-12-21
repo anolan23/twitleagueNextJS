@@ -12,16 +12,24 @@
     
 
     &__dropdown {
-        top: auto !important;
+        font-size: 1.5rem;
+        top: 100% !important;
         left: auto !important;
         opacity: 100% !important;
+        margin-top: .125rem !important;
         pointer-events: all !important;
-        margin-top: 2px !important;
+        // margin-top: 2px !important;
         max-height: 80vh;
         overflow-y: auto;
         width: 100%;
-        box-shadow: var(--box-shadow);
-        border: none;
+        z-index: 1;
+        border-color: grey;
+        // box-shadow: var(--box-shadow);
+        // border: none;
+    }
+
+    &__header{
+        font-size: 1.5rem;
     }
 }
 

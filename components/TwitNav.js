@@ -39,7 +39,7 @@ function TwitNav(props) {
                     <use xlinkHref="/sprites.svg#icon-server"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem href="/user/leagues" title="My Leagues">
+            <TwitNavItem href="/myLeagues" title="My Leagues">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-trending-up"/>
                 </svg>

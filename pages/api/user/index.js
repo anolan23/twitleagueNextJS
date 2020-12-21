@@ -7,11 +7,12 @@ export default async (req,res) => {
             verify(req.cookies.auth, process.env.AUTH_TOKEN_SECRET, async function(err, decoded) {
                 if (!err && decoded) {
                     const username = decoded.username;
-                    const user = await Users.findOne(username);
+                    let user = await Users.findOne(username);
+                    user = {...user, isSignedIn: true}
                     res.send(user);
                 }
                 else {
-                    
+                    res.send("unable to verify user")
                 }
               });  
     else{

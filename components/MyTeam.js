@@ -2,16 +2,16 @@ import myTeam from "../sass/components/MyTeam.module.scss";
 import Avatar from "./Avatar";
 import TwitButton from "./TwitButton";
 
-function MyTeam(){
+function MyTeam(props){
     return (
-        <div className={myTeam["my-team"]}>
-            <Avatar className={myTeam["my-team__avatar"]}/>
+        <div key={props.key} className={myTeam["my-team"]}>
+            <Avatar className={myTeam["my-team__avatar"]} src={props.avatar}/>
             <div className={myTeam["my-team__info"]}>
-                <span className={myTeam["my-team__info__team"]}>White Sox</span>
-                <span className={myTeam["my-team__info__league"]}>Major League Baseball</span>
+                <span className={myTeam["my-team__info__team"]}>{props.teamName}</span>
+                <span className={myTeam["my-team__info__league"]}>{props.leagueName}</span>
             </div>
             <div className={myTeam["my-team__actions"]}>
-                <TwitButton color="twit-button--primary">View</TwitButton>
+                <TwitButton href={`/team/${props.abbrev.substring(1)}`} color="twit-button--primary">View</TwitButton>
                 <TwitButton outline="twit-button--primary--outline">Manage</TwitButton>
             </div>
         </div>
