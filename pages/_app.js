@@ -12,11 +12,15 @@ import AvatarModal from "../components/modals/AvatarModal";
 import RosterModal from '../components/modals/RosterModal';
 import AuthBanner from '../components/AuthBanner';
 import PopupCompose from '../components/modals/PopupCompose';
+import Login from "../components/modals/Login";
+import SignUp from "../components/modals/SignUp";
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
   return (
     <Provider store={store}>
+      <Login/>
+      <SignUp/>
       <AuthBanner/>
       <GifModal/>
       <TwitPostModal/>

@@ -30,6 +30,7 @@ class Users {
         // await pool.end();
         return rows[0];
     }
+
 }
 
 export default Users;

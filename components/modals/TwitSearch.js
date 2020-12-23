@@ -6,7 +6,7 @@ import AutoCompleteInput from "./AutoCompleteInput";
 import TwitItem from "../TwitItem";
 import backend from "../../lib/backend";
 
-function AutoCompleteForm(props) {
+function TwitSearch(props) {
 
     const [options, setOptions] = useState([]);
     const [show, setShow] = useState(false);
@@ -24,7 +24,6 @@ function AutoCompleteForm(props) {
     }, [])
 
     const clickOutsideInput = (event) => {
-        console.log("click")
         if(ref.current.contains(event.target)){
             return;
         }
@@ -43,16 +42,17 @@ function AutoCompleteForm(props) {
         event.target.value ? setShow(true) : setShow(false);
         }
         search();
+        console.log(event.target.value)
     }
 
     const renderTeamOptions = () => {
         if(!options.teams || options.teams.length === 0){
             return null;
         }
-        return options.teams.map(option => {
+        return options.teams.map((option, index) => {
             return (
-                    <Link passHref href={"/teams/" + option.teamAbbrev.substring(1)} key={option._id}>
-                        <TwitItem title={option.teamAbbrev.substring(1)} subtitle={option.teamName} image={option.image}/>
+                    <Link passHref href={"/teams/" + option.abbrev.substring(1)} key={index}>
+                        <TwitItem title={option.team_name} subtitle={option.abbrev.substring(1)} image={option.avatar}/>
                     </Link>
                     );
         });
@@ -65,11 +65,12 @@ function AutoCompleteForm(props) {
         return options.users.map((option, index) => {
             return (
                     <Link passHref href={"/users/"+option.username} key={index}>
-                        <TwitItem title={option.username} subtitle={option.username} image={option.image}/>
+                        <TwitItem title={option.name} subtitle={option.username} image={option.avatar}/>
                     </Link>
                     );
         });
     }
+
         return (
             <div ref={ref} style={{width:"100%", position:"relative"}}>
                 <AutoCompleteInput
@@ -91,4 +92,4 @@ function AutoCompleteForm(props) {
         );
     }
 
-export default AutoCompleteForm;
+export default TwitSearch;
