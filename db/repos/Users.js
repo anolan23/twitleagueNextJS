@@ -22,12 +22,10 @@ class Users {
     }
 
     static async findOne(username) {
-        // await pool.connect();
         const {rows} = await pool.query(`
             SELECT * 
             FROM users
             WHERE username = $1`, [username]);
-        // await pool.end();
         return rows[0];
     }
 

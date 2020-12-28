@@ -12,6 +12,7 @@ import AvatarModal from "../components/modals/AvatarModal";
 import RosterModal from '../components/modals/RosterModal';
 import AuthBanner from '../components/AuthBanner';
 import PopupCompose from '../components/modals/PopupCompose';
+import PopupReply from '../components/modals/PopupReply';
 import Login from "../components/modals/Login";
 import SignUp from "../components/modals/SignUp";
 
@@ -28,6 +29,7 @@ function MyApp({ Component, pageProps }) {
       <AvatarModal/>
       <RosterModal/>
       <PopupCompose/>
+      <PopupReply/>
       <Component {...pageProps}/>
     </Provider>
   );

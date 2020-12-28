@@ -11,8 +11,12 @@ export default async (req,res) => {
     else if(method === "POST"){
        
     }
+    else if(method === "DELETE"){
+       const notificationId = req.query.notificationId;
+       Notifications.delete(notificationId);
+    }
     else{
-        res.status(405).json({message: "api/notifications only supports GET/POST method"})
+        res.status(405).json({message: "api/notifications only supports GET/DELETE method"})
     }
 
     

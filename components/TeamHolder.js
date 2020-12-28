@@ -6,7 +6,7 @@ import Avatar from './Avatar';
 import {connect} from "react-redux";
 
 import {
-  watchTeamAndFetchUser, 
+  followTeam, 
   unwatchTeamAndFetchUser, 
   toggleAddEventModal, 
   toggleAvatarModal,
@@ -24,7 +24,7 @@ function TeamHolder(props) {
   const team = props.team;
 
   const renderButton = () => {
-    if(props.userId === team.owner){
+    if(props.username === team.head_coach){
       return (
       <DropdownButton size="sm" id="manageTeam" title="Manage Team">
         <Dropdown.Item as="button" onClick={props.toggleAddEventModal}>Schedule Event</Dropdown.Item>
@@ -33,9 +33,9 @@ function TeamHolder(props) {
       </DropdownButton>);
     }
     else{
-      if(!props.watchList.includes(team._id))
+      if(!props.following.some(row => row.team_id === team.id))
       {
-        return <Button onClick={() => props.watchTeamAndFetchUser()} className={button["button--watch"]}>Watch</Button>
+        return <Button onClick={() => props.followTeam()} className={button["button--watch"]}>Watch</Button>
       }
       else
       {
@@ -103,13 +103,13 @@ function TeamHolder(props) {
 const mapStateToProps = (state) => {
   return {
     team: state.team,
-    watchList: state.user.watchList ? state.user.watchList : [],
-    userId: state.user._id
+    following: state.user.following ? state.user.following : [],
+    username: state.user.username
   }
 }
 
 export default connect(mapStateToProps,{
-  watchTeamAndFetchUser, 
+  followTeam, 
   unwatchTeamAndFetchUser, 
   toggleAddEventModal, 
   toggleAvatarModal,

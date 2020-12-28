@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { bindActionCreators } from "redux";
 import backend from "../lib/backend";
 
 //User Action Creators
@@ -26,17 +28,17 @@ export const logOutUser = () => async dispatch => {
     dispatch({type: "LOGOUT_USER", payload: response.data})
 }
 
-export const deleteNotification = indexToDelete => async (dispatch, getState) => {
-    const userId = getState().user._id;
-    console.log(userId);
-    const response = await backend.delete("/api/user/notifications", {
-                    params: {
-                        userId, 
-                        indexToDelete
-                    }                     
+export const deleteNotification = notificationId => async (dispatch, getState) => {
+    let notifications = getState().user.notifications;
+    notifications = notifications.filter(notification => {
+        return notification.id !== notificationId;
     });
-    
-    dispatch({type: "DELETE_NOTIFICATION", payload: response.data}); 
+    dispatch({type: "DELETE_NOTIFICATION", payload: notifications});
+    backend.delete("/api/notifications", {
+        params: {
+            notificationId
+        }                     
+    });
 }
 
 //Modal Action Creators
@@ -78,6 +80,10 @@ export const toggleRosterModal = () => {
 
 export const togglePopupCompose = () => {
     return {type: "TOGGLE_POPUP_COMPOSE"};
+}
+
+export const togglePopupReply = () => {
+    return {type: "TOGGLE_POPUP_REPLY"};
 }
 
 
@@ -169,17 +175,17 @@ export const saveTeamImages = (teamImageUrl, bannerImageUrl) => async (dispatch,
     }
 }
 
-export const watchTeam = () => async (dispatch, getState) => {
-    const userId = getState().user._id;
-    const teamId = getState().team._id;
+export const followTeam = () => async (dispatch, getState) => {
+    const userId = getState().user.id;
+    const teamId = getState().team.id;
     if(userId && teamId){
-        const response = await backend.patch("/api/watch/team", {userId,teamId});
-        dispatch({type: "WATCH_TEAM", payload: response.data});
+        const response = await backend.patch("/api/follow/team", {userId,teamId});
+        dispatch({type: "FOLLOW_TEAM", payload: response.data});
     }
 }
 
 export const watchTeamAndFetchUser = () => async (dispatch) => {
-   await dispatch(watchTeam());
+   await dispatch(followTeam());
    dispatch(fetchUser());
 }
 
@@ -188,7 +194,7 @@ export const unwatchTeam = () => async (dispatch, getState) => {
     const teamId = getState().team._id;
     if(userId && teamId){
         const response = await backend.patch("/unwatch", {userId,teamId});
-        dispatch({type: "UNWATCH_TEAM", payload: response.data});
+        dispatch({type: "UNFOLLOW_TEAM", payload: response.data});
     }
 }
 
@@ -251,6 +257,18 @@ export const createPost = () => async (dispatch, getState) => {
     dispatch(emptyPostData());
 }
 
+export const createReply = (conversation_id, in_reply_to_post_id) => async (dispatch, getState) => {
+    const userId = getState().user.id;
+    const body = getState().post.postText;
+    const gif = getState().post.gif.id;
+    const outlook = getState().post.outlook;
+    const reply = {userId, body, gif, outlook, conversation_id, in_reply_to_post_id};
+    const response = await backend.post("/api/posts", {reply});
+
+    dispatch({type: "CREATE_REPLY", payload: response.data})
+    dispatch(emptyPostData());
+}
+
 export const fetchTeamPosts = () => async (dispatch, getState) => {
     const teamId = getState().team.id;
     const response = await backend.get("/api/posts/team", {
@@ -296,6 +314,16 @@ export const fetchLeaguePosts = () => async (dispatch, getState) => {
     dispatch({type: "FETCH_LEAGUE_POSTS", payload: response.data});
 }
 
+export const fetchThreadPosts = (conversation_id) => async (dispatch, getState) => {
+    const response = await backend.get("/api/posts/thread", {
+        params: {
+            conversation_id
+        }
+    });
+    
+    dispatch({type: "FETCH_THREAD_POSTS", payload: response.data});
+}
+
 export const fetchUserAndWatchListPosts = () => async (dispatch) => {
     await dispatch(fetchUser());
     dispatch(fetchWatchListPosts());
@@ -304,15 +332,22 @@ export const fetchUserAndWatchListPosts = () => async (dispatch) => {
 
 
 export const likePost = (postId) => async (dispatch, getState) => {
-    const username = getState().user.username;
-    const userId = getState().user._id;
+    const userId = getState().user.id;
+    if(!userId){
+        return;
+    }
+
+    let posts = getState().posts;
+    const postIndex = posts.findIndex( post => post.id === postId)
+    console.log("postIndex", postIndex)
+    let likes = posts[postIndex].likes;
+    likes++;
+    posts[postIndex].likes = likes;
+    dispatch({type: "LIKE_POST", payload: posts})
     const response = await backend.patch("/api/posts/like", {
         postId,
-        username,
-        userId 
+        userId
     });
-
-    dispatch({type: "LIKE_POST", payload: {postId, likes:response.data}})
 }
 
 export const unlikePost = (postId) => async (dispatch) => {

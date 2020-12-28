@@ -27,17 +27,7 @@ function FeedHolder(props) {
       return (
         <Post 
           key={index}
-          id={post.id}
-          name={post.name} 
-          username={post.username}
-          content={post.body} 
-          likes={post.likes ? Object.keys(post.likes).length : 0} 
-          retwits={post.retwits}
-          comments={post.comments ? Object.keys(post.comments).length : 0}
-          gif={post.gif}
-          created_at={post.created_at}
-          outlook={post.outlook}
-          onClick={() => onPostClick(post)}
+          post={post}
           />
       );
     })

@@ -1,5 +1,7 @@
 import {verify} from "jsonwebtoken";
 import Users from "../../../db/repos/Users";
+import Notifications from "../../../db/repos/Notifications";
+import Followers from "../../../db/repos/Followers";
 
 export default async (req,res) => {
     const method = req.method;
@@ -8,7 +10,9 @@ export default async (req,res) => {
                 if (!err && decoded) {
                     const username = decoded.username;
                     let user = await Users.findOne(username);
-                    user = {...user, isSignedIn: true}
+                    const notifications = await Notifications.findByUserId(user.id);
+                    const following = await Followers.findAllTeamsFollowed(user.id);
+                    user = {...user, notifications, following, isSignedIn: true}
                     res.send(user);
                 }
                 else {

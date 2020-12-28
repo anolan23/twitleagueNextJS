@@ -3,12 +3,13 @@ import {connect} from "react-redux";
 
 import TeamHolder from "./TeamHolder";
 import FeedHolder from "./FeedHolder";
-import {createPost, fetchUser} from "../actions";
+import {createPost, fetchUser, fetchTeamPosts} from "../actions";
 import TopBar from "./TopBar";
 
 function TeamComponent(props) {
 
     useEffect(() => {
+        props.fetchTeamPosts();
         if(!props.user.isSignedIn){
             props.fetchUser();
         }
@@ -32,4 +33,4 @@ const mapStateToProps = (state) => {
     return {user: state.user}
 }
 
-export default connect(mapStateToProps, {fetchUser, createPost})(TeamComponent);
+export default connect(mapStateToProps, {fetchUser, createPost, fetchTeamPosts})(TeamComponent);

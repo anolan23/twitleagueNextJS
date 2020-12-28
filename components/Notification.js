@@ -12,10 +12,10 @@ import {deleteNotification} from "../actions";
 function Notification(props) {
 
     const onAcceptJoinLeagueRequestClick = () => {
-        const league = props.data.leagueToJoin;
-        const team = props.data.teamIssuingRequest;
-        backend.patch("/api/join/league", {league,team});
-        props.deleteNotification(props.index);
+        const leagueId = props.notification.payload.league_id;
+        const teamId = props.notification.payload.team_id;
+        backend.patch("/api/join/league", {leagueId,teamId});
+        props.deleteNotification(props.notification.id);
     }
 
     // const onDeclineClick = () => {
@@ -36,17 +36,19 @@ function Notification(props) {
     }
 
     const renderNotification = () => {
-        if(props.type ==="Join League Request" && props.data)
+        if(props.notification.type ==="Join League Request")
         {
-            const text = props.data.teamIssuingRequest.teamAbbrev + " wants to join " + props.data.leagueToJoin.leagueName;
+            const text = props.notification.payload.message;
             const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-                <Link key={match + i} passHref href={"/teams/"+ props.data.teamIssuingRequest.teamAbbrev.substring(1)}><a>${match}</a></Link>
+                <Link key={match + i} passHref href={"/teams/"}><a>${match}</a></Link>
               ));
             return (
                 <React.Fragment>
                     <span className={notification["notification__text"]}>{replacedText}</span>
-                    <TwitButton onClick={onAcceptJoinLeagueRequestClick} color="twit-button--primary">Accept</TwitButton>
-                    <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
+                    <div className={notification["notification__actions"]}>
+                        <TwitButton onClick={onAcceptJoinLeagueRequestClick} color="twit-button--primary">Accept</TwitButton>
+                        <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
+                    </div>
                 </React.Fragment>
             );
         }

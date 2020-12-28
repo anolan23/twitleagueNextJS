@@ -1,26 +1,17 @@
-import {Post} from "../../../db/connect";
+import Posts from "../../../db/repos/Posts";
 
 export default async (req,res) => {
     const method = req.method;
     if(method === "PATCH"){
-        Post.findById(req.body.postId, function(err, post) {
-            if(err){
-              console.log(err);
-            }
-            else{
-                //like is already present. delete it
-                // if(post.likes[req.body.username]){
-                //     delete post.likes[req.body.username];
-                // }
-                //like not present. add it
-                // else {
-                //     post.likes = {...post.likes, [req.body.username]: req.body.userId}
-                // }
-                post.likes = {...post.likes, [req.body.username]: req.body.userId}
-                post.save();
-                res.json(post.likes); 
-            }
-          });
+        const post_id = req.body.postId;
+        const user_id = req.body.userId
+        const like = await Posts.like(post_id, user_id);
+        if(like){
+            res.send("post like successful")
+        }
+        else{
+            res.send("post like unsuccessful");
+        }
     }
     else{
         res.status(405).json({message: "api/posts/like only supports PATCH method"})

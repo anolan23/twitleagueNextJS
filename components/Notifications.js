@@ -10,8 +10,7 @@ function Notifications(props) {
    const renderNotifications = () => {
        if(props.notifications.length > 0){
         return props.notifications.map((notification, index) => {
-            console.log(props.notifications);
-            return <Notification key={index} data={notification.data} type={notification.type} index={index}/>
+            return <Notification key={index} notification={notification}/>
         }
        );
        

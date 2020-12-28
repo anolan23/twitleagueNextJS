@@ -38,10 +38,8 @@ function TwitInput(props){
 
     const onSubmit = (event) => {
         event.preventDefault();
-        props.createPost();
+        props.onSubmit();
         contentEditable.current.innerHTML = "";
-        props.saveCurrentPostText("");
-        props.togglePopupCompose();
     }
 
     return(
@@ -75,7 +73,7 @@ function TwitInput(props){
                 </div>
                 <div className={twitInput["twit-input__action"]}>
                     <div className={twitInput["twit-input__action__char-count"]} disabled={chars>allowableChars}>{allowableChars - chars}</div>
-                    <TwitButton disabled={disabled()} color="twit-button--primary">Post</TwitButton>
+                    <TwitButton disabled={disabled()} color="twit-button--primary">{props.buttonText}</TwitButton>
                 </div>
 
             </div>

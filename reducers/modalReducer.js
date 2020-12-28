@@ -9,7 +9,8 @@ const INITIAL_STATE = {
     showAvatarModal: false,
     showScheduleModal: false,
     showRosterModal: false,
-    showPopupCompose: false
+    showPopupCompose: false,
+    showPopupReply: false
 }
 
 const modalReducer = (state = INITIAL_STATE, action) => {
@@ -36,6 +37,8 @@ const modalReducer = (state = INITIAL_STATE, action) => {
             return {...state, showRosterModal: !state.showRosterModal} 
         case "TOGGLE_POPUP_COMPOSE":
             return {...state, showPopupCompose: !state.showPopupCompose} 
+        case "TOGGLE_POPUP_REPLY":
+            return {...state, showPopupReply: !state.showPopupReply}
         default:
             return state;
     }

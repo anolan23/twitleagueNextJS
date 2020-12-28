@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
 import {initializeStore} from "../../redux/store";
@@ -41,7 +41,6 @@ export async function getStaticProps(context) {
 
     const teamAbbrev = "$" + context.params.teamAbbrev;
     let team = await Teams.findOne(teamAbbrev);
-    console.log("team.id", team);
     const followers = await Followers.findByTeamId(team.id);
     
     team = {...team, followers: followers};

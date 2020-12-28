@@ -7,7 +7,7 @@ const postsReducer = (state = INITIAL_STATE, action) => {
         case "FETCH_TEAM_POSTS":
             return action.payload; 
         case "LIKE_POST":
-            return {...state, [action.payload.postId]: {...state[action.payload.postId],likes: action.payload.likes}}
+            return action.payload;
         case "UNLIKE_POST":
             return {...state, [state._id]: {...state._id,likes: action.payload}}
         case "CREATE_COMMENT_ON_POST":
@@ -18,8 +18,10 @@ const postsReducer = (state = INITIAL_STATE, action) => {
             return action.payload;
         case "FETCH_LEAGUE_POSTS":
             return action.payload;
-            default:
-            return state;
+        case "FETCH_THREAD_POSTS":
+            return action.payload;
+        default:
+        return state;
     }
 }
 

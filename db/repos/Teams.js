@@ -76,6 +76,14 @@ class Teams {
         `);
         return teams.rows;
     }
+
+    static async joinLeague(leagueId, teamId) {
+        const team = await pool.query(`
+        UPDATE teams
+        SET league_id = $1
+        WHERE id = $2`, [leagueId, teamId]);
+        return team.rows;
+    }
 }
 
 export default Teams;

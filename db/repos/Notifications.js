@@ -9,6 +9,13 @@ class Notifications {
         WHERE user_id = $1`, [userId]);
         return notifications.rows;
     }
+
+    static async delete(notificationId) {
+        const notifications = await pool.query(`
+        DELETE FROM notifications
+        WHERE id = $1`, [notificationId]);
+        return notifications.rows;
+    }
 }
 
 export default Notifications;

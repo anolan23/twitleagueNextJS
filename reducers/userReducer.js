@@ -16,9 +16,9 @@ const userReducer = (state = INITIAL_STATE, action) => {
             return action.payload; 
         case "DELETE_NOTIFICATION":
             return {...state, notifications: action.payload};
-        case "WATCH_TEAM":
-            return {...state, watchList: action.payload.watchList}; 
-        case "UNWATCH_TEAM":
+        case "FOLLOW_TEAM":
+            return {...state, following: [...state.following, action.payload]};
+        case "UNFOLLOW_TEAM":
             return {...state, watchList: action.payload.watchList}; 
         case "FETCH_NOTIFICATIONS":
             return {...state, notifications: action.payload};

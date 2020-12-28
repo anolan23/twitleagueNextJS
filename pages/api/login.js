@@ -1,4 +1,6 @@
 import Users from "../../db/repos/Users";
+import Notifications from "../../db/repos/Notifications";
+import Followers from "../../db/repos/Followers";
 import {compare} from "bcrypt";
 import {sign} from "jsonwebtoken";
 import cookie from "cookie";
@@ -8,9 +10,10 @@ export default async (req,res) => {
     const {username, password} = req.body;
     if(method === "POST"){
         let user = await Users.findOne(username);
-        user = {...user, isSignedIn: true};
+        const notifications = await Notifications.findByUserId(user.id);
+        const following = await Followers.findAllTeamsFollowed(user.id);
+        user = {...user, notifications, following, isSignedIn: true}
         const result = await compare(password, user.password);
-        console.log("result", result)
         if(result){
             const claims = {
                 sub: user.id,
