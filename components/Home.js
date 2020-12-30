@@ -10,7 +10,11 @@ function Home(props) {
         return (
             <div >
                 <TopBar main="Home"/>
-                <TwitInput placeHolder="What's happening?" initialValue=""/>
+                <TwitInput 
+                    placeHolder="What's happening?" 
+                    initialValue=""
+                    buttonText="Post"    
+                />
                 <HomeFeedHolder/>
             </div>
         );

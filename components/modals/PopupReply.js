@@ -19,7 +19,13 @@ function PopupReply(props){
         return (
             <React.Fragment>
                 <Post post={props.trackedPost}/>
-                <TwitInput onSubmit={onSubmit} buttonText="Reply" expanded placeHolder="Post your reply" initialValue=""/>       
+                <TwitInput 
+                    onSubmit={onSubmit} 
+                    buttonText="Reply" 
+                    expanded 
+                    placeHolder="Post your reply" 
+                    initialValue=""
+                />       
             </React.Fragment>
         )
     }

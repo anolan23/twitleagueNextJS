@@ -7,7 +7,7 @@ import ContentEditable from "react-contenteditable";
 
 import twitInput from "../sass/components/TwitInput.module.scss";
 import TwitButton from "./TwitButton";
-import {toggleGifModal, saveCurrentPostText, saveCurrentOutlook, createPost, togglePopupCompose} from "../actions";
+import {toggleGifModal, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose} from "../actions";
 import GifThumb from "./GifThumb";
 import Avatar from "../components/Avatar";
 
@@ -271,4 +271,4 @@ const mapStateToProps = (state) => {
         }
 }
 
-export default connect(mapStateToProps, {toggleGifModal, saveCurrentPostText, saveCurrentOutlook, createPost, togglePopupCompose})(TwitInput);
+export default connect(mapStateToProps, {toggleGifModal, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose})(TwitInput);

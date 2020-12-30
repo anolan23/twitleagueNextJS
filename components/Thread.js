@@ -4,17 +4,30 @@ import {connect} from "react-redux";
 import thread from "../sass/components/Thread.module.scss";
 import TopBar from "./TopBar";
 import Post from "./Post";
-import {fetchThreadPosts} from "../actions";
+import ActivePost from "./ActivePost";
+import {fetchThreadPosts, clearPosts} from "../actions";
 
 function Thread(props) {
     
     useEffect(() => {
         props.fetchThreadPosts(props.postId);
+    }, [props.postId])
+
+    useEffect(() => {
+        return () => {
+            props.clearPosts();
+        };
     }, [])
 
    const renderPosts = () => {
         return props.posts.map((post, index) => {
-            return <Post key={index} post={post}/>
+            if(post.id != props.postId){
+                return <Post key={index} post={post}/>
+            }
+            else if(post.id == props.postId){
+                return <ActivePost key={index} post={post}/>
+            }
+            
         })
    }
         return (
@@ -28,7 +41,7 @@ function Thread(props) {
     }
 
 const mapStateToProps = (state) => {
-    return {posts: state.posts}
+    return {posts: state.posts ? state.posts : []}
 }
 
-export default connect(mapStateToProps, {fetchThreadPosts})(Thread);
+export default connect(mapStateToProps, {fetchThreadPosts, clearPosts})(Thread);

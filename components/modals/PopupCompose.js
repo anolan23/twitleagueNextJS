@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {togglePopupCompose} from "../../actions";
+import {togglePopupCompose, createPost} from "../../actions";
 
 import Popup from "./Popup";
 import TwitInput from "../TwitInput";
@@ -8,7 +8,15 @@ import TwitInput from "../TwitInput";
 function PopupCompose(props){
     
     const renderBody = () => {
-        return <TwitInput expanded placeHolder="What's happening?" initialValue=""/>
+        return (
+            <TwitInput 
+                expanded 
+                placeHolder="What's happening?" 
+                initialValue="" 
+                buttonText="Post"
+                onSubmit={props.createPost}
+                />
+        )
     }
     
     return (
@@ -26,4 +34,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {togglePopupCompose})(PopupCompose);
+export default connect(mapStateToProps, {togglePopupCompose, createPost})(PopupCompose);

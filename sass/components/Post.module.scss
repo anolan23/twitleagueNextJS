@@ -9,9 +9,8 @@
   padding: 1rem 1.5rem;
   cursor: pointer;
   transition: background-color .2s;
-  &:not(:last-child){
-    border-bottom: var(--border);
-  }
+  border-bottom: var(--border);
+  
 
   &:hover{
     background-color:var(--GRAY_BACKGROUND);
@@ -85,8 +84,8 @@
 
     cursor: pointer;
     align-self: center;
-    height: 18px;
-    width: 18px;
+    height: 15px;
+    width: 15px;
     fill: var(--SECONDARY_TEXT);
     position: relative;
     transition: all .2s;

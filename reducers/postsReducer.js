@@ -1,9 +1,9 @@
-const INITIAL_STATE = {}
+const INITIAL_STATE = [];
 
 const postsReducer = (state = INITIAL_STATE, action) => {
     switch(action.type){
         case "CREATE_POST":
-            return {[action.payload._id]: action.payload, ...state}; 
+            return [...state, action.payload]; 
         case "FETCH_TEAM_POSTS":
             return action.payload; 
         case "LIKE_POST":
@@ -19,6 +19,8 @@ const postsReducer = (state = INITIAL_STATE, action) => {
         case "FETCH_LEAGUE_POSTS":
             return action.payload;
         case "FETCH_THREAD_POSTS":
+            return action.payload;
+        case "CLEAR_POSTS":
             return action.payload;
         default:
         return state;

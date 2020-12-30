@@ -51,18 +51,18 @@ class Posts {
 
     static async findByTeamId(teamId) {
         const {rows} = await pool.query(`
-        SELECT posts.id, posts.created_at, conversation_id, in_reply_to_post_id, author_id, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes 
+        SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
         FROM team_mentions
-        JOIN posts ON team_mentions.post_id = posts.id
-        JOIN users ON posts.author_id = users.id
+        JOIN posts AS p1 ON team_mentions.post_id = p1.id
+        JOIN users ON p1.author_id = users.id
         WHERE team_id = $1`, [teamId]);
         return rows;
     }
 
     static async findByLeagueId(leagueId) {
         const {rows} = await pool.query(`
-        SELECT posts.id, posts.created_at, conversation_id, in_reply_to_post_id, author_id, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes
-        FROM posts
+        SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+        FROM posts AS p1
         JOIN (
         SELECT DISTINCT post_id
         FROM team_mentions
@@ -71,19 +71,77 @@ class Posts {
             FROM teams
             WHERE league_id = $1
         )
-        ) AS p1 ON p1.post_id = posts.id
-        JOIN users ON posts.author_id = users.id`, [leagueId]);
+        ) AS t1 ON t1.post_id = p1.id
+        JOIN users ON p1.author_id = users.id`, [leagueId]);
         return rows;
     }
 
-    static async findByConversationId(conversation_id) {
-        const {rows} = await pool.query(`
-        SELECT posts.id, posts.created_at, conversation_id, in_reply_to_post_id, author_id, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes
-        FROM posts
-        JOIN users ON posts.author_id = users.id
-        WHERE conversation_id = $1
-        ORDER BY created_at`, [conversation_id]);
-        return rows;
+    static async findByPostId(postId) {
+        let activePost;
+        let posts;
+        let post;
+        let previousPostsObtained = false;
+        await (async () => {
+            const client = await pool.connect()
+            try {
+                await client.query('BEGIN')
+                activePost = await client.query(`
+                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+                  FROM posts AS p1
+                  JOIN users ON p1.author_id = users.id
+                  WHERE p1.id = $1
+                  ORDER BY created_at`, [postId]
+              )
+
+              posts = activePost.rows;
+              post = activePost.rows[0];
+              console.log("post", post);
+
+              const getPreviousPost = async (in_reply_to_post_id) => {
+                const previousPost = await client.query(`
+                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+                  FROM posts AS p1
+                  JOIN users ON p1.author_id = users.id
+                  WHERE p1.id = $1
+                  ORDER BY created_at`, [in_reply_to_post_id]
+              )
+              return previousPost.rows[0];
+              }
+
+              while(!previousPostsObtained){
+                if(!post.in_reply_to_post_id){
+                  previousPostsObtained = true;
+                  break;
+                }
+                let previousPost = await getPreviousPost(post.in_reply_to_post_id);
+                post = previousPost;
+                posts = [previousPost, ...posts];
+                if(post.id === post.conversation_id){
+                  previousPostsObtained = true;
+                }
+              }
+
+              const replies = await client.query(`
+                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+                  FROM posts AS p1
+                  JOIN users ON p1.author_id = users.id
+                  WHERE p1.in_reply_to_post_id = $1
+                  ORDER BY created_at`, [activePost.rows[0].id]
+              )
+              
+              posts = [...posts, ...replies.rows];
+
+              await client.query('COMMIT')
+              
+            } catch (e) {
+              await client.query('ROLLBACK')
+              throw e
+            } finally {
+              client.release()
+            }
+
+          })().catch(e => console.error(e.stack))
+          return posts;
     }
 
     static async reply(reply, abbrevs) {

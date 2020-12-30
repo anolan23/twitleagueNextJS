@@ -314,10 +314,10 @@ export const fetchLeaguePosts = () => async (dispatch, getState) => {
     dispatch({type: "FETCH_LEAGUE_POSTS", payload: response.data});
 }
 
-export const fetchThreadPosts = (conversation_id) => async (dispatch, getState) => {
+export const fetchThreadPosts = (postId) => async (dispatch) => {
     const response = await backend.get("/api/posts/thread", {
         params: {
-            conversation_id
+            postId
         }
     });
     
@@ -360,27 +360,8 @@ export const unlikePost = (postId) => async (dispatch) => {
     dispatch({type: "UNLIKE_POST", payload: response.data})
 }
 
-export const createCommentOnPost = () => async (dispatch, getState) => {
-    const parentPostId = getState().trackedPost._id;
-    const author = getState().user.username;
-    const postText = getState().post.postText;
-    const gifId = getState().post.gif.id;
-    const outlook = getState().post.outlook;
-    const dataToSend = {
-        parentPostId,
-        author,
-        postText, 
-        gifId, 
-        outlook, 
-        dateTime: Date.now(), 
-        likes: {}, 
-        retwits: {}, 
-        comments: {}
-    }
-    const response = await backend.post("api/posts/comment", dataToSend);
-
-    dispatch({type: "CREATE_COMMENT_ON POST", payload: {parentPostId, comments:response.data}})
-    dispatch(emptyPostData());
+export const clearPosts = () => async (dispatch) => {
+    dispatch({type: "CLEAR_POSTS", payload: []});
 }
 
 //Post Action Creators

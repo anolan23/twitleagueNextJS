@@ -1,0 +1,102 @@
+.active-post{
+    display: flex;
+    flex-direction: column;
+
+    font-size: 1.5rem;
+    line-height: 1.3125;
+    padding: 1rem 1.5rem;
+    cursor: default;
+    border-bottom: var(--border);
+    transition: background-color .2s;
+
+    &__user{
+        display: flex;
+        cursor: pointer;
+
+    }
+
+    &__avatar{
+        height: 50px;
+        width: 50px;
+    }
+
+    &__user-text{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        margin-left: 1rem;
+    }
+
+    &__name{
+        font-weight: 700;
+        color:#101010;
+        text-decoration: none;
+        display:inline-block;
+    }
+
+    &__username{
+        color: var(--SECONDARY_TEXT);
+    }
+
+    &__body{
+        font-size: 2.3rem;
+        line-height: 3rem;
+        white-space: pre-wrap;
+        cursor: text;
+    }
+
+    &__timestamp{
+        color: var(--SECONDARY_TEXT);
+        margin: 1.5rem 0;
+
+    }
+
+    &__stats{
+        padding: 1.5rem .5rem;
+        border-top: var(--border);
+        border-bottom: var(--border);
+        cursor: pointer;
+    }
+
+    &__stat-box{
+        text-decoration: none;
+
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+
+    &__value{
+        font-weight: 700;
+    }
+
+    &__stat{
+        color: var(--SECONDARY_TEXT);
+        margin-left: .5rem;
+
+
+    }
+
+    &__icons{
+        display: flex;
+        justify-content: space-around;
+        margin-top: 1rem;
+    }
+
+    &__icon{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    
+        cursor: pointer;
+        align-self: center;
+        height: 18.5px;
+        width: 18.5px;
+        fill: var(--SECONDARY_TEXT);
+        position: relative;
+        transition: all .2s;
+    }
+
+
+}

@@ -5,7 +5,6 @@ import "../sass/_main.scss";
 import { Provider } from 'react-redux'
 
 import { useStore } from '../redux/store'
-import TwitPostModal from "../components/modals/TwitPostModal";
 import AddEventModal from "../components/modals/AddEventModal";
 import GifModal from "../components/modals/GifModal";
 import AvatarModal from "../components/modals/AvatarModal";
@@ -24,7 +23,6 @@ function MyApp({ Component, pageProps }) {
       <SignUp/>
       <AuthBanner/>
       <GifModal/>
-      <TwitPostModal/>
       <AddEventModal/>
       <AvatarModal/>
       <RosterModal/>

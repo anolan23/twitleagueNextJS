@@ -4,7 +4,6 @@ export default async (req,res) => {
     const method = req.method;
     if(method === "POST"){
         const replyData = req.body.reply;
-        console.log("replyData", replyData)
         if(replyData){
             const regex = /\$(\w+)/g;
             const teamAbbrevs = replyData.body.match(regex);

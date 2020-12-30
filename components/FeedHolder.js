@@ -97,7 +97,7 @@ function FeedHolder(props) {
 
 const mapStateToProps = (state) => {
   return {
-    posts: state.posts ? Object.values(state.posts) : [],
+    posts: state.posts ? state.posts : [],
     roster: state.team.roster ? state.team.roster : [],
     events: state.team.events ? state.team.events : []
   }

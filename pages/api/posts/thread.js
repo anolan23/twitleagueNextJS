@@ -3,8 +3,8 @@ import Posts from "../../../db/repos/Posts";
 export default async (req,res) => {
     const method = req.method;
     if(method === "GET"){
-        const conversation_id = req.query.conversation_id;
-        const posts = await Posts.findByConversationId(conversation_id);
+        const postId = req.query.postId;
+        const posts = await Posts.findByPostId(postId);
         res.send(posts);
     }
     else{

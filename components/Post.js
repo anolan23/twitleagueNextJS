@@ -56,7 +56,7 @@ function Post(props) {
     }
   }
 
-  const renderContent = () => {
+  const renderBody = () => {
     const text = props.post.body;
     let replacedText;
     replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
@@ -71,13 +71,19 @@ function Post(props) {
   }
 
   const onPostClick = () => {
-    router.push(`/thread/${props.post.conversation_id}`)
+    router.push(`/thread/${props.post.id}`)
+    
   }
 
   const onReplyClick = () => {
     props.trackClickedPost(props.post);
     props.togglePopupReply();
   }
+
+  const onLikeClick = (event) => {
+    props.likePost(props.post.id);
+  }
+
     return (
       <div onClick={onPostClick} className={post.post}>
           <Avatar roundedCircle className={post["post__image"]}/>
@@ -91,7 +97,7 @@ function Post(props) {
                 <span className={post["post__time"]}>{props.post.created_at}</span>
               </div>
               
-              <p className={post["post__text"]}>{renderContent()}</p>
+              <p className={post["post__text"]}>{renderBody()}</p>
               {renderMedia()} 
           </div>
           <div className={post["post__icons"]}>
@@ -99,7 +105,7 @@ function Post(props) {
                     <svg className={post["post__icon"]}>
                       <use xlinkHref="/sprites.svg#icon-message-square"/>
                     </svg>
-                    <span className={post["post__icons__count"]}>{props.post.replies}</span>
+                    <span className={post["post__icons__count"]}>{props.post.replies > 0 ? props.post.replies : null}</span>
                   </div>
                   <div className={post["post__icons__holder"]}>
                     <svg className={post["post__icon"]}>
@@ -107,7 +113,7 @@ function Post(props) {
                     </svg>
                     <span className={post["post__icons__count"]}>{props.post.reposts}</span>
                   </div>
-                  <div onClick={() => props.likePost(props.post.id)} className={post["post__icons__holder"]}>
+                  <div onClick={onLikeClick} className={post["post__icons__holder"]}>
                     <svg className={post["post__icon"]}>
                       <use xlinkHref="/sprites.svg#icon-thumbs-up"/>
                     </svg>
