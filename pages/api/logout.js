@@ -1,6 +1,3 @@
-import {User, Team, League} from "../../db/connect";
-import {compare} from "bcrypt";
-import {sign} from "jsonwebtoken";
 import cookie from "cookie";
 
 export default async (req,res) => {
