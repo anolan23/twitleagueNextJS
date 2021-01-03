@@ -44,7 +44,7 @@ function TwitInput(props){
 
     return(
         <form className={twitInput["twit-input"]} onSubmit={onSubmit}>
-            <Avatar roundedCircle className={twitInput["twit-input__image"]}/>
+            <Avatar roundedCircle className={twitInput["twit-input__image"]} src={props.avatar}/>
             <div 
                 className={`${twitInput["twit-input__text-area"]} ${expanded}`} 
                 contentEditable="true" 
@@ -267,7 +267,8 @@ const mapStateToProps = (state) => {
         return {
             staticGifImage: state.post.gif.images? state.post.gif.images.fixed_width_small_still : null,
             outlook: state.post.outlook,
-            postText: state.post.postText
+            postText: state.post.postText,
+            avatar: state.user.avatar
         }
 }
 

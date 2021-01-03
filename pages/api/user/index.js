@@ -18,9 +18,18 @@ export default async (req,res) => {
                 else {
                     res.send("unable to verify user")
                 }
-              });  
+              });
+              
+    else if(method === "PATCH"){
+        const userId = req.body.userId;
+        const values = req.body.values;
+        console.log("req.body", req.body)
+        const user = await Users.update(userId, values);
+        res.send(user);
+    }
+
     else{
-        res.status(405).json({message: "/user only supports GET method"})
+        res.status(405).json({message: "/user only supports GET/PATCH method"})
     }
     
 }

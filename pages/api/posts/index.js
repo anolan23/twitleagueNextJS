@@ -2,8 +2,26 @@ import Posts from "../../../db/repos/Posts";
 
 export default async (req,res) => {
     const method = req.method;
-    if(method === "POST"){
+    if(method === "GET"){
+        const num = req.query.num;
+        const offset = req.query.offset;
+        const userId = req.query.userId;
+        if(num && offset){
+            if(userId){
+                const posts = await Posts.findByUserId(userId, num, offset);
+                res.send(posts);
+            }
+            else{
+                const posts = await Posts.find(num, offset);
+                res.send(posts);
+            }
+        }
+
+        
+    }
+    else if(method === "POST"){
         const replyData = req.body.reply;
+        const recent = req.body.recent;
         if(replyData){
             const regex = /\$(\w+)/g;
             const teamAbbrevs = replyData.body.match(regex);
@@ -20,7 +38,7 @@ export default async (req,res) => {
         
     }
     else{
-        res.status(405).json({message: "api/posts only supports POST method"})
+        res.status(405).json({message: "api/posts only supports GET/POST method"})
     }
     
 }

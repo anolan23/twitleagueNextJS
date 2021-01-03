@@ -9,7 +9,7 @@ import {
   followTeam, 
   unwatchTeamAndFetchUser, 
   toggleAddEventModal, 
-  toggleAvatarModal,
+  toggleEditProfilePopup,
   toggleScheduleModal,
   toggleRosterModal,
   sendJoinTeamRequest
@@ -29,7 +29,7 @@ function TeamHolder(props) {
       <DropdownButton size="sm" id="manageTeam" title="Manage Team">
         <Dropdown.Item as="button" onClick={props.toggleAddEventModal}>Schedule Event</Dropdown.Item>
         <Dropdown.Item as="button">Edit Roster</Dropdown.Item>
-        <Dropdown.Item as="button" onClick={props.toggleAvatarModal}>Edit Team Image</Dropdown.Item>
+        <Dropdown.Item as="button" onClick={props.toggleEditProfilePopup}>Edit Team Image</Dropdown.Item>
       </DropdownButton>);
     }
     else{
@@ -65,12 +65,14 @@ function TeamHolder(props) {
       <div className={teamHolder["team-holder__banner"]}>
         <img className={teamHolder["team-holder__banner-image"]} src={team.banner? team.banner : null}></img>
       </div>
-      <div style={{display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap:"wrap"}}>
+      <div className={teamHolder["team-holder__action-box"]}>
         <div className={teamHolder["team-holder__team-image"]}>
-          <Avatar onClick={props.toggleAvatarModal} className={teamHolder["team-holder__image"]} src={team.avatar?team.avatar:""} alt="team profile image"/>
-        </div>
-        {renderButton()}
-      </div>
+          <Avatar onClick={props.toggleEditProfilePopup} className={teamHolder["team-holder__image"]} src={team.avatar?team.avatar:""} alt="team profile image"/>
+          </div>
+          <div className={teamHolder["team-holder__action"]}>
+            {renderButton()}
+          </div>
+      </div> 
       <div className={teamHolder["team-holder__info"]}>
           <div className={`${teamHolder["team-holder__teamname-box"]} u-margin-top-tiny`}>
             <h1 className="heading-1">{team.team_name}</h1>
@@ -112,7 +114,7 @@ export default connect(mapStateToProps,{
   followTeam, 
   unwatchTeamAndFetchUser, 
   toggleAddEventModal, 
-  toggleAvatarModal,
+  toggleEditProfilePopup,
   toggleScheduleModal,
   toggleRosterModal,
   sendJoinTeamRequest

@@ -6,7 +6,7 @@ const INITIAL_STATE = {
     showGifModal: false,
     showPostModal: false,
     showAddEventModal: false,
-    showAvatarModal: false,
+    showEditProfilePopup: false,
     showScheduleModal: false,
     showRosterModal: false,
     showPopupCompose: false,
@@ -29,8 +29,8 @@ const modalReducer = (state = INITIAL_STATE, action) => {
             return {...state, showPostModal: !state.showPostModal} 
         case "TOGGLE_ADDEVENT_MODAL":
             return {...state, showAddEventModal: !state.showAddEventModal}
-        case "TOGGLE_AVATAR_MODAL":
-            return {...state, showAvatarModal: !state.showAvatarModal}   
+        case "TOGGLE_EDIT_PROFILE_MODAL":
+            return {...state, showEditProfilePopup: !state.showEditProfilePopup}   
         case "TOGGLE_SCHEDULE_MODAL":
             return {...state, showScheduleModal: !state.showScheduleModal} 
         case "TOGGLE_ROSTER_MODAL":

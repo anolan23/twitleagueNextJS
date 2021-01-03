@@ -26,7 +26,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
             return {...state, teams: action.payload};
         case "FETCH_LEAGUES":
             return {...state, leagues: action.payload};
-        
+        case "UPDATE_USER_PROFILE":
+            return action.payload;        
         default:
             return state;
     }

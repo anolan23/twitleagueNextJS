@@ -1,11 +1,36 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {connect} from "react-redux";
 
-import HomeFeedHolder from "./HomeFeedHolder";
 import TwitInput from "./TwitInput";
 import TopBar from "./TopBar";
+import Post from "../components/Post";
+import {fetchPosts, clearPosts, createPost} from "../actions";
+import Divide from "./Divide";
 
 function Home(props) {
+
+    useEffect(() => {
+        props.fetchPosts(10,0);
+
+        return () => {
+            props.clearPosts();
+        }
+      }, [])
+
+    const renderPosts = () => {
+        return props.posts.map((post, index) => {
+            return (
+              <Post 
+                key={index}
+                post={post}
+                />
+            );
+          });
+    }
+
+    const onSubmit = () => {
+        props.createPost();
+    }
 
         return (
             <div >
@@ -13,17 +38,20 @@ function Home(props) {
                 <TwitInput 
                     placeHolder="What's happening?" 
                     initialValue=""
-                    buttonText="Post"    
+                    buttonText="Post"
+                    onSubmit={onSubmit}    
                 />
-                <HomeFeedHolder/>
+                <Divide/>
+                {renderPosts()}
+                
             </div>
         );
 }
 
 const mapStateToProps = (state) => {
     return {
-        team: state.team
+        posts: state.posts
     }
 }
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, {fetchPosts, clearPosts, createPost})(Home);

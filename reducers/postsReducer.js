@@ -3,7 +3,7 @@ const INITIAL_STATE = [];
 const postsReducer = (state = INITIAL_STATE, action) => {
     switch(action.type){
         case "CREATE_POST":
-            return [...state, action.payload]; 
+            return [action.payload, ...state]; 
         case "FETCH_TEAM_POSTS":
             return action.payload; 
         case "LIKE_POST":
@@ -14,7 +14,9 @@ const postsReducer = (state = INITIAL_STATE, action) => {
             return {...state, [action.payload.parentPostId]: {...state[action.payload.parentPostId],comments: action.payload.comments}}
         case "FETCH_WATCHLIST_POSTS":
             return action.payload;
-        case "FETCH_TRENDING_POSTS":
+        case "FETCH_POSTS":
+            return action.payload;
+        case "FETCH_USER_POSTS":
             return action.payload;
         case "FETCH_LEAGUE_POSTS":
             return action.payload;

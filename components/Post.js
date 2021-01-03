@@ -86,7 +86,7 @@ function Post(props) {
 
     return (
       <div onClick={onPostClick} className={post.post}>
-          <Avatar roundedCircle className={post["post__image"]}/>
+          <Avatar roundedCircle className={post["post__image"]} src={props.post.avatar}/>
           <div className={post["post__content"]}>
               <div className={post["post__heading"]}>
                 <div className={post["post__heading-text"]}>

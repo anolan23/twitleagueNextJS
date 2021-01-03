@@ -32,7 +32,7 @@ function ActivePost(props){
     return(
         <div className={activePost["active-post"]}>
             <div className={activePost["active-post__user"]}>
-                <Avatar className={activePost["active-post__avatar"]}/>
+                <Avatar className={activePost["active-post__avatar"]} src={props.post.avatar}/>
                 <div className={activePost["active-post__user-text"]}>
                     <span className={activePost["active-post__name"]}>{props.post.name}</span>
                     <span className={activePost["active-post__username"]}>{`@${props.post.username}`}</span>

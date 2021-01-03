@@ -1,0 +1,17 @@
+.edit-profile-popup{
+
+    &__heading{
+        height: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 1.5rem;
+    }
+
+    &__avatar{
+        height: 10rem;
+        width: 10rem;
+    }
+
+
+}

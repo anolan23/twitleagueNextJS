@@ -34,6 +34,7 @@ function TwitButton(props){
                 className={`${type()} ${twitButton[props.color]} ${twitButton[props.size]} ${twitButton[props.outline]} ${twitButton[props.collapse]}`} 
                 onClick={props.onClick}
                 disabled={props.disabled}
+                form={props.form ? props.form : null}
                 >
                 {props.children}
             </button>

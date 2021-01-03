@@ -2,10 +2,9 @@ import React from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
 import {initializeStore} from "../../redux/store";
-import Figure from "react-bootstrap/Figure"
 
 import MainBody from "../../components/MainBody"
-import TeamComponent from "../../components/Team";
+import Team from "../../components/Team";
 import Teams from "../../db/repos/Teams";
 import Followers from "../../db/repos/Followers";
 
@@ -22,7 +21,7 @@ function TeamPage(props) {
     return (
       <React.Fragment>
         <MainBody>
-          <TeamComponent 
+          <Team 
             team={props.initialReduxState.team} 
           />
         </MainBody>

@@ -44,7 +44,7 @@ function TwitNav(props) {
                     <use xlinkHref="/sprites.svg#icon-trending-up"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem href="/user" title="User Profile">
+            <TwitNavItem href={`/users/${props.username}`} title="User Profile">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-user"/>
                 </svg>
@@ -59,7 +59,10 @@ function TwitNav(props) {
 }
 
 const mapStateToProps = (state) => {
-    return {notifications: state.user.notifications ? state.user.notifications : []}
+    return {
+        notifications: state.user.notifications ? state.user.notifications : [],
+        username: state.user.username ? state.user.username : null
+    }
 }
 
 export default connect(mapStateToProps)(TwitNav);

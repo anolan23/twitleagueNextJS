@@ -41,6 +41,20 @@ export const deleteNotification = notificationId => async (dispatch, getState) =
     });
 }
 
+export const updateUserProfile = (values) => async (dispatch, getState) => {
+    const userId = getState().user.id;
+    if(!userId){
+        return;
+    }
+    const response = await backend.patch("/api/user", {
+        userId,
+        values
+    });
+    console.log(response.data)
+
+    dispatch({type: "UPDATE_USER_PROFILE", payload: response.data})
+}
+
 //Modal Action Creators
 export const toggleSignUpModal = () => {
     return {type: "TOGGLE_SIGNUP_MODAL"};
@@ -88,11 +102,11 @@ export const togglePopupReply = () => {
 
 
 
-export const toggleAvatarModal = () => (dispatch, getState) => {
+export const toggleEditProfilePopup = () => (dispatch, getState) => {
     const userId = getState().user._id;
     const owner = getState().team.owner;
     if(owner === userId){
-        dispatch({type: "TOGGLE_AVATAR_MODAL"});
+        dispatch({type: "TOGGLE_EDIT_PROFILE_MODAL"});
     }
 }
 
@@ -293,14 +307,25 @@ export const fetchWatchListPosts = () => async (dispatch, getState) => {
     }
 }
 
-export const fetchTrendingPosts = (num) => async (dispatch) => {
-        const response = await backend.get("/api/posts/trending", {
+export const fetchPosts = (num, offset) => async (dispatch) => {
+        const response = await backend.get("/api/posts", {
             params: {
-                num
+                num,
+                offset
             }
         });
-        
-        dispatch({type: "FETCH_TRENDING_POSTS", payload: response.data});
+        dispatch({type: "FETCH_POSTS", payload: response.data});
+}
+
+export const fetchUserPosts = (userId, num, offset) => async (dispatch) => {
+    const response = await backend.get("/api/posts", {
+        params: {
+            userId,
+            num,
+            offset
+        }
+    });
+    dispatch({type: "FETCH_USER_POSTS", payload: response.data});
 }
 
 export const fetchLeaguePosts = () => async (dispatch, getState) => {

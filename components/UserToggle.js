@@ -29,7 +29,7 @@ function UserToggle(props){
         return(
             <Dropdown className={userToggle["user-toggle__dropdown"]}>
                 <Dropdown.Toggle as={CustomToggle}>
-                        <Avatar roundedCircle className={userToggle["user-toggle__image"]}/>
+                        <Avatar roundedCircle className={userToggle["user-toggle__image"]} src={props.user.avatar}/>
                         <div className={userToggle["user-toggle__textbox"]}>
                             <span className={userToggle["user-toggle__username"]}>{props.user.username}</span>
                             <span className="muted">{`@${props.user.username}`}</span>
@@ -39,7 +39,7 @@ function UserToggle(props){
                 <Dropdown.Menu className={userToggle["user-toggle__menu"]}>
                 <Dropdown.Item eventKey="1">
                     <div className={userToggle["user-toggle"]}>
-                        <Avatar roundedCircle className={userToggle["user-toggle__image"]}/>
+                        <Avatar roundedCircle className={userToggle["user-toggle__image"]} src={props.user.avatar}/>
                         <div className={userToggle["user-toggle__textbox"]}>
                             <span className={userToggle["user-toggle__username"]}>{props.user.username}</span>
                             <span className="muted">{`@${props.user.username}`}</span>
