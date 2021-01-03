@@ -54,7 +54,7 @@ class Posts {
       SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
       FROM posts AS p1
       JOIN users ON p1.author_id = users.id
-      WHERE author_id = $1
+      WHERE author_id = $1 AND p1.id = p1.conversation_id
       ORDER BY created_at DESC
       LIMIT $2
       OFFSET $3`, [userId, num, offset]);

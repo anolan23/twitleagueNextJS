@@ -7,7 +7,7 @@ import ContentEditable from "react-contenteditable";
 
 import twitInput from "../sass/components/TwitInput.module.scss";
 import TwitButton from "./TwitButton";
-import {toggleGifModal, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose} from "../actions";
+import {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose} from "../actions";
 import GifThumb from "./GifThumb";
 import Avatar from "../components/Avatar";
 
@@ -63,7 +63,7 @@ function TwitInput(props){
                         </svg>
                     </div>
                     <div className={twitInput["twit-input__media-type"]}>
-                    <div className={`${twitInput["twit-input__icon"]} ${twitInput["twit-input__gif"]}`}>
+                    <div onClick={props.toggleGifPopup} className={`${twitInput["twit-input__icon"]} ${twitInput["twit-input__gif"]}`}>
                     GIF
                     </div>
                         {/* <svg className={twitInput["twit-input__icon"]}>
@@ -244,7 +244,7 @@ function TwitInput(props){
 //                                 <Button onClick={onBearishClick} variant="danger" className={props.outlook === "bearish" ? styles["outlook-pressed"] : styles.outlook}>
 //                                 Bearish
 //                                 </Button>
-//                                 <i onClick={props.toggleGifModal} className={"far fa-image " + styles.icons}></i>                        
+//                                 <i onClick={props.toggleGifPopup} className={"far fa-image " + styles.icons}></i>                        
 //                             </div>
 //                         </div>
 //                     </div>
@@ -272,4 +272,4 @@ const mapStateToProps = (state) => {
         }
 }
 
-export default connect(mapStateToProps, {toggleGifModal, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose})(TwitInput);
+export default connect(mapStateToProps, {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose})(TwitInput);

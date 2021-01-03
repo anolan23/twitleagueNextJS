@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import thread from "../sass/components/Thread.module.scss";
 import TopBar from "./TopBar";
 import Post from "./Post";
+import Divide from "./Divide";
 import ActivePost from "./ActivePost";
 import {fetchThreadPosts, clearPosts} from "../actions";
 
@@ -25,7 +26,12 @@ function Thread(props) {
                 return <Post key={index} post={post}/>
             }
             else if(post.id == props.postId){
-                return <ActivePost key={index} post={post}/>
+                return (
+                    <React.Fragment>
+                        <ActivePost key={index} post={post}/>
+                        <Divide/>
+                    </React.Fragment>
+                )
             }
             
         })

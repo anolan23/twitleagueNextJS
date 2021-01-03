@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 
 import { useStore } from '../redux/store'
 import AddEventModal from "../components/modals/AddEventModal";
-import GifModal from "../components/modals/GifModal";
+import GifPopup from "../components/modals/GifPopup";
 import EditProfilePopup from "../components/modals/EditProfilePopup";
 import RosterModal from '../components/modals/RosterModal';
 import AuthBanner from '../components/AuthBanner';
@@ -22,7 +22,7 @@ function MyApp({ Component, pageProps }) {
       <Login/>
       <SignUp/>
       <AuthBanner/>
-      <GifModal/>
+      <GifPopup/>
       <AddEventModal/>
       <EditProfilePopup/>
       <RosterModal/>

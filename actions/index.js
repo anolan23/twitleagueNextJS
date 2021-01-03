@@ -72,8 +72,8 @@ export const toggleCreateLeagueModal = () => {
     return {type: "TOGGLE_CREATE_LEAGUE_MODAL"};
 }
 
-export const toggleGifModal = () => {
-    return {type: "TOGGLE_GIF_MODAL"};
+export const toggleGifPopup = () => {
+    return {type: "TOGGLE_GIF_POPUP"};
 }
 
 export const togglePostModal = () => {
