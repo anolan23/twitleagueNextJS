@@ -5,7 +5,6 @@ import {initializeStore} from "../../redux/store";
 
 import MainBody from "../../components/MainBody"
 import LeagueComponent from "../../components/League";
-import {getLeague} from "../api/league/[leagueName]";
 
 export default function LeaguePage(props) {
   const router = useRouter()
@@ -35,7 +34,7 @@ export default function LeaguePage(props) {
     const reduxStore = initializeStore();
     const {dispatch} = reduxStore;
     const leagueName = context.params.leagueName;
-    const league = await getLeague(leagueName);
+    // const league = await getLeague(leagueName);
 
     await dispatch({type: "FETCH_LEAGUE", payload: JSON.parse(JSON.stringify(league))})
     
