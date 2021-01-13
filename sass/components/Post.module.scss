@@ -28,6 +28,7 @@
 
   &__content{
     width:100%;
+    
   }
 
   &__heading{
@@ -52,11 +53,11 @@
   }
 
   &__gif{
+    grid-column: 2/-1;
     border-radius: 1.6rem;
     overflow: hidden;
     border: 1px solid grey;
     width: 100%;
-    margin-top: 1rem;
   }
 
   &__icons{
@@ -68,12 +69,19 @@
       display: flex;
       align-items: center;
       position: relative;
+      color: var(--SECONDARY_TEXT);
+      fill: currentColor;
+
+      &__active{
+        color: red;
+        fill: currentColor;
+      }
     }
 
     &__count{
       margin: 0 1rem;
       font-size: 1.3rem;
-      color: var(--SECONDARY_TEXT);
+      color: inherit;
       position: absolute;
       left: 1.5rem;
     }
@@ -88,7 +96,7 @@
     align-self: center;
     height: 15px;
     width: 15px;
-    fill: var(--SECONDARY_TEXT);
+    fill: inherit;
     position: relative;
     transition: all .2s;
 

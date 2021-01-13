@@ -15,7 +15,7 @@ import Avatar from './Avatar';
 function LeftColumn(props) {
   return(
       <div className="header__left-column">
-        <Link href="/" passHref>
+        <Link href="/home" passHref>
           <a className="header__logo heading-1 u-margin-bottom-small u-margin-top-small">twitleague</a>
         </Link>
         <TwitNav/>
@@ -29,9 +29,13 @@ function LeftColumn(props) {
         </TwitButton>
         <TwitPostCircle onClick={props.togglePopupCompose}/>
         <UserToggle/>
-        <Avatar className="header__avatar"/>
+        <Avatar className="header__avatar" src={props.avatar}/>
       </div>
   )
 }
 
-export default connect(null, {togglePopupCompose})(LeftColumn);
+const mapStateToProps = (state) => {
+  return {avatar: state.user.avatar}
+}
+
+export default connect(mapStateToProps, {togglePopupCompose})(LeftColumn);

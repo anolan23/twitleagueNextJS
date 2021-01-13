@@ -21,14 +21,14 @@ function Thread(props) {
     }, [])
 
    const renderPosts = () => {
-        return props.posts.map((post, index) => {
+        return props.posts.map((post) => {
             if(post.id != props.postId){
-                return <Post key={index} post={post}/>
+                return <Post key={post.id} post={post}/>
             }
             else if(post.id == props.postId){
                 return (
                     <React.Fragment>
-                        <ActivePost key={index} post={post}/>
+                        <ActivePost key={post.id} post={post}/>
                         <Divide/>
                     </React.Fragment>
                 )

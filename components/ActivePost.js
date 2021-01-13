@@ -1,13 +1,30 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 import Link from "next/link";
 
 import activePost from "../sass/components/ActivePost.module.scss";
+import post from "../sass/components/Post.module.scss";
 import Avatar from "../components/Avatar";
+import {Gif} from "@giphy/react-components";
+import { GiphyFetch } from "@giphy/js-fetch-api";
 import {trackClickedPost, togglePopupReply} from "../actions";
 
 function ActivePost(props){
+
+  const [gif, setGif] = useState(null);
+
+  useEffect(() => {
+    if(props.post.gif){
+      fetchGif();
+    }
+  }, [])
+
+  const fetchGif = async () => {
+    const giphyFetch = new GiphyFetch("G2kN8IH9rTIuaG2IZGKO9il0kWamzKmX");
+    const {data} = await giphyFetch.gif(props.post.gif);
+    setGif(data);
+  }
 
     const onReplyClick = () => {
         props.trackClickedPost(props.post);
@@ -28,6 +45,19 @@ function ActivePost(props){
         return replacedText
       }
 
+      const renderMedia = () => {
+        if(gif){
+          return (
+            <div className={post["post__gif"]}>
+              <Gif gif={gif} width="100%" height="auto"/>
+            </div>
+          );
+        }
+        else{
+          return null;
+        }
+      }
+
 
     return(
         <div className={activePost["active-post"]}>
@@ -41,8 +71,9 @@ function ActivePost(props){
             <div className={activePost["active-post__body"]}>
                 {renderBody()}
             </div>
+            {renderMedia()}
             <div className={activePost["active-post__timestamp"]}>
-                {props.post.created_at} · twitleague Web App
+                {props.post.date} · twitleague Web App
             </div>
             <div className={activePost["active-post__stats"]}>
                 <div className={activePost["active-post__stat-box"]}>
@@ -58,7 +89,7 @@ function ActivePost(props){
                       <use xlinkHref="/sprites.svg#icon-repeat"/>
                     </svg>
                     <svg className={activePost["active-post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-thumbs-up"/>
+                      <use xlinkHref="/sprites.svg#icon-heart"/>
                     </svg>                  
                     <svg onClick={onReplyClick} className={activePost["active-post__icon"]}>
                       <use xlinkHref="/sprites.svg#icon-corner-up-right"/>

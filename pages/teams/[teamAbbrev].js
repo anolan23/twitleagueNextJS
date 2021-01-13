@@ -7,6 +7,7 @@ import MainBody from "../../components/MainBody"
 import Team from "../../components/Team";
 import Teams from "../../db/repos/Teams";
 import Followers from "../../db/repos/Followers";
+import AuthBanner from "../../components/AuthBanner";
 
 function TeamPage(props) {
   const router = useRouter()
@@ -25,6 +26,7 @@ function TeamPage(props) {
             team={props.initialReduxState.team} 
           />
         </MainBody>
+        <AuthBanner/>
       </React.Fragment>
       
     )

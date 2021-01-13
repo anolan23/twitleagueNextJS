@@ -1,6 +1,6 @@
 const INITIAL_STATE = {
     postText: "",
-    gif: {},
+    gif: null,
     outlook: ""
 }
 
@@ -14,6 +14,8 @@ const postReducer = (state = INITIAL_STATE, action) => {
             return {...state, outlook: action.payload}
         case "EMPTY_POST_DATA":
             return INITIAL_STATE;
+        case "CLOSE_GIF":
+            return {...state, gif: null};
         default:
             return state;
     }

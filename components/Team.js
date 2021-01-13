@@ -13,10 +13,18 @@ function TeamComponent(props) {
     const [activeLink, setActiveLink] = useState("team")
 
     useEffect(() => {
-        props.fetchTeamPosts();
-        if(!props.user.isSignedIn){
-            props.fetchUser();
+
+        const start = async () => {
+            if(props.user.isSignedIn){
+                props.fetchTeamPosts();
+            }
+            else{
+                await props.fetchUser();
+                props.fetchTeamPosts();
+            }
         }
+        start();
+        
 
         return () => {
             props.clearPosts();

@@ -16,7 +16,7 @@ export default async (req,res) => {
                     res.send(user);
                 }
                 else {
-                    res.send("unable to verify user")
+                    res.send({isSignedIn: false})
                 }
               });
               

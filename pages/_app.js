@@ -9,19 +9,15 @@ import AddEventModal from "../components/modals/AddEventModal";
 import GifPopup from "../components/modals/GifPopup";
 import EditProfilePopup from "../components/modals/EditProfilePopup";
 import RosterModal from '../components/modals/RosterModal';
-import AuthBanner from '../components/AuthBanner';
 import PopupCompose from '../components/modals/PopupCompose';
 import PopupReply from '../components/modals/PopupReply';
-import Login from "../components/modals/Login";
-import SignUp from "../components/modals/SignUp";
+import SignupPopup from '../components/modals/SignupPopup';
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
   return (
     <Provider store={store}>
-      <Login/>
-      <SignUp/>
-      <AuthBanner/>
+      <SignupPopup/>
       <GifPopup/>
       <AddEventModal/>
       <EditProfilePopup/>

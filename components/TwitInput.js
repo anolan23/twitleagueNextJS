@@ -3,12 +3,11 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
-import ContentEditable from "react-contenteditable";
 
 import twitInput from "../sass/components/TwitInput.module.scss";
 import TwitButton from "./TwitButton";
 import {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose} from "../actions";
-import GifThumb from "./GifThumb";
+import TwitGif from "./TwitGif";
 import Avatar from "../components/Avatar";
 
 function TwitInput(props){
@@ -42,6 +41,12 @@ function TwitInput(props){
         contentEditable.current.innerHTML = "";
     }
 
+    const renderGif = () => {
+        if(props.gif){
+            return <TwitGif gif={props.gif}/>
+        }
+    }
+
     return(
         <form className={twitInput["twit-input"]} onSubmit={onSubmit}>
             <Avatar roundedCircle className={twitInput["twit-input__image"]} src={props.avatar}/>
@@ -53,8 +58,8 @@ function TwitInput(props){
                 onFocus={onContentEditableFocus}
                 ref={contentEditable}
                 >
-
-                </div>
+            </div>
+            {renderGif()}
             <div className={twitInput["twit-input__actions"]}>
                 <div className={twitInput["twit-input__media-types"]}>
                     <div className={twitInput["twit-input__media-type"]}>
@@ -265,7 +270,7 @@ function TwitInput(props){
 const mapStateToProps = (state) => {
   
         return {
-            staticGifImage: state.post.gif.images? state.post.gif.images.fixed_width_small_still : null,
+            gif: state.post.gif ? state.post.gif : null,
             outlook: state.post.outlook,
             postText: state.post.postText,
             avatar: state.user.avatar

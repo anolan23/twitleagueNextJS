@@ -1,0 +1,23 @@
+.login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2rem;
+    padding: 0 1.5rem;
+
+    &__logo{
+
+    }
+
+    &__secondary-actions{
+        display: flex;
+        justify-content: center;
+    }
+
+    &__secondary-action{
+        
+    }
+}

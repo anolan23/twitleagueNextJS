@@ -1,21 +1,13 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {connect} from "react-redux";
 
 import TwitInput from "./TwitInput";
 import TopBar from "./TopBar";
 import Post from "../components/Post";
-import {fetchPosts, clearPosts, createPost} from "../actions";
+import {createPost} from "../actions";
 import Divide from "./Divide";
 
 function Home(props) {
-
-    useEffect(() => {
-        props.fetchPosts(10,0);
-
-        return () => {
-            props.clearPosts();
-        }
-      }, [])
 
     const renderPosts = () => {
         return props.posts.map((post, index) => {
@@ -54,4 +46,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {fetchPosts, clearPosts, createPost})(Home);
+export default connect(mapStateToProps, {createPost})(Home);

@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {toggleLoginModal, toggleSignUpModal} from "../actions";
+import {toggleSignUpModal} from "../actions";
 
 import TwitButton from "./TwitButton";
 import authBanner from "../sass/components/AuthBanner.module.scss";
@@ -17,7 +17,7 @@ function AuthBanner(props){
                         <h2 className="heading-3">People on twitleague are the first to know.</h2>
                     </div>
                     <div className={authBanner["auth-banner__actions"]}>
-                        <TwitButton onClick={props.toggleLoginModal} color="twit-button--white" outline="twit-button--white--outline">Log in</TwitButton>
+                        <TwitButton href="/login" color="twit-button--white" outline="twit-button--white--outline">Log in</TwitButton>
                         <TwitButton onClick={props.toggleSignUpModal} color="twit-button--white">Sign up</TwitButton>
                     </div>
                 </div>  
@@ -29,4 +29,4 @@ const mapStateToProps = (state) => {
     return {isSignedIn: state.user.isSignedIn};
 }
 
-export default connect(mapStateToProps, {toggleLoginModal, toggleSignUpModal})(AuthBanner);
+export default connect(mapStateToProps, {toggleSignUpModal})(AuthBanner);

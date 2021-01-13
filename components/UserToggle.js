@@ -1,5 +1,6 @@
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
+import {useRouter} from "next/router";
 
 import Avatar from "./Avatar";
 import {connect} from "react-redux";
@@ -7,6 +8,12 @@ import {logOutUser} from "../actions";
 import userToggle from "../sass/components/UserToggle.module.scss"
 
 function UserToggle(props){
+    const router = useRouter();
+    
+    const logOut = async () => {
+        await props.logOutUser();
+        router.push("/")
+    }
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <div className={userToggle["user-toggle"]}
@@ -46,7 +53,7 @@ function UserToggle(props){
                         </div>
                     </div>
                 </Dropdown.Item>
-                <Dropdown.Item onClick={props.logOutUser} className={userToggle["user-toggle__item"]}>{`Log out @${props.user.username}`}</Dropdown.Item>
+                <Dropdown.Item onClick={logOut} className={userToggle["user-toggle__item"]}>{`Log out @${props.user.username}`}</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         );

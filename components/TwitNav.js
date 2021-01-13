@@ -18,7 +18,7 @@ function TwitNav(props) {
 
     return(
         <nav className={twitNav["twit-nav"]}>
-            <TwitNavItem href="/" title="Home">
+            <TwitNavItem href="/home" title="Home">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-home"/>
                 </svg>

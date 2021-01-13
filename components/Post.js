@@ -34,7 +34,7 @@ function Post(props) {
     {
       return (
         <div className={post["post__gif"]}>
-          <Gif gif={gif} width="100%"/>
+          <Gif gif={gif} width="100%" height="auto"/>
         </div>
       );
     }
@@ -60,11 +60,11 @@ function Post(props) {
     const text = props.post.body;
     let replacedText;
     replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-      <Link key={match + i} href={`/teams/${match}`}><a className="twit-link">${match}</a></Link>
+      <Link key={match + i} href={`/teams/${match}`}><a onClick={(e) => e.stopPropagation()} className="twit-link">${match}</a></Link>
     ));
 
     replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
-      <Link key={match + i} href={`/users/${match}`}><a className="twit-link">@{match}</a></Link>
+      <Link key={match + i} href={`/users/${match}`}><a onClick={(e) => e.stopPropagation()} className="twit-link">@{match}</a></Link>
     ));
 
     return replacedText
@@ -81,6 +81,7 @@ function Post(props) {
   }
 
   const onLikeClick = (event) => {
+    event.stopPropagation();
     props.likePost(props.post.id);
   }
 
@@ -94,12 +95,13 @@ function Post(props) {
                   <span className={post["post__username"] + " muted"}>@{props.post.username}</span>
                   {renderBadge()}
                 </div>
-                <span className={post["post__time"]}>{props.post.created_at}</span>
+                <span className={post["post__time"]}>{props.post.date}</span>
               </div>
               
               <p className={post["post__text"]}>{renderBody()}</p>
-              {renderMedia()} 
+               
           </div>
+          {renderMedia()}
           <div className={post["post__icons"]}>
                   <div className={post["post__icons__holder"]}>
                     <svg className={post["post__icon"]}>
@@ -113,9 +115,9 @@ function Post(props) {
                     </svg>
                     <span className={post["post__icons__count"]}>{props.post.reposts}</span>
                   </div>
-                  <div onClick={onLikeClick} className={post["post__icons__holder"]}>
+                  <div onClick={onLikeClick} className={`${post["post__icons__holder"]} ${props.post.liked?post["post__icons__holder__active"]: null}`}>
                     <svg className={post["post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-thumbs-up"/>
+                      <use xlinkHref="/sprites.svg#icon-heart"/>
                     </svg>
                     <span className={post["post__icons__count"]}>{props.post.likes > 0 ? props.post.likes : null}</span>
                   </div>
@@ -131,11 +133,4 @@ function Post(props) {
   
 }
 
-
-const mapStateToProps = (state) => {
-  return {
-    posts: state.posts
-  }
-}
-
-export default connect(mapStateToProps, {likePost, togglePopupReply, trackClickedPost})(Post);
+export default connect(null, {likePost, togglePopupReply, trackClickedPost})(Post);

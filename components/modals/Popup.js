@@ -18,7 +18,7 @@ function Popup(props){
             <div className={popup["popup__window"]}>
                 <div className={popup["popup__window__heading"]}>
                     <svg onClick={props.onHide} className={popup["popup__window__icon"]}>
-                        <use xlinkHref="/sprites.svg#icon-home"/>
+                        <use xlinkHref="/sprites.svg#icon-x"/>
                     </svg>
                     {props.heading}
                 </div>

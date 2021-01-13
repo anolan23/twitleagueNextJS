@@ -6,18 +6,8 @@ export default async (req,res) => {
         const num = req.query.num;
         const offset = req.query.offset;
         const userId = req.query.userId;
-        if(num && offset){
-            if(userId){
-                const posts = await Posts.findByUserId(userId, num, offset);
-                res.send(posts);
-            }
-            else{
-                const posts = await Posts.find(num, offset);
-                res.send(posts);
-            }
-        }
-
-        
+        const posts = await Posts.find(userId, num, offset);
+        res.send(posts);
     }
     else if(method === "POST"){
         const replyData = req.body.reply;

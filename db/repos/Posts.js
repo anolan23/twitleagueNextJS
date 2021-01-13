@@ -51,7 +51,13 @@ class Posts {
 
     static async findByUserId(userId, num, offset) {
       const {rows} = await pool.query(`
-      SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+      SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+        CASE 
+        WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
+        WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+        ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+        END AS date
+        
       FROM posts AS p1
       JOIN users ON p1.author_id = users.id
       WHERE author_id = $1 AND p1.id = p1.conversation_id
@@ -61,19 +67,30 @@ class Posts {
       return rows;
   }
 
-    static async findByTeamId(teamId) {
+    static async findByTeamId(userId, teamId) {
         const {rows} = await pool.query(`
-        SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+        SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+          CASE 
+          WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
+          WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+          ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+          END AS date,
+          EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND p1.id = likes.post_id ) AS liked
         FROM team_mentions
         JOIN posts AS p1 ON team_mentions.post_id = p1.id
         JOIN users ON p1.author_id = users.id
-        WHERE team_id = $1`, [teamId]);
+        WHERE team_id = $2`, [userId, teamId]);
         return rows;
     }
 
     static async findByLeagueId(leagueId) {
         const {rows} = await pool.query(`
-        SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+        SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+          CASE 
+          WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
+          WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+          ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+          END AS date
         FROM posts AS p1
         JOIN (
         SELECT DISTINCT post_id
@@ -98,7 +115,12 @@ class Posts {
             try {
                 await client.query('BEGIN')
                 activePost = await client.query(`
-                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+                    CASE 
+                    WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
+                    WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+                    ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+                    END AS date
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.id = $1
@@ -111,7 +133,12 @@ class Posts {
 
               const getPreviousPost = async (in_reply_to_post_id) => {
                 const previousPost = await client.query(`
-                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+                    CASE 
+                    WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
+                    WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+                    ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+                    END AS date
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.id = $1
@@ -134,7 +161,12 @@ class Posts {
               }
 
               const replies = await client.query(`
-                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+                    CASE 
+                    WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
+                    WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+                    ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+                    END AS date
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.in_reply_to_post_id = $1
@@ -204,14 +236,20 @@ class Posts {
         return rows;
     }
 
-    static async find(num, offset) {
+    static async find(userId, num, offset) {
       const {rows} = await pool.query(`
-      SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies
+      SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+        CASE 
+        WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
+        WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+        ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+        END AS date,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND p1.id = likes.post_id ) AS liked
       FROM posts AS p1
       JOIN users ON p1.author_id = users.id
       ORDER BY created_at DESC
-      LIMIT $1
-      OFFSET $2`, [num, offset]);
+      LIMIT $2
+      OFFSET $3`, [userId, num, offset]);
       return rows;
   }
 

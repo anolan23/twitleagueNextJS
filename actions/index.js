@@ -18,8 +18,7 @@ export const fetchUser = () => async dispatch => {
 export const loginUser = formValues => async dispatch => {
     const response = await backend.post("/api/login", formValues);
 
-    dispatch({type: "LOGIN_USER", payload: response.data})
-    dispatch(toggleLoginModal());
+    dispatch({type: "LOGIN_USER", payload: response.data});
 }
 
 export const logOutUser = () => async dispatch => {
@@ -98,6 +97,10 @@ export const togglePopupCompose = () => {
 
 export const togglePopupReply = () => {
     return {type: "TOGGLE_POPUP_REPLY"};
+}
+
+export const toggleSignupPopup = () => {
+    return {type: "TOGGLE_SIGNUP_POPUP"};
 }
 
 
@@ -284,10 +287,13 @@ export const createReply = (conversation_id, in_reply_to_post_id) => async (disp
 }
 
 export const fetchTeamPosts = () => async (dispatch, getState) => {
+    const userId = getState().user.id;
+    console.log(userId)
     const teamId = getState().team.id;
     const response = await backend.get("/api/posts/team", {
         params: {
-            teamId: teamId
+            userId,
+            teamId
         }
     });
     
@@ -307,9 +313,11 @@ export const fetchWatchListPosts = () => async (dispatch, getState) => {
     }
 }
 
-export const fetchPosts = (num, offset) => async (dispatch) => {
+export const fetchPosts = (num, offset) => async (dispatch, getState) => {
+        const userId = getState().user.id;
         const response = await backend.get("/api/posts", {
             params: {
+                userId,
                 num,
                 offset
             }
@@ -367,7 +375,8 @@ export const likePost = (postId) => async (dispatch, getState) => {
     console.log("postIndex", postIndex)
     let likes = posts[postIndex].likes;
     likes++;
-    posts[postIndex].likes = likes;
+    
+    posts[postIndex].likes = likes.toString();
     dispatch({type: "LIKE_POST", payload: posts})
     const response = await backend.patch("/api/posts/like", {
         postId,
@@ -396,6 +405,10 @@ export const saveCurrentPostText = (postText) => {
 
 export const saveCurrentPostGif = (gif) => {
     return {type: "SAVE_CURRENT_POST_GIF", payload: gif};
+}
+
+export const closeGif = () => {
+    return {type: "CLOSE_GIF"};
 }
 
 export const saveCurrentOutlook = (outlook) => {
