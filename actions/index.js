@@ -265,7 +265,7 @@ export const fetchLeagues = () => async (dispatch, getState) => {
 export const createPost = () => async (dispatch, getState) => {
     const userId = getState().user.id;
     const body = getState().post.postText;
-    const gif = getState().post.gif.id;
+    const gif = getState().post.gif;
     const outlook = getState().post.outlook;
     const post = {userId, body, gif, outlook}
     const response = await backend.post("/api/posts", post);
@@ -277,7 +277,7 @@ export const createPost = () => async (dispatch, getState) => {
 export const createReply = (conversation_id, in_reply_to_post_id) => async (dispatch, getState) => {
     const userId = getState().user.id;
     const body = getState().post.postText;
-    const gif = getState().post.gif.id;
+    const gif = getState().post.gif;
     const outlook = getState().post.outlook;
     const reply = {userId, body, gif, outlook, conversation_id, in_reply_to_post_id};
     const response = await backend.post("/api/posts", {reply});
