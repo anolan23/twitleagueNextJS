@@ -9,7 +9,7 @@ import {
   followTeam, 
   unwatchTeamAndFetchUser, 
   toggleAddEventModal, 
-  toggleEditProfilePopup,
+  toggleEditTeamPopup,
   toggleScheduleModal,
   toggleRosterModal,
   sendJoinTeamRequest
@@ -24,12 +24,12 @@ function TeamHolder(props) {
   const team = props.team;
 
   const renderButton = () => {
-    if(props.username === team.head_coach){
+    if(props.username === team.owner){
       return (
       <DropdownButton size="sm" id="manageTeam" title="Manage Team">
         <Dropdown.Item as="button" onClick={props.toggleAddEventModal}>Schedule Event</Dropdown.Item>
         <Dropdown.Item as="button">Edit Roster</Dropdown.Item>
-        <Dropdown.Item as="button" onClick={props.toggleEditProfilePopup}>Edit Team Image</Dropdown.Item>
+        <Dropdown.Item as="button" onClick={props.toggleEditTeamPopup}>Edit Team Image</Dropdown.Item>
       </DropdownButton>);
     }
     else{
@@ -67,7 +67,7 @@ function TeamHolder(props) {
       </div>
       <div className={teamHolder["team-holder__action-box"]}>
         <div className={teamHolder["team-holder__team-image"]}>
-          <Avatar onClick={props.toggleEditProfilePopup} className={teamHolder["team-holder__image"]} src={team.avatar?team.avatar:""} alt="team profile image"/>
+          <Avatar onClick={props.toggleEditTeamPopup} className={teamHolder["team-holder__image"]} src={team.avatar?team.avatar:""} alt="team profile image"/>
           </div>
           <div className={teamHolder["team-holder__action"]}>
             {renderButton()}
@@ -80,7 +80,7 @@ function TeamHolder(props) {
           </div>
           <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{team.league_name}</h3>
           <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Official TwitLeague account of the Chicago White Sox</h3>
-          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${team.head_coach}`}</h3>
+          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${team.owner}`}</h3>
           <h3 className={teamHolder["team-holder__attributes"] + " muted"}>
             <div className={teamHolder["team-holder__attribute"]}>
             <i className={"fas fa-map-marker-alt " + teamHolder["team-holder__icon"]}></i>
@@ -114,8 +114,8 @@ export default connect(mapStateToProps,{
   followTeam, 
   unwatchTeamAndFetchUser, 
   toggleAddEventModal, 
-  toggleEditProfilePopup,
+  toggleEditTeamPopup,
   toggleScheduleModal,
   toggleRosterModal,
-  sendJoinTeamRequest
+  sendJoinTeamRequest 
 })(TeamHolder);

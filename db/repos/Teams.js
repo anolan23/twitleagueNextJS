@@ -53,7 +53,7 @@ class Teams {
 
     static async findOne(abbrev) {
         const team = await pool.query(`
-        SELECT teams.id, team_name, abbrev, teams.avatar, banner, teams.created_at, username AS head_coach, league_id, league_name
+        SELECT teams.id, teams.team_name, abbrev, teams.avatar, banner, teams.created_at, teams.owner_id, username AS owner, league_id, league_name
         FROM teams
         JOIN users ON teams.owner_id = users.id
         LEFT JOIN leagues ON teams.league_id = leagues.id
@@ -63,9 +63,10 @@ class Teams {
 
     static async findByOwnerId(ownerId) {
         const teams = await pool.query(`
-        SELECT *
+        SELECT teams.abbrev, teams.team_name, teams.avatar, teams.city, leagues.league_name
         FROM teams
-        WHERE owner_id = $1`, [ownerId]);
+        JOIN leagues ON teams.league_id = leagues.id
+        WHERE teams.owner_id = $1`, [ownerId]);
         return teams.rows;
     }
 
@@ -83,6 +84,15 @@ class Teams {
         SET league_id = $1
         WHERE id = $2`, [leagueId, teamId]);
         return team.rows;
+    }
+
+    static async update(teamId, values) {
+        const {rows} = await pool.query(`
+        UPDATE teams
+        SET avatar = $2
+        WHERE id = $1
+        RETURNING *`, [teamId, values.avatar]);
+        return rows[0];
     }
 }
 

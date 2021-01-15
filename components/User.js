@@ -6,7 +6,7 @@ import TwitTab from "./TwitTab";
 import TwitButton from "./TwitButton";
 import Avatar from "../components/Avatar";
 import Post from "./Post";
-import {clearPosts, toggleEditProfilePopup, fetchUserPosts} from "../actions";
+import {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser} from "../actions";
 import TopBar from "./TopBar";
 import teamHolder from "../sass/components/TeamHolder.module.scss";
 
@@ -15,7 +15,16 @@ function User(props) {
     const [activeLink, setActiveLink] = useState("posts");
 
     useEffect(() => {
-        props.fetchUserPosts(props.user.id, 10, 0);
+        const start = async () => {
+            if(props.isSignedIn){
+                props.fetchUserPosts(props.user.id,props.userId, 10, 0);
+            }
+            else{
+                await props.fetchUser();
+                props.fetchUserPosts(props.user.id,props.userId, 10, 0);
+            }
+        }
+        start();
         return () => {
             props.clearPosts();
         }
@@ -24,7 +33,7 @@ function User(props) {
     const onPostsSelect = (k) => {
         setActiveLink(k.target.id);
         //fetch user posts
-        props.fetchUserPosts(props.user.id, 10, 0);
+        props.fetchUserPosts(props.user.id,props.userId, 10, 0);
     }
 
     const onMediaSelect = async (k) => {
@@ -120,9 +129,10 @@ function User(props) {
 
 const mapStateToProps = (state) => {
     return {
-        userId: state.user.id,
+        userId: state.user.id ? state.user.id : null,
+        isSignedIn: state.user.isSignedIn,
         posts: state.posts ? state.posts : []
     }
 }
 
-export default connect(mapStateToProps, {clearPosts, toggleEditProfilePopup, fetchUserPosts})(User);
+export default connect(mapStateToProps, {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser})(User);

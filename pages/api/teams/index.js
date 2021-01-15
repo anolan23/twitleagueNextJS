@@ -32,8 +32,15 @@ export default async (req,res) => {
       }
         
     }
+
+    else if(method === "PATCH"){
+      const teamId = req.body.teamId;
+      const values = req.body.values;
+      const team = await Teams.update(teamId, values);
+      res.send(team);
+    }
     
     else{
-        res.status(405).json({message: "api/teams only supports POST, GET methods"})
+        res.status(405).json({message: "api/teams only supports POST, GET, PATCH methods"})
     }
 }

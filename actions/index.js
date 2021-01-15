@@ -106,10 +106,15 @@ export const toggleSignupPopup = () => {
 
 
 export const toggleEditProfilePopup = () => (dispatch, getState) => {
-    const userId = getState().user._id;
-    const owner = getState().team.owner;
-    if(owner === userId){
-        dispatch({type: "TOGGLE_EDIT_PROFILE_MODAL"});
+    dispatch({type: "TOGGLE_EDIT_PROFILE_MODAL"});
+}
+
+export const toggleEditTeamPopup = () => (dispatch, getState) => {
+    const state = getState();
+    const userId = state.user.id;
+    const ownerId = state.team.owner_id;
+    if(ownerId === userId){
+        dispatch({type: "TOGGLE_EDIT_TEAM_MODAL"});
     }
 }
 
@@ -177,8 +182,9 @@ export const addTeamEventAndFetchTeam = (values) => async (dispatch, getState) =
 }
 
 export const saveTeamImages = (teamImageUrl, bannerImageUrl) => async (dispatch, getState) => {
-    const userId = getState().user._id;
-    const owner = getState().team.owner;
+    const state = getState();
+    const userId = state.user._id;
+    const owner = state.team.owner;
     const teamAbbrev = getState().team.teamAbbrev.substring(1);
     if(owner === userId){
         const response = await backend.patch(`api/teams/${teamAbbrev}`, {
@@ -193,8 +199,9 @@ export const saveTeamImages = (teamImageUrl, bannerImageUrl) => async (dispatch,
 }
 
 export const followTeam = () => async (dispatch, getState) => {
-    const userId = getState().user.id;
-    const teamId = getState().team.id;
+    const state = getState();
+    const userId = state.user.id;
+    const teamId = state.team.id;
     if(userId && teamId){
         const response = await backend.patch("/api/follow/team", {userId,teamId});
         dispatch({type: "FOLLOW_TEAM", payload: response.data});
@@ -207,8 +214,9 @@ export const watchTeamAndFetchUser = () => async (dispatch) => {
 }
 
 export const unwatchTeam = () => async (dispatch, getState) => {
-    const userId = getState().user._id;
-    const teamId = getState().team._id;
+    const state = getState();
+    const userId = state.user._id;
+    const teamId = state.team._id;
     if(userId && teamId){
         const response = await backend.patch("/unwatch", {userId,teamId});
         dispatch({type: "UNFOLLOW_TEAM", payload: response.data});
@@ -229,6 +237,22 @@ export const sendJoinTeamRequest = () => async (dispatch, getState) => {
         userId
     });
 } 
+
+export const updateTeamProfile = (values) => async (dispatch, getState) => {
+    const state = getState();
+    const userId = state.user.id;
+    const ownerId = state.team.owner_id;
+    const teamId = state.team.id;
+    if(ownerId === userId){
+        const response = await backend.patch("/api/teams", {
+            teamId,
+            values
+        });
+        console.log(response.data)
+    
+        dispatch({type: "UPDATE_TEAM_PROFILE", payload: response.data}) 
+    }
+}
 
 //League Action Creators
 export const createLeague = formValues => async (dispatch, getState) => {
@@ -263,10 +287,11 @@ export const fetchLeagues = () => async (dispatch, getState) => {
 
 //Posts Action Creators
 export const createPost = () => async (dispatch, getState) => {
-    const userId = getState().user.id;
-    const body = getState().post.postText;
-    const gif = getState().post.gif;
-    const outlook = getState().post.outlook;
+    const state = getState();
+    const userId = state.user.id;
+    const body = state.post.postText;
+    const gif = state.post.gif;
+    const outlook = state.post.outlook;
     const post = {userId, body, gif, outlook}
     const response = await backend.post("/api/posts", post);
 
@@ -275,10 +300,11 @@ export const createPost = () => async (dispatch, getState) => {
 }
 
 export const createReply = (conversation_id, in_reply_to_post_id) => async (dispatch, getState) => {
-    const userId = getState().user.id;
-    const body = getState().post.postText;
-    const gif = getState().post.gif;
-    const outlook = getState().post.outlook;
+    const state = getState();
+    const userId = state.user.id;
+    const body = state.post.postText;
+    const gif = state.post.gif;
+    const outlook = state.post.outlook;
     const reply = {userId, body, gif, outlook, conversation_id, in_reply_to_post_id};
     const response = await backend.post("/api/posts", {reply});
 
@@ -325,9 +351,10 @@ export const fetchPosts = (num, offset) => async (dispatch, getState) => {
         dispatch({type: "FETCH_POSTS", payload: response.data});
 }
 
-export const fetchUserPosts = (userId, num, offset) => async (dispatch) => {
-    const response = await backend.get("/api/posts", {
+export const fetchUserPosts = (targetUserId, userId, num, offset) => async (dispatch) => {
+    const response = await backend.get("/api/posts/user", {
         params: {
+            targetUserId,
             userId,
             num,
             offset

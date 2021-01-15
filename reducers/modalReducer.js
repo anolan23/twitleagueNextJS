@@ -11,7 +11,8 @@ const INITIAL_STATE = {
     showRosterModal: false,
     showPopupCompose: false,
     showPopupReply: false,
-    showSignupPopup: false
+    showSignupPopup: false,
+    showEditTeamPopup: false
 }
 
 const modalReducer = (state = INITIAL_STATE, action) => {
@@ -31,7 +32,9 @@ const modalReducer = (state = INITIAL_STATE, action) => {
         case "TOGGLE_ADDEVENT_MODAL":
             return {...state, showAddEventModal: !state.showAddEventModal}
         case "TOGGLE_EDIT_PROFILE_MODAL":
-            return {...state, showEditProfilePopup: !state.showEditProfilePopup}   
+            return {...state, showEditProfilePopup: !state.showEditProfilePopup} 
+        case "TOGGLE_EDIT_TEAM_MODAL":
+            return {...state, showEditTeamPopup: !state.showEditTeamPopup}      
         case "TOGGLE_SCHEDULE_MODAL":
             return {...state, showScheduleModal: !state.showScheduleModal} 
         case "TOGGLE_ROSTER_MODAL":

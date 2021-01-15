@@ -15,8 +15,8 @@ function MyTeams(props){
                     <MyTeam 
                         key={index} 
                         avatar={team.avatar}
-                        teamName={team.team_name}
-                        leagueName={team.league_id}
+                        teamName={`${team.city} ${team.team_name}`}
+                        leagueName={team.league_name}
                         abbrev={team.abbrev}
                     />
                 )

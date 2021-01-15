@@ -61,9 +61,9 @@ body {
 }
 
 .header{
-    // background-color: grey;
     display: flex;
     justify-content: flex-end;
+   
     @media only screen and (max-width: 1240px){
         justify-content: flex-end;
     }
@@ -125,6 +125,7 @@ body {
         display: none;
         margin: 2rem 0;
         object-fit: cover;
+        margin-top: auto;
         @media only screen and (max-width: 1240px){
             display: block;
         }

@@ -1,8 +1,7 @@
 const INITIAL_STATE = {
-    watchers: [],
     events: [],
-    image: "",
-    banner: "",
+    avatar: null,
+    banner: null,
     roster: []
 }
 
@@ -20,6 +19,8 @@ const teamReducer = (state = INITIAL_STATE, action) => {
             return {...state, events: action.payload};
         case "SAVE_TEAM_IMAGES":
             return {...state, image: action.payload.image, banner: action.payload.banner}
+        case "UPDATE_TEAM_PROFILE":
+            return action.payload;
         default:
             return state;
     }
