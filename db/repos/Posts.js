@@ -119,7 +119,7 @@ class Posts {
         return rows;
     }
 
-    static async findByPostId(postId) {
+    static async findByPostId(userId, postId) {
         let activePost;
         let posts;
         let post;
@@ -134,11 +134,12 @@ class Posts {
                     WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
                     WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
                     ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-                    END AS date
+                    END AS date,
+                    EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.id = $1
-                  ORDER BY created_at`, [postId]
+                  ORDER BY created_at`, [postId, userId]
               )
 
               posts = activePost.rows;
@@ -152,11 +153,12 @@ class Posts {
                     WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
                     WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
                     ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-                    END AS date
+                    END AS date,
+                    EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.id = $1
-                  ORDER BY created_at`, [in_reply_to_post_id]
+                  ORDER BY created_at`, [in_reply_to_post_id, userId]
               )
               return previousPost.rows[0];
               }
@@ -180,11 +182,12 @@ class Posts {
                     WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHhr'))
                     WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
                     ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-                    END AS date
+                    END AS date,
+                    EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.in_reply_to_post_id = $1
-                  ORDER BY created_at`, [activePost.rows[0].id]
+                  ORDER BY created_at`, [activePost.rows[0].id, userId]
               )
               
               posts = [...posts, ...replies.rows];

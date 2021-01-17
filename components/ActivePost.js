@@ -8,7 +8,7 @@ import post from "../sass/components/Post.module.scss";
 import Avatar from "../components/Avatar";
 import {Gif} from "@giphy/react-components";
 import { GiphyFetch } from "@giphy/js-fetch-api";
-import {trackClickedPost, togglePopupReply} from "../actions";
+import {trackClickedPost, togglePopupReply, likePost} from "../actions";
 
 function ActivePost(props){
 
@@ -26,38 +26,42 @@ function ActivePost(props){
     setGif(data);
   }
 
-    const onReplyClick = () => {
-        props.trackClickedPost(props.post);
-        props.togglePopupReply();
-      }
+  const renderBody = () => {
+    const text = props.post.body;
+    let replacedText;
+    replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
+      <Link key={match + i} href={`/teams/${match}`}><a className="twit-link">${match}</a></Link>
+    ));
 
-      const renderBody = () => {
-        const text = props.post.body;
-        let replacedText;
-        replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-          <Link key={match + i} href={`/teams/${match}`}><a className="twit-link">${match}</a></Link>
-        ));
-    
-        replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
-          <Link key={match + i} href={`/users/${match}`}><a className="twit-link">@{match}</a></Link>
-        ));
-    
-        return replacedText
-      }
+    replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
+      <Link key={match + i} href={`/users/${match}`}><a className="twit-link">@{match}</a></Link>
+    ));
 
-      const renderMedia = () => {
-        if(gif){
-          return (
-            <div className={post["post__gif"]}>
-              <Gif gif={gif} width="100%" height="auto"/>
-            </div>
-          );
-        }
-        else{
-          return null;
-        }
-      }
+    return replacedText
+  }
 
+  const renderMedia = () => {
+    if(gif){
+      return (
+        <div className={post["post__gif"]}>
+          <Gif gif={gif} width="100%" height="auto"/>
+        </div>
+      );
+    }
+    else{
+      return null;
+    }
+  }
+
+  const onLikeClick = (event) => {
+    event.stopPropagation();
+    props.likePost(props.post.id);
+  }
+
+  const onReplyClick = () => {
+    props.trackClickedPost(props.post);
+    props.togglePopupReply();
+  }
 
     return(
         <div className={activePost["active-post"]}>
@@ -82,22 +86,29 @@ function ActivePost(props){
                 </div>
             </div>
             <div className={activePost["active-post__icons"]}>
-                    <svg className={activePost["active-post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-message-square"/>
-                    </svg>                  
-                    <svg className={activePost["active-post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-repeat"/>
-                    </svg>
-                    <svg className={activePost["active-post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-heart"/>
-                    </svg>                  
-                    <svg onClick={onReplyClick} className={activePost["active-post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-corner-up-right"/>
-                    </svg>
+                    <div className={activePost["active-post__icons__holder"]}>
+                      <svg className={activePost["active-post__icon"]}>
+                        <use xlinkHref="/sprites.svg#icon-message-square"/>
+                      </svg> 
+                    </div>                  
+                    <div className={activePost["active-post__icons__holder"]}>
+                      <svg className={activePost["active-post__icon"]}>
+                        <use xlinkHref="/sprites.svg#icon-repeat"/>
+                      </svg>
+                    </div> 
+                    <div onClick={onLikeClick} className={`${activePost["active-post__icons__holder"]} ${props.post.liked?activePost["active-post__icons__holder__active"]: null}`}>
+                      <svg className={activePost["active-post__icon"]}>
+                        <use xlinkHref="/sprites.svg#icon-heart"/>
+                      </svg>
+                    </div>               
+                    <div onClick={onReplyClick} className={activePost["active-post__icons__holder"]}>
+                      <svg className={activePost["active-post__icon"]}>
+                        <use xlinkHref="/sprites.svg#icon-corner-up-right"/>
+                      </svg>
+                    </div> 
             </div>
-
         </div>
     )
 }
 
-export default connect(null, {trackClickedPost, togglePopupReply})(ActivePost);
+export default connect(null, {trackClickedPost, togglePopupReply, likePost})(ActivePost);

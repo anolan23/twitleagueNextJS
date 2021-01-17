@@ -374,9 +374,12 @@ export const fetchLeaguePosts = () => async (dispatch, getState) => {
     dispatch({type: "FETCH_LEAGUE_POSTS", payload: response.data});
 }
 
-export const fetchThreadPosts = (postId) => async (dispatch) => {
+export const fetchThreadPosts = (postId) => async (dispatch, getState) => {
+    const userId = getState().user.id;
+    console.log("userId in actions", userId);
     const response = await backend.get("/api/posts/thread", {
         params: {
+            userId,
             postId
         }
     });
@@ -397,14 +400,21 @@ export const likePost = (postId) => async (dispatch, getState) => {
         return;
     }
 
-    let posts = getState().posts;
-    const postIndex = posts.findIndex( post => post.id === postId)
-    console.log("postIndex", postIndex)
-    let likes = posts[postIndex].likes;
-    likes++;
-    
-    posts[postIndex].likes = likes.toString();
-    dispatch({type: "LIKE_POST", payload: posts})
+    const posts = getState().posts;
+    console.log("posts before", posts);
+    let newPosts = posts.map(post => {
+        let temp = Object.assign({}, post);
+        if(temp.id === postId){
+            temp.liked = true;
+            temp.likes++;
+        }
+        return temp;
+    })
+
+    console.log("newPosts", newPosts);
+    console.log("equal?", posts === newPosts);
+
+    dispatch({type: "LIKE_POST", payload: newPosts})
     const response = await backend.patch("/api/posts/like", {
         postId,
         userId

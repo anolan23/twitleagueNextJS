@@ -42,7 +42,7 @@ function Home(props) {
 
 const mapStateToProps = (state) => {
     return {
-        posts: state.posts
+        posts: state.posts ? state.posts : []
     }
 }
 

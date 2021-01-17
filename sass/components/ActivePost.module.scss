@@ -84,18 +84,51 @@
         display: flex;
         justify-content: space-around;
         margin-top: 1rem;
+
+        &__holder{
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+            color: var(--SECONDARY_TEXT);
+            fill: currentColor;
+
+            &::before{
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 175%;
+                height: 175%;
+                border-radius: 50%;
+                opacity: 0;
+                transition: all .2s;
+              }
+        
+              &:hover{
+                &::before{
+                  opacity: .15;
+                  color: inherit;
+                  background-color: currentColor;
+                }
+              }
+      
+            &__active{
+              color: red;
+              fill: currentColor;
+            }
+          }
     }
 
     &__icon{
         display: flex;
         align-items: center;
         justify-content: center;
-    
-        cursor: pointer;
         align-self: center;
         height: 18.5px;
         width: 18.5px;
-        fill: var(--SECONDARY_TEXT);
+        fill: inherit;
         position: relative;
         transition: all .2s;
     }

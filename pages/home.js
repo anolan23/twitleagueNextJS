@@ -16,7 +16,7 @@ function HomePage(props) {
     props.fetchUser();
     props.fetchPosts(10,0);
     return () => {
-      props.clearPosts();
+      // props.clearPosts();
     }
   }, []);
 
