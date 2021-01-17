@@ -13,10 +13,18 @@ function HomePage(props) {
   const router = useRouter(); 
   
   useEffect(() => {
-    props.fetchUser();
-    props.fetchPosts(10,0);
+    const start = async () => {
+      if(props.isSignedIn){
+        props.fetchPosts(10,0);
+      }
+      else{
+        await props.fetchUser();
+        props.fetchPosts(10,0);
+      }
+  }
+  start();
     return () => {
-      // props.clearPosts();
+      props.clearPosts();
     }
   }, []);
 

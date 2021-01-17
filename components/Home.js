@@ -6,18 +6,36 @@ import TopBar from "./TopBar";
 import Post from "../components/Post";
 import {createPost} from "../actions";
 import Divide from "./Divide";
+import home from "../sass/components/Home.module.scss";
+import TwitButton from "./TwitButton";
 
 function Home(props) {
 
     const renderPosts = () => {
-        return props.posts.map((post, index) => {
+        if(props.posts.length > 0){
+            return props.posts.map((post, index) => {
+                return (
+                  <Post 
+                    key={index}
+                    post={post}
+                    />
+                );
+              });
+        }
+        else{
             return (
-              <Post 
-                key={index}
-                post={post}
-                />
-            );
-          });
+                <div className={home["home__empty"]}>
+                    <h2 className={home["home__empty__main"]}>Welcome to twitleague!</h2>
+                    <p className={home["home__empty__sub"]}>
+                        This is the best place to see what’s happening in the world of sports. Find some teams and players to follow now.
+                    </p>
+                    <div className={home["home__empty__action"]}>
+                        <TwitButton color="twit-button--primary">Let's go!</TwitButton>
+                    </div>
+                </div>
+            )
+        }
+        
     }
 
     const onSubmit = () => {
@@ -25,7 +43,7 @@ function Home(props) {
     }
 
         return (
-            <div >
+            <div className={home["home"]}>
                 <TopBar main="Home"/>
                 <TwitInput 
                     placeHolder="What's happening?" 
@@ -35,7 +53,6 @@ function Home(props) {
                 />
                 <Divide/>
                 {renderPosts()}
-                
             </div>
         );
 }

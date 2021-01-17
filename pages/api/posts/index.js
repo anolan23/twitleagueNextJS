@@ -6,7 +6,7 @@ export default async (req,res) => {
         const num = req.query.num;
         const offset = req.query.offset;
         const userId = req.query.userId;
-        const posts = await Posts.find(userId, num, offset);
+        const posts = await Posts.findFollowedTeamsPosts(userId, num, offset);
         res.send(posts);
     }
     else if(method === "POST"){
