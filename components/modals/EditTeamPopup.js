@@ -1,15 +1,19 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {connect} from "react-redux";
-import Image from 'react-bootstrap/Image';
 import {useFormik} from "formik";
 
 import Popup from "./Popup";
+import Avatar from "../Avatar";
 import TwitButton from "../TwitButton";
 import {toggleEditTeamPopup, updateTeamProfile} from "../../actions";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss";
 
 function EditTeamPopup(props) {
+
+    useEffect(() => {
+        formik.setFieldValue("avatar", props.avatar);
+    }, [props.avatar])
     
     const formik = useFormik({
         initialValues: {
@@ -31,9 +35,10 @@ function EditTeamPopup(props) {
     }
 
     const renderForm = () => {
+        console.log(formik.values)
         return (
             <form id="edit-team-form" onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
-                <Image rounded className={editProfilePopup["edit-profile-popup__avatar"]} src={formik.values.avatar}/>
+                <Avatar rounded className={editProfilePopup["edit-profile-popup__avatar"]} src={formik.values.avatar}/>
               <div className={twitForm["twit-form__group"]}>
                   <label htmlFor="avatar" className={twitForm["twit-form__label"]}>Avatar URL</label>
                   <input 
@@ -77,7 +82,10 @@ function EditTeamPopup(props) {
 }
 
 const mapStateToProps = (state) => {
-    return {showEditTeamPopup: state.modals.showEditTeamPopup}
+    return {
+            showEditTeamPopup: state.modals.showEditTeamPopup,
+            avatar: state.team.avatar
+        }
 }
 
 export default connect(mapStateToProps, {toggleEditTeamPopup, updateTeamProfile})(EditTeamPopup);

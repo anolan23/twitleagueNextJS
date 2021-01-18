@@ -432,7 +432,7 @@ export const unlikePost = (postId) => async (dispatch) => {
 }
 
 export const clearPosts = () => async (dispatch) => {
-    dispatch({type: "CLEAR_POSTS", payload: []});
+    dispatch({type: "CLEAR_POSTS", payload: null});
 }
 
 //Post Action Creators

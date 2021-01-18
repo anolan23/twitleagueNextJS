@@ -26,7 +26,7 @@ function TopBar(props){
           <div className="top-bar__box">
             {renderBackArrow()}
             <div className="top-bar__text">
-              <div className="top-bar__text--main heading-1">{props.main}</div>
+              <div className="top-bar__text--main">{props.main}</div>
               <div className="top-bar__text--sub muted">{props.sub}</div>
             </div>
           </div>

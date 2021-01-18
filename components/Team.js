@@ -5,6 +5,7 @@ import TeamHolder from "./TeamHolder";
 import Post from "./Post";
 import TwitTab from "./TwitTab";
 import TwitTabs from "./TwitTabs";
+import EmptyPosts from "./EmptyPosts";
 import {createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts} from "../actions";
 import TopBar from "./TopBar";
 
@@ -33,17 +34,30 @@ function TeamComponent(props) {
 
       const renderPosts = () => {
         if(activeLink !=="team" && activeLink !=="league"){
-          return null;
+          return;
         }
-    
-        return props.posts.map((post, index) => {
-          return (
-            <Post 
-              key={index}
-              post={post}
-              />
-          );
-        });
+        if(props.posts === null){
+            return;
+        }
+        if(props.posts.length > 0){
+            return props.posts.map((post, index) => {
+                return (
+                  <Post 
+                    key={index}
+                    post={post}
+                    />
+                );
+              });
+        }
+        else if(props.posts.length === 0){
+            return (
+                <EmptyPosts
+                    main="No posts yet"
+                    sub="Be the first to make a post mentioning this team!"
+                    actionText="Post now"
+                />
+            )
+        }
       }
 
 
@@ -85,7 +99,7 @@ function TeamComponent(props) {
 const mapStateToProps = (state) => {
     return {
         user: state.user,
-        posts: state.posts ? state.posts : []
+        posts: state.posts ? state.posts : null
     
     }
 }

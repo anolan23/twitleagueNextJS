@@ -6,7 +6,8 @@ import TwitTab from "./TwitTab";
 import TwitButton from "./TwitButton";
 import Avatar from "../components/Avatar";
 import Post from "./Post";
-import {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser} from "../actions";
+import EmptyPosts from "./EmptyPosts";
+import {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser, togglePopupCompose} from "../actions";
 import TopBar from "./TopBar";
 import teamHolder from "../sass/components/TeamHolder.module.scss";
 
@@ -63,18 +64,44 @@ function User(props) {
     }
 
     const renderPosts = () => {
-        if(activeLink === "posts"){
-            return props.posts.map((post, index) => {
-                return (
-                  <Post 
-                    key={index}
-                    post={post}
-                    />
-                );
-              });
+        if(props.posts === null){
+            return;
         }
-        else{
-            return null;
+        if(props.posts.length > 0){
+            if(activeLink === "posts"){
+                return props.posts.map((post, index) => {
+                    return (
+                      <Post 
+                        key={index}
+                        post={post}
+                        />
+                    );
+                  });
+            }
+            else{
+                return null;
+            }
+        }
+        else if(props.posts.length === 0){
+            if(props.user.id === props.userId){
+                return (
+                    <EmptyPosts
+                        main="You haven’t posted yet"
+                        sub="When you make a post, it’ll show up here."
+                        actionText="Post now"
+                        onActionClick={props.togglePopupCompose}
+                    />
+                )
+            }
+            else{
+                return (
+                    <EmptyPosts
+                        main="This user hasn't posted yet"
+                        sub="When they make a post, it’ll show up here."
+                        actionText="Send message"
+                    />
+                )
+            }
         }
       }
 
@@ -131,8 +158,8 @@ const mapStateToProps = (state) => {
     return {
         userId: state.user.id ? state.user.id : null,
         isSignedIn: state.user.isSignedIn,
-        posts: state.posts ? state.posts : []
+        posts: state.posts ? state.posts : null
     }
 }
 
-export default connect(mapStateToProps, {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser})(User);
+export default connect(mapStateToProps, {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser, togglePopupCompose})(User);

@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react"
+import Spinner from "react-bootstrap/Spinner";
 
 import TwitCard from "../components/TwitCard";
 import TwitCardItem from "../components/TwitCardItem";
@@ -23,17 +24,24 @@ function SuggestedTeams(){
     }
 
     const renderSuggestedTeams = () => {
-        return suggestedTeams.map(suggestedTeam => {
-            return (
-                <TwitCardItem 
-                    avatar={suggestedTeam.avatar}
-                    href={`/teams/${suggestedTeam.abbrev.substring(1)}`}
-                    mainText={suggestedTeam.team_name} 
-                    subText={suggestedTeam.league_name}
-                    actionText="Follow"
-                    />
-            )
-        })
+        if(suggestedTeams.length > 0){
+            return suggestedTeams.map((suggestedTeam, index) => {
+                return (
+                    <TwitCardItem 
+                        key={index}
+                        avatar={suggestedTeam.avatar}
+                        href={`/teams/${suggestedTeam.abbrev.substring(1)}`}
+                        mainText={suggestedTeam.team_name} 
+                        subText={suggestedTeam.league_name}
+                        actionText="Follow"
+                        />
+                )
+            });
+        }
+        else{
+            return <Spinner animation="border" />
+        }
+        
     }
 
     return (

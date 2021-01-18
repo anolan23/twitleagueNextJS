@@ -36,15 +36,6 @@ body {
     padding: 0rem;
 }
 
-a {
-    &,
-    &:link,
-    &:visited {
-        color: var(--PRIMARY_TEXT);
-        text-decoration: none;
-    }
-}
-
 .twit-container{
     min-height: 100vh;
     margin-bottom: 75px;
@@ -227,7 +218,8 @@ a {
     &__text{
         margin-left: 1rem;
         &--main{
-
+            font-size: 1.9rem;
+            font-weight: 800;
         }
 
         &--sub{

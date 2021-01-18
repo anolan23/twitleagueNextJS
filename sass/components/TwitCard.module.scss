@@ -39,7 +39,12 @@
         }
 
         &__text--main{
-            cursor: pointer;
+            &,
+            &:link,
+            &:visited{
+                cursor: pointer;
+                color: var(--PRIMARY_TEXT);
+            }
 
             &:hover{
                 text-decoration: underline;

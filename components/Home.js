@@ -8,10 +8,16 @@ import {createPost} from "../actions";
 import Divide from "./Divide";
 import home from "../sass/components/Home.module.scss";
 import TwitButton from "./TwitButton";
+import EmptyPosts from "./EmptyPosts";
 
 function Home(props) {
 
+    let empty = true;
+
     const renderPosts = () => {
+        if(props.posts === null){
+            return;
+        }
         if(props.posts.length > 0){
             return props.posts.map((post, index) => {
                 return (
@@ -22,17 +28,14 @@ function Home(props) {
                 );
               });
         }
-        else{
+    
+        else if(props.posts.length === 0){
             return (
-                <div className={home["home__empty"]}>
-                    <h2 className={home["home__empty__main"]}>Welcome to twitleague!</h2>
-                    <p className={home["home__empty__sub"]}>
-                        This is the best place to see what’s happening in the world of sports. Find some teams and players to follow now.
-                    </p>
-                    <div className={home["home__empty__action"]}>
-                        <TwitButton color="twit-button--primary">Let's go!</TwitButton>
-                    </div>
-                </div>
+                <EmptyPosts
+                    main="Welcome to twitleague!"
+                    sub="This is the best place to see what’s happening in sports. Find some teams and players to follow."
+                    actionText="Let's go!"
+                />
             )
         }
         
@@ -59,7 +62,7 @@ function Home(props) {
 
 const mapStateToProps = (state) => {
     return {
-        posts: state.posts ? state.posts : []
+        posts: state.posts ? state.posts : null
     }
 }
 

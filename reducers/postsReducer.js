@@ -1,4 +1,4 @@
-const INITIAL_STATE = [];
+const INITIAL_STATE = null;
 
 const postsReducer = (state = INITIAL_STATE, action) => {
     switch(action.type){
