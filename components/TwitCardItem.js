@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 import twitCard from "../sass/components/TwitCard.module.scss";
 import Avatar from "./Avatar";
@@ -8,13 +9,17 @@ function TwitCardItem(props) {
 
     return (
         <div className={twitCard["twit-card__item"]}>
-            <Avatar roundedCircle className={twitCard["twit-card__item__image"]}/>
+            <Link href={props.href}>
+                <Avatar roundedCircle className={twitCard["twit-card__item__image"]} src={props.avatar}/>
+            </Link>
             <div className={twitCard["twit-card__item__text-box"]}>
-                <div className={twitCard["twitcard__item__text--main"] + " heading-3"}>{props.mainText}</div>
+                <Link href={props.href} passHref>
+                    <a className={twitCard["twit-card__item__text--main"] + " heading-3"}>{props.mainText}</a>
+                </Link>
                 <div className={twitCard["twit-card__item__text--sub"] + " muted"}>{props.subText}</div>
             </div>
             <div className={twitCard["twit-card__item__action"]}>
-                <TwitButton color="twit-button--primary">Scout</TwitButton>
+                <TwitButton color="twit-button--primary">{props.actionText}</TwitButton>
             </div>
         </div>
     );

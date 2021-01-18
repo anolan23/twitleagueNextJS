@@ -3,14 +3,14 @@ import Head from 'next/head'
 import {connect} from "react-redux";
 
 
-import {fetchTeams} from "../actions";
+import {fetchUserTeams} from "../actions";
 import MainBody from "../components/MainBody"
 import MyTeams from "../components/MyTeams";
 
 function MyTeamsPage(props) {
 
   useEffect(() => {
-    props.fetchTeams();
+    props.fetchUserTeams();
   }, []);
 
   return (
@@ -22,4 +22,4 @@ function MyTeamsPage(props) {
   )
 }
 
-export default connect(null, {fetchTeams})(MyTeamsPage);
+export default connect(null, {fetchUserTeams})(MyTeamsPage);

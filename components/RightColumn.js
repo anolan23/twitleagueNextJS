@@ -1,7 +1,6 @@
 import React from "react";
 
-import TwitCard from "./TwitCard";
-import TwitCardItem from "./TwitCardItem";
+import SuggestedTeams from "./SuggestedTeams";
 import TwitSearch from "./modals/TwitSearch";
 
 function RightColumn(){
@@ -13,11 +12,7 @@ function RightColumn(){
                 </svg>
                 <TwitSearch inline placeHolder="Search twitleague"/>
             </div>
-            <TwitCard title="Who to Scout" footer="Show more">
-                <TwitCardItem mainText="Investar Bank" subText="@realinvestar"/>
-                <TwitCardItem mainText="Darkie" subText="@Darkie_..."/>
-                <TwitCardItem mainText="chad mazanowski" subText="@ChadMazanowski"/>
-            </TwitCard>
+            <SuggestedTeams/>
         </div>
     )
 }

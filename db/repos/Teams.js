@@ -78,6 +78,18 @@ class Teams {
         return teams.rows;
     }
 
+    static async findSuggested(num) {
+        const teams = await pool.query(`
+        SELECT avatar, team_name, abbrev, league_name
+        FROM teams
+        JOIN leagues ON leagues.id = teams.league_id
+        WHERE teams.avatar IS NOT NULL
+        ORDER BY RANDOM()
+        LIMIT $1
+        `, [num]);
+        return teams.rows;
+    }
+
     static async joinLeague(leagueId, teamId) {
         const team = await pool.query(`
         UPDATE teams

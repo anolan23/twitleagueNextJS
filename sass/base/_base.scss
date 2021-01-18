@@ -36,6 +36,15 @@ body {
     padding: 0rem;
 }
 
+a {
+    &,
+    &:link,
+    &:visited {
+        color: var(--PRIMARY_TEXT);
+        text-decoration: none;
+    }
+}
+
 .twit-container{
     min-height: 100vh;
     margin-bottom: 75px;

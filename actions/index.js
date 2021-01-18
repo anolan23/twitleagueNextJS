@@ -137,7 +137,7 @@ export const fetchTeam = (teamAbbrev) => async dispatch => {
     dispatch({type: "FETCH_TEAM", payload: response.data})
 }
 
-export const fetchTeams = () => async (dispatch, getState) => {
+export const fetchUserTeams = () => async (dispatch, getState) => {
     const user = getState().user;
     if(!user.isSignedIn){
         return;
@@ -148,7 +148,7 @@ export const fetchTeams = () => async (dispatch, getState) => {
         }
     });
     
-    dispatch({type: "FETCH_TEAMS", payload: response.data})
+    dispatch({type: "FETCH_USER_TEAMS", payload: response.data})
 }
 
 export const fetchTeamAndTeamPosts = (teamAbbrev) => async (dispatch) => {

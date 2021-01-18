@@ -1,11 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;700;900&display=swap');
 
 
-/* -------------------Element Selectors---------------------- */
-a:hover{
-  text-decoration: none !important;
-}
-
 body{
   font-family: 'Source Sans Pro', sans-serif;
   color: var(--PRIMARY_TEXT);
