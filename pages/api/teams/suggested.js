@@ -4,7 +4,8 @@ export default async (req,res) => {
     const method = req.method;
     if(method === "GET"){
         const num = req.query.num;
-        const teams = await Teams.findSuggested(num);
+        const userId = req.query.userId;
+        const teams = await Teams.findSuggested(userId, num);
         res.send(teams);
     }
     

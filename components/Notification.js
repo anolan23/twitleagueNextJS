@@ -28,7 +28,7 @@ function Notification(props) {
     const onAcceptJoinTeamRequestClick = () => {
         const teamId = props.data.teamToJoin._id;
         const userId = props.data.userIssuingRequest._id;
-        backend.patch("/api/join/team", {
+        backend.patch("/api/teams", {
             teamId,
             userId
         });
@@ -38,7 +38,7 @@ function Notification(props) {
     const renderNotification = () => {
         if(props.notification.type ==="Join League Request")
         {
-            const text = props.notification.payload.message;
+            const text = `${props.notification.team_name}  wants to join ${props.notification.league_name}`;
             const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
                 <Link key={match + i} passHref href={"/teams/"}><a>${match}</a></Link>
               ));
@@ -52,10 +52,10 @@ function Notification(props) {
                 </React.Fragment>
             );
         }
-        else if(props.type === "Join Team Request"){
-            const text = "@"+props.data.userIssuingRequest.username + " wants to join the " + props.data.teamToJoin.teamName + " roster";
+        else if(props.notification.type === "Join Team Request"){
+            const text = "@"+props.notification.player + " wants to join the " + props.notification.team_name + " roster";
             const replacedText = reactStringReplace(text, /@(\w+)/g, (match, i) => (
-                <Link key={match + i} passHref href={"/users/"+ props.data.userIssuingRequest.username}><a>@{match}</a></Link>
+                <Link key={match + i} passHref href={"/users/"+ props.notification.player}><a>@{match}</a></Link>
               ));
             
             return (

@@ -6,8 +6,11 @@ import Post from "./Post";
 import TwitTab from "./TwitTab";
 import TwitTabs from "./TwitTabs";
 import EmptyPosts from "./EmptyPosts";
-import {createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts} from "../actions";
+import {createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup} from "../actions";
 import TopBar from "./TopBar";
+import TwitItem from "./TwitItem";
+import TwitButton from "./TwitButton";
+import team from "../sass/components/Team.module.scss"
 
 function TeamComponent(props) {
     
@@ -32,30 +35,76 @@ function TeamComponent(props) {
         }
       }, [])
 
+      const renderInvite = () => {
+          return (
+            <div className={team["team__roster__invite"]}>
+                <TwitButton onClick={props.toggleEditRosterPopup} color="twit-button--primary">
+                    Edit roster
+                </TwitButton>
+            </div>
+          )
+      }
+
       const renderPosts = () => {
-        if(activeLink !=="team" && activeLink !=="league"){
-          return;
-        }
-        if(props.posts === null){
-            return;
-        }
-        if(props.posts.length > 0){
-            return props.posts.map((post, index) => {
+        if(activeLink ==="team" || activeLink === "league"){
+            if(props.posts === null){
+                return;
+            }
+            if(props.posts.length > 0){
+                return props.posts.map((post, index) => {
+                    return (
+                      <Post 
+                        key={index}
+                        post={post}
+                        />
+                    );
+                  });
+            }
+            else if(props.posts.length === 0){
                 return (
-                  <Post 
-                    key={index}
-                    post={post}
+                    <EmptyPosts
+                        main="No posts yet"
+                        sub="Be the first to make a post mentioning this team!"
+                        actionText="Post now"
                     />
-                );
-              });
+                )
+            }
         }
-        else if(props.posts.length === 0){
+        else if(activeLink === "roster"){
             return (
-                <EmptyPosts
-                    main="No posts yet"
-                    sub="Be the first to make a post mentioning this team!"
-                    actionText="Post now"
-                />
+                <div className={team["team__roster"]}>
+                    {renderInvite()}
+                    <TwitItem
+                        title="anolan"
+                        subtitle="@anolan"
+                        actionText="Scout"
+                    />
+                    <TwitItem
+                        title="anolan23"
+                        subtitle="@anolan23"
+                        actionText="Scout"
+                    />
+                    <TwitItem
+                        title="cranberri12"
+                        subtitle="@cranberri12"
+                        actionText="Scout"
+                    />
+                    <TwitItem
+                        title="anol1258"
+                        subtitle="@anol1258"
+                        actionText="Scout"
+                    />
+                    <TwitItem
+                        title="seansi2k"
+                        subtitle="@seansi2k"
+                        actionText="Scout"
+                    />
+                    <TwitItem
+                        title="caribear"
+                        subtitle="@caribear"
+                        actionText="Scout"
+                    />
+                </div>
             )
         }
       }
@@ -104,4 +153,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {fetchUser, createPost, fetchTeamPosts, fetchLeaguePosts, clearPosts})(TeamComponent);
+export default connect(mapStateToProps, {fetchUser, createPost, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup})(TeamComponent);

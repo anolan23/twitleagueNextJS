@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Avatar from './Avatar';
@@ -7,7 +6,6 @@ import {connect} from "react-redux";
 
 import {
   followTeam, 
-  unwatchTeamAndFetchUser, 
   toggleAddEventModal, 
   toggleEditTeamPopup,
   toggleScheduleModal,
@@ -16,8 +14,7 @@ import {
 } from "../actions";
 
 import teamHolder from "../sass/components/TeamHolder.module.scss";
-import button from "../sass/components/Button.module.scss";
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import TwitButton from "./TwitButton";
 
 function TeamHolder(props) {
 
@@ -35,23 +32,13 @@ function TeamHolder(props) {
     else{
       if(!props.following.some(row => row.team_id === team.id))
       {
-        return <Button onClick={() => props.followTeam()} className={button["button--watch"]}>Watch</Button>
+        return <TwitButton onClick={props.followTeam} color="twit-button--primary">Follow</TwitButton>
       }
       else
       {
         return (
-          <div style={{display:"flex"}}>
-            <Button onClick={() => props.unwatchTeamAndFetchUser()} className={button["button--watch"]}>Unwatch</Button>
-
-            <Dropdown as={ButtonGroup}>
-              <Dropdown.Toggle className={`${button["button--watch"]} ${button["button--dropdown"]}`} id="dropdown-custom-1"></Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={props.sendJoinTeamRequest} eventKey="1">Join team</Dropdown.Item>
-                <Dropdown.Item onClick={props.toggleScheduleModal} eventKey="2">View Schedule</Dropdown.Item>
-                <Dropdown.Item onClick={props.toggleRosterModal} eventKey="3">View Roster</Dropdown.Item>
-                <Dropdown.Item eventKey="4">Direct Message</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+          <div className={teamHolder["team-holder__follow"]}>
+            <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Unfollow</TwitButton>
           </div>
           
         );
@@ -111,8 +98,7 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps,{
-  followTeam, 
-  unwatchTeamAndFetchUser, 
+  followTeam,  
   toggleAddEventModal, 
   toggleEditTeamPopup,
   toggleScheduleModal,

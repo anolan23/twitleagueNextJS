@@ -23,6 +23,7 @@ $button-brightness: 80%;
     &:not([disabled]){
         &:hover{
             filter: brightness($button-brightness);
+            text-decoration: none;
         }
     }
 

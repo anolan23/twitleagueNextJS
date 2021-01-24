@@ -13,6 +13,7 @@ import PopupCompose from '../components/modals/PopupCompose';
 import PopupReply from '../components/modals/PopupReply';
 import SignupPopup from '../components/modals/SignupPopup';
 import EditTeamPopup from '../components/modals/EditTeamPopup';
+import EditRoster from '../components/modals/EditRoster';
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
@@ -22,6 +23,7 @@ function MyApp({ Component, pageProps }) {
       <GifPopup/>
       <AddEventModal/>
       <EditProfilePopup/>
+      <EditRoster/>
       <EditTeamPopup/>
       <RosterModal/>
       <PopupCompose/>

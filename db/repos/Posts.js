@@ -93,7 +93,8 @@ class Posts {
         FROM team_mentions
         JOIN posts AS p1 ON team_mentions.post_id = p1.id
         JOIN users ON p1.author_id = users.id
-        WHERE team_id = $2`, [userId, teamId]);
+        WHERE team_id = $2
+        ORDER BY p1.created_at DESC`, [userId, teamId]);
         return rows;
     }
 
@@ -115,7 +116,8 @@ class Posts {
             WHERE league_id = $1
         )
         ) AS t1 ON t1.post_id = p1.id
-        JOIN users ON p1.author_id = users.id`, [leagueId]);
+        JOIN users ON p1.author_id = users.id
+        ORDER BY p1.created_at DESC`, [leagueId]);
         return rows;
     }
 
@@ -255,7 +257,7 @@ class Posts {
 
     static async findFollowedTeamsPosts(userId, num, offset) {
       const {rows} = await pool.query(`
-      SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+      SELECT DISTINCT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
         CASE 
         WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
         WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))

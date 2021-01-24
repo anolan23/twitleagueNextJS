@@ -6,6 +6,7 @@ import Notification from "./Notification";
 import TopBar from "./TopBar";
 
 function Notifications(props) {
+    console.log("props.notifications", props.notifications);
 
    const renderNotifications = () => {
        if(props.notifications.length > 0){

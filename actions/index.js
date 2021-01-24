@@ -118,6 +118,15 @@ export const toggleEditTeamPopup = () => (dispatch, getState) => {
     }
 }
 
+export const toggleEditRosterPopup = () => (dispatch, getState) => {
+    const state = getState();
+    const userId = state.user.id;
+    const ownerId = state.team.owner_id;
+    if(ownerId === userId){
+        dispatch({type: "TOGGLE_EDIT_ROSTER_POPUP"});
+    }
+}
+
 //Team Action Creators
 export const createTeam = formValues => async (dispatch, getState) => {
     const owner = getState().user.id;
@@ -228,13 +237,14 @@ export const unwatchTeamAndFetchUser = () => async (dispatch) => {
     dispatch(fetchUser());
  }
 
-export const sendJoinTeamRequest = () => async (dispatch, getState) => {
-    const teamId = getState().team._id;
-    const userId = getState().user._id;
-    backend.patch("/api/user/notifications", {
-        notificationType: "Join Team Request",
+export const sendJoinTeamRequest = (recipient, teamId) => async (dispatch, getState) => {
+    const state = getState();
+    const playerId = state.user.id;
+    backend.patch("/api/notifications", {
+        userId: recipient,
+        type: "Join Team Request",
         teamId,
-        userId
+        playerId
     });
 } 
 

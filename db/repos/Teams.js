@@ -78,15 +78,19 @@ class Teams {
         return teams.rows;
     }
 
-    static async findSuggested(num) {
+    static async findSuggested(userId, num) {
         const teams = await pool.query(`
-        SELECT avatar, team_name, abbrev, league_name
+        SELECT teams.id, avatar, team_name, abbrev, league_name,
+        EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $1 AND teams.id = followers.team_id ) AS following
         FROM teams
         JOIN leagues ON leagues.id = teams.league_id
-        WHERE teams.avatar IS NOT NULL
+        WHERE teams.avatar IS NOT NULL AND teams.id NOT IN (
+            SELECT team_id
+            FROM followers
+            WHERE user_id = $1)
         ORDER BY RANDOM()
-        LIMIT $1
-        `, [num]);
+        LIMIT $2
+        `, [userId, num]);
         return teams.rows;
     }
 

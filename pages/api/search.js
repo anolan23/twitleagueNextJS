@@ -1,14 +1,21 @@
 import pool from "../../db/pool";
+import Users from "../../db/repos/Users";
 
 
 export default async (req,res) => {
-    let searchTerm = req.query.searchTerm; 
+    let searchTerm = req.query.searchTerm.toLowerCase();
+    const category = req.query.category;
     let users;
     let teams;
     // const teamSearchTerm = searchTerm.replace("$", "\\$&");
     // const teamRegExp = new RegExp("^"+ teamSearchTerm);
     // const userSearchTerm = searchTerm.replace("@", "")
     // const userRegexp = new RegExp("^"+ userSearchTerm);
+    if(category === "users"){
+      const users = await Users.search(searchTerm);
+      res.send(users);
+    }
+
     if(!searchTerm)
     {
         return []
@@ -17,7 +24,6 @@ export default async (req,res) => {
         const client = await pool.connect()
         try {
             await client.query('BEGIN')
-            searchTerm = searchTerm.toLowerCase();
             users = await client.query(
                 `
                 SELECT *
