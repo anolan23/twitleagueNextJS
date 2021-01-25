@@ -1,0 +1,23 @@
+.twit-dropdown{
+    position: absolute;
+    background-color: white;
+    top: 0;
+    right: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
+    z-index: 1;
+
+    &__item{
+        font-size: 1.5rem;
+        color: var(--PRIMARY_TEXT);
+        padding: 1.5rem;
+        white-space: nowrap;
+
+        &:hover{
+            background-color: var(--GRAY_BACKGROUND);
+        }
+
+    }
+}

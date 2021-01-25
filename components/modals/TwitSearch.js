@@ -52,7 +52,11 @@ function TwitSearch(props) {
         return options.teams.map((option, index) => {
             return (
                     <Link passHref href={"/teams/" + option.abbrev.substring(1)} key={index}>
-                        <TwitItem title={option.team_name} subtitle={option.abbrev.substring(1)} image={option.avatar}/>
+                        <TwitItem 
+                            avatar={option.avatar}
+                            title={option.team_name} 
+                            subtitle={option.abbrev.substring(1)} 
+                        />
                     </Link>
                     );
         });
@@ -65,7 +69,11 @@ function TwitSearch(props) {
         return options.users.map((option, index) => {
             return (
                     <Link passHref href={"/users/"+option.username} key={index}>
-                        <TwitItem title={option.name} subtitle={option.username} image={option.avatar}/>
+                        <TwitItem 
+                            avatar={option.avatar}
+                            title={option.name} 
+                            subtitle={option.username} 
+                        />
                     </Link>
                     );
         });

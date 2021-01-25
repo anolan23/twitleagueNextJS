@@ -21,7 +21,7 @@ const TwitItem = React.forwardRef((props, ref) => {
 
     return (
         <a href={props.href} ref={ref} className={twitItem["twit-item"]} draggable="true">
-            <Avatar roundedCircle className={twitItem["twit-item__image"]} src={props.image}/>
+            <Avatar roundedCircle className={twitItem["twit-item__image"]} src={props.avatar}/>
             <div className={twitItem["twit-item__textbox"]}>
                 <span className={twitItem["twit-item__title"]}>{props.title}</span>
                 <span className={twitItem["twit-item__subtitle"]}>{props.subtitle}</span>

@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {useFormik} from "formik";
 import {connect} from "react-redux";
 
-import {toggleEditRosterPopup, sendJoinTeamRequest} from "../../actions";
+import {toggleEditRosterPopup, sendJoinTeamInvite} from "../../actions";
 import backend from "../../lib/backend";
 import editRoster from "../../sass/components/EditRoster.module.scss";
 import Popup from "./Popup";
@@ -15,7 +15,22 @@ import EmptyPosts from "../EmptyPosts";
 function EditRoster(props){
 
     const [activeLink, setActiveLink] = useState("roster")
-    const [users, setUsers] = useState(null)
+    const [roster, setRoster] = useState(null);
+    const [users, setUsers] = useState(null);
+
+    useEffect(() => {
+        const getRoster = async () => {
+            const response = await backend.get("api/teams/rosters", {
+                params: {
+                    teamId: props.teamId
+                }
+            });
+            setRoster(response.data);
+        }
+        getRoster();
+        
+    })
+
 
     const onRosterSelect = (k) => {
         setActiveLink(k.target.id);
@@ -64,7 +79,7 @@ function EditRoster(props){
                         <TwitTab
                             id="roster"
                             onClick={onRosterSelect}
-                            title="Roster(5)"
+                            title={`Roster(${roster?roster.length:0})`}
                             active={activeLink === "roster" ? true : false}
                         />
                         <TwitTab
@@ -84,40 +99,21 @@ function EditRoster(props){
 
     const renderContent = () => {
         if(activeLink === "roster"){
-            return (
-                <React.Fragment>
-                    <TwitItem
-                        title="anolan"
-                        subtitle="@anolan"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="anolan23"
-                        subtitle="@anolan23"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="cranberri12"
-                        subtitle="@cranberri12"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="anol1258"
-                        subtitle="@anol1258"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="seansi2k"
-                        subtitle="@seansi2k"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="caribear"
-                        subtitle="@caribear"
-                        actionText="Scout"
-                    />
-                </React.Fragment>
-            );
+            if(!roster){
+                return null;
+            }
+            else{
+                return roster.map(player => {
+                    return (
+                        <TwitItem
+                            avatar={player.avatar}
+                            title={player.name}
+                            subtitle={`@${player.username}`}
+                            actionText="Scout"
+                        />
+                    )
+                });
+            }
         }
         else if(activeLink === "invite"){
             return (
@@ -147,7 +143,7 @@ function EditRoster(props){
                         title={user.name}
                         subtitle={user.username}
                         actionText="Invite"
-                        onClick={() => props.sendJoinTeamRequest(user.id, props.teamId)}
+                        onClick={() => props.sendJoinTeamInvite(user.id, props.teamId)}
                     />
                 )
             })
@@ -172,4 +168,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {toggleEditRosterPopup, sendJoinTeamRequest})(EditRoster);
+export default connect(mapStateToProps, {toggleEditRosterPopup, sendJoinTeamInvite})(EditRoster);

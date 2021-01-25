@@ -9,21 +9,18 @@ export default async (req,res) => {
         res.send(notifications);
     }
     else if(method === "POST"){
-       
-    }
-
-    else if(method === "PATCH"){
-        const joinTeamRequest = req.body;
-        const notification = await Notifications.sendJoinTeamRequest(joinTeamRequest);
+        const joinTeamInvite = req.body;
+        const notification = await Notifications.sendJoinTeamInvite(joinTeamInvite);
         res.send(notification);
-     }
+    }
 
     else if(method === "DELETE"){
        const notificationId = req.query.notificationId;
-       Notifications.delete(notificationId);
+       const notification = await Notifications.delete(notificationId);
+       res.send(notification);
     }
     else{
-        res.status(405).json({message: "api/notifications only supports GET/DELETE/PATCH method"})
+        res.status(405).json({message: "api/notifications only supports GET/DELETE method"})
     }
 
     

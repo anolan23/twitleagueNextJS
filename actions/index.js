@@ -237,14 +237,11 @@ export const unwatchTeamAndFetchUser = () => async (dispatch) => {
     dispatch(fetchUser());
  }
 
-export const sendJoinTeamRequest = (recipient, teamId) => async (dispatch, getState) => {
-    const state = getState();
-    const playerId = state.user.id;
-    backend.patch("/api/notifications", {
+export const sendJoinTeamInvite = (recipient, teamId) => async () => {
+    backend.post("/api/notifications", {
         userId: recipient,
-        type: "Join Team Request",
-        teamId,
-        playerId
+        type: "Join Team Invite",
+        teamId
     });
 } 
 

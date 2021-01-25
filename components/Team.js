@@ -11,10 +11,12 @@ import TopBar from "./TopBar";
 import TwitItem from "./TwitItem";
 import TwitButton from "./TwitButton";
 import team from "../sass/components/Team.module.scss"
+import backend from "../lib/backend";
 
 function TeamComponent(props) {
     
     const [activeLink, setActiveLink] = useState("team")
+    const [roster, setRoster] = useState(null)
 
     useEffect(() => {
 
@@ -34,6 +36,19 @@ function TeamComponent(props) {
             props.clearPosts();
         }
       }, [])
+
+      useEffect(() => {
+        const getRoster = async () => {
+            const response = await backend.get("api/teams/rosters", {
+                params: {
+                    teamId: props.team.id
+                }
+            });
+            setRoster(response.data);
+        }
+        getRoster();
+        
+    }, [props.team.id])
 
       const renderInvite = () => {
           return (
@@ -71,41 +86,21 @@ function TeamComponent(props) {
             }
         }
         else if(activeLink === "roster"){
-            return (
-                <div className={team["team__roster"]}>
-                    {renderInvite()}
-                    <TwitItem
-                        title="anolan"
-                        subtitle="@anolan"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="anolan23"
-                        subtitle="@anolan23"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="cranberri12"
-                        subtitle="@cranberri12"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="anol1258"
-                        subtitle="@anol1258"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="seansi2k"
-                        subtitle="@seansi2k"
-                        actionText="Scout"
-                    />
-                    <TwitItem
-                        title="caribear"
-                        subtitle="@caribear"
-                        actionText="Scout"
-                    />
-                </div>
-            )
+            if(!roster){
+                return null;
+            }
+            else{
+                return roster.map(player => {
+                    return (
+                        <TwitItem
+                            avatar={player.avatar}
+                            title={player.name}
+                            subtitle={`@${player.username}`}
+                            actionText="Scout"
+                        />
+                    )
+                });
+            }
         }
       }
 

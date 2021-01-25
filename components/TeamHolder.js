@@ -1,6 +1,4 @@
 import React from 'react';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Avatar from './Avatar';
 import {connect} from "react-redux";
 
@@ -9,12 +7,15 @@ import {
   toggleAddEventModal, 
   toggleEditTeamPopup,
   toggleScheduleModal,
-  toggleRosterModal,
-  sendJoinTeamRequest
+  toggleEditRosterPopup,
+  sendJoinTeamInvite
 } from "../actions";
 
 import teamHolder from "../sass/components/TeamHolder.module.scss";
 import TwitButton from "./TwitButton";
+import TwitDropdownButton from "./TwitDropdownButton";
+import TwitDropdownItem from "./TwitDropdownItem";
+
 
 function TeamHolder(props) {
 
@@ -23,11 +24,12 @@ function TeamHolder(props) {
   const renderButton = () => {
     if(props.username === team.owner){
       return (
-      <DropdownButton size="sm" id="manageTeam" title="Manage Team">
-        <Dropdown.Item as="button" onClick={props.toggleAddEventModal}>Schedule Event</Dropdown.Item>
-        <Dropdown.Item as="button">Edit Roster</Dropdown.Item>
-        <Dropdown.Item as="button" onClick={props.toggleEditTeamPopup}>Edit Team Image</Dropdown.Item>
-      </DropdownButton>);
+          <TwitDropdownButton actionText="Manage Team">
+            <TwitDropdownItem onClick={props.toggleEditTeamPopup} text="Edit team page"/>
+            <TwitDropdownItem onClick={props.toggleEditRosterPopup} text="Edit roster"/>
+            <TwitDropdownItem text="Edit events"/>
+          </TwitDropdownButton>
+      )
     }
     else{
       if(!props.following.some(row => row.team_id === team.id))
@@ -102,6 +104,6 @@ export default connect(mapStateToProps,{
   toggleAddEventModal, 
   toggleEditTeamPopup,
   toggleScheduleModal,
-  toggleRosterModal,
-  sendJoinTeamRequest 
+  toggleEditRosterPopup,
+  sendJoinTeamInvite 
 })(TeamHolder);

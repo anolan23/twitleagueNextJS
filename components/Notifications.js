@@ -11,7 +11,7 @@ function Notifications(props) {
    const renderNotifications = () => {
        if(props.notifications.length > 0){
         return props.notifications.map((notification, index) => {
-            return <Notification key={index} notification={notification}/>
+            return <Notification key={index} notification={notification} index={index}/>
         }
        );
        

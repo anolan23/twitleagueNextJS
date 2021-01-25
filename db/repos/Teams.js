@@ -1,4 +1,3 @@
-import { saveTeamImages } from "../../actions";
 import pool  from "../pool";
 
 class Teams {

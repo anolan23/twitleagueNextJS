@@ -25,14 +25,14 @@ function Notification(props) {
     //     props.deleteNotification(props.index);
     // }
     
-    const onAcceptJoinTeamRequestClick = () => {
-        const teamId = props.data.teamToJoin._id;
-        const userId = props.data.userIssuingRequest._id;
-        backend.patch("/api/teams", {
+    const onAcceptJoinTeamInviteClick = async () => {
+        const teamId = props.notification.team_id;
+        const userId = props.notification.user_id;
+        await backend.post("/api/teams/rosters", {
             teamId,
             userId
         });
-        props.deleteNotification(props.index);
+        props.deleteNotification(props.notification.id);
     }
 
     const renderNotification = () => {
@@ -52,17 +52,19 @@ function Notification(props) {
                 </React.Fragment>
             );
         }
-        else if(props.notification.type === "Join Team Request"){
-            const text = "@"+props.notification.player + " wants to join the " + props.notification.team_name + " roster";
-            const replacedText = reactStringReplace(text, /@(\w+)/g, (match, i) => (
-                <Link key={match + i} passHref href={"/users/"+ props.notification.player}><a>@{match}</a></Link>
+        else if(props.notification.type === "Join Team Invite"){
+            const text = `${props.notification.abbrev} wants you to play for their team`;
+            const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
+                <Link key={match + i} passHref href={"/teams/"+ props.notification.abbrev}><a>${match}</a></Link>
               ));
             
             return (
                 <React.Fragment>
                     <span className={notification["notification__text"]}>{replacedText}</span>
-                    <TwitButton onClick={onAcceptJoinTeamRequestClick} color="twit-button--primary">Accept</TwitButton>
-                    <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
+                    <div className={notification["notification__actions"]}>
+                        <TwitButton onClick={onAcceptJoinTeamInviteClick} color="twit-button--primary">Accept</TwitButton>
+                        <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
+                    </div>
                 </React.Fragment>
             );
         }
@@ -74,7 +76,7 @@ function Notification(props) {
   
         return (
             <div className={notification["notification"]}>
-                <Avatar className={notification["notification__image"]}/>
+                <Avatar className={notification["notification__image"]} src={props.notification.team_avatar}/>
                 {renderNotification()}
             </div>
         );

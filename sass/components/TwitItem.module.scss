@@ -5,6 +5,7 @@
     text-decoration: none;
     font-size: 1.5rem;
     line-height: 1.3125;
+    border-bottom: var(--border);
 
     &:hover{
         background-color: var(--GRAY_BACKGROUND);
