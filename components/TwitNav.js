@@ -34,12 +34,12 @@ function TwitNav(props) {
                     <use xlinkHref="/sprites.svg#icon-mail"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem href="/myTeams" title="My Teams">
+            <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myTeams" title="My Teams">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-server"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem href="/myLeagues" title="My Leagues">
+            <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myLeagues" title="My Leagues">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-trending-up"/>
                 </svg>
@@ -49,7 +49,7 @@ function TwitNav(props) {
                     <use xlinkHref="/sprites.svg#icon-user"/>
                 </svg>
             </TwitNavItem>
-            <TwitNavItem href="/more" title="More">
+            <TwitNavItem className={twitNav["twit-nav__hide"]} href="/more" title="More">
                 <svg className={twitNav["twit-nav__icon"]}>
                     <use xlinkHref="/sprites.svg#icon-plus-circle"/>
                 </svg>

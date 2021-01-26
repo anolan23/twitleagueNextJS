@@ -10,7 +10,7 @@ function Avatar(props) {
           style={props.style} 
           className={`${props.className} ${avatar["avatar"]}`}  
           src={props.src?props.src:defaultImageUrl} 
-          alt="user avatar image"
+          alt="avatar"
         >
         </img>
   );

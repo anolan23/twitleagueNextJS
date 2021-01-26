@@ -4,7 +4,7 @@ import twitNavItem from "../sass/components/TwitNavItem.module.scss"
 
 function TwitNavItem(props){
     return (
-        <div className={twitNavItem["twit-nav-item"]}>
+        <div className={`${props.className} ${twitNavItem["twit-nav-item"]}`}>
             <Link href={props.href} passHref>
                 <a className={`${twitNavItem["twit-nav-item__holder"]} ${twitNavItem["twit-nav-item__tagged"]}`}>
                     {props.children} 

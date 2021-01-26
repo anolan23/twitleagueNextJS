@@ -127,6 +127,10 @@ export const toggleEditRosterPopup = () => (dispatch, getState) => {
     }
 }
 
+export const togglePanel = () => {
+    return {type: "TOGGLE_PANEL"};
+}
+
 //Team Action Creators
 export const createTeam = formValues => async (dispatch, getState) => {
     const owner = getState().user.id;

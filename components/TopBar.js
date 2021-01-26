@@ -1,4 +1,8 @@
 import React from "react"
+import {connect} from "react-redux"
+
+import Avatar from "../components/Avatar";
+import {togglePanel} from "../actions";
 
 function TopBar(props){
 
@@ -21,9 +25,21 @@ function TopBar(props){
     }
   }
 
+  const renderAvatar = () => {
+    if(props.main !== "Home"){
+      return null;
+    }
+    else{
+      return (
+          <Avatar onClick={props.togglePanel} className="top-bar__avatar" src={props.avatar}/>
+      )
+    }
+  }
+
     return(
         <div className="top-bar">
           <div className="top-bar__box">
+            {renderAvatar()}
             {renderBackArrow()}
             <div className="top-bar__text">
               <div className="top-bar__text--main">{props.main}</div>
@@ -33,4 +49,9 @@ function TopBar(props){
         </div>
     )
 }
-export default TopBar;
+
+const mapStateToProps = (state) => {
+  return {avatar: state.user.avatar}
+}
+
+export default connect(mapStateToProps, {togglePanel})(TopBar);

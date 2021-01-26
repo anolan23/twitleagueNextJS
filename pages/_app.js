@@ -8,12 +8,12 @@ import { useStore } from '../redux/store'
 import AddEventModal from "../components/modals/AddEventModal";
 import GifPopup from "../components/modals/GifPopup";
 import EditProfilePopup from "../components/modals/EditProfilePopup";
-import RosterModal from '../components/modals/RosterModal';
 import PopupCompose from '../components/modals/PopupCompose';
 import PopupReply from '../components/modals/PopupReply';
 import SignupPopup from '../components/modals/SignupPopup';
 import EditTeamPopup from '../components/modals/EditTeamPopup';
 import EditRoster from '../components/modals/EditRoster';
+import TwitPanel from '../components/TwitPanel';
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
@@ -25,9 +25,9 @@ function MyApp({ Component, pageProps }) {
       <EditProfilePopup/>
       <EditRoster/>
       <EditTeamPopup/>
-      <RosterModal/>
       <PopupCompose/>
       <PopupReply/>
+      <TwitPanel/>
       <Component {...pageProps}/>
     </Provider>
   );

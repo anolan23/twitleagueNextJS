@@ -226,4 +226,11 @@ body {
             font-size: 1.5rem;
         }
     }
+
+    &__avatar{
+        height: 30px;
+        width: 30px;
+        object-fit: cover;
+        margin-left: 1.5rem;
+    }
 }

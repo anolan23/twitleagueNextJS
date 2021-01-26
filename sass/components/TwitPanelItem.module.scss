@@ -1,0 +1,30 @@
+.twit-panel-item{
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+
+    &,
+    :link,
+    :visited,
+    :hover{
+        color: var(--PRIMARY_TEXT) !important;
+        text-decoration: none !important;
+    }
+
+    &__icon-box{
+
+    }
+
+    &__icon{
+        height: 16px;
+        width: 16px;
+        color: var(--SECONDARY_TEXT);
+        fill: currentColor;
+
+    }
+
+    &__text{
+        margin-left: 1rem;
+    }
+    
+}

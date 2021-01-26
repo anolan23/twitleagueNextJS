@@ -15,10 +15,11 @@
     &__icon{
       height: 2.6rem;
       width: 2.6rem;
+      color: var(--SECONDARY_TEXT);
       fill: currentColor;
       @media only screen and (max-width: 1240px){
         // fill: var(--SECONDARY_TEXT);
-    }
+      }
     }
 
     &__tagged{
@@ -37,5 +38,13 @@
       height: 1.5rem;
       white-space: nowrap;
       font-size: 1.1rem;
+    }
+
+
+    &__hide{
+
+      @media only screen and (max-width: 500px){
+        display: none;
+      }
     }
   }
