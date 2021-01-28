@@ -3,6 +3,8 @@
     align-items: flex-start;
     position: relative;
     line-height: 1.3125;
+    cursor: pointer;
+
     @media only screen and (max-width: 1240px){
         justify-content: center;
     }
@@ -21,6 +23,7 @@
             background-color: rgba(29, 161, 242,0.1);
             border-radius: 9999px;
             color: #1DA1F2;
+            text-decoration: none;
         }
     }
 

@@ -23,19 +23,13 @@ class Teams {
                     WHERE league_name = $1
                     `, [team.league]
                 )                 
-                
-                const payload = JSON.stringify({
-                    message: `${team.teamAbbrev} wants to join ${team.league}`,
-                    team_id: teamId.rows[0].id,
-                    league_id: leagueData.rows[0].id
-                });
 
                 const notification = await client.query(
                     `
-                    INSERT INTO notifications (user_id, type, payload)
+                    INSERT INTO notifications (user_id, type, team_id, league_id)
                     VALUES 
-                    ($1, 'Join League Request', $2 )
-                    `, [leagueData.rows[0].owner_id, payload]
+                    ($1, 'Join League Request', $2, $3)
+                    `, [leagueData.rows[0].owner_id, teamId.rows[0].id, leagueData.rows[0].id]
                 )
 
                 await client.query('COMMIT')
@@ -64,7 +58,7 @@ class Teams {
         const teams = await pool.query(`
         SELECT teams.abbrev, teams.team_name, teams.avatar, teams.city, leagues.league_name
         FROM teams
-        JOIN leagues ON teams.league_id = leagues.id
+        FULL JOIN leagues ON teams.league_id = leagues.id
         WHERE teams.owner_id = $1`, [ownerId]);
         return teams.rows;
     }

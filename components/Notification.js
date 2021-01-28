@@ -12,8 +12,8 @@ import {deleteNotification} from "../actions";
 function Notification(props) {
 
     const onAcceptJoinLeagueRequestClick = () => {
-        const leagueId = props.notification.payload.league_id;
-        const teamId = props.notification.payload.team_id;
+        const leagueId = props.notification.league_id;
+        const teamId = props.notification.team_id;
         backend.patch("/api/join/league", {leagueId,teamId});
         props.deleteNotification(props.notification.id);
     }
@@ -38,9 +38,9 @@ function Notification(props) {
     const renderNotification = () => {
         if(props.notification.type ==="Join League Request")
         {
-            const text = `${props.notification.team_name}  wants to join ${props.notification.league_name}`;
+            const text = `${props.notification.abbrev}  wants to join your league: ${props.notification.league_name}`;
             const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-                <Link key={match + i} passHref href={"/teams/"}><a>${match}</a></Link>
+                <Link key={match + i} passHref href={`/teams/${props.notification.abbrev.substring(1)}`}><a>${match}</a></Link>
               ));
             return (
                 <React.Fragment>

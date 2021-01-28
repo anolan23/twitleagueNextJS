@@ -28,7 +28,7 @@ function TwitInput(props){
                     return;
                 }
                 const initialValue = props.initialValue;
-                contentEditable.current.innerHTML = `<span class="twit-link" contenteditable="false">${initialValue}&nbsp;</span>`;
+                contentEditable.current.innerHTML = `<span class="twit-link" contenteditable="false">${initialValue}</span>`;
     }
 
     const disabled = () => {

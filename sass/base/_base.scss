@@ -111,9 +111,16 @@ body {
     &__logo{
         align-self: center;
         padding: 10px;
-        color: var(--BLUE_TEXT);
-        text-decoration: none;
         cursor: pointer;
+
+        &,
+        &:link,
+        &:visited,
+        &:hover{
+            color: var(--BLUE_TEXT);
+            text-decoration: none;
+        }
+        
         @media only screen and (max-width: 1240px){
             display: none;
         }
@@ -216,7 +223,7 @@ body {
     }
 
     &__text{
-        margin-left: 1rem;
+        margin-left: 3rem;
         &--main{
             font-size: 1.9rem;
             font-weight: 800;
@@ -232,5 +239,9 @@ body {
         width: 30px;
         object-fit: cover;
         margin-left: 1.5rem;
+
+        @media only screen and (min-width: 500px){
+            display: none;
+          }
     }
 }

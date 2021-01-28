@@ -3,6 +3,11 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 95vh max-content;
 
+    @media only screen and (max-width: 1048px){
+       grid-template-columns: 1fr;
+       grid-template-rows: 1fr 1fr max-content;
+    }
+
     &__left{
         background-color: var(--BLUE_TEXT);
         grid-column: 0/span 1;
@@ -11,11 +16,16 @@
         justify-content: center;
         align-items: center;
 
+        @media only screen and (max-width: 1048px){
+            grid-column: 1/-1;
+            grid-row: 2/3
+        }
+
         &__items{
             max-width: 380px;
             &__item{
                 display: flex;
-                margin-bottom: 4rem;
+                margin: 4rem 0;
                 &__icon{
                     fill: white;
                     height: 25px;
@@ -38,6 +48,12 @@
         justify-content: center;
         align-items: center;
 
+        @media only screen and (max-width: 1048px){
+            grid-column: 1/-1;
+            grid-row: 1/2;
+            padding: 4rem;
+        }
+
         &__content{
             max-width: 380px;
 
@@ -55,12 +71,29 @@
                 font-weight: 700;
                 margin-top: 6rem;
                 margin-bottom: 1.5rem;
+
+                @media only screen and (max-width: 1048px){
+                    margin-top: 3rem;
+                }
             } 
 
             &__actions{
                 display: grid;
                 grid-template-rows: min-content min-content;
                 row-gap: .5rem;
+
+                @media only screen and (max-width: 1048px){
+                    grid-template-columns: 1fr 1fr;
+                    grid-template-rows: 1fr;
+                    column-gap: 1rem;
+                }
+
+                @media only screen and (max-width: 500px){
+                    grid-template-rows: min-content min-content;
+                    grid-template-columns: 1fr;
+                    row-gap: .5rem;
+                    column-gap: 0;
+                }
             }
         }
     }
@@ -70,10 +103,16 @@
         display: flex;
         justify-content: space-evenly;
         align-items: center;
+        flex-wrap: wrap;
+
+        @media only screen and (max-width: 1048px){
+            grid-row: 3/4;
+        }
     }
 
     &__link{
         font-size: 1.3rem;
         color: var(--SECONDARY_TEXT);
+        margin: .5rem;
     }
 }

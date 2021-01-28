@@ -85,7 +85,14 @@
         }
 
         &__text{
-            color: var(--SECONDARY_TEXT);
+            &--main{
+                color: var(--PRIMARY_TEXT);
+                font-weight: 800;
+            }
+
+            &--sub{
+                color: var(--SECONDARY_TEXT);
+            }
         }
     }
 

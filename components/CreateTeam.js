@@ -1,5 +1,6 @@
 import React , {useState} from "react";
 import Dropdown from "react-bootstrap/Dropdown";
+import {useRouter} from "next/router";
 import {connect} from "react-redux";
 import {useFormik} from "formik";
 import * as Yup from "yup";
@@ -15,6 +16,7 @@ function CreateTeam(props){
 
     const [options, setOptions] = useState([]);
     const [show, setShow] = useState(false);
+    const router = useRouter();
 
 
     const validationSchema = Yup.object({
@@ -59,15 +61,8 @@ function CreateTeam(props){
           state:""
           },
         onSubmit: values => { 
-          const {teamName, teamAbbrev, league, city, state} = values;  
-          const formData = {
-            teamName,
-            teamAbbrev,
-            league,
-            city,
-            state
-          }
-          props.createTeam(formData);
+          props.createTeam(values);
+          router.push(`/teams/${values.teamAbbrev.substring(1)}`)
         },
         validate,
         validationSchema

@@ -12,7 +12,6 @@ function IndexPage(props) {
 
     useEffect(() => {
         props.fetchUser();
-        console.log("index page")
     }, [])
 
   if(props.isSignedIn == null){

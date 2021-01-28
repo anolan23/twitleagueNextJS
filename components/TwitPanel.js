@@ -1,12 +1,15 @@
 import React from "react";
 import {connect} from "react-redux";
+import {useRouter} from "next/router";
 
 import twitPanel from "../sass/components/TwitPanel.module.scss";
-import {togglePanel} from "../actions";
+import {togglePanel, logOutUser} from "../actions";
 import Avatar from "./Avatar";
 import TwitPanelItem from "./TwitPanelItem";
 
 function TwitPanel(props){
+
+    const router = useRouter();
 
     const background = () => {
         if(props.showPanel){
@@ -26,7 +29,10 @@ function TwitPanel(props){
         }
     }
 
-
+    const logOut = async () => {
+        await props.logOutUser();
+        props.togglePanel();
+    }
 
     return (
         <div className={background()}>
@@ -43,8 +49,8 @@ function TwitPanel(props){
                     <div className={twitPanel["twit-panel__user"]}>
                         <Avatar className={twitPanel["twit-panel__user__avatar"]} src={props.avatar}/>
                         <div className={twitPanel["twit-panel__user__textbox"]}>
-                                <span className={twitPanel["twit-panel__user__text"]}>aaron</span>
-                                <span className={twitPanel["twit-panel__user__text"]}>@aaron1</span>
+                                <span className={twitPanel["twit-panel__user__text--main"]}>{props.name}</span>
+                                <span className={twitPanel["twit-panel__user__text--sub"]}>{`@${props.username}`}</span>
                         </div>
                     </div>
                     <div className={twitPanel["twit-panel__follow"]}>
@@ -58,23 +64,20 @@ function TwitPanel(props){
                         </div>
                     </div>
                     <nav className={twitPanel["twit-panel__nav"]}>
-                        <TwitPanelItem text="Profile" href="/" onClick={props.togglePanel}>
+                        <TwitPanelItem text="Profile" href={`/users/${props.username}`} onClick={props.togglePanel}>
                             <use xlinkHref="/sprites.svg#icon-user"/>
                         </TwitPanelItem>
+                        <TwitPanelItem text="Create team" href="/create/team" onClick={props.togglePanel}>
+                            <use xlinkHref="/sprites.svg#icon-plus"/>
+                        </TwitPanelItem>
                         <TwitPanelItem text="My teams" href="/myTeams" onClick={props.togglePanel}>
-                            <use xlinkHref="/sprites.svg#icon-user"/>
+                            <use xlinkHref="/sprites.svg#icon-server"/>
                         </TwitPanelItem>
                         <TwitPanelItem text="My leagues" href="/myLeagues" onClick={props.togglePanel}>
                             <use xlinkHref="/sprites.svg#icon-user"/>
                         </TwitPanelItem>
-                        <TwitPanelItem text="Profile" href="/" onClick={props.togglePanel}>
-                            <use xlinkHref="/sprites.svg#icon-user"/>
-                        </TwitPanelItem>
-                        <TwitPanelItem text="Profile" href="/" onClick={props.togglePanel}>
-                            <use xlinkHref="/sprites.svg#icon-user"/>
-                        </TwitPanelItem>
-                        <TwitPanelItem text="Log out" href="/" onClick={props.togglePanel}>
-                            <use xlinkHref="/sprites.svg#icon-user"/>
+                        <TwitPanelItem text="Log out" href="/" onClick={logOut}>
+                            <use xlinkHref="/sprites.svg#icon-arrow-left"/>
                         </TwitPanelItem>
                     </nav>
                 </div>
@@ -85,9 +88,11 @@ function TwitPanel(props){
 
 const mapStateToProps = (state) => {
     return {
+        name: state.user.name,
+        username: state.user.username,
         avatar: state.user.avatar,
         showPanel: state.modals.showPanel
     }
 }
 
-export default connect(mapStateToProps, {togglePanel})(TwitPanel);
+export default connect(mapStateToProps, {togglePanel, logOutUser})(TwitPanel);

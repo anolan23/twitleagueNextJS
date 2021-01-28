@@ -49,9 +49,10 @@ function SignupPopup(props){
 
     const renderHeading = () => {
         return (
-            <div className={signupPopup["signup-popup__heading"]}>
-                <TwitButton color="twit-button--primary">Next</TwitButton>
-            </div>  
+            // <div className={signupPopup["signup-popup__heading"]}>
+            //     <TwitButton color="twit-button--primary">Next</TwitButton>
+            // </div>  
+            null
         )
     }
     
