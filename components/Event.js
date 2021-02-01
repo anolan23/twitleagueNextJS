@@ -2,38 +2,35 @@ import React from "react";
 import {connect} from "react-redux";
 
 import event from "../sass/components/Event.module.scss";
-import Matchup from "./Matchup";
+import Avatar from "./Avatar";
 
-function Event(props) {
-
-    const day = props.eventDate.substring(8);
-    const month = props.eventDate.substring(5,7);
-    const months = [];
-    months[1] = "jan";
-    months[2] = "feb";
-    months[3] = "mar";
-    months[4] = "apr";
-    months[5] = "may";
-    months[6] = "jun";
-    months[7] = "jul";
-    months[8] = "aug";
-    months[9] = "sep";
-    months[10] = "oct";
-    months[11] = "nov";
-    months[12] = "dec";
+function Event() {
 
     return(
-            <div className={event["event"]} key={props.key}>
+            <div className={event["event"]}>
                 <div className={event["event__date"]}>
-                    <span className={event["event__date--day"]}>{day}</span>
-                    <span className={event["event__date--month"]}>{months[month]}</span>
+                    <span className={event["event__date--day"]}>12</span>
+                    <span className={event["event__date--month"]}>Jan</span>
                 </div>
-                <div className={event["event__info"]}>
-                    <span className={event["event__type"]}>{props.eventType}</span>
-                    <span className={event["event__time"]}>{props.time}</span>
-                    <span className={event["event__location"]}>{props.location}</span>
-                    {props.eventType === "Game" ? <Matchup homeTeam={props.isHomeTeam ? props.team : props.opponent} awayTeam={props.isHomeTeam ? props.opponent : props.team}/> : null}
+                <div className={event["event__matchup"]}>
+                    <div className={event["event__matchup__team"]}>
+                        <Avatar className={event["event__matchup__team__avatar"]}/>
+                        <span className={event["event__matchup__team__team-name"]}>Pythons</span>
+                    </div>
+                    <div className={event["event__info"]}>
+                        <span className={event["event__type"]}>Game</span>
+                        <span className={event["event__matchup__vs"]}>vs</span>
+                        <span className={event["event__time"]}>7:30PM</span>
+                        <span className={event["event__location"]}>McCollumn Park</span>
+                    </div>
+                    <div className={event["event__matchup__team"]}>
+                        <Avatar className={event["event__matchup__team__avatar"]}/>
+                        <span className={event["event__matchup__team__team-name"]}>Barons</span>
+                    </div>
                 </div>
+              
+
+                
             </div>
     );
 }

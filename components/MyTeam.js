@@ -12,7 +12,6 @@ function MyTeam(props){
             </div>
             <div className={myTeam["my-team__actions"]}>
                 <TwitButton href={`/teams/${props.abbrev.substring(1)}`} color="twit-button--primary">View</TwitButton>
-                <TwitButton outline="twit-button--primary--outline">Manage</TwitButton>
             </div>
         </div>
     )

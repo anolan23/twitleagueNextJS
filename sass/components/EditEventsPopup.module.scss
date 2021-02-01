@@ -1,0 +1,14 @@
+.edit-events-popup{
+
+    &__heading{
+        height: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 1.5rem;
+    }
+
+    &__body{
+        height: 500px;
+    }
+}

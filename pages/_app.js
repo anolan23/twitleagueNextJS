@@ -13,6 +13,7 @@ import PopupReply from '../components/modals/PopupReply';
 import SignupPopup from '../components/modals/SignupPopup';
 import EditTeamPopup from '../components/modals/EditTeamPopup';
 import EditRoster from '../components/modals/EditRoster';
+import EditEventsPopup from "../components/modals/EditEventsPopup";
 import TwitPanel from '../components/TwitPanel';
 
 function MyApp({ Component, pageProps }) {
@@ -24,6 +25,7 @@ function MyApp({ Component, pageProps }) {
       <AddEventModal/>
       <EditProfilePopup/>
       <EditRoster/>
+      <EditEventsPopup/>
       <EditTeamPopup/>
       <PopupCompose/>
       <PopupReply/>

@@ -8,6 +8,7 @@ import {
   toggleEditTeamPopup,
   toggleScheduleModal,
   toggleEditRosterPopup,
+  toggleEditEventsPopup,
   sendJoinTeamInvite
 } from "../actions";
 
@@ -27,7 +28,7 @@ function TeamHolder(props) {
           <TwitDropdownButton actionText="Manage Team">
             <TwitDropdownItem onClick={props.toggleEditTeamPopup} text="Edit team page"/>
             <TwitDropdownItem onClick={props.toggleEditRosterPopup} text="Edit roster"/>
-            <TwitDropdownItem text="Edit events"/>
+            <TwitDropdownItem onClick={props.toggleEditEventsPopup} text="Edit events"/>
           </TwitDropdownButton>
       )
     }
@@ -105,5 +106,6 @@ export default connect(mapStateToProps,{
   toggleEditTeamPopup,
   toggleScheduleModal,
   toggleEditRosterPopup,
+  toggleEditEventsPopup,
   sendJoinTeamInvite 
 })(TeamHolder);

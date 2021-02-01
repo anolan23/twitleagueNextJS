@@ -41,7 +41,6 @@ function SuggestedTeams(props){
     const renderSuggestedTeams = () => {
         if(suggestedTeams.length > 0){
             return suggestedTeams.map((suggestedTeam, index) => {
-                console.log(suggestedTeam.following)
                 return (
                     <TwitCardItem 
                         key={index}

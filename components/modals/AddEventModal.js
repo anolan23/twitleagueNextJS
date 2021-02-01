@@ -6,7 +6,6 @@ import {useFormik} from "formik";
 
 import TwitFormModal from "./TwitFormModal";
 import {toggleAddEventModal, addTeamEventAndFetchTeam} from "../../actions";
-import Matchup from "../Matchup";
 
 function AddEventModal(props) {
 
@@ -39,7 +38,6 @@ function AddEventModal(props) {
 
         return (
             <React.Fragment>
-                <Matchup homeTeam={formik.values.isHomeTeam ? props.team : opponent} awayTeam={formik.values.isHomeTeam ? opponent : props.team}/>
                 <Form.Group controlId="eventType">
                     <Form.Label>
                     Event Type

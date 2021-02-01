@@ -49,7 +49,6 @@ export const updateUserProfile = (values) => async (dispatch, getState) => {
         userId,
         values
     });
-    console.log(response.data)
 
     dispatch({type: "UPDATE_USER_PROFILE", payload: response.data})
 }
@@ -124,6 +123,15 @@ export const toggleEditRosterPopup = () => (dispatch, getState) => {
     const ownerId = state.team.owner_id;
     if(ownerId === userId){
         dispatch({type: "TOGGLE_EDIT_ROSTER_POPUP"});
+    }
+}
+
+export const toggleEditEventsPopup = () => (dispatch, getState) => {
+    const state = getState();
+    const userId = state.user.id;
+    const ownerId = state.team.owner_id;
+    if(ownerId === userId){
+        dispatch({type: "TOGGLE_EDIT_EVENTS_POPUP"});
     }
 }
 
@@ -259,7 +267,6 @@ export const updateTeamProfile = (values) => async (dispatch, getState) => {
             teamId,
             values
         });
-        console.log(response.data)
     
         dispatch({type: "UPDATE_TEAM_PROFILE", payload: response.data}) 
     }
@@ -325,7 +332,6 @@ export const createReply = (conversation_id, in_reply_to_post_id) => async (disp
 
 export const fetchTeamPosts = () => async (dispatch, getState) => {
     const userId = getState().user.id;
-    console.log(userId)
     const teamId = getState().team.id;
     const response = await backend.get("/api/posts/team", {
         params: {
@@ -387,7 +393,6 @@ export const fetchLeaguePosts = () => async (dispatch, getState) => {
 
 export const fetchThreadPosts = (postId) => async (dispatch, getState) => {
     const userId = getState().user.id;
-    console.log("userId in actions", userId);
     const response = await backend.get("/api/posts/thread", {
         params: {
             userId,
@@ -412,7 +417,6 @@ export const likePost = (postId) => async (dispatch, getState) => {
     }
 
     const posts = getState().posts;
-    console.log("posts before", posts);
     let newPosts = posts.map(post => {
         let temp = Object.assign({}, post);
         if(temp.id === postId){
@@ -421,9 +425,6 @@ export const likePost = (postId) => async (dispatch, getState) => {
         }
         return temp;
     })
-
-    console.log("newPosts", newPosts);
-    console.log("equal?", posts === newPosts);
 
     dispatch({type: "LIKE_POST", payload: newPosts})
     const response = await backend.patch("/api/posts/like", {
@@ -483,7 +484,6 @@ export const fetchNotifications = () => async (dispatch, getState) => {
             userId: user.id
         }
     });
-    console.log("response", response);
     dispatch({type: "FETCH_NOTIFICATIONS", payload: response.data})
 }
 

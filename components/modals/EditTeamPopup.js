@@ -35,7 +35,6 @@ function EditTeamPopup(props) {
     }
 
     const renderForm = () => {
-        console.log(formik.values)
         return (
             <form id="edit-team-form" onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
                 <Avatar rounded className={editProfilePopup["edit-profile-popup__avatar"]} src={formik.values.avatar}/>

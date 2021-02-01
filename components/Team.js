@@ -6,11 +6,12 @@ import Post from "./Post";
 import TwitTab from "./TwitTab";
 import TwitTabs from "./TwitTabs";
 import EmptyPosts from "./EmptyPosts";
-import {createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup} from "../actions";
+import {createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup} from "../actions";
 import TopBar from "./TopBar";
 import TwitItem from "./TwitItem";
 import TwitButton from "./TwitButton";
 import team from "../sass/components/Team.module.scss"
+import Event from "./Event";
 import backend from "../lib/backend";
 
 function TeamComponent(props) {
@@ -49,16 +50,6 @@ function TeamComponent(props) {
         getRoster();
         
     }, [props.team.id])
-
-      const renderInvite = () => {
-          return (
-            <div className={team["team__roster__invite"]}>
-                <TwitButton onClick={props.toggleEditRosterPopup} color="twit-button--primary">
-                    Edit roster
-                </TwitButton>
-            </div>
-          )
-      }
 
       const renderPosts = () => {
         if(activeLink ==="team" || activeLink === "league"){
@@ -102,6 +93,18 @@ function TeamComponent(props) {
                 });
             }
         }
+
+        else if(activeLink === "schedule"){
+            return (
+                <React.Fragment>
+                    <Event/>
+                    <Event/>
+                    <Event/>
+                    <Event/>
+                </React.Fragment>
+                
+            )
+        }
       }
 
 
@@ -131,7 +134,7 @@ function TeamComponent(props) {
                 <TwitTabs>
                     <TwitTab onClick={onTeamSelect} id={"team"} active={activeLink === "team" ? true : false} title="Team"/>
                     <TwitTab onClick={onLeagueSelect} id={"league"} active={activeLink === "league" ? true : false} title="League"/>
-                    <TwitTab onClick={onEventsSelect} id={"events"} active={activeLink === "events" ? true : false} title="Events"/>
+                    <TwitTab onClick={onEventsSelect} id={"schedule"} active={activeLink === "schedule" ? true : false} title="Schedule"/>
                     <TwitTab onClick={onRosterSelect} id={"roster"} active={activeLink === "roster" ? true : false} title="Roster"/>
                     <TwitTab onClick={(k) => setActiveLink(k.target.id)} id={"media"} active={activeLink === "media" ? true : false} title="Media"/>
                 </TwitTabs>
@@ -148,4 +151,13 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {fetchUser, createPost, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup})(TeamComponent);
+export default connect(mapStateToProps, 
+    {
+        fetchUser, 
+        createPost, 
+        fetchTeamPosts, 
+        fetchLeaguePosts, 
+        clearPosts, 
+        toggleEditRosterPopup,
+        toggleEditEventsPopup
+    })(TeamComponent);
