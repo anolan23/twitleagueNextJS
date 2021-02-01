@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 
-import TwitInput from "./TwitInput";
+import MainInput from "./MainInput";
 import TopBar from "./TopBar";
 import Post from "../components/Post";
 import {createPost} from "../actions";
@@ -48,7 +48,7 @@ function Home(props) {
         return (
             <div className={home["home"]}>
                 <TopBar main="Home"/>
-                <TwitInput 
+                <MainInput 
                     placeHolder="What's happening?" 
                     initialValue=""
                     buttonText="Post"

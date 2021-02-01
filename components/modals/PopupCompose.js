@@ -3,13 +3,13 @@ import {connect} from "react-redux";
 import {togglePopupCompose, createPost} from "../../actions";
 
 import Popup from "./Popup";
-import TwitInput from "../TwitInput";
+import MainInput from "../MainInput";
 
 function PopupCompose(props){
     
     const renderBody = () => {
         return (
-            <TwitInput 
+            <MainInput 
                 expanded 
                 placeHolder="What's happening?" 
                 initialValue="" 

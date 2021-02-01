@@ -8,7 +8,7 @@ import editEventsPopup from "../../sass/components/EditEventsPopup.module.scss";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import Popup from "./Popup";
 import TwitButton from "../TwitButton";
-import InputGroup from "../InputGroup";
+import TwitInputGroup from "../TwitInputGroup";
 
 function EditEventsPopup(props){
 
@@ -31,13 +31,13 @@ function EditEventsPopup(props){
         
     const formik = useFormik({
         initialValues: {
-            eventType: "game",
+            eventType: null,
             isHomeTeam: false,
-            opponent: "",
-            location: "",
-            eventDate: "",
-            time: "",
-            notes: ""
+            opponent: null,
+            location: null,
+            eventDate: null,
+            time: null,
+            notes: null
         },
     });
 
@@ -76,7 +76,7 @@ function EditEventsPopup(props){
         else if(step === "create"){
             return(
                 <form id="add-event-form" onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
-                    <InputGroup
+                    <TwitInputGroup
                         labelText="Event Type"
                         id="eventType"
                         onChange={formik.handleChange} 
@@ -84,6 +84,36 @@ function EditEventsPopup(props){
                         value={formik.values.eventType} 
                         name="eventType" 
                         type="text" 
+                        className={twitForm["twit-form__input"]}
+                    />
+                    <TwitInputGroup
+                        labelText="Location"
+                        id="location"
+                        onChange={formik.handleChange} 
+                        onBlur={formik.handleBlur} 
+                        value={formik.values.location} 
+                        name="location" 
+                        type="text" 
+                        className={twitForm["twit-form__input"]}
+                    />
+                    <TwitInputGroup
+                        labelText="Date"
+                        id="date"
+                        onChange={formik.handleChange} 
+                        onBlur={formik.handleBlur} 
+                        value={formik.values.date} 
+                        name="date" 
+                        type="date" 
+                        className={twitForm["twit-form__input"]}
+                    />
+                    <TwitInputGroup
+                        labelText="Time"
+                        id="time"
+                        onChange={formik.handleChange} 
+                        onBlur={formik.handleBlur} 
+                        value={formik.values.time} 
+                        name="time" 
+                        type="time" 
                         className={twitForm["twit-form__input"]}
                     />
                 </form>

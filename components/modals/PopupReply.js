@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {togglePopupReply} from "../../actions";
 
 import Popup from "./Popup";
-import TwitInput from "../TwitInput";
+import MainInput from "../MainInput";
 import Post from "../Post";
 import {createReply} from "../../actions";
 
@@ -19,7 +19,7 @@ function PopupReply(props){
         return (
             <React.Fragment>
                 <Post post={props.trackedPost}/>
-                <TwitInput 
+                <MainInput 
                     onSubmit={onSubmit} 
                     buttonText="Reply" 
                     expanded 
