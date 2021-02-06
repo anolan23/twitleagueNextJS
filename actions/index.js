@@ -177,23 +177,13 @@ export const fetchTeamAndTeamPosts = (teamAbbrev) => async (dispatch) => {
     dispatch(fetchTeamPosts(teamAbbrev));
 }
 
-export const addTeamEvent = values => async (dispatch, getState) => {
-    const userId = getState().user._id;
-    const team = getState().team;
-    const owner = team.owner;
-    const teamAbbrev = team.teamAbbrev.substring(1);
-    const opponents = team.opponents; //Array of teams in league
-    
-    const opponent = opponents.find(opponent => opponent.teamAbbrev === values.opponent);
-    if(owner === userId){
-        const response = await backend.post(`api/events/team/${teamAbbrev}`, {
-            values: {...values, opponent: opponent._id}
-        });
-        dispatch({type:"ADD_TEAM_EVENT", payload: response.data});
-    }
-    else{
-        console.error("owner !== userId");
-    }
+export const findEventsByTeamId = async teamId => {
+    const response = await backend.get("/api/teams/events", {
+        params:{
+            teamId
+        }  
+});
+    return response.data;
 }
 
 export const addTeamEventAndFetchTeam = (values) => async (dispatch, getState) => {

@@ -22,9 +22,14 @@ export default async (req,res) => {
     
     else if(method === "GET"){
       const ownerId = req.query.ownerId;
+      const leagueId = req.query.leagueId;
       if(ownerId){
         const teams = await Teams.findByOwnerId(ownerId);
         res.send(teams);
+      }
+      else if(leagueId){
+        const teams = await Teams.findByLeagueId(leagueId);
+        res.send(teams)
       }
       else{
         const teams = await Teams.find();

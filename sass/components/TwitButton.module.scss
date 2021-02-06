@@ -19,6 +19,9 @@ $button-brightness: 80%;
         outline: none;
     }
 
+    &,
+    &:link,
+    &:visited,
     &:not(:disabled),
     &:not([disabled]){
         &:hover{
@@ -34,7 +37,7 @@ $button-brightness: 80%;
     }
 
     &--white{
-        color: var(--BLUE_TEXT);
+        color: var(--BLUE_TEXT) !important;
         background-color: white;
         transition: all .2s;
 
@@ -47,7 +50,7 @@ $button-brightness: 80%;
     }
 
     &--primary{
-        color: white;
+        color: white !important;
         background-color:var(--BLUE_TEXT);
         transition: all .2s;
       
@@ -95,13 +98,20 @@ $button-brightness: 80%;
         font-size: 1.9rem;
         font-weight: 700;
         background-color: var(--BLUE_TEXT);
-        color: white;
+        color: white !important;
         transition: all .2s;
         cursor: pointer;
         border: none;
         width: 100%;
 
+        &,
+        &:link,
+        &:visited{
+            text-decoration: none;
+        }
+
         &:hover{
             filter: brightness($button-brightness); 
+            text-decoration: none;
         }
 }

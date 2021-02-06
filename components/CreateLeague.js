@@ -81,10 +81,11 @@ function CreateLeague(props){
                   >
                       <option value={null}>Choose</option>  
                       <option value="Baseball">Baseball</option>
-                      <option value="Football">Football</option>
                       <option value="Basketball">Basketball</option>
-                      <option value="Soccer">Soccer</option>
+                      <option value="Basketball">Cricket</option>
+                      <option value="Football">Football</option>
                       <option value="Hockey">Hockey</option>
+                      <option value="Soccer">Soccer</option>
                       <option value="Other">Other</option>
                   </select>
                   {formik.errors.sport && formik.touched.sport ? <div className={twitForm["twit-form__errors"]}>{formik.errors.sport}</div> : null}

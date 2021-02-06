@@ -12,7 +12,7 @@ return (
             {props.sub}
         </p>
         <div className={emptyPosts["empty-posts__action"]}>
-            <TwitButton onClick={props.onActionClick} color="twit-button--primary">{props.actionText}</TwitButton>
+            {props.actionText?<TwitButton onClick={props.onActionClick} color="twit-button--primary">{props.actionText}</TwitButton> : null}
         </div>
     </div>
         );
