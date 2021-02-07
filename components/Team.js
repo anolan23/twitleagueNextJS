@@ -5,7 +5,7 @@ import TeamHolder from "./TeamHolder";
 import Post from "./Post";
 import TwitTab from "./TwitTab";
 import TwitTabs from "./TwitTabs";
-import EmptyPosts from "./EmptyPosts";
+import Empty from "./Empty";
 import {createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, findEventsByTeamId} from "../actions";
 import TopBar from "./TopBar";
 import TwitItem from "./TwitItem";
@@ -63,10 +63,11 @@ function TeamComponent(props) {
             }
             else if(props.posts.length === 0){
                 return (
-                    <EmptyPosts
+                    <Empty
                         main="No posts yet"
                         sub="Be the first to make a post mentioning this team!"
                         actionText="Post now"
+                        
                     />
                 )
             }
@@ -86,7 +87,7 @@ function TeamComponent(props) {
                 return null;
             }
             else if(roster.length === 0){
-                return <EmptyPosts main="No players" sub="There are no players on this team"/>
+                return <Empty main="No players" sub="There are no players on this team"/>
             }
             else{
                 return roster.map(player => {
@@ -107,7 +108,7 @@ function TeamComponent(props) {
                 return <Spinner animation="border"/>;
             }
             else if(events.length === 0){
-                return <EmptyPosts main="No events" sub="The head coach hasn't scheduled any events"/>
+                return <Empty main="No events" sub="The head coach hasn't scheduled any events"/>
             }
             else{
                 return events.map((event, index) => {

@@ -10,7 +10,7 @@ import TwitTabs from "../TwitTabs";
 import TwitTab from "../TwitTab";
 import TwitItem from "../TwitItem";
 import Input from "../Input";
-import EmptyPosts from "../EmptyPosts";
+import Empty from "../Empty";
 
 function EditRoster(props){
 
@@ -135,7 +135,7 @@ function EditRoster(props){
 
     const renderUsers = () => {
         if(!users){
-            return <EmptyPosts main="Search" sub="search above for players" actionText="Search"/>
+            return <Empty main="Search" sub="search above for players" actionText="Search"/>
         }
         else{
             return users.map(user => {

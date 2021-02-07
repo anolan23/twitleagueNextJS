@@ -7,6 +7,10 @@
     line-height: 1.3125;
     border-bottom: var(--border);
 
+    &--active{
+        background-color: var(--GRAY_BACKGROUND);
+    }
+
     &:hover{
         background-color: var(--GRAY_BACKGROUND);
         text-decoration: none;

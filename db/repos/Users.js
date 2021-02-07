@@ -38,12 +38,12 @@ class Users {
         return rows[0];
     }
 
-    static async search(searchTerm) {
+    static async search(search) {
         const {rows} = await pool.query(`
         SELECT *
         FROM users
         WHERE (LOWER(username) LIKE $1)
-        LIMIT 50;`, [`%${searchTerm}%`]);
+        LIMIT 10;`, [`%${search}%`]);
         return rows;
     }
 

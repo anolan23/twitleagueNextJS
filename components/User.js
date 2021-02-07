@@ -6,7 +6,7 @@ import TwitTab from "./TwitTab";
 import TwitButton from "./TwitButton";
 import Avatar from "../components/Avatar";
 import Post from "./Post";
-import EmptyPosts from "./EmptyPosts";
+import Empty from "./Empty";
 import {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser, togglePopupCompose} from "../actions";
 import TopBar from "./TopBar";
 import teamHolder from "../sass/components/TeamHolder.module.scss";
@@ -85,7 +85,7 @@ function User(props) {
         else if(props.posts.length === 0){
             if(props.user.id === props.userId){
                 return (
-                    <EmptyPosts
+                    <Empty
                         main="You haven’t posted yet"
                         sub="When you make a post, it’ll show up here."
                         actionText="Post now"
@@ -95,7 +95,7 @@ function User(props) {
             }
             else{
                 return (
-                    <EmptyPosts
+                    <Empty
                         main="This user hasn't posted yet"
                         sub="When they make a post, it’ll show up here."
                         actionText="Send message"

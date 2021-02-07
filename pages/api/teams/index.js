@@ -23,6 +23,7 @@ export default async (req,res) => {
     else if(method === "GET"){
       const ownerId = req.query.ownerId;
       const leagueId = req.query.leagueId;
+      const search = req.query.search?req.query.search.toLowerCase():null;
       if(ownerId){
         const teams = await Teams.findByOwnerId(ownerId);
         res.send(teams);
@@ -30,6 +31,10 @@ export default async (req,res) => {
       else if(leagueId){
         const teams = await Teams.findByLeagueId(leagueId);
         res.send(teams)
+      }
+      else if(search){
+        const teams = await Teams.search(search);
+        res.send(teams);
       }
       else{
         const teams = await Teams.find();

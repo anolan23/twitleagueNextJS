@@ -8,7 +8,7 @@ import {createPost} from "../actions";
 import Divide from "./Divide";
 import home from "../sass/components/Home.module.scss";
 import TwitButton from "./TwitButton";
-import EmptyPosts from "./EmptyPosts";
+import Empty from "./Empty";
 
 function Home(props) {
 
@@ -31,7 +31,7 @@ function Home(props) {
     
         else if(props.posts.length === 0){
             return (
-                <EmptyPosts
+                <Empty
                     main="Welcome to twitleague!"
                     sub="This is the best place to see what’s happening in sports. Find some teams and players to follow."
                     actionText="Let's go!"
@@ -49,7 +49,7 @@ function Home(props) {
             <div className={home["home"]}>
                 <TopBar main="Home"/>
                 <MainInput 
-                    placeHolder="What's happening?" 
+                    placeHolder="$Team or @Username" 
                     initialValue=""
                     buttonText="Post"
                     onSubmit={onSubmit}    

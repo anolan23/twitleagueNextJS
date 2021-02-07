@@ -1,89 +1,222 @@
 import React, { useState, useEffect, useRef } from "react";
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
+import Link from "next/link"
+import ContentEditable from "react-contenteditable";
 
 import mainInput from "../sass/components/MainInput.module.scss";
 import TwitButton from "./TwitButton";
 import {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose} from "../actions";
 import TwitGif from "./TwitGif";
 import Avatar from "./Avatar";
+import TwitDropdown from "./TwitDropdown";
+import TwitItem from "./TwitItem";
+import backend from "../lib/backend";
 
-function MainInput(props){
+class MainInput extends React.Component {
+    contentEditable = React.createRef();
+    state = {html: '', showDropdown: false, options: [], cursor: 0};
+    allowableChars = 300;
+    chars = this.props.postText.length;
+    expanded = this.props.expanded?mainInput["main-input__text-area--expanded"]: null;
 
-    const contentEditable = useRef(null);
-    const allowableChars = 300;
-    const chars = props.postText.length;
-    const expanded = props.expanded?mainInput["main-input__text-area--expanded"]: null;
+    componentDidMount(){
+        this.contentEditable.current.addEventListener('keyup', (event) => {
+            const selection = getSelection();
+            if (selection.type === "Caret") {
+                console.log("componentDidMount keyup")
+                const id = selection.anchorNode.parentElement.id;
+                const data = selection.anchorNode.data;
+                if(id === "team"){
+                    this.teamSearch(data);
+                }
+                else if(id === "user"){
+                    this.userSearch(data);
+                }
+                else if((event.keyCode !== 38 && event.keyCode !== 40)){
+                    console.log(event.keyCode)
+                    this.setState({showDropdown: false, cursor: 0})
+                }
+            }
+        })
+    }
 
-    const handleInput = (event) => {
-                const innerText = event.target.innerText;
-                console.log(innerText);
-                props.saveCurrentPostText(innerText);
+    async teamSearch(search){
+        const teams = await backend.get("/api/teams", {
+            params:{
+                search: search.substring(1)
+            }
+        })
+        this.setState({options: teams.data, showDropdown: true})
+    }
+
+    async userSearch(search){
+        const users = await backend.get("/api/users", {
+            params:{
+                search: search.substring(1)
+            }
+        })
+        this.setState({options: users.data, showDropdown: true})
+    }
+
+    handleChange = (event) => {
+        let text = this.contentEditable.current.innerText;
+        text = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
+            `<a class="twit-link" id="team">$${match}</a>`
+        ));
+        text = reactStringReplace(text, /\@(\w+)/g, (match, i) => (
+            `<a class="twit-link" id="user">@${match}</a>`
+        ));
+        text = text.join('');
+        // props.saveCurrentPostText(event.target.innerText);
+        this.setState({html: text});
     };
 
-    const onContentEditableFocus = (event) => {
-                if(chars > 0){
-                    return;
-                }
-                const initialValue = props.initialValue;
-                contentEditable.current.innerHTML = `<span class="twit-link" contenteditable="false">${initialValue}</span>`;
+    onContentEditableFocus = (event) => {
+        if(this.chars > 0){
+            return;
+        }
+        const initialValue = this.props.initialValue;
     }
 
-    const disabled = () => {
-        return chars === 0 || chars > allowableChars;
-    }
-
-    const onSubmit = (event) => {
-        event.preventDefault();
-        props.onSubmit();
-        contentEditable.current.innerHTML = "";
-    }
-
-    const renderGif = () => {
-        if(props.gif){
-            return <TwitGif gif={props.gif}/>
+    handleKeyDown = (event) => {
+        console.log(event.keyCode)
+        if (event.keyCode === 38 && this.state.cursor > 0) {
+            event.preventDefault();
+            this.setState( prevState => ({
+            cursor: prevState.cursor - 1
+          }))
+        } 
+        else if (event.keyCode === 40 && this.state.cursor < this.state.options.length - 1) {
+            event.preventDefault();
+            this.setState( prevState => ({
+            cursor: prevState.cursor + 1
+          }))
+        }
+        else if (event.keyCode === 13) {
+            const {options, cursor} = this.state;
+            event.preventDefault();
+            this.onOptionClick(options[cursor]);
         }
     }
 
-    return(
-        <form className={mainInput["main-input"]} onSubmit={onSubmit}>
-            <Avatar roundedCircle className={mainInput["main-input__image"]} src={props.avatar}/>
-            <div 
-                className={`${mainInput["main-input__text-area"]} ${expanded}`} 
-                contentEditable="true" 
-                placeholder={props.placeHolder}
-                onInput={handleInput}
-                onFocus={onContentEditableFocus}
-                ref={contentEditable}
-                >
-            </div>
-            {renderGif()}
-            <div className={mainInput["main-input__actions"]}>
-                <div className={mainInput["main-input__media-types"]}>
-                    <div className={mainInput["main-input__media-type"]}>
-                        <svg className={mainInput["main-input__icon"]}>
-                            <use xlinkHref="/sprites.svg#icon-image"/>
-                        </svg>
-                    </div>
-                    <div className={mainInput["main-input__media-type"]}>
-                    <div onClick={props.toggleGifPopup} className={`${mainInput["main-input__icon"]} ${mainInput["main-input__gif"]}`}>
-                    GIF
-                    </div>
-                        {/* <svg className={mainInput["main-input__icon"]}>
-                            <use xlinkHref="/sprites.svg#icon-image"/>
-                        </svg> */}
-                    </div>
-                </div>
-                <div className={mainInput["main-input__action"]}>
-                    <div className={mainInput["main-input__action__char-count"]} disabled={chars>allowableChars}>{allowableChars - chars}</div>
-                    <TwitButton disabled={disabled()} color="twit-button--primary">{props.buttonText}</TwitButton>
-                </div>
+    disabled = () => {
+        return this.chars === 0 || this.chars > allowableChars;
+    }
 
-            </div>
-        </form>
-    )
+    onSubmit = (event) => {
+        event.preventDefault();
+        this.props.onSubmit();
+        this.setState({html: ""})
+    }
+
+    renderGif = () => {
+        if(this.props.gif){
+            return <TwitGif gif={this.props.gif}/>
+        }
+    }
+
+    setCaret = (element) => {
+        var range = document.createRange();  
+        range.setStart(element.lastChild, 0);
+        var selection = window.getSelection();
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        element.focus();    
+    }
+
+    onOptionClick = (option) => {
+        const selection = getSelection();
+        const id = selection.anchorNode.parentElement.id
+        if (selection.type === "Caret") {
+            if(id === "team"){
+                selection.anchorNode.parentElement.innerHTML = `${option.abbrev}&nbsp;`;
+                this.setCaret(this.contentEditable.current)
+                const html = this.contentEditable.current.innerHTML;
+                this.setState({html: html,showDropdown: false, cursor: 0});
+            }
+            else if(id === "user"){
+                selection.anchorNode.parentElement.innerHTML = `@${option.username}&nbsp;`;
+                this.setCaret(this.contentEditable.current)
+                const html = this.contentEditable.current.innerHTML;
+                this.setState({html: html,showDropdown: false, cursor: 0});
+            }
+            
+        }
+    }
+
+    renderOptions = () => {
+        if(!this.state.options){
+            return
+        }
+        return this.state.options.map((option, index) => {
+
+            if(option.team_name){
+                return (
+                    <TwitItem 
+                        key={index} 
+                        active={this.state.cursor === index ? true : false}
+                        onClick={() => this.onOptionClick(option)} 
+                        avatar={option.avatar} 
+                        title={option.team_name} 
+                        subtitle={option.abbrev}/>
+                )
+            }
+            else if(option.username){
+                return (
+                    <TwitItem 
+                        key={index} 
+                        active={this.state.cursor === index ? true : false}
+                        onClick={() => this.onOptionClick(option)} 
+                        avatar={option.avatar} 
+                        title={option.name} 
+                        subtitle={`@${option.username}`}/>
+                )
+            }
+            
+        })
+    }
+
+    render() {
+        return(
+            <form className={mainInput["main-input"]} onSubmit={this.onSubmit} onKeyDown={this.handleKeyDown}>
+                <Avatar roundedCircle className={mainInput["main-input__image"]} src={this.props.avatar}/>
+                <ContentEditable
+                    className={`${mainInput["main-input__text-area"]} ${this.expanded}`}
+                    innerRef={this.contentEditable}
+                    html={this.state.html}
+                    disabled={false}
+                    onChange={this.handleChange}
+                    onFocus={this.onContentEditableFocus}
+                    placeholder={this.props.placeHolder}
+                />
+                {this.renderGif()}
+                <div className={mainInput["main-input__actions"]}>
+                    <div className={mainInput["main-input__media-types"]}>
+                        <div className={mainInput["main-input__media-type"]}>
+                            <svg className={mainInput["main-input__icon"]}>
+                                <use xlinkHref="/sprites.svg#icon-image"/>
+                            </svg>
+                        </div>
+                        <div className={mainInput["main-input__media-type"]}>
+                            <div onClick={this.props.toggleGifPopup} className={`${mainInput["main-input__icon"]} ${mainInput["main-input__gif"]}`}>
+                                GIF
+                            </div>
+                        </div>
+                    </div>
+                    <div className={mainInput["main-input__action"]}>
+                        <div className={mainInput["main-input__action__char-count"]} disabled={this.chars>this.allowableChars}>{this.allowableChars - this.chars}</div>
+                        <TwitButton disabled={this.disabled()} color="twit-button--primary">{this.props.buttonText}</TwitButton>
+                    </div>
+                    <TwitDropdown show={this.state.showDropdown}>
+                        {this.renderOptions()}
+                    </TwitDropdown>
+    
+                </div>
+            </form>
+        )
+    }
 }
 
 // function MainInput(props) {

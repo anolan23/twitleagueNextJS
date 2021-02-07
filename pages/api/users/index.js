@@ -5,7 +5,13 @@ import Followers from "../../../db/repos/Followers";
 
 export default async (req,res) => {
     const method = req.method;
+    const search = req.query.search?req.query.search.toLowerCase():null;
     if(method === "GET")
+        if(search){
+            const users = await Users.search(search);
+            res.send(users);
+        }
+        else{
             verify(req.cookies.auth, process.env.AUTH_TOKEN_SECRET, async function(err, decoded) {
                 if (!err && decoded) {
                     const username = decoded.username;
@@ -18,7 +24,9 @@ export default async (req,res) => {
                 else {
                     res.send({isSignedIn: false})
                 }
-              });
+                });
+        }
+        
               
     else if(method === "PATCH"){
         const userId = req.body.userId;

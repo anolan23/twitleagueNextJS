@@ -11,7 +11,7 @@ export const createUser = formValues => async dispatch => {
 }
 
 export const fetchUser = () => async dispatch => {
-    const response = await backend.get("/api/user");
+    const response = await backend.get("/api/users");
     dispatch({type: "FETCH_USER", payload: response.data})
 }
 
@@ -45,7 +45,7 @@ export const updateUserProfile = (values) => async (dispatch, getState) => {
     if(!userId){
         return;
     }
-    const response = await backend.patch("/api/user", {
+    const response = await backend.patch("/api/users", {
         userId,
         values
     });

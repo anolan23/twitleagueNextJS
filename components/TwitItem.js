@@ -13,14 +13,14 @@ const TwitItem = React.forwardRef((props, ref) => {
         else{
             return (
                 <div className={twitItem["twit-item__action"]}>
-                    <TwitButton onClick={props.onClick} color="twit-button--primary">{props.actionText}</TwitButton>
+                    <TwitButton onClick={props.onActionClick} color="twit-button--primary">{props.actionText}</TwitButton>
                 </div>
             )
         }
     }
 
     return (
-        <a href={props.href} ref={ref} className={twitItem["twit-item"]} draggable="true">
+        <a href={props.href} ref={ref} onClick={props.onClick} className={`${twitItem["twit-item"]} ${props.active?twitItem["twit-item--active"]:""}`} draggable="true">
             <Avatar roundedCircle className={twitItem["twit-item__image"]} src={props.avatar}/>
             <div className={twitItem["twit-item__textbox"]}>
                 <span className={twitItem["twit-item__title"]}>{props.title}</span>

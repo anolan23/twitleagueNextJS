@@ -131,6 +131,15 @@ class Teams {
         , [teamId]);
         return rows;
     }
+
+    static async search(search) {
+        const {rows} = await pool.query(`
+        SELECT *
+        FROM teams
+        WHERE (LOWER(teams.abbrev) LIKE $1) OR (LOWER(teams.team_name) LIKE $1)
+        LIMIT 10;`, [`%${search}%`]);
+        return rows;
+    }
 }
 
 export default Teams;
