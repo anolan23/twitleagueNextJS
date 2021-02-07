@@ -17,8 +17,8 @@ class MainInput extends React.Component {
     contentEditable = React.createRef();
     state = {html: '', showDropdown: false, options: [], cursor: 0};
     allowableChars = 300;
-    chars = this.props.postText.length;
-    expanded = this.props.expanded?mainInput["main-input__text-area--expanded"]: null;
+    chars = () => this.contentEditable.current ? this.contentEditable.current.innerText.length : 0;
+    expanded = this.props.expanded ? mainInput["main-input__text-area--expanded"] : null;
 
     componentDidMount(){
         this.contentEditable.current.addEventListener('keyup', (event) => {
@@ -72,13 +72,6 @@ class MainInput extends React.Component {
         this.setState({html: text});
     };
 
-    onContentEditableFocus = (event) => {
-        if(this.chars > 0){
-            return;
-        }
-        const initialValue = this.props.initialValue;
-    }
-
     handleKeyDown = (event) => {
         console.log(event.keyCode)
         if (event.keyCode === 38 && this.state.cursor > 0) {
@@ -93,7 +86,7 @@ class MainInput extends React.Component {
             cursor: prevState.cursor + 1
           }))
         }
-        else if (event.keyCode === 13) {
+        else if (event.keyCode === 13 || event.keyCode === 9) {
             const {options, cursor} = this.state;
             event.preventDefault();
             this.onOptionClick(options[cursor]);
@@ -101,7 +94,7 @@ class MainInput extends React.Component {
     }
 
     disabled = () => {
-        return this.chars === 0 || this.chars > allowableChars;
+        return this.chars() === 0 || this.chars() > this.allowableChars;
     }
 
     onSubmit = (event) => {
@@ -159,8 +152,8 @@ class MainInput extends React.Component {
                         active={this.state.cursor === index ? true : false}
                         onClick={() => this.onOptionClick(option)} 
                         avatar={option.avatar} 
-                        title={option.team_name} 
-                        subtitle={option.abbrev}/>
+                        title={`${option.team_name}`} 
+                        subtitle={`${option.abbrev} · ${option.league_name}`}/>
                 )
             }
             else if(option.username){
@@ -188,7 +181,6 @@ class MainInput extends React.Component {
                     html={this.state.html}
                     disabled={false}
                     onChange={this.handleChange}
-                    onFocus={this.onContentEditableFocus}
                     placeholder={this.props.placeHolder}
                 />
                 {this.renderGif()}
@@ -206,7 +198,7 @@ class MainInput extends React.Component {
                         </div>
                     </div>
                     <div className={mainInput["main-input__action"]}>
-                        <div className={mainInput["main-input__action__char-count"]} disabled={this.chars>this.allowableChars}>{this.allowableChars - this.chars}</div>
+                        <div className={mainInput["main-input__action__char-count"]} disabled={this.chars()>this.allowableChars}>{this.allowableChars - this.chars()}</div>
                         <TwitButton disabled={this.disabled()} color="twit-button--primary">{this.props.buttonText}</TwitButton>
                     </div>
                     <TwitDropdown show={this.state.showDropdown}>

@@ -134,8 +134,9 @@ class Teams {
 
     static async search(search) {
         const {rows} = await pool.query(`
-        SELECT *
+        SELECT teams.*, leagues.league_name
         FROM teams
+        JOIN leagues ON leagues.id = teams.league_id
         WHERE (LOWER(teams.abbrev) LIKE $1) OR (LOWER(teams.team_name) LIKE $1)
         LIMIT 10;`, [`%${search}%`]);
         return rows;
