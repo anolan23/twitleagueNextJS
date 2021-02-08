@@ -13,16 +13,18 @@ export default async (req,res) => {
         const replyData = req.body.reply;
         const recent = req.body.recent;
         if(replyData){
-            const regex = /\$(\w+)/g;
-            const teamAbbrevs = replyData.body.match(regex);
+            const teamRegex = /\$(\w+)/g;
+            const teamAbbrevs = replyData.body.match(teamRegex);
             const reply = await Posts.reply(replyData, teamAbbrevs);
             res.send(reply);
         }
         else{
-            const regex = /\$(\w+)/g;
-            const teamAbbrevs = req.body.body.match(regex);
+            const teamRegex = /\$(\w+)/g;
+            const userRegex = /\@(\w+)/g;
+            const teamMentions = req.body.body.match(teamRegex);
+            const userMentions = req.body.body.match(userRegex);
             const postData = req.body;
-            const post = await Posts.create(postData, teamAbbrevs);
+            const post = await Posts.create(postData, teamMentions, userMentions);
             res.send(post);
         }
         

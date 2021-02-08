@@ -61,6 +61,7 @@ class MainInput extends React.Component {
 
     handleChange = (event) => {
         let text = this.contentEditable.current.innerText;
+        this.props.saveCurrentPostText(text);
         text = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
             `<a class="twit-link" id="team">$${match}</a>`
         ));
@@ -68,7 +69,6 @@ class MainInput extends React.Component {
             `<a class="twit-link" id="user">@${match}</a>`
         ));
         text = text.join('');
-        // props.saveCurrentPostText(event.target.innerText);
         this.setState({html: text});
     };
 

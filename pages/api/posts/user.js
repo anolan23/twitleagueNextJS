@@ -5,12 +5,19 @@ export default async (req,res) => {
     if(method === "GET"){
         const targetUserId = req.query.targetUserId;
         const userId = req.query.userId;
-        console.log("targetUserId",targetUserId)
-        console.log("userId",userId)
+        const mentioned = req.query.mentioned;
         const num = req.query.num;
         const offset = req.query.offset;
-        const posts = await Posts.findByUserId(targetUserId, userId, num, offset);
-        res.send(posts);
+
+        if(mentioned){
+            const posts = await Posts.findUserMentioned(userId, num, offset);
+            res.send(posts);
+        }
+        else{
+            const posts = await Posts.findByUserId(targetUserId, userId, num, offset);
+            res.send(posts);
+        }
+        
     }
 
     else{

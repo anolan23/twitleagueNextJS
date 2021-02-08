@@ -1,7 +1,7 @@
 import pool from "../pool";
 
 class Posts {
-    static async create(post, abbrevs) {
+    static async create(post, teamMentions, userMentions) {
         let createdPost;
         let results;
         await (async () => {
@@ -22,12 +22,12 @@ class Posts {
                     `, [createdPost.rows[0].id]
                 )
     
-              if(abbrevs){
-                  abbrevs.forEach(async abbrev => {
+              if(teamMentions){
+                  teamMentions.forEach(async teamMention => {
                       const team = await client.query(
                           `SELECT id
                           FROM teams
-                          WHERE abbrev = $1`, [abbrev]
+                          WHERE abbrev = $1`, [teamMention]
                       )
                       const insertTeamMention = await client.query(
                           `INSERT INTO team_mentions (team_id, post_id)
@@ -35,6 +35,20 @@ class Posts {
                       )
                   });
               }
+
+              if(userMentions){
+                userMentions.forEach(async userMention => {
+                    const user = await client.query(
+                        `SELECT id
+                        FROM users
+                        WHERE username = $1`, [userMention.substring(1)]
+                    )
+                    const insertUserMention = await client.query(
+                        `INSERT INTO user_mentions (user_id, post_id)
+                        VALUES ($1, $2)`, [user.rows[0].id, createdPost.rows[0].id]
+                    )
+                });
+            }
 
               results = await client.query(
                 `SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
@@ -80,6 +94,25 @@ class Posts {
       OFFSET $4`, [targetUserId, userId, num, offset]);
       return rows;
   }
+
+  static async findUserMentioned(userId, num, offset) {
+    const {rows} = await pool.query(`
+    SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, gif, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+      CASE 
+      WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
+      WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+      ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+      END AS date,
+      EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND p1.id = likes.post_id ) AS liked
+    FROM user_mentions
+    JOIN posts AS p1 ON p1.id = user_mentions.post_id
+    JOIN users ON users.id = user_mentions.user_id
+    WHERE user_mentions.user_id = $1
+    ORDER BY created_at DESC
+    LIMIT $2
+    OFFSET $3`, [userId, num, offset]);
+    return rows;
+}
 
     static async findByTeamId(userId, teamId) {
         const {rows} = await pool.query(`
