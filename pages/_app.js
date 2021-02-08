@@ -3,6 +3,9 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import '../styles/globals.css'
 import "../sass/_main.scss";
 import { Provider } from 'react-redux'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+import * as gtag from "../lib/gtag";
 
 import { useStore } from '../redux/store'
 import AddEventModal from "../components/modals/AddEventModal";
@@ -18,6 +21,17 @@ import TwitPanel from '../components/TwitPanel';
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
+  const router = useRouter()
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      gtag.pageview(url)
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events]);
+
   return (
     <Provider store={store}>
       <SignupPopup/>
@@ -36,3 +50,4 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp
+
