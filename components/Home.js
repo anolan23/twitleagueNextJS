@@ -35,6 +35,7 @@ function Home(props) {
                     main="Welcome to twitleague!"
                     sub="This is the best place to see what’s happening in sports. Find some teams and players to follow."
                     actionText="Let's go!"
+                    actionHref="/suggested"
                 />
             )
         }

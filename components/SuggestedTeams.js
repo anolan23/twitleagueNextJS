@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react"
 import Spinner from "react-bootstrap/Spinner";
 import {connect} from "react-redux"
+import Link from "next/link";
 
 import TwitCard from "../components/TwitCard";
 import TwitCardItem from "../components/TwitCardItem";
@@ -38,6 +39,14 @@ function SuggestedTeams(props){
         }
     }
 
+    const renderFooter = () => {
+        return(
+            <Link href="/suggested" passHref>
+                <a>Show more</a>
+            </Link>
+        )
+    }
+
     const renderSuggestedTeams = () => {
         if(suggestedTeams.length > 0){
             return suggestedTeams.map((suggestedTeam, index) => {
@@ -61,7 +70,7 @@ function SuggestedTeams(props){
     }
 
     return (
-            <TwitCard title="Teams to follow" footer="Show more">
+            <TwitCard title="Teams to follow" footer={renderFooter()}>
                 {renderSuggestedTeams()}
             </TwitCard>
     )

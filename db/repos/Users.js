@@ -47,6 +47,16 @@ class Users {
         return rows;
     }
 
+    static async findSuggested(num) {
+        const teams = await pool.query(`
+        SELECT *
+        FROM users
+        ORDER BY users.avatar
+        LIMIT $1
+        `, [num]);
+        return teams.rows;
+    }
+
 }
 
 export default Users;
