@@ -46,7 +46,11 @@ class Teams {
 
     static async findOne(abbrev) {
         const team = await pool.query(`
-        SELECT teams.id, teams.team_name, abbrev, teams.avatar, banner, teams.created_at, teams.owner_id, username AS owner, league_id, league_name
+        SELECT teams.id, teams.team_name, abbrev, teams.avatar, banner, teams.created_at, 
+            teams.owner_id, username AS owner, league_id, league_name, 
+                (SELECT COUNT(*) AS num_posts
+                FROM team_mentions
+                WHERE team_id = (SELECT id FROM teams WHERE abbrev = $1))
         FROM teams
         JOIN users ON teams.owner_id = users.id
         LEFT JOIN leagues ON teams.league_id = leagues.id

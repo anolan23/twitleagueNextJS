@@ -144,7 +144,7 @@ function TeamComponent(props) {
       
         return (
             <div >
-                <TopBar main={props.team.team_name} sub="32.5k Twits"/>
+                <TopBar main={props.team.team_name} sub={`${props.team.num_posts} Posts`}/>
                 <TeamHolder team={props.team}/>
                 <TwitTabs>
                     <TwitTab onClick={onTeamSelect} id={"team"} active={activeLink === "team" ? true : false} title="Team"/>

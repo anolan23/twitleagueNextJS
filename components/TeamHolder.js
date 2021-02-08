@@ -68,7 +68,7 @@ function TeamHolder(props) {
             <h1 className="heading-1">{team.team_name}</h1>
             {team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
-          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{team.league_name}</h3>
+          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{`${team.league_name} · ${team.abbrev}`}</h3>
           <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Official TwitLeague account of the Chicago White Sox</h3>
           <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${team.owner}`}</h3>
           <h3 className={teamHolder["team-holder__attributes"] + " muted"}>

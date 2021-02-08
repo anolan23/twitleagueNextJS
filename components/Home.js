@@ -54,7 +54,7 @@ function Home(props) {
                     buttonText="Post"
                     onSubmit={onSubmit}    
                 />
-                <Divide/>
+                <Divide first/>
                 {renderPosts()}
             </div>
         );

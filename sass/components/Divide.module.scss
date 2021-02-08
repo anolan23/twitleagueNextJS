@@ -3,4 +3,10 @@
     border-bottom: var(--border);
     height: 10px;
     background-color: rgb(247, 249, 250);
+
+    &__first{
+        @media only screen and (max-width: 500px){
+            display: none;
+          }
+    }
 }
