@@ -11,7 +11,8 @@ function PopupCompose(props){
         return (
             <MainInput 
                 expanded 
-                placeHolder="What's happening?" 
+                compose
+                placeHolder="$Team or @Username"
                 initialValue="" 
                 buttonText="Post"
                 onSubmit={props.createPost}

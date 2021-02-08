@@ -39,12 +39,16 @@
 
         &__heading{
             height: 5.3rem;
-            // border-bottom: var(--border);
 
+            @media only screen and (max-width: 760px){
+                border-bottom: var(--border);
+            }
+  
         }
 
         &__body{
             max-width: 60rem;
+            height: 100%;
             overflow: overlay;
 
             @media only screen and (max-width: 760px){

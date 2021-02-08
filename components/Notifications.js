@@ -62,7 +62,7 @@ function Notifications(props) {
         else if(mentionedPosts.length === 0){
             return (
                 <Empty
-                    main="You have no mentioned posts."
+                    main="Nobody has mentioned you in a post."
                     sub="Try to make more friends"
                     actionText="Make friends"
                 />

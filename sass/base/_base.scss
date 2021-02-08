@@ -14,7 +14,7 @@
     --color-light-gray: rgb(223, 223, 223);
 
     --border: 1px solid var(--color-light-gray);
-    --box-shadow: rgba(101, 119, 134, 0.2) 0px 0px 15px, rgba(101, 119, 134, 0.15) 0px 0px 3px 1px;
+    --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px, rgb(101 119 134 / 25%) 0px 1px 3px 1px;
     --box-shadow-light:rgba(0, 0, 0, 0.1) 0px 8px 28px;
   }
 
@@ -235,13 +235,14 @@ body {
     }
 
     &__avatar{
+        display: none;
         height: 30px;
         width: 30px;
         object-fit: cover;
         margin-left: 1.5rem;
 
-        @media only screen and (min-width: 500px){
-            display: none;
+        @media only screen and (max-width: 500px){
+            display: block;
           }
     }
 }

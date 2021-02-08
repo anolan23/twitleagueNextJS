@@ -10,7 +10,11 @@
         display: block;
     }
     @media only screen and (max-width: 500px){
-        display: none;
+        position: absolute;
+        height: 60px;
+        width: 60px;
+        right: 1rem;
+        bottom: 7rem;
     }
 
     &__icon{
@@ -19,6 +23,10 @@
         
         padding: 1.3rem;
         fill: white;
+
+        @media only screen and (max-width: 500px){
+            padding: 1.6rem;
+        }
 
     }
 }

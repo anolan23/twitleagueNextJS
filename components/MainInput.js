@@ -38,7 +38,7 @@ class MainInput extends React.Component {
                     this.setState({showDropdown: false, cursor: 0})
                 }
             }
-        })
+        });
     }
 
     async teamSearch(search){
@@ -173,7 +173,7 @@ class MainInput extends React.Component {
 
     render() {
         return(
-            <form className={mainInput["main-input"]} onSubmit={this.onSubmit} onKeyDown={this.handleKeyDown}>
+            <form className={this.props.compose ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}` : mainInput["main-input"]} onSubmit={this.onSubmit} onKeyDown={this.handleKeyDown}>
                 <Avatar roundedCircle className={mainInput["main-input__image"]} src={this.props.avatar}/>
                 <ContentEditable
                     className={`${mainInput["main-input__text-area"]} ${this.expanded}`}
