@@ -10,14 +10,13 @@ class Users {
             VALUES ($1, $2, $3, $4)
             RETURNING *;
         `, [name,email,username,password]);
-        // await pool.end();
+        // 
         return rows[0];
     }
 
     static async find() {
-        // await pool.connect();
         const {rows} = await pool.query('SELECT * FROM users');
-        // await pool.end();
+        
         return rows;
     }
 
@@ -26,6 +25,7 @@ class Users {
             SELECT * 
             FROM users
             WHERE username = $1`, [username]);
+        
         return rows[0];
     }
 
@@ -35,6 +35,7 @@ class Users {
         SET avatar = $2
         WHERE id = $1
         RETURNING *`, [userId, values.avatar]);
+        
         return rows[0];
     }
 
@@ -44,6 +45,7 @@ class Users {
         FROM users
         WHERE (LOWER(username) LIKE $1)
         LIMIT 10;`, [`%${search}%`]);
+        
         return rows;
     }
 
@@ -54,6 +56,7 @@ class Users {
         ORDER BY users.avatar
         LIMIT $1
         `, [num]);
+        
         return teams.rows;
     }
 

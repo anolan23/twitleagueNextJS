@@ -87,7 +87,25 @@ function TeamComponent(props) {
                 return null;
             }
             else if(roster.length === 0){
-                return <Empty main="No players" sub="There are no players on this team"/>
+                if(props.user.id === props.team.owner_id){
+                    return (
+                        <Empty 
+                            main="No players" 
+                            sub="There are no players on this team"
+                            actionText="Edit Roster"
+                            onActionClick={props.toggleEditRosterPopup}
+                            />
+                    )
+                }
+                else{
+                    return (
+                        <Empty 
+                            main="No players" 
+                            sub="There are no players on this team"
+                            />
+                    )
+                }
+                
             }
             else{
                 return roster.map(player => {
@@ -108,7 +126,24 @@ function TeamComponent(props) {
                 return <Spinner animation="border"/>;
             }
             else if(events.length === 0){
-                return <Empty main="No events" sub="The head coach hasn't scheduled any events"/>
+                if(props.user.id === props.team.owner_id){
+                    return (
+                        <Empty 
+                            main="No events" 
+                            sub="You haven't scheduled any events for this team"
+                            actionText="Edit Events"
+                            onActionClick={props.toggleEditEventsPopup}
+                            />
+                    )
+                }
+                else{
+                    return (
+                        <Empty 
+                            main="No events" 
+                            sub="The head coach hasn't scheduled any events"
+                            />
+                    )
+                }
             }
             else{
                 return events.map((event, index) => {

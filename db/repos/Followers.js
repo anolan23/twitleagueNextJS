@@ -8,6 +8,7 @@ class Followers {
         FROM followers
         JOIN users ON followers.user_id = users.id
         WHERE team_id = $1`, [teamId]);
+        
         return rows;
     }
 
@@ -16,6 +17,7 @@ class Followers {
         SELECT *
         FROM followers
         WHERE user_id = $1`, [userId]);
+        
         return rows;
     }
 
@@ -24,6 +26,16 @@ class Followers {
         INSERT INTO followers (team_id, user_id)
         VALUES ($1, $2)
         RETURNING *`, [teamId, userId]);
+        
+        return rows[0];
+    }
+
+    static async unFollow (teamId, userId) {
+        const {rows} = await pool.query(`
+        DELETE FROM followers 
+        WHERE team_id = $1 AND user_id = $2
+        RETURNING *`, [teamId, userId]);
+        
         return rows[0];
     }
 

@@ -209,13 +209,20 @@ export const saveTeamImages = (teamImageUrl, bannerImageUrl) => async (dispatch,
     }
 }
 
-export const followTeam = () => async (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
-    const teamId = state.team.id;
+export const followTeam =  async (userId, teamId) => {
     if(userId && teamId){
-        const response = await backend.patch("/api/follow/team", {userId,teamId});
-        dispatch({type: "FOLLOW_TEAM", payload: response.data});
+        const response = await backend.patch("/api/followers", {userId, teamId});
+    }
+}
+
+export const unFollowTeam =  async (userId, teamId) => {
+    if(userId && teamId){
+        const response = await backend.delete("/api/followers", {
+            params:{
+                userId, 
+                teamId
+            }
+        });
     }
 }
 

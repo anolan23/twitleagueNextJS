@@ -38,7 +38,8 @@ class Teams {
               await client.query('ROLLBACK')
               throw e
             } finally {
-              client.release()
+                await client.end();
+                await client.release()
             }
 
           })().catch(e => console.error(e.stack))
@@ -55,6 +56,7 @@ class Teams {
         JOIN users ON teams.owner_id = users.id
         LEFT JOIN leagues ON teams.league_id = leagues.id
         WHERE abbrev = $1`, [abbrev]);
+        
         return team.rows[0];
     }
 
@@ -64,6 +66,7 @@ class Teams {
         FROM teams
         FULL JOIN leagues ON teams.league_id = leagues.id
         WHERE teams.owner_id = $1`, [ownerId]);
+        
         return teams.rows;
     }
 
@@ -72,6 +75,7 @@ class Teams {
         SELECT *
         FROM teams
         WHERE teams.league_id = $1`, [leagueId]);
+        
         return teams.rows;
     }
 
@@ -80,6 +84,7 @@ class Teams {
         SELECT *
         FROM teams
         `);
+        
         return teams.rows;
     }
 
@@ -96,6 +101,7 @@ class Teams {
         ORDER BY RANDOM()
         LIMIT $2
         `, [userId, num]);
+        
         return teams.rows;
     }
 
@@ -104,6 +110,7 @@ class Teams {
         UPDATE teams
         SET league_id = $1
         WHERE id = $2`, [leagueId, teamId]);
+        
         return team.rows;
     }
 
@@ -113,6 +120,7 @@ class Teams {
         SET avatar = $2
         WHERE id = $1
         RETURNING *`, [teamId, values.avatar]);
+        
         return rows[0];
     }
 
@@ -122,6 +130,7 @@ class Teams {
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING *`
         , [event.teamId, event.type, event.opponent, event.eventDate, event.location, event.notes]);
+        
         return rows[0];
     }
 
@@ -133,6 +142,7 @@ class Teams {
         LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
         WHERE events.team_id = $1`
         , [teamId]);
+        
         return rows;
     }
 
@@ -143,6 +153,7 @@ class Teams {
         JOIN leagues ON leagues.id = teams.league_id
         WHERE (LOWER(teams.abbrev) LIKE $1) OR (LOWER(teams.team_name) LIKE $1)
         LIMIT 10;`, [`%${search}%`]);
+        
         return rows;
     }
 }

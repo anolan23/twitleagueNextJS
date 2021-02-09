@@ -10,6 +10,7 @@ class Notifications {
         LEFT JOIN teams ON teams.id = team_id
         LEFT JOIN leagues ON leagues.id = notifications.league_id
         WHERE notifications.user_id = $1`, [userId]);
+        
         return notifications.rows;
     }
 
@@ -19,6 +20,7 @@ class Notifications {
         INSERT INTO notifications (user_id, type, team_id)
         VALUES ($1, $2, $3)
         RETURNING *`, [userId, type, teamId]);
+        
         return notification.rows[0];
     }
 
@@ -26,6 +28,7 @@ class Notifications {
         const notifications = await pool.query(`
         DELETE FROM notifications
         WHERE id = $1`, [notificationId]);
+        
         return notifications.rows;
     }
 }

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 
 import suggested from "../sass/components/Suggested.module.scss";
+import {followTeam, unFollowTeam} from "../actions";
 import TwitItem from "./TwitItem";
 import TopBar from "./TopBar";
 import TwitTabs from "./TwitTabs";
@@ -38,6 +39,24 @@ function Suggested(props) {
         setSuggestions(users.data);
      }
 
+    const onFollowToggleClick = (team) => {
+        team.following = !team.following;
+        const teams = suggestions.map(suggestion => {
+            if(suggestion.id === team.id){
+                return team
+            }
+            return suggestion
+        })
+        setSuggestions(teams);
+
+        if(team.following){
+            followTeam(props.userId, team.id);
+        }
+        else if(!team.following){
+            unFollowTeam(props.userId, team.id);
+        }
+    }
+
     const renderContent = () => {
         if(suggestions === null){
             return;
@@ -51,7 +70,8 @@ function Suggested(props) {
                           avatar={suggestion.avatar}
                           title={suggestion.team_name}
                           subtitle={`${suggestion.abbrev} · ${suggestion.league_name}`}
-                          actionText="Follow"
+                          actionText={suggestion.following ? "Unfollow" : "Follow"}
+                          onActionClick={() => onFollowToggleClick(suggestion)}
                           />
                       );
                 }

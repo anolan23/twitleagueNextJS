@@ -70,7 +70,8 @@ class Posts {
               await client.query('ROLLBACK')
               throw e
             } finally {
-              client.release()
+              
+              await client.release()
             }
 
           })().catch(e => console.error(e.stack))
@@ -92,6 +93,7 @@ class Posts {
       ORDER BY created_at DESC
       LIMIT $3
       OFFSET $4`, [targetUserId, userId, num, offset]);
+      
       return rows;
   }
 
@@ -111,6 +113,7 @@ class Posts {
     ORDER BY created_at DESC
     LIMIT $2
     OFFSET $3`, [userId, num, offset]);
+    
     return rows;
 }
 
@@ -128,6 +131,7 @@ class Posts {
         JOIN users ON p1.author_id = users.id
         WHERE team_id = $2
         ORDER BY p1.created_at DESC`, [userId, teamId]);
+        
         return rows;
     }
 
@@ -151,6 +155,7 @@ class Posts {
         ) AS t1 ON t1.post_id = p1.id
         JOIN users ON p1.author_id = users.id
         ORDER BY p1.created_at DESC`, [leagueId]);
+        
         return rows;
     }
 
@@ -233,7 +238,8 @@ class Posts {
               await client.query('ROLLBACK')
               throw e
             } finally {
-              client.release()
+              
+              await client.release()
             }
 
           })().catch(e => console.error(e.stack))
@@ -273,7 +279,8 @@ class Posts {
               await client.query('ROLLBACK')
               throw e
             } finally {
-              client.release()
+              
+              await client.release()
             }
 
           })().catch(e => console.error(e.stack))
@@ -304,6 +311,7 @@ class Posts {
       ORDER BY created_at DESC
       LIMIT $2
       OFFSET $3`, [userId, num, offset]);
+      
       return rows;
   }
 
@@ -320,6 +328,7 @@ class Posts {
       JOIN users ON p1.author_id = users.id
 	  WHERE p1.id = $1
     `, [postId, userId]);
+    
     return rows[0];
 }
 

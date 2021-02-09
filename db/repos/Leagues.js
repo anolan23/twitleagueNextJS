@@ -8,6 +8,7 @@ class Leagues {
         INSERT INTO leagues (owner_id, league_name, sport)
         VALUES
         ($1, $2, $3)`, [ownerId, leagueName, sport]);
+        
     }
 
     static async findOne(leagueName) {
@@ -16,6 +17,7 @@ class Leagues {
         FROM leagues
         WHERE league_name = $1;`, [leagueName]);
         console.log("rows", rows)
+        
         return rows[0];
     }
 
@@ -24,6 +26,7 @@ class Leagues {
         SELECT *
         FROM leagues
         WHERE owner_id = $1`, [ownerId]);
+        
         return leagues.rows;
     }
 
@@ -32,6 +35,7 @@ class Leagues {
         SELECT *
         FROM leagues
         `);
+        
         return leagues.rows;
     }
 
@@ -46,6 +50,7 @@ class Leagues {
         FROM leagues
         WHERE (LOWER(league_name) LIKE $1);`, [`%${search}%`]);
         console.log("rows", rows)
+        
         return rows;
     }
 }

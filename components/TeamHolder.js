@@ -3,7 +3,8 @@ import Avatar from './Avatar';
 import {connect} from "react-redux";
 
 import {
-  followTeam, 
+  followTeam,
+  unFollowTeam, 
   toggleAddEventModal, 
   toggleEditTeamPopup,
   toggleScheduleModal,

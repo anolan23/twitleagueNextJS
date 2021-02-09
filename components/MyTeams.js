@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import myTeams from "../sass/components/MyTeams.module.scss";
 import TwitButton from "./TwitButton";
 import TopBar from "./TopBar";
-import MyTeam from "./MyTeam";
+import TwitItem from "./TwitItem";
 
 function MyTeams(props){
 
@@ -12,12 +12,13 @@ function MyTeams(props){
         if(props.teams.length > 0){
             return props.teams.map((team, index) => {
                 return (
-                    <MyTeam 
-                        key={index} 
+                    <TwitItem 
+                        key={index}
                         avatar={team.avatar}
-                        teamName={`${team.city} ${team.team_name}`}
-                        leagueName={team.league_name}
-                        abbrev={team.abbrev}
+                        title={`${team.team_name}`}
+                        subtitle={`${team.abbrev} · ${team.league_name?team.league_name:"awaiting league approval"}`}
+                        href={`/teams/${team.abbrev.substring(1)}`}
+                        actionText="View"
                     />
                 )
             })

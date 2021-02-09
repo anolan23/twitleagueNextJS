@@ -22,7 +22,7 @@ export default async (req,res) => {
                     res.send(user);
                 }
                 else {
-                    res.send({isSignedIn: false})
+                    res.send({isSignedIn: false});
                 }
                 });
         }

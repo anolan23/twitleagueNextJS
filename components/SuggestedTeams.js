@@ -4,9 +4,9 @@ import {connect} from "react-redux"
 import Link from "next/link";
 
 import TwitCard from "../components/TwitCard";
-import TwitCardItem from "../components/TwitCardItem";
+import TwitItem from "../components/TwitItem";
 import backend from "../lib/backend";
-import {followTeam} from "../actions";
+import {followTeam, unFollowTeam} from "../actions";
 
 function SuggestedTeams(props){
 
@@ -26,16 +26,21 @@ function SuggestedTeams(props){
         setSuggestedTeams(response.data);
     }
 
-    const onFollowClick = (userId, teamId) => {
+    const onFollowToggleClick = (team) => {
+        team.following = !team.following;
         const teams = suggestedTeams.map(suggestedTeam => {
-            if(suggestedTeam.id === teamId){
-                suggestedTeam.following = !suggestedTeam.following;
+            if(suggestedTeam.id === team.id){
+                return team
             }
-            return suggestedTeam;
-        });
+            return suggestedTeam
+        })
         setSuggestedTeams(teams);
-        if(userId && teamId){
-            backend.patch("/api/follow/team", {userId,teamId});
+
+        if(team.following){
+            followTeam(props.userId, team.id);
+        }
+        else if(!team.following){
+            unFollowTeam(props.userId, team.id);
         }
     }
 
@@ -51,14 +56,13 @@ function SuggestedTeams(props){
         if(suggestedTeams.length > 0){
             return suggestedTeams.map((suggestedTeam, index) => {
                 return (
-                    <TwitCardItem 
+                    <TwitItem 
                         key={index}
                         avatar={suggestedTeam.avatar}
-                        href={`/teams/${suggestedTeam.abbrev.substring(1)}`}
-                        mainText={suggestedTeam.team_name} 
-                        subText={suggestedTeam.league_name}
+                        title={suggestedTeam.team_name} 
+                        subtitle={`${suggestedTeam.abbrev} · ${suggestedTeam.league_name}`}
                         actionText={suggestedTeam.following?"Unfollow":"Follow"}
-                        onActionClick={() => onFollowClick(props.userId, suggestedTeam.id)}
+                        onActionClick={() => onFollowToggleClick(suggestedTeam)}
                     />
                 )
             });
@@ -80,4 +84,4 @@ const mapStateToProps = (state) => {
     return {userId: state.user.id}
 }
 
-export default connect(mapStateToProps, {followTeam})(SuggestedTeams);
+export default connect(mapStateToProps)(SuggestedTeams);

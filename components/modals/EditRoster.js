@@ -103,6 +103,14 @@ function EditRoster(props){
             if(!roster){
                 return null;
             }
+            else if(roster.length === 0){
+                return (
+                    <Empty
+                        main="No players"
+                        sub="There are no players on this team"
+                    />
+                )
+            }
             else{
                 return roster.map(player => {
                     return (
@@ -135,7 +143,7 @@ function EditRoster(props){
 
     const renderUsers = () => {
         if(!users){
-            return <Empty main="Search" sub="search above for players" actionText="Search"/>
+            return <Empty main="Search" sub="search above for players to add to your roster" actionText="Search"/>
         }
         else{
             return users.map(user => {

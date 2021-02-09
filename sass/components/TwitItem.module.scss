@@ -6,6 +6,7 @@
     font-size: 1.5rem;
     line-height: 1.3125;
     border-bottom: var(--border);
+    cursor: pointer;
 
     &--active{
         background-color: var(--GRAY_BACKGROUND);
@@ -21,7 +22,7 @@
     }
 
     &__title{
-        font-weight: 600;
+        font-weight: 700;
         color: var(--PRIMARY_TEXT);
     }
 
