@@ -1,12 +1,11 @@
 import React from "react";
-import Dropdown from 'react-bootstrap/Dropdown';
-import FormControl from 'react-bootstrap/FormControl';
 
 import autoCompleteInput from "../../sass/components/AutoCompleteInput.module.scss"
+import TwitDropdown from "../TwitDropdown";
 
 function AutoCompleteInput(props) {
 
-    const renderTeamOptions = () => {
+    const renderTeams = () => {
 
         if(!props.teamOptions){
             return null
@@ -14,7 +13,9 @@ function AutoCompleteInput(props) {
         else {
             return (
                 <React.Fragment>
-                    <Dropdown.Header>{props.teamHeader}</Dropdown.Header>
+                    <div className={autoCompleteInput["auto-complete-input__header"]}>
+                        <span className={autoCompleteInput["auto-complete-input__header__text"]}>Teams</span>
+                    </div>
                     {props.teamOptions}
                 </React.Fragment>
             );
@@ -22,7 +23,7 @@ function AutoCompleteInput(props) {
         
     }
 
-    const renderLeagueOptions = () => {
+    const renderLeagues = () => {
 
         if(!props.leagueOptions){
             return null
@@ -30,7 +31,9 @@ function AutoCompleteInput(props) {
         else {
             return (
                 <React.Fragment>
-                    <Dropdown.Header className={autoCompleteInput["auto-complete-input__header"]}>Existing Leagues</Dropdown.Header>
+                    <div className={autoCompleteInput["auto-complete-input__header"]}>
+                        <span className={autoCompleteInput["auto-complete-input__header__text"]}>Leagues</span>
+                    </div>
                     {props.leagueOptions}
                 </React.Fragment>
             );
@@ -38,7 +41,7 @@ function AutoCompleteInput(props) {
         
     }
 
-    const renderPeopleOptions = () => {
+    const renderUsers = () => {
 
         if(!props.peopleOptions){
             return null
@@ -46,7 +49,9 @@ function AutoCompleteInput(props) {
         else {
             return (
                 <React.Fragment>
-                    <Dropdown.Header>{props.peopleHeader}</Dropdown.Header>
+                    <div className={autoCompleteInput["auto-complete-input__header"]}>
+                        <span className={autoCompleteInput["auto-complete-input__header__text"]}>Users</span>
+                    </div>
                     {props.peopleOptions}
                 </React.Fragment>
             );
@@ -65,13 +70,14 @@ function AutoCompleteInput(props) {
                 placeholder={props.placeholder} 
                 className={props.className?props.className:autoCompleteInput["auto-complete-input"]} 
                 autoComplete={props.autoComplete}
-                    />
-            <Dropdown.Menu show={props.show  && (props.peopleOptions || props.teamOptions || props.leagueOptions)} className={autoCompleteInput["auto-complete-input__dropdown"]}>
-                {renderTeamOptions()}
-                {renderPeopleOptions()}
-                {renderLeagueOptions()}
-
-            </Dropdown.Menu>
+            />
+            <div className={autoCompleteInput["auto-complete-input__dropdown"]}>
+                <TwitDropdown show={props.show  && (props.peopleOptions || props.teamOptions || props.leagueOptions)}>
+                    {renderTeams()}
+                    {renderUsers()}
+                    {renderLeagues()}
+                </TwitDropdown>
+            </div>
         </React.Fragment>
         
     );

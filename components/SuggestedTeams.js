@@ -7,10 +7,11 @@ import TwitCard from "../components/TwitCard";
 import TwitItem from "../components/TwitItem";
 import backend from "../lib/backend";
 import {followTeam, unFollowTeam} from "../actions";
+import Empty from "./Empty";
 
 function SuggestedTeams(props){
 
-    const [suggestedTeams, setSuggestedTeams] = useState([]); 
+    const [suggestedTeams, setSuggestedTeams] = useState(null); 
 
     useEffect(() => {
         fetchSuggestedTeams(props.userId, 3);
@@ -53,7 +54,13 @@ function SuggestedTeams(props){
     }
 
     const renderSuggestedTeams = () => {
-        if(suggestedTeams.length > 0){
+        if(!suggestedTeams){
+            return <Spinner animation="border" />
+        }
+        else if(suggestedTeams.length === 0){
+            return <Empty main="No suggested teams" sub="Try again once more teams are created"/>
+        }
+        else{
             return suggestedTeams.map((suggestedTeam, index) => {
                 return (
                     <TwitItem 
@@ -63,12 +70,10 @@ function SuggestedTeams(props){
                         subtitle={`${suggestedTeam.abbrev} · ${suggestedTeam.league_name}`}
                         actionText={suggestedTeam.following?"Unfollow":"Follow"}
                         onActionClick={() => onFollowToggleClick(suggestedTeam)}
+                        href={`/teams/${suggestedTeam.abbrev.substring(1)}`}
                     />
                 )
             });
-        }
-        else{
-            return <Spinner animation="border" />
         }
         
     }

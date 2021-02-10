@@ -327,9 +327,8 @@ export const createReply = (conversation_id, in_reply_to_post_id) => async (disp
     dispatch(emptyPostData());
 }
 
-export const fetchTeamPosts = () => async (dispatch, getState) => {
+export const fetchTeamPosts = (teamId) => async (dispatch, getState) => {
     const userId = getState().user.id;
-    const teamId = getState().team.id;
     const response = await backend.get("/api/posts/team", {
         params: {
             userId,
@@ -377,8 +376,7 @@ export const fetchUserPosts = (targetUserId, userId, num, offset) => async (disp
     dispatch({type: "FETCH_USER_POSTS", payload: response.data});
 }
 
-export const fetchLeaguePosts = () => async (dispatch, getState) => {
-    const leagueId = getState().team.league_id;
+export const fetchLeaguePosts = (leagueId) => async (dispatch) => {
     const response = await backend.get("/api/posts/league", {
         params: {
             leagueId: leagueId

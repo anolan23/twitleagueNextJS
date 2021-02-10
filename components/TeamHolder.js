@@ -23,6 +23,23 @@ function TeamHolder(props) {
 
   const team = props.team;
 
+  const onFollowToggleClick = () => {
+    const teams = suggestions.map(suggestion => {
+        if(suggestion.id === team.id){
+            return team
+        }
+        return suggestion
+    })
+    setSuggestions(teams);
+
+    if(team.following){
+        followTeam(props.userId, team.id);
+    }
+    else if(!team.following){
+        unFollowTeam(props.userId, team.id);
+    }
+  }
+
   const renderButton = () => {
     if(props.username === team.owner){
       return (
@@ -34,7 +51,7 @@ function TeamHolder(props) {
       )
     }
     else{
-      if(!props.following.some(row => row.team_id === team.id))
+      if(!props.following.some(obj => obj.team_id === team.id))
       {
         return <TwitButton onClick={props.followTeam} color="twit-button--primary">Follow</TwitButton>
       }
@@ -84,7 +101,7 @@ function TeamHolder(props) {
           </h3>
           <div style={{width: "100%"}}>
             <div>
-              <span style={{fontWeight:900, marginRight:"3px"}}>{team.followers ? team.followers.length : 0}</span>
+              <span style={{fontWeight:900, marginRight:"3px"}}>{team.num_followers}</span>
               <span className={teamHolder["team-holder__info__bio"] + " muted"}>Followers</span>
             </div>
           </div>
@@ -95,7 +112,6 @@ function TeamHolder(props) {
 
 const mapStateToProps = (state) => {
   return {
-    team: state.team,
     following: state.user.following ? state.user.following : [],
     username: state.user.username
   }

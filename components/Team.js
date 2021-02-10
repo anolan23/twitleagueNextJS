@@ -9,54 +9,56 @@ import Empty from "./Empty";
 import {createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, findEventsByTeamId} from "../actions";
 import TopBar from "./TopBar";
 import TwitItem from "./TwitItem";
-import TwitButton from "./TwitButton";
 import team from "../sass/components/Team.module.scss"
 import Event from "./Event";
 import backend from "../lib/backend";
 import { Spinner } from "react-bootstrap";
 
-function TeamComponent(props) {
-    
-    const [activeLink, setActiveLink] = useState("team")
-    const [roster, setRoster] = useState(null)
-    const [events, setEvents] = useState(null)
+function Team(props) {
+
+    const [team, setTeam] = useState(props.team);
+    const [activeLink, setActiveLink] = useState("team");
+    const [roster, setRoster] = useState(null);
+    const [events, setEvents] = useState(null);
 
     useEffect(() => {
-
+        setTeam(props.team)
         const start = async () => {
             if(props.user.isSignedIn){
-                props.fetchTeamPosts();
+                props.fetchTeamPosts(team.id);
             }
             else{
                 await props.fetchUser();
-                props.fetchTeamPosts();
+                props.fetchTeamPosts(team.id);
             }
         }
         start();
-        
-
+    
         return () => {
             props.clearPosts();
         }
-      }, [])
+      }, [props.team])
 
-      const fetchRoster = async () => {
+    const fetchRoster = async () => {
         const response = await backend.get("api/teams/rosters", {
             params: {
-                teamId: props.team.id
+                teamId: team.id
             }
         });
         setRoster(response.data);
     }
 
     const fetchEvents = async () => {
-        console.log(props.teamId);
-        const events = await findEventsByTeamId(props.team.id);
+        const events = await findEventsByTeamId(team.id);
         console.log(events);
         setEvents(events);
     }
 
-      const renderPosts = () => {
+    const updateTeam = (team) => {
+        setTeam(team);
+    }
+
+    const renderPosts = () => {
         if(activeLink ==="team" || activeLink === "league"){
             if(props.posts === null){
                 return;
@@ -87,7 +89,7 @@ function TeamComponent(props) {
                 return null;
             }
             else if(roster.length === 0){
-                if(props.user.id === props.team.owner_id){
+                if(props.user.id === team.owner_id){
                     return (
                         <Empty 
                             main="No players" 
@@ -126,7 +128,7 @@ function TeamComponent(props) {
                 return <Spinner animation="border"/>;
             }
             else if(events.length === 0){
-                if(props.user.id === props.team.owner_id){
+                if(props.user.id === team.owner_id){
                     return (
                         <Empty 
                             main="No events" 
@@ -158,12 +160,12 @@ function TeamComponent(props) {
 
         const onTeamSelect = (k) => {
             setActiveLink(k.target.id);
-            props.fetchTeamPosts();
+            props.fetchTeamPosts(team.id);
         }
 
         const onLeagueSelect = async (k) => {
             setActiveLink(k.target.id);
-            props.fetchLeaguePosts();
+            props.fetchLeaguePosts(team.league_id);
         }
 
         const onRosterSelect = (k) => {
@@ -179,8 +181,8 @@ function TeamComponent(props) {
       
         return (
             <div >
-                <TopBar main={props.team.team_name} sub={`${props.team.num_posts} Posts`}/>
-                <TeamHolder team={props.team}/>
+                <TopBar main={team.team_name} sub={`${team.num_posts} Posts`}/>
+                <TeamHolder team={team} updateTeam={updateTeam}/>
                 <TwitTabs>
                     <TwitTab onClick={onTeamSelect} id={"team"} active={activeLink === "team" ? true : false} title="Team"/>
                     <TwitTab onClick={onLeagueSelect} id={"league"} active={activeLink === "league" ? true : false} title="League"/>
@@ -210,4 +212,4 @@ export default connect(mapStateToProps,
         clearPosts, 
         toggleEditRosterPopup,
         toggleEditEventsPopup
-    })(TeamComponent);
+    })(Team);
