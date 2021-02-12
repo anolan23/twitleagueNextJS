@@ -1,0 +1,38 @@
+.twit-badge{
+    cursor: pointer;
+    padding: .2rem 1rem;
+    line-height: 1.3125;
+    border-radius: 1000px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    opacity: .5;
+    transition: opacity .25s;
+    outline: none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__hot{
+        background-color: var(--RED_BACKGROUND);
+        color: var(--RED_TEXT);
+       
+    }
+
+    &__cold{
+        background-color: var(--BLUE_BACKGROUND);
+        color: var(--BLUE_TEXT);
+        
+    }
+
+    &__gray{
+        background-color: var(--BLUE_TEXT);
+        color: white
+        
+    }
+    
+    &:hover,
+    &__active{
+        opacity: 1;
+    }
+}

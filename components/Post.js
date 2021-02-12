@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/router'
-import Avatar from "./Avatar";
-import Badge from 'react-bootstrap/Badge';
 import {connect} from "react-redux";
 import {Gif} from "@giphy/react-components";
 import { GiphyFetch } from "@giphy/js-fetch-api";
@@ -11,6 +9,8 @@ import reactStringReplace from "react-string-replace";
 
 import {likePost, togglePopupReply, trackClickedPost} from "../actions";
 import post from "../sass/components/Post.module.scss";
+import Avatar from "./Avatar";
+import TwitBadge from "../components/TwitBadge";
 
 function Post(props) {
 
@@ -45,14 +45,14 @@ function Post(props) {
 
 
   const renderBadge = () => {
-    if(props.post.outlook === "bullish"){
-      return <Badge className="bullish" pill variant="success">Bullish</Badge>
-    }
-    else if(props.post.outlook === "bearish"){
-      return <Badge className="bearish" pill variant="danger">Bearish</Badge>
-    }
-    else{
+    if(props.post.outlook === null){
       return null;
+    }
+    else if(props.post.outlook){
+      return <TwitBadge active>Hot</TwitBadge>
+    }
+    else if(!props.post.outlook){
+      return <TwitBadge active>Cold</TwitBadge>
     }
   }
 

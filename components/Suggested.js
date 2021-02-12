@@ -67,6 +67,7 @@ function Suggested(props) {
                     return (
                         <TwitItem 
                           key={index}
+                          href={`/teams/${suggestion.abbrev.substring(1)}`}
                           avatar={suggestion.avatar}
                           title={suggestion.team_name}
                           subtitle={`${suggestion.abbrev} · ${suggestion.league_name}`}
@@ -79,6 +80,7 @@ function Suggested(props) {
                     return (
                         <TwitItem 
                           key={index}
+                          href={`/users/${suggestion.username}`}
                           avatar={suggestion.avatar}
                           title={suggestion.name}
                           subtitle={`@${suggestion.username}`}

@@ -112,9 +112,10 @@ function EditRoster(props){
                 )
             }
             else{
-                return roster.map(player => {
+                return roster.map((player, index) => {
                     return (
                         <TwitItem
+                            key={index}
                             avatar={player.avatar}
                             title={player.name}
                             subtitle={`@${player.username}`}
@@ -146,13 +147,15 @@ function EditRoster(props){
             return <Empty main="Search" sub="search above for players to add to your roster" actionText="Search"/>
         }
         else{
-            return users.map(user => {
+            return users.map((user, index) => {
                 return (
                     <TwitItem
+                        key={index}
+                        avatar={user.avatar}
                         title={user.name}
-                        subtitle={user.username}
+                        subtitle={`@${user.username}`}
                         actionText="Invite"
-                        onClick={() => props.sendJoinTeamInvite(user.id, props.teamId)}
+                        onActionClick={() => props.sendJoinTeamInvite(user.id, props.teamId)}
                     />
                 )
             })

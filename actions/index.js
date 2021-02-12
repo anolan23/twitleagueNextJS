@@ -78,10 +78,6 @@ export const togglePostModal = () => {
     return {type: "TOGGLE_POST_MODAL"};
 }
 
-export const toggleAddEventModal = () => {
-    return {type: "TOGGLE_ADDEVENT_MODAL"};
-}
-
 export const toggleScheduleModal = () => {
     return {type: "TOGGLE_SCHEDULE_MODAL"};
 }
@@ -108,31 +104,16 @@ export const toggleEditProfilePopup = () => (dispatch, getState) => {
     dispatch({type: "TOGGLE_EDIT_PROFILE_MODAL"});
 }
 
-export const toggleEditTeamPopup = () => (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
-    const ownerId = state.team.owner_id;
-    if(ownerId === userId){
+export const toggleEditTeamPopup = () => (dispatch) => {
         dispatch({type: "TOGGLE_EDIT_TEAM_MODAL"});
-    }
 }
 
-export const toggleEditRosterPopup = () => (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
-    const ownerId = state.team.owner_id;
-    if(ownerId === userId){
+export const toggleEditRosterPopup = () => (dispatch) => {
         dispatch({type: "TOGGLE_EDIT_ROSTER_POPUP"});
-    }
 }
 
-export const toggleEditEventsPopup = () => (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
-    const ownerId = state.team.owner_id;
-    if(ownerId === userId){
+export const toggleEditEventsPopup = () => (dispatch) => {
         dispatch({type: "TOGGLE_EDIT_EVENTS_POPUP"});
-    }
 }
 
 export const togglePanel = () => {
@@ -140,6 +121,11 @@ export const togglePanel = () => {
 }
 
 //Team Action Creators
+
+export const setTeam = team => (dispatch) => {
+    dispatch({type: "SET_TEAM", payload: team})
+}
+
 export const createTeam = formValues => async (dispatch, getState) => {
     const owner = getState().user.id;
     const response = await backend.post("api/teams", {...formValues, owner: owner});
@@ -304,7 +290,7 @@ export const fetchLeagues = () => async (dispatch, getState) => {
 export const createPost = () => async (dispatch, getState) => {
     const state = getState();
     const userId = state.user.id;
-    const body = state.post.postText;
+    const body = state.post.body;
     const gif = state.post.gif;
     const outlook = state.post.outlook;
     const post = {userId, body, gif, outlook}
@@ -317,7 +303,7 @@ export const createPost = () => async (dispatch, getState) => {
 export const createReply = (conversation_id, in_reply_to_post_id) => async (dispatch, getState) => {
     const state = getState();
     const userId = state.user.id;
-    const body = state.post.postText;
+    const body = state.post.body;
     const gif = state.post.gif;
     const outlook = state.post.outlook;
     const reply = {userId, body, gif, outlook, conversation_id, in_reply_to_post_id};
@@ -443,8 +429,8 @@ export const clearPosts = () => async (dispatch) => {
 }
 
 //Post Action Creators
-export const saveCurrentPostText = (postText) => {
-    return {type: "SAVE_CURRENT_POST_TEXT", payload: postText};
+export const saveCurrentPostText = (body) => {
+    return {type: "SAVE_CURRENT_BODY", payload: body};
 }
 
 export const saveCurrentPostGif = (gif) => {

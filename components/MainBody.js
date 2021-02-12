@@ -1,9 +1,4 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Figure from "react-bootstrap/Figure"
-import Image from "next/image";
 
 import LeftColumn from './LeftColumn';
 import RightColumn from "./RightColumn";

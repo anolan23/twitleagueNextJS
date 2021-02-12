@@ -12,6 +12,7 @@ import Avatar from "./Avatar";
 import TwitDropdown from "./TwitDropdown";
 import TwitItem from "./TwitItem";
 import backend from "../lib/backend";
+import TwitBadge from "./TwitBadge";
 
 class MainInput extends React.Component {
     contentEditable = React.createRef();
@@ -139,6 +140,41 @@ class MainInput extends React.Component {
         }
     }
 
+    onMoneyClick = () => {
+        let html = this.state.html;
+        html = html.concat("$");
+        this.setState({html: html});
+        this.contentEditable.current.focus();
+    }
+
+    onAtClick = () => {
+        let html = this.state.html;
+        html = html.concat("@");
+        this.setState({html: html});
+        this.contentEditable.current.focus();
+    }
+
+    onHotClick = () => {
+        const outlook = this.props.outlook;
+        if(outlook === null || !outlook){
+            this.props.saveCurrentOutlook(true);
+        }
+        else{
+            this.props.saveCurrentOutlook(null);
+        }
+        
+    }
+
+    onColdClick = () => {
+        const outlook = this.props.outlook;
+        if(outlook === null || outlook){
+            this.props.saveCurrentOutlook(false);
+        }
+        else{
+            this.props.saveCurrentOutlook(null);
+        }
+    }
+
     renderOptions = () => {
         if(!this.state.options){
             return
@@ -172,6 +208,7 @@ class MainInput extends React.Component {
     }
 
     render() {
+        console.log(this.state.outlook)
         return(
             <form className={this.props.compose ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}` : mainInput["main-input"]} onSubmit={this.onSubmit} onKeyDown={this.handleKeyDown}>
                 <Avatar roundedCircle className={mainInput["main-input__image"]} src={this.props.avatar}/>
@@ -186,18 +223,16 @@ class MainInput extends React.Component {
                 {this.renderGif()}
                 <div className={mainInput["main-input__actions"]}>
                     <div className={mainInput["main-input__media-types"]}>
-                        <div className={mainInput["main-input__media-type"]}>
-                            <svg className={mainInput["main-input__icon"]}>
-                                <use xlinkHref="/sprites.svg#icon-image"/>
-                            </svg>
-                        </div>
-                        <div className={mainInput["main-input__media-type"]}>
-                            <div onClick={this.props.toggleGifPopup} className={`${mainInput["main-input__icon"]} ${mainInput["main-input__gif"]}`}>
-                                GIF
-                            </div>
-                        </div>
+                            <TwitBadge active onClick={null}>Image</TwitBadge>
+                            <TwitBadge active onClick={this.props.toggleGifPopup}>GIF</TwitBadge>
                     </div>
                     <div className={mainInput["main-input__action"]}>
+                        <div className={mainInput["main-input__actions__action__outlook"]}>
+                            <TwitBadge active onClick={this.onMoneyClick}>$</TwitBadge>
+                            <TwitBadge active onClick={this.onAtClick}>@</TwitBadge>
+                            <TwitBadge onClick={this.onHotClick} active={this.props.outlook === true}>Hot</TwitBadge>
+                            <TwitBadge onClick={this.onColdClick} active={this.props.outlook === false}>Cold</TwitBadge>
+                        </div>
                         <div className={mainInput["main-input__action__char-count"]} disabled={this.chars()>this.allowableChars}>{this.allowableChars - this.chars()}</div>
                         <TwitButton disabled={this.disabled()} color="twit-button--primary">{this.props.buttonText}</TwitButton>
                     </div>
@@ -397,7 +432,7 @@ const mapStateToProps = (state) => {
         return {
             gif: state.post.gif ? state.post.gif : null,
             outlook: state.post.outlook,
-            postText: state.post.postText,
+            body: state.post.body,
             avatar: state.user.avatar
         }
 }

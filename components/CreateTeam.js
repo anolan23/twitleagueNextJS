@@ -1,5 +1,4 @@
 import React , {useState} from "react";
-import Dropdown from "react-bootstrap/Dropdown";
 import {useRouter} from "next/router";
 import {connect} from "react-redux";
 import {useFormik} from "formik";
@@ -9,6 +8,7 @@ import twitForm from "../sass/components/TwitForm.module.scss";
 import TopBar from "./TopBar";
 import TwitButton from "./TwitButton";
 import AutoCompleteInput from "../components/modals/AutoCompleteInput";
+import TwitDropdownItem from "../components/TwitDropdownItem";
 import {createTeam} from "../actions";
 import backend from "../lib/backend";
 
@@ -93,7 +93,7 @@ function CreateTeam(props){
       const renderOptions = () => {
           return options.map((option, index) => {
               return (
-                      <Dropdown.Item onClick={() => onDropdownItemClick(option)} key={index}>{option.league_name}</Dropdown.Item>
+                <TwitDropdownItem onClick={() => onDropdownItemClick(option)} text={option.league_name}/> 
               );
           });
       }  

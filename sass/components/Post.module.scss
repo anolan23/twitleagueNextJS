@@ -132,15 +132,18 @@
   }
 
   &__display-name{
-    font-weight: 700;
-    color:#101010;
-    text-decoration: none;
-    display:inline-block;
+
+    &,
+    &:link,
+    &:visited{
+      font-weight: 700;
+      color:#101010;
+      text-decoration: none;
+      display:inline-block;
+    }
 
     &:hover{
-      color:#00baff;
-      text-decoration: none;
-      transition: color .2s ease-in-out;
+      text-decoration: underline;
     }
   }
 

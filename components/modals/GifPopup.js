@@ -1,7 +1,6 @@
 import React from "react";
 import { Grid } from '@giphy/react-components'
 import { GiphyFetch } from '@giphy/js-fetch-api'
-import Form from 'react-bootstrap/Form';
 import {useFormik} from "formik";
 import {connect} from "react-redux";
 

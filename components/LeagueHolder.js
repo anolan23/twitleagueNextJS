@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import Link from "next/link";
 import reactStringReplace from "react-string-replace";
 
@@ -27,7 +26,7 @@ function LeagueHolder(props) {
        </div>
        <div className="twit-flex-column">
          <span>43,543 fans</span>
-         <Button>Follow</Button>
+         
        </div>
   
     </div>

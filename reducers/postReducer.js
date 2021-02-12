@@ -1,13 +1,13 @@
 const INITIAL_STATE = {
-    postText: "",
+    body: "",
     gif: null,
-    outlook: ""
+    outlook: null
 }
 
 const postReducer = (state = INITIAL_STATE, action) => {
     switch(action.type){
-        case "SAVE_CURRENT_POST_TEXT":
-            return {...state, postText: action.payload}
+        case "SAVE_CURRENT_BODY":
+            return {...state, body: action.payload}
         case "SAVE_CURRENT_POST_GIF":
             return {...state, gif: action.payload}
         case "SAVE_CURRENT_OUTLOOK":

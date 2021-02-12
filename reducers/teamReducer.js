@@ -7,6 +7,8 @@ const INITIAL_STATE = {
 
 const teamReducer = (state = INITIAL_STATE, action) => {
     switch(action.type){
+        case "SET_TEAM":
+            return action.payload;
         case "CREATE_TEAM":
             return action.payload;
         case "FETCH_TEAM":

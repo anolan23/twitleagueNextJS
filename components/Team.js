@@ -6,7 +6,7 @@ import Post from "./Post";
 import TwitTab from "./TwitTab";
 import TwitTabs from "./TwitTabs";
 import Empty from "./Empty";
-import {createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, findEventsByTeamId} from "../actions";
+import {setTeam, createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, findEventsByTeamId} from "../actions";
 import TopBar from "./TopBar";
 import TwitItem from "./TwitItem";
 import team from "../sass/components/Team.module.scss"
@@ -16,13 +16,14 @@ import { Spinner } from "react-bootstrap";
 
 function Team(props) {
 
-    const [team, setTeam] = useState(props.team);
+    const team = props.team
     const [activeLink, setActiveLink] = useState("team");
     const [roster, setRoster] = useState(null);
     const [events, setEvents] = useState(null);
 
     useEffect(() => {
-        setTeam(props.team)
+        props.setTeam(props.team)
+        setActiveLink("team")
         const start = async () => {
             if(props.user.isSignedIn){
                 props.fetchTeamPosts(team.id);
@@ -110,9 +111,10 @@ function Team(props) {
                 
             }
             else{
-                return roster.map(player => {
+                return roster.map((player, index) => {
                     return (
                         <TwitItem
+                            key={index}
                             avatar={player.avatar}
                             title={player.name}
                             subtitle={`@${player.username}`}
@@ -205,6 +207,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, 
     {
+        setTeam,
         fetchUser, 
         createPost, 
         fetchTeamPosts, 

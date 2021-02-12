@@ -1,0 +1,15 @@
+.suggested-teams{
+
+    &__footer{
+        padding: 1.5rem;
+        cursor: pointer;
+
+        &__text{
+            color: var(--BLUE_TEXT);
+        }
+
+        &:hover{
+            background-color: var(--GRAY_BACKGROUND);
+        }
+    }
+}

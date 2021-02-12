@@ -1,11 +1,16 @@
 import React from "react";
-import Link from "next/link"
+import {useRouter} from "next/router";
 
 import twitItem from "../sass/components/TwitItem.module.scss";
 import Avatar from "./Avatar";
 import TwitButton from "./TwitButton";
 
 function TwitItem(props) {
+    const router = useRouter();
+
+    const onClick = () => {
+        router.push(props.href);
+    }
 
     const renderAction = () => {
         if(!props.actionText){
@@ -14,24 +19,21 @@ function TwitItem(props) {
         else{
             return (
                 <div className={twitItem["twit-item__action"]}>
-                    <TwitButton href={props.href} onClick={props.onActionClick} color="twit-button--primary">{props.actionText}</TwitButton>
+                    <TwitButton onClick={props.onActionClick} color="twit-button--primary">{props.actionText}</TwitButton>
                 </div>
             )
         }
     }
 
     return (
-        <Link href={props.href} passHref>
-            <a onClick={props.onClick} className={`${twitItem["twit-item"]} ${props.active?twitItem["twit-item--active"]:""}`} draggable="true">
-                <Avatar roundedCircle className={twitItem["twit-item__image"]} src={props.avatar}/>
-                <div className={twitItem["twit-item__textbox"]}>
-                    <span className={twitItem["twit-item__title"]}>{props.title}</span>
-                    <span className={twitItem["twit-item__subtitle"]}>{props.subtitle}</span>
-                </div>
-                {renderAction()}
-            </a>
-        </Link>
-        
+        <div onClick={onClick} className={`${twitItem["twit-item"]} ${props.active?twitItem["twit-item--active"]:""}`} draggable="true">
+            <Avatar roundedCircle className={twitItem["twit-item__image"]} src={props.avatar}/>
+            <div className={twitItem["twit-item__textbox"]}>
+                <span className={twitItem["twit-item__title"]}>{props.title}</span>
+                <span className={twitItem["twit-item__subtitle"]}>{props.subtitle}</span>
+            </div>
+            {renderAction()}
+        </div>
     );
 }
 

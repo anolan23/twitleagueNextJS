@@ -14,8 +14,9 @@
     &__item{
         font-size: 1.5rem;
         color: var(--PRIMARY_TEXT);
-        padding: 1.5rem;
+        padding: 1rem 1.5rem;
         white-space: nowrap;
+        border-bottom: var(--border);
 
         &:hover{
             background-color: var(--GRAY_BACKGROUND);

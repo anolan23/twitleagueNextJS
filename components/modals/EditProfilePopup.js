@@ -1,7 +1,5 @@
 import React from "react";
 import {connect} from "react-redux";
-import Button from 'react-bootstrap/Button';
-import Image from 'react-bootstrap/Image';
 import {useFormik} from "formik";
 
 import Popup from "./Popup";
@@ -110,20 +108,6 @@ function EditProfilePopup(props) {
                   {formik.errors.dob && formik.touched.dob ? <div className={twitForm["twit-form__errors"]}>{formik.errors.dob}</div> : null}
               </div>
             </form> 
-        );
-    }
-
-
-    const renderActions = () => {
-        return(
-            <React.Fragment>
-                <Button variant="secondary" onClick={props.toggleEditProfilePopup}>
-                    Close
-                </Button>
-                <Button variant="primary" type="submit">
-                    Save
-                </Button>
-          </React.Fragment>
         );
     }
 

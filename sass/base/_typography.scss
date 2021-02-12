@@ -25,14 +25,17 @@ body {
 }
 
 .twit-link{
-    color: var(--BLUE_TEXT);
-    text-decoration: none;
-    cursor: pointer;
+
+    &,
+    &:link,
+    &:visited{
+        color: var(--BLUE_TEXT);
+        text-decoration: none;
+        cursor: pointer;
+    }
 
     &:hover{
-        color:#00baff;
-        text-decoration: none;
-        transition: color .1s ease-in-out;
+        text-decoration: underline;
     }
 }
 

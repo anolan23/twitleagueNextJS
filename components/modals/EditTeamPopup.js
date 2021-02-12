@@ -83,7 +83,7 @@ function EditTeamPopup(props) {
 const mapStateToProps = (state) => {
     return {
             showEditTeamPopup: state.modals.showEditTeamPopup,
-            avatar: state.team.avatar
+            avatar: "null"
         }
 }
 

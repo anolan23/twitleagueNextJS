@@ -51,19 +51,23 @@
         position: relative;
         justify-content: space-between;
         grid-column: 2/-1;
+        align-items: center;
+
+        &__action{
+
+            &__outlook{
+                display: grid;
+                grid-template-columns: 1fr 1fr 2fr 2fr;
+                column-gap: .5rem;
+            }
+        }
     }
 
     &__media-types{
-        display: flex;
-        align-items: center;
-    }
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: .5rem;
 
-    &__media-type{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 37px;
-        width: 37px;
     }
 
     &__icon{
@@ -92,6 +96,9 @@
             font-size: 1.5rem;
             font-weight: 300;
             margin: 0 1rem;
+            width: 50px;
+            display: flex;
+            justify-content: center;
 
             &:disabled,
             &[disabled]{

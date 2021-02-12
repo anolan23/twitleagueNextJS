@@ -4,8 +4,7 @@ import {connect} from "react-redux";
 
 import {
   followTeam,
-  unFollowTeam, 
-  toggleAddEventModal, 
+  unFollowTeam,  
   toggleEditTeamPopup,
   toggleScheduleModal,
   toggleEditRosterPopup,
@@ -40,13 +39,31 @@ function TeamHolder(props) {
     }
   }
 
+  const editTeam = () => {
+    if(props.userId === team.owner_id){
+      props.toggleEditTeamPopup();
+    }
+  }
+
+  const editRoster = () => {
+    if(props.userId === team.owner_id){
+      props.toggleEditRosterPopup();
+    }
+  }
+
+  const editEvents = () => {
+    if(props.userId === team.owner_id){
+      props.toggleEditEventsPopup();
+    }
+  }
+
   const renderButton = () => {
     if(props.username === team.owner){
       return (
           <TwitDropdownButton actionText="Manage Team">
-            <TwitDropdownItem onClick={props.toggleEditTeamPopup} text="Edit team page"/>
-            <TwitDropdownItem onClick={props.toggleEditRosterPopup} text="Edit roster"/>
-            <TwitDropdownItem onClick={props.toggleEditEventsPopup} text="Edit events"/>
+            <TwitDropdownItem onClick={editTeam} text="Edit team page"/>
+            <TwitDropdownItem onClick={editRoster} text="Edit roster"/>
+            <TwitDropdownItem onClick={editEvents} text="Edit events"/>
           </TwitDropdownButton>
       )
     }
@@ -75,7 +92,7 @@ function TeamHolder(props) {
       </div>
       <div className={teamHolder["team-holder__action-box"]}>
         <div className={teamHolder["team-holder__team-image"]}>
-          <Avatar onClick={props.toggleEditTeamPopup} className={teamHolder["team-holder__image"]} src={team.avatar?team.avatar:""} alt="team profile image"/>
+          <Avatar onClick={editTeam} className={teamHolder["team-holder__image"]} src={team.avatar?team.avatar:""} alt="team profile image"/>
           </div>
           <div className={teamHolder["team-holder__action"]}>
             {renderButton()}
@@ -86,8 +103,8 @@ function TeamHolder(props) {
             <h1 className="heading-1">{team.team_name}</h1>
             {team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
-          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{`${team.league_name} · ${team.abbrev}`}</h3>
-          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Official TwitLeague account of the Chicago White Sox</h3>
+          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{`${team.abbrev} · ${team.league_name}`}</h3>
+          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Official twitleague account of the Chicago White Sox</h3>
           <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${team.owner}`}</h3>
           <h3 className={teamHolder["team-holder__attributes"] + " muted"}>
             <div className={teamHolder["team-holder__attribute"]}>
@@ -113,13 +130,13 @@ function TeamHolder(props) {
 const mapStateToProps = (state) => {
   return {
     following: state.user.following ? state.user.following : [],
+    userId: state.user.id,
     username: state.user.username
   }
 }
 
 export default connect(mapStateToProps,{
   followTeam,  
-  toggleAddEventModal, 
   toggleEditTeamPopup,
   toggleScheduleModal,
   toggleEditRosterPopup,

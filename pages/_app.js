@@ -8,7 +8,6 @@ import { useRouter } from 'next/router'
 import * as gtag from "../lib/gtag";
 
 import { useStore } from '../redux/store'
-import AddEventModal from "../components/modals/AddEventModal";
 import GifPopup from "../components/modals/GifPopup";
 import EditProfilePopup from "../components/modals/EditProfilePopup";
 import PopupCompose from '../components/modals/PopupCompose';
@@ -36,7 +35,6 @@ function MyApp({ Component, pageProps }) {
     <Provider store={store}>
       <SignupPopup/>
       <GifPopup/>
-      <AddEventModal/>
       <EditProfilePopup/>
       <EditRoster/>
       <EditEventsPopup/>

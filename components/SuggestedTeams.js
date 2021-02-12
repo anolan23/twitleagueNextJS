@@ -3,6 +3,7 @@ import Spinner from "react-bootstrap/Spinner";
 import {connect} from "react-redux"
 import Link from "next/link";
 
+import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
 import TwitCard from "../components/TwitCard";
 import TwitItem from "../components/TwitItem";
 import backend from "../lib/backend";
@@ -11,7 +12,7 @@ import Empty from "./Empty";
 
 function SuggestedTeams(props){
 
-    const [suggestedTeams, setSuggestedTeams] = useState(null); 
+    const [teams, setTeams] = useState(null); 
 
     useEffect(() => {
         fetchSuggestedTeams(props.userId, 3);
@@ -24,18 +25,18 @@ function SuggestedTeams(props){
                 num
             }
         });
-        setSuggestedTeams(response.data);
+        setTeams(response.data);
     }
 
     const onFollowToggleClick = (team) => {
         team.following = !team.following;
-        const teams = suggestedTeams.map(suggestedTeam => {
+        const teams = teams.map(suggestedTeam => {
             if(suggestedTeam.id === team.id){
                 return team
             }
             return suggestedTeam
         })
-        setSuggestedTeams(teams);
+        setTeams(teams);
 
         if(team.following){
             followTeam(props.userId, team.id);
@@ -47,21 +48,23 @@ function SuggestedTeams(props){
 
     const renderFooter = () => {
         return(
-            <Link href="/suggested" passHref>
-                <a>Show more</a>
-            </Link>
+            <Link href="/suggested">
+                <div className={suggestedTeams["suggested-teams__footer"]}>
+                    <span className={suggestedTeams["suggested-teams__footer__text"]}>Show more</span>
+                </div>
+            </Link>    
         )
     }
 
     const renderSuggestedTeams = () => {
-        if(!suggestedTeams){
+        if(!teams){
             return <Spinner animation="border" />
         }
-        else if(suggestedTeams.length === 0){
+        else if(teams.length === 0){
             return <Empty main="No suggested teams" sub="Try again once more teams are created"/>
         }
         else{
-            return suggestedTeams.map((suggestedTeam, index) => {
+            return teams.map((suggestedTeam, index) => {
                 return (
                     <TwitItem 
                         key={index}

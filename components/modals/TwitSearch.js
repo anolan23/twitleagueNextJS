@@ -42,39 +42,38 @@ function TwitSearch(props) {
         event.target.value ? setShow(true) : setShow(false);
         }
         search();
-        console.log(event.target.value)
     }
 
-    const renderTeamOptions = () => {
+    const renderTeams = () => {
         if(!options.teams || options.teams.length === 0){
             return null;
         }
         return options.teams.map((option, index) => {
             return (
-                    <Link passHref href={"/teams/" + option.abbrev.substring(1)} key={index}>
                         <TwitItem 
+                            href={`/teams/${option.abbrev.substring(1)}`}
                             avatar={option.avatar}
                             title={option.team_name} 
-                            subtitle={option.abbrev.substring(1)} 
+                            subtitle={option.abbrev.substring(1)}
+                            key={index} 
                         />
-                    </Link>
                     );
         });
     }
 
-    const renderPeopleOptions = () => {
+    const renderUsers = () => {
         if(!options.users || options.users.length === 0){
             return null;
         }
         return options.users.map((option, index) => {
             return (
-                    <Link passHref href={"/users/"+option.username} key={index}>
                         <TwitItem 
+                            href={`/users/${option.username}`}
                             avatar={option.avatar}
                             title={option.name} 
                             subtitle={option.username} 
+                            key={index}
                         />
-                    </Link>
                     );
         });
     }
@@ -89,9 +88,9 @@ function TwitSearch(props) {
                     placeholder={props.placeHolder}  
                     autoComplete="off"
                     show={show}
-                    teamOptions={renderTeamOptions()}
+                    teamOptions={renderTeams()}
                     teamHeader="Team"
-                    peopleOptions={renderPeopleOptions()}
+                    peopleOptions={renderUsers()}
                     peopleHeader="People"
                 /> 
             </div>
