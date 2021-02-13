@@ -1,0 +1,9 @@
+.league{
+
+    &__division{
+        padding: .5rem 1rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border-bottom: var(--border);
+    }
+}

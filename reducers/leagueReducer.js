@@ -1,9 +1,10 @@
 const INITIAL_STATE = {
-    teams: []
 }
 
 const leagueReducer = (state = INITIAL_STATE, action) => {
     switch(action.type){
+        case "SET_LEAGUE":
+            return action.payload;
         case "CREATE_LEAGUE":
             return action.payload;
         case "FETCH_LEAGUE":

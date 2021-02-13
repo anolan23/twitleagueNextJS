@@ -93,7 +93,7 @@ function CreateTeam(props){
       const renderOptions = () => {
           return options.map((option, index) => {
               return (
-                <TwitDropdownItem onClick={() => onDropdownItemClick(option)} text={option.league_name}/> 
+                <TwitDropdownItem onClick={() => onDropdownItemClick(option)}>{option.league_name}</TwitDropdownItem>
               );
           });
       }  

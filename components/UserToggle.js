@@ -1,61 +1,58 @@
-import React from "react";
-import Dropdown from "react-bootstrap/Dropdown";
+import React, {useState, useEffect,useRef} from "react";
 import {useRouter} from "next/router";
 
 import Avatar from "./Avatar";
 import {connect} from "react-redux";
 import {logOutUser} from "../actions";
 import userToggle from "../sass/components/UserToggle.module.scss"
+import TwitDropdown from "../components/TwitDropdown";
+import TwitDropdownItem from "../components/TwitDropdownItem";
+import TwitItem from "../components/TwitItem";
 
 function UserToggle(props){
     const router = useRouter();
+    const ref = useRef();
+
+    const [show, setShow] = useState(false);
     
     const logOut = async () => {
         await props.logOutUser();
         router.push("/")
     }
 
-    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-        <div className={userToggle["user-toggle"]}
-            ref={ref}
-            onClick={(e) => {
-            e.preventDefault();
-            onClick(e);
-            }}
-        >
-          {children}
-          <i className={"fas fa-chevron-down " + userToggle["user-toggle__icon"]}></i>
-        </div>
-        
-      ));
+    useEffect(() => {
+        document.body.addEventListener("click", clickOutsideDropdownButton);
+        return () => {
+            document.body.removeEventListener("click", clickOutsideDropdownButton);
+          }
+    }, [])
+
+    const clickOutsideDropdownButton = (event) => {
+        if(ref.current.contains(event.target)){
+            return;
+        }
+        setShow(false);
+}
 
     if(!props.user.isSignedIn){
         return null;
     }
     else{
         return(
-            <Dropdown className={userToggle["user-toggle__dropdown"]}>
-                <Dropdown.Toggle as={CustomToggle}>
-                        <Avatar roundedCircle className={userToggle["user-toggle__image"]} src={props.user.avatar}/>
-                        <div className={userToggle["user-toggle__textbox"]}>
-                            <span className={userToggle["user-toggle__username"]}>{props.user.username}</span>
-                            <span className="muted">{`@${props.user.username}`}</span>
-                        </div>
-                </Dropdown.Toggle>
-    
-                <Dropdown.Menu className={userToggle["user-toggle__menu"]}>
-                <Dropdown.Item eventKey="1">
-                    <div className={userToggle["user-toggle"]}>
-                        <Avatar roundedCircle className={userToggle["user-toggle__image"]} src={props.user.avatar}/>
-                        <div className={userToggle["user-toggle__textbox"]}>
-                            <span className={userToggle["user-toggle__username"]}>{props.user.username}</span>
-                            <span className="muted">{`@${props.user.username}`}</span>
-                        </div>
-                    </div>
-                </Dropdown.Item>
-                <Dropdown.Item onClick={logOut} className={userToggle["user-toggle__item"]}>{`Log out @${props.user.username}`}</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
+            <div className={userToggle["user-toggle"]} onClick={() => setShow(true)} ref={ref}>
+                <Avatar roundedCircle className={userToggle["user-toggle__image"]} src={props.user.avatar}/>
+                <div className={userToggle["user-toggle__textbox"]}>
+                    <span className={userToggle["user-toggle__username"]}>{props.user.name}</span>
+                    <span className="muted">{`@${props.user.username}`}</span>
+                </div>
+                <div className={userToggle["user-toggle__dropdown"]}>
+                    <TwitDropdown show={show} >
+                        <TwitItem  avatar={props.user.avatar} title={props.user.name} subtitle={`@${props.user.username}`}/>
+                        <TwitDropdownItem onClick={logOut}>Log out</TwitDropdownItem>
+                    </TwitDropdown>
+                </div>
+            </div>
+            
         );
     }
 }

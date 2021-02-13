@@ -6,13 +6,14 @@ import Post from "./Post";
 import TwitTab from "./TwitTab";
 import TwitTabs from "./TwitTabs";
 import Empty from "./Empty";
-import {setTeam, createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, findEventsByTeamId} from "../actions";
+import {setTeam, createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, toggleEditTeamPopup, findEventsByTeamId} from "../actions";
 import TopBar from "./TopBar";
 import TwitItem from "./TwitItem";
 import team from "../sass/components/Team.module.scss"
 import Event from "./Event";
 import backend from "../lib/backend";
-import { Spinner } from "react-bootstrap";
+import TwitDropdownButton from "./TwitDropdownButton";
+import TwitDropdownItem from "./TwitDropdownItem";
 
 function Team(props) {
 
@@ -127,7 +128,7 @@ function Team(props) {
 
         else if(activeLink === "schedule"){
             if(!events){
-                return <Spinner animation="border"/>;
+                return <div className="">spinner</div>
             }
             else if(events.length === 0){
                 if(props.user.id === team.owner_id){
@@ -159,6 +160,21 @@ function Team(props) {
         }
       }
 
+      const renderButton = () => {
+          if(props.user.id === team.owner_id){
+              return(
+                <TwitDropdownButton actionText="Manage team">
+                    <TwitDropdownItem onClick={editTeam}>Edit team page</TwitDropdownItem>
+                    <TwitDropdownItem onClick={editRoster}>Edit roster</TwitDropdownItem>
+                    <TwitDropdownItem onClick={editEvents}>Edit events</TwitDropdownItem>
+                </TwitDropdownButton>
+              )
+          }
+          else{
+              return null;
+          }
+      }
+
 
         const onTeamSelect = (k) => {
             setActiveLink(k.target.id);
@@ -179,11 +195,31 @@ function Team(props) {
             setActiveLink(k.target.id);
             fetchEvents();
         }
+
+        const editTeam = () => {
+            if(props.user.id === team.owner_id){
+              props.toggleEditTeamPopup();
+            }
+          }
+        
+          const editRoster = () => {
+            if(props.user.id === team.owner_id){
+              props.toggleEditRosterPopup();
+            }
+          }
+        
+          const editEvents = () => {
+            if(props.user.id === team.owner_id){
+              props.toggleEditEventsPopup();
+            }
+          }
         
       
         return (
             <div >
-                <TopBar main={team.team_name} sub={`${team.num_posts} Posts`}/>
+                <TopBar main={team.team_name} sub={`${team.num_posts} Posts`}>
+                    {renderButton()}
+                </TopBar>
                 <TeamHolder team={team} updateTeam={updateTeam}/>
                 <TwitTabs>
                     <TwitTab onClick={onTeamSelect} id={"team"} active={activeLink === "team" ? true : false} title="Team"/>
@@ -214,5 +250,6 @@ export default connect(mapStateToProps,
         fetchLeaguePosts, 
         clearPosts, 
         toggleEditRosterPopup,
+        toggleEditTeamPopup,
         toggleEditEventsPopup
     })(Team);

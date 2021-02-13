@@ -8,13 +8,7 @@ export default async (req,res) => {
     else if(method === "GET"){
       const leagueName = req.query.leagueName;
       const league = await Leagues.findOne(leagueName);
-      if(!league){
-          res.send({});
-      }
-      else{
-        console.log("league", league)
-        res.send(league);
-      }
+      res.send(league);
       
     }
     else{

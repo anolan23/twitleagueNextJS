@@ -60,11 +60,7 @@ function TeamHolder(props) {
   const renderButton = () => {
     if(props.username === team.owner){
       return (
-          <TwitDropdownButton actionText="Manage Team">
-            <TwitDropdownItem onClick={editTeam} text="Edit team page"/>
-            <TwitDropdownItem onClick={editRoster} text="Edit roster"/>
-            <TwitDropdownItem onClick={editEvents} text="Edit events"/>
-          </TwitDropdownButton>
+           <TwitButton disabled color="twit-button--primary">Follow</TwitButton>
       )
     }
     else{

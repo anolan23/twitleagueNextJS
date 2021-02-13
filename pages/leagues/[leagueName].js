@@ -4,7 +4,8 @@ import {useRouter} from "next/router";
 import {initializeStore} from "../../redux/store";
 
 import MainBody from "../../components/MainBody"
-import LeagueComponent from "../../components/League";
+import League from "../../components/League";
+import {fetchLeague} from "../../actions";
 
 export default function LeaguePage(props) {
   const router = useRouter()
@@ -13,13 +14,10 @@ export default function LeaguePage(props) {
     return <div>Loading League...</div>
   }
 
-  if(!props.initialReduxState){
-    return <div>no initial redux state</div>
-  }
     return (
       <React.Fragment>
         <MainBody>
-          <LeagueComponent league={props.initialReduxState.league}/>
+          <League league={props.league}/>
         </MainBody>
       </React.Fragment>
       
@@ -31,19 +29,13 @@ export default function LeaguePage(props) {
   }
 
   export async function getStaticProps(context) {
-    const reduxStore = initializeStore();
-    const {dispatch} = reduxStore;
     const leagueName = context.params.leagueName;
-    // const league = await getLeague(leagueName);
+    const league = await fetchLeague(leagueName);
 
-    await dispatch({type: "FETCH_LEAGUE", payload: JSON.parse(JSON.stringify(league))})
-    
-    const newStore = reduxStore.getState();
-    console.log("newStore", newStore)
     return {
       revalidate: 1,
       props: {
-        initialReduxState: newStore
+        league
       } // will be passed to the page component as props
     }  
 

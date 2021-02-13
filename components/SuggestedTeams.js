@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react"
-import Spinner from "react-bootstrap/Spinner";
 import {connect} from "react-redux"
 import Link from "next/link";
 
@@ -58,7 +57,7 @@ function SuggestedTeams(props){
 
     const renderSuggestedTeams = () => {
         if(!teams){
-            return <Spinner animation="border" />
+            return <div className="">spinner</div>
         }
         else if(teams.length === 0){
             return <Empty main="No suggested teams" sub="Try again once more teams are created"/>

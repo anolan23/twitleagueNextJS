@@ -266,24 +266,22 @@ export const createLeagueAndFetchUser = (formValues) => async (dispatch) => {
     dispatch(fetchUser());
 }
 
-export const fetchLeague = (leagueName) => async dispatch => {
-    const response = await backend.get(`/api/leagues/${leagueName}`);
-    
-    dispatch({type: "FETCH_LEAGUE", payload: response.data})
+export const fetchLeague = async (leagueName) => {
+    const league = await backend.get(`/api/leagues/${leagueName}`);
+    return league.data; 
 }
 
-export const fetchLeagues = () => async (dispatch, getState) => {
-    const user = getState().user;
-    if(!user.isSignedIn){
-        return;
-    }
-    const response = await backend.get("/api/leagues", {
+export const fetchLeagues =  async (userId) => {
+    const leagues = await backend.get("/api/leagues", {
         params: {
-            ownerId: user.id
+            ownerId: userId
         }
     });
-    
-    dispatch({type: "FETCH_LEAGUES", payload: response.data})
+    return leagues.data
+}
+
+export const setLeague = league => (dispatch) => {
+    dispatch({type: "SET_LEAGUE", payload: league})
 }
 
 //Posts Action Creators

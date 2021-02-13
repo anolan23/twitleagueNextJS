@@ -36,6 +36,19 @@ function TopBar(props){
     }
   }
 
+  const renderAction = () => {
+    if(!props.children){
+      return null;
+    }
+    else{
+      return(
+        <div className="top-bar__box__action">
+          {props.children}
+        </div>
+      )
+    }
+  }
+
     return(
         <div className="top-bar">
           <div className="top-bar__box">
@@ -45,6 +58,7 @@ function TopBar(props){
               <div className="top-bar__text--main">{props.main}</div>
               <div className="top-bar__text--sub muted">{props.sub}</div>
             </div>
+            {renderAction()}
           </div>
         </div>
     )

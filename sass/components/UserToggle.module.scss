@@ -11,6 +11,12 @@
     border-radius: 9999px;
     cursor: pointer;
     transition: all .2s;
+    position: relative;
+    margin-top: auto;
+
+    @media only screen and (max-width: 1240px){
+      display: none;
+    }
 
     &__image{
       width: 50px;
@@ -26,12 +32,10 @@
     }
 
     &__dropdown{
-      width:100%;
-      padding:0 1rem;
-      margin-top: auto;
-      @media only screen and (max-width: 1240px){
-        display: none;
-    }
+      position: absolute;
+      bottom: 175px;
+      min-width: 250px;
+
     }
 
     &__icon{
