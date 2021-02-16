@@ -54,7 +54,7 @@
 
 .twit-subtitle{
     font-size: 13px;
-    color: var(--SECONDARY_TEXT);
+    color: var(--color-text-secondary);
 }
 
 .twit-card-text{

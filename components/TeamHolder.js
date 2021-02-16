@@ -97,7 +97,7 @@ function TeamHolder(props) {
       <div className={teamHolder["team-holder__info"]}>
           <div className={`${teamHolder["team-holder__teamname-box"]} u-margin-top-tiny`}>
             <h1 className="heading-1">{team.team_name}</h1>
-            {team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
+            {team.verifiedTeam ? <i style={{color: "var(--color-primary)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
           <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{`${team.abbrev} · ${team.league_name}`}</h3>
           <p className={teamHolder["team-holder__info__bio"] + " muted"}>{team.bio}</p>

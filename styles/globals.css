@@ -3,7 +3,7 @@
 
 body{
   font-family: 'Source Sans Pro', sans-serif;
-  color: var(--PRIMARY_TEXT);
+  color: var(--color-text);
 }
 
 /* -------------------Class Selectors---------------------- */
@@ -67,7 +67,7 @@ body{
   }
 
   .icon-holder a{
-    color: var(--SECONDARY_TEXT);
+    color: var(--color-text-secondary);
     text-decoration: none;
   }
 
@@ -108,12 +108,12 @@ body{
 
   .twit-brand{
     text-decoration: none;
-    color: var(--PRIMARY_TEXT);
+    color: var(--color-text);
   }
 
   .twit-brand:hover{
     text-decoration: none;
-    color: var(--PRIMARY_TEXT);
+    color: var(--color-text);
   }
   
 .twit-team{

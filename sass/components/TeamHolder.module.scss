@@ -68,7 +68,7 @@
 
         &__bio{
             margin: 1rem 0;
-            color: var(--PRIMARY_TEXT);
+            color: var(--color-text);
         }
 
         &__owner{
@@ -96,7 +96,7 @@
 
     &__icon{
         margin-right: 5px;
-        color: var(--SECONDARY_TEXT);
+        color: var(--color-text-secondary);
     }
 
     &__watchers{

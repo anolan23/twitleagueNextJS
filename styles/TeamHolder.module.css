@@ -39,7 +39,7 @@
 
 .twit-icon{
     margin-right: 5px;
-    color: var(--SECONDARY_TEXT);
+    color: var(--color-text-secondary);
 }
 
 .twit-drop-button{

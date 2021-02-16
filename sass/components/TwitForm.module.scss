@@ -1,7 +1,7 @@
 .twit-form{
     font-size: 1.5rem;
     padding: 0 2rem;
-    color: var(--PRIMARY_TEXT);
+    color: var(--color-text);
     width: 100%;
 
     &__group{
@@ -13,7 +13,7 @@
     }
 
     &__label{
-        color: var(--SECONDARY_TEXT);
+        color: var(--color-text-secondary);
     }
 
     &__input{

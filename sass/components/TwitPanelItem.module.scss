@@ -7,7 +7,7 @@
     :link,
     :visited,
     :hover{
-        color: var(--PRIMARY_TEXT) !important;
+        color: var(--color-text) !important;
         text-decoration: none !important;
     }
 
@@ -19,7 +19,7 @@
     &__icon{
         height: 16px;
         width: 16px;
-        color: var(--SECONDARY_TEXT);
+        color: var(--color-text-secondary);
         fill: currentColor;
 
     }

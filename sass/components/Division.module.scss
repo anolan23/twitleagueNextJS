@@ -8,8 +8,9 @@
         font-size: 1.5rem;
         font-weight: 700;
         border-bottom: var(--border);
-        background-color: var(--BLUE_TEXT);
-        color: white;
+        background-color: var(--color-secondary);
+        color: var(--color-four);
+        
 
         &__text{
             
@@ -18,7 +19,7 @@
         &__form{
 
             &__input{
-                color: var(--SECONDARY_TEXT);
+                color: var(--color-text-secondary);
                 border: none;
                 
                 font-size: inherit;

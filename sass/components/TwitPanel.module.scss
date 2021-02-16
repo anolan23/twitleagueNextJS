@@ -62,7 +62,7 @@
             right: 1.5rem;
             height: 2.25rem;
             width: 2.25rem;
-            fill: var(--BLUE_TEXT);
+            fill: var(--color-primary);
             cursor: pointer;
         }
     }
@@ -86,12 +86,12 @@
 
         &__text{
             &--main{
-                color: var(--PRIMARY_TEXT);
+                color: var(--color-text);
                 font-weight: 800;
             }
 
             &--sub{
-                color: var(--SECONDARY_TEXT);
+                color: var(--color-text-secondary);
             }
         }
     }

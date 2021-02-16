@@ -236,9 +236,12 @@ class MainInput extends React.Component {
                         <div className={mainInput["main-input__action__char-count"]} disabled={this.chars()>this.allowableChars}>{this.allowableChars - this.chars()}</div>
                         <TwitButton disabled={this.disabled()} color="twit-button--primary">{this.props.buttonText}</TwitButton>
                     </div>
-                    <TwitDropdown show={this.state.showDropdown}>
-                        {this.renderOptions()}
-                    </TwitDropdown>
+                    <div className={mainInput["main-input__dropdown"]}>
+                        <TwitDropdown show={this.state.showDropdown}>
+                            {this.renderOptions()}
+                        </TwitDropdown>
+                    </div>
+                    
     
                 </div>
             </form>

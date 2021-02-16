@@ -1,7 +1,7 @@
 .heading-button{
     margin: 0 10px;
     font-size: 24px;
-    color:var(--SECONDARY_TEXT);
+    color:var(--color-text-secondary);
 }
 
 .heading-buttons{

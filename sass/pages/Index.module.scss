@@ -9,7 +9,7 @@
     }
 
     &__left{
-        background-color: var(--BLUE_TEXT);
+        background-color: var(--color-primary);
         grid-column: 0/span 1;
 
         display: flex;
@@ -112,7 +112,7 @@
 
     &__link{
         font-size: 1.3rem;
-        color: var(--SECONDARY_TEXT);
+        color: var(--color-text-secondary);
         margin: .5rem;
     }
 }

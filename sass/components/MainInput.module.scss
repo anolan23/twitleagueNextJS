@@ -1,6 +1,6 @@
 .main-input{
     display: grid;
-    position: relative;
+    // position: relative;
     grid-template-columns: min-content 1fr;
     column-gap: 1rem;
     row-gap: 1rem;
@@ -38,6 +38,7 @@
         &--expanded{
             min-height: 15rem;
             max-height: 72rem;
+        
         }
 
         &:focus{
@@ -73,7 +74,7 @@
     &__icon{
         height: 22.5px;
         width: 22.5px;
-        fill: var(--BLUE_TEXT);
+        fill: var(--color-primary);
         cursor: pointer;
     }
 
@@ -81,7 +82,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: var(--BLUE_TEXT);
+        background-color: var(--color-primary);
         border-radius: 3px;
         height: 18.75px;
         width: 18.75px;
@@ -96,7 +97,6 @@
             font-size: 1.5rem;
             font-weight: 300;
             margin: 0 1rem;
-            width: 50px;
             display: flex;
             justify-content: center;
 
@@ -114,7 +114,14 @@
     [contenteditable][placeholder]:empty:before {
         content: attr(placeholder);
         position: absolute;
-        color: var(--SECONDARY_TEXT);
+        color: var(--color-text-secondary);
         background-color: transparent;
+      }
+
+      &__dropdown{
+          position: absolute;
+          width: 100%;
+          bottom: 0;
+          z-index: 9999;
       }
 }

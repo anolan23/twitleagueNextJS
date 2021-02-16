@@ -30,7 +30,7 @@
         }
 
         &--month{
-            color: var(--PRIMARY_TEXT);
+            color: var(--color-text);
             font-weight: 400;
             text-transform: uppercase;
         }
@@ -61,7 +61,7 @@
 
         &__vs{
             font-size: 1.3rem;
-            color: var(--SECONDARY_TEXT);
+            color: var(--color-text-secondary);
         }
 
     }
@@ -74,18 +74,18 @@
 
     &__type{
         font-weight: 800;
-        color: var(--PRIMARY_TEXT);
+        color: var(--color-text);
         &::first-letter{
             text-transform: uppercase;
         }
     }
 
     &__time{
-        color: var(--SECONDARY_TEXT);
+        color: var(--color-text-secondary);
     }
 
     &__location{
-        color: var(--SECONDARY_TEXT);
+        color: var(--color-text-secondary);
     }
 
     &__icons{
@@ -98,7 +98,7 @@
           display: flex;
           align-items: center;
           position: relative;
-          color: var(--SECONDARY_TEXT);
+          color: var(--color-text-secondary);
           fill: currentColor;
     
           &::before{

@@ -15,11 +15,11 @@
 
 .team-abbrev{
     font-weight: 600;
-    color: var(--PRIMARY_TEXT);
+    color: var(--color-text);
 }
 
 .team-name{
-    color: var(--SECONDARY_TEXT);
+    color: var(--color-text-secondary);
     font-size: 13px;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .sport{
-    color: var(--SECONDARY_TEXT);
+    color: var(--color-text-secondary);
     font-size: 1.4rem;
 }
 

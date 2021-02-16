@@ -1,7 +1,11 @@
 :root{
-    --PRIMARY_TEXT: #101010;
-    --SECONDARY_TEXT: rgb(91, 112, 131);
-    --BLUE_TEXT: rgb(29, 161, 242);
+    --color-text: #101010;
+    --color-text-secondary: rgb(91, 112, 131);
+    // --color-primary: rgb(29, 161, 242);
+    --color-primary: #222831;
+    --color-secondary: #393e46;
+    --color-tertiary: #00adb5;
+    --color-four: #eeeeee;
     --GREEN_TEXT: #0aba74;
     --RED_TEXT: #ff3e3e;
     --HIGHLIGHT: #f6f6f;
@@ -117,7 +121,7 @@ body {
         &:link,
         &:visited,
         &:hover{
-            color: var(--BLUE_TEXT);
+            color: var(--color-primary);
             text-decoration: none;
         }
         
@@ -183,7 +187,7 @@ body {
             height: 2rem;
             width: 2rem;
             margin-left: 1.5rem;
-            fill: var(--SECONDARY_TEXT);
+            fill: var(--color-text-secondary);
         }
 
     }
@@ -223,7 +227,7 @@ body {
         height: 2rem;
         width: 3rem;
         margin-left: 1rem;
-        fill: var(--BLUE_TEXT);
+        fill: var(--color-primary);
         cursor: pointer;
     }
 

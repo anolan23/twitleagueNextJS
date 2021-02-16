@@ -15,15 +15,15 @@
     &__icon{
       height: 2.6rem;
       width: 2.6rem;
-      color: var(--SECONDARY_TEXT);
+      color: var(--color-text-secondary);
       fill: currentColor;
       @media only screen and (max-width: 1240px){
-        // fill: var(--SECONDARY_TEXT);
+        // fill: var(--color-text-secondary);
       }
     }
 
     &__tagged{
-      background-color: var(--BLUE_TEXT);
+      background-color: var(--color-primary);
       position: absolute;
       padding: 0 .24rem;
       top: 1rem;
