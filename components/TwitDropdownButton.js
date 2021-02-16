@@ -26,9 +26,11 @@ function TwitDropdownButton(props){
     return (
         <div className={twitDropdownButton["twit-dropdown-button"]} ref={ref}>
             <TwitButton onClick={() => setShow(true)} color="twit-button--primary">{props.actionText}</TwitButton>
-            <TwitDropdown show={show}>
-              {props.children}
-            </TwitDropdown>
+            <div className={twitDropdownButton["twit-dropdown-button__dropdown"]}>
+                <TwitDropdown show={show}>
+                {props.children}
+                </TwitDropdown>
+            </div>
         </div>
     )
 }

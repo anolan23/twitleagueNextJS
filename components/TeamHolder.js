@@ -89,10 +89,10 @@ function TeamHolder(props) {
       <div className={teamHolder["team-holder__action-box"]}>
         <div className={teamHolder["team-holder__team-image"]}>
           <Avatar onClick={editTeam} className={teamHolder["team-holder__image"]} src={team.avatar?team.avatar:""} alt="team profile image"/>
-          </div>
-          <div className={teamHolder["team-holder__action"]}>
-            {renderButton()}
-          </div>
+        </div>
+        <div className={teamHolder["team-holder__action"]}>
+          {renderButton()}
+        </div>
       </div> 
       <div className={teamHolder["team-holder__info"]}>
           <div className={`${teamHolder["team-holder__teamname-box"]} u-margin-top-tiny`}>
@@ -100,16 +100,16 @@ function TeamHolder(props) {
             {team.verifiedTeam ? <i style={{color: "var(--BLUE_TEXT)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
           <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{`${team.abbrev} · ${team.league_name}`}</h3>
-          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Official twitleague account of the Chicago White Sox</h3>
-          <h3 className={teamHolder["team-holder__info__bio"] + " muted"}>Head Coach: {`@${team.owner}`}</h3>
+          <p className={teamHolder["team-holder__info__bio"] + " muted"}>{team.bio}</p>
+          <span className={teamHolder["team-holder__info__owner"] + " muted"}>Head Coach: {`@${team.owner}`}</span>
           <h3 className={teamHolder["team-holder__attributes"] + " muted"}>
             <div className={teamHolder["team-holder__attribute"]}>
             <i className={"fas fa-map-marker-alt " + teamHolder["team-holder__icon"]}></i>
-            <span>Baton Rouge, LA</span>
+            <span>{`${team.city}, ${team.state}`}</span>
             </div>
             <div className={teamHolder["team-holder__attribute"]}>
             <i className={"fas fa-calendar-alt " + teamHolder["team-holder__icon"]}></i>
-            <span>Joined Oct 2020</span>
+            <span>{`Joined ${team.joined}`}</span>
             </div>
           </h3>
           <div style={{width: "100%"}}>

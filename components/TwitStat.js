@@ -1,21 +1,36 @@
 import {useRouter} from "next/router";
 import twitStat from "../sass/components/TwitStat.module.scss";
 import Avatar from "./Avatar";
+import TwitButton from "./TwitButton";
 
 function TwitStat(props){
-
     const router = useRouter();
 
     const onClick = () => {
-        router.push(props.href);
+        if(props.href){
+            router.push(props.href);
+        }
+        else if(props.onClick){
+            props.onClick();
+        }
+        
     }
 
     const renderAvatar = () => {
-        if(!props.avatar){
+            return <Avatar roundedCircle className={twitStat["twit-stat__avatar"]} src={props.avatar}/>
+    
+    }
+
+    const renderAction = () => {
+        if(!props.children){
             return;
         }
         else{
-            return <Avatar roundedCircle className={twitStat["twit-stat__avatar"]} src={props.avatar}/>
+            return (
+                <div className={twitStat["twit-stat__action"]}>
+                    {props.children}
+                </div>
+            )
         }
     }
 
@@ -23,6 +38,7 @@ function TwitStat(props){
         <div onClick={onClick} className={twitStat["twit-stat"]}>
             {renderAvatar()}
             <span className={twitStat["twit-stat__text"]}>{props.text}</span>
+            {renderAction()}
         </div>
     );
 } 

@@ -4,7 +4,10 @@
     align-items: center;
     padding: .5rem 1rem;
     font-size: 1.3rem;
-    border-bottom: var(--border);
+    
+    &:not(:last-child){
+        border-bottom: var(--border);
+    }
 
     &:hover{
         background-color: var(--GRAY_BACKGROUND);
@@ -18,5 +21,9 @@
 
     &__text{
         margin-left: 1rem;
+    }
+
+    &__action{
+        margin-left: auto;
     }
 }

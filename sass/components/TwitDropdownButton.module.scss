@@ -1,3 +1,10 @@
 .twit-dropdown-button{
     position: relative;
+
+    &__dropdown{
+        position: absolute;
+        bottom: -2px;
+        right: 0;
+        width: 100%;
+    }
 }

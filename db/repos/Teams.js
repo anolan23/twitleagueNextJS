@@ -47,14 +47,14 @@ class Teams {
 
     static async findOne(abbrev) {
         const team = await pool.query(`
-        SELECT teams.id, teams.team_name, abbrev, teams.avatar, banner, teams.created_at, 
-            teams.owner_id, username AS owner, league_id, league_name, 
-                (SELECT COUNT(*) AS num_posts
-                FROM team_mentions
-                WHERE team_id = (SELECT id FROM teams WHERE abbrev = $1))
+        SELECT teams.*, username AS owner, league_name, division_name, concat_ws(' ', to_char(teams.created_at, 'Mon'), to_char(teams.created_at, 'YYYY')) AS joined,
+            (SELECT COUNT(*) AS num_posts
+            FROM team_mentions
+            WHERE team_id = (SELECT id FROM teams WHERE abbrev = $1))
         FROM teams
         JOIN users ON teams.owner_id = users.id
         LEFT JOIN leagues ON teams.league_id = leagues.id
+        LEFT JOIN divisions ON teams.division_id = divisions.id
         WHERE abbrev = $1`, [abbrev]);
         
         return team.rows[0];
@@ -115,13 +115,27 @@ class Teams {
     }
 
     static async update(teamId, values) {
-        const {rows} = await pool.query(`
-        UPDATE teams
-        SET avatar = $2
-        WHERE id = $1
-        RETURNING *`, [teamId, values.avatar]);
+        if(values.avatar || values.banner || values.bio){
+            const {rows} = await pool.query(`
+            UPDATE teams
+            SET avatar = $2,
+            banner = $3,
+            bio = $4
+            WHERE id = $1
+            RETURNING *`, [teamId, values.avatar, values.banner, values.bio]);
+            
+            return rows[0];
+        }
+        else if(values.divisionId || values.divisionId === null){
+            const {rows} = await pool.query(`
+            UPDATE teams
+            SET division_id = $2
+            WHERE id = $1
+            RETURNING *`, [teamId, values.divisionId]);
+            
+            return rows[0];
+        }
         
-        return rows[0];
     }
 
     static async createEvent(event) {

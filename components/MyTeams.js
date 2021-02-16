@@ -33,7 +33,6 @@ function MyTeams(props){
             <TopBar main="My Teams"/>
             {renderTeams()}
             <TwitButton href="/create/team" square>Create new team</TwitButton>
-            <TwitButton href="/create/team" square outline="twit-button--primary--outline">Join an existing team</TwitButton>
         </div>
     )
 }

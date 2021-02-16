@@ -4,20 +4,25 @@ import { connect } from "react-redux";
 import leagueStyle from "../sass/components/League.module.scss";
 import {setLeague} from "../actions";
 import TopBar from "./TopBar";
-import Empty from "./Empty";
 import backend from "../lib/backend";
 import TwitStat from "./TwitStat";
 import TwitDropdownButton from "./TwitDropdownButton";
 import TwitDropdownItem from "./TwitDropdownItem";
+import TwitButton from "./TwitButton";
+import Division from "./Division";
+import Divide from "./Divide";
 
 function League(props) {
     const league = props.league;
     const [teams, setTeams] = useState(null);
     const [divisions, setDivisions] = useState([]);
+    const [division, setDivision] = useState({});
+    const [mode, setMode] = useState("default")
 
     useEffect(() => {
         props.setLeague(props.league)
         getTeams();
+        getDivisions();
       }, [props.league])
 
     const getTeams = async () => {
@@ -29,10 +34,71 @@ function League(props) {
         setTeams(teams.data);
     }
 
-    const createDivision = () => {
-        let newDivisions = [...divisions, {division_name: ""}];
+    const getDivisions = async () => {
+        const divisions = await backend.get("/api/leagues/divisions", {
+            params:{
+                leagueId: league.id
+            }
+        })
+        let reformat = divisions.data.map(row => row.division) 
+        console.log("reformat", reformat);
+        setDivisions(reformat);
+    }
+
+    const onAddButtonClick = (team) => {
+        let teams = division.teams?division.teams:[]
+        teams.push(team);
+        const divisionIndex = divisions.findIndex(_division => _division === division);
+        const newDivision = {...division, teams}
+        setDivision(newDivision)
+        let newDivisions = [...divisions];
+        newDivisions[divisionIndex] = newDivision;
         setDivisions(newDivisions);
-        console.log(divisions)
+        backend.patch("/api/teams", {
+            teamId: team.id,
+            values: {divisionId: division.id}
+        })
+    }
+
+    const createDivision = async () => {
+        const division = await backend.post("/api/leagues/divisions", {
+            leagueId: league.id
+        })
+        let newDivisions = [...divisions, division.data];
+        setDivisions(newDivisions);
+    }
+
+    const addTeams = (division) => {
+        setDivision(division);
+        setMode("addTeams");
+    }
+
+    const removeTeams = (division) => {
+        setDivision(division);
+        setMode("removeTeams")
+    }
+
+    const editName = (division) => {
+        setDivision(division);
+        setMode("editDivisionName")
+    }
+
+    const updateDivisions = (newDivision) => {
+        const divisionIndex = divisions.findIndex(_division => _division.id === division.id);
+        let newDivisions = [...divisions];
+        newDivisions[divisionIndex] = newDivision;
+        setDivision(newDivision);
+        setDivisions(newDivisions);
+    }
+
+    const renderTeamButton = (team) => {
+        if(mode === "addTeams"){
+            return <TwitButton size="twit-button--primary--small" onClick={() => onAddButtonClick(team)} color="twit-button--primary">Add</TwitButton>
+
+        }
+        else{
+            return null;
+        }
     }
 
     const renderTeams = () => {
@@ -45,44 +111,75 @@ function League(props) {
         else
         {
             return teams.map((team, index) => {
-                return (
-                       <TwitStat 
-                        key={index} 
-                        avatar={team.avatar}
-                        text={team.team_name} 
-                        href={`/teams/${team.abbrev.substring(1)}`}
-                        />
-                        
-                )
+                if(!divisions.some(division => division.teams?division.teams.find(thisTeam => thisTeam.id === team.id):false)){
+                    return (
+                        <TwitStat 
+                         key={index} 
+                         avatar={team.avatar}
+                         text={team.team_name}
+                         href={`/teams/${team.abbrev.substring(1)}`}
+                         >
+                         {renderTeamButton(team)}
+                         </TwitStat>
+                         
+                 ) 
+                }
             });
         }
         
     }
 
-    const renderDivision = () => {
+    const renderDivisions = () => {
         if(divisions.length > 0){
-            return divisions.map(division => {
+            return divisions.map((division, index) => {
                 return (
-                <div className={leagueStyle["league__division"]}>
-                    <span>NFC North</span>
-                </div>
+                <Division 
+                    key={index} 
+                    division={division} 
+                    addTeams={addTeams} 
+                    removeTeams={removeTeams}
+                    editName={editName} 
+                    updateDivisions={updateDivisions}
+                    editable={props.userId === league.owner_id}
+                />
+            
                 )
             })
         }
     }
 
+    const renderManageLeagueButon = () => {
+        if(props.userId === league.owner_id){
+            return(
+                <TwitDropdownButton actionText="Manage league">
+                    <TwitDropdownItem onClick={createDivision}>Create division</TwitDropdownItem>
+                </TwitDropdownButton>
+            )
+        }
+        else{
+            return null;
+        }
+    }
+    
     return (
         <div className={leagueStyle["league"]}>
             <TopBar main={league.league_name}>
-                <TwitDropdownButton actionText="Manage league">
-                    <TwitDropdownItem onClick={createDivision}>Create division</TwitDropdownItem>
-                    <TwitDropdownItem>Edit divisions</TwitDropdownItem>
-                </TwitDropdownButton>
+                {renderManageLeagueButon()}
             </TopBar>
-            {renderTeams()}
-            {renderDivision()}
+            <div className={leagueStyle["league__teams"]}>
+                {renderTeams()}
+            </div>
+            <Divide/>
+            {renderDivisions()}
+            
         </div> 
     );
 }
 
-export default connect(null, {setLeague})(League);
+const mapStateToProps = (state) => {
+    return {
+        userId: state.user.id
+    }
+}
+
+export default connect(mapStateToProps, {setLeague})(League);

@@ -1,0 +1,60 @@
+.division{
+        
+    &__header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .25rem 1rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border-bottom: var(--border);
+        background-color: var(--BLUE_TEXT);
+        color: white;
+
+        &__text{
+            
+        }
+
+        &__form{
+
+            &__input{
+                color: var(--SECONDARY_TEXT);
+                border: none;
+                
+                font-size: inherit;
+                font-weight: inherit;
+
+                &:focus{
+                    outline: none;
+                }
+            }
+        }
+    }
+
+    &__actions{
+        
+    }
+
+    &__icon-holder{
+        position: relative;
+        &__icon{
+            cursor: pointer;
+            height: 18px;
+            width: 18px;
+            fill: white;
+        }
+
+        &__dropdown{
+            position: absolute;
+            min-width: 250px;
+            right: 0;
+            
+        }
+    }
+
+    &__body{
+        
+        
+    }
+
+}

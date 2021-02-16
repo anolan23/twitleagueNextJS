@@ -9,6 +9,9 @@ function TwitItem(props) {
     const router = useRouter();
 
     const onClick = () => {
+        if(!props.href){
+            return;
+        }
         router.push(props.href);
     }
 

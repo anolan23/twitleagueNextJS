@@ -8,6 +8,7 @@ import userToggle from "../sass/components/UserToggle.module.scss"
 import TwitDropdown from "../components/TwitDropdown";
 import TwitDropdownItem from "../components/TwitDropdownItem";
 import TwitItem from "../components/TwitItem";
+import TwitIcon from "./TwitIcon";
 
 function UserToggle(props){
     const router = useRouter();
@@ -28,6 +29,9 @@ function UserToggle(props){
     }, [])
 
     const clickOutsideDropdownButton = (event) => {
+        if(!ref.current){
+            return;
+        }
         if(ref.current.contains(event.target)){
             return;
         }
@@ -45,9 +49,10 @@ function UserToggle(props){
                     <span className={userToggle["user-toggle__username"]}>{props.user.name}</span>
                     <span className="muted">{`@${props.user.username}`}</span>
                 </div>
+                <TwitIcon className={userToggle["user-toggle__icon"]} icon="/sprites.svg#icon-chevron-down"/>
                 <div className={userToggle["user-toggle__dropdown"]}>
                     <TwitDropdown show={show} >
-                        <TwitItem  avatar={props.user.avatar} title={props.user.name} subtitle={`@${props.user.username}`}/>
+                        <TwitItem  avatar={props.user.avatar} title={props.user.name} subtitle={`@${props.user.username}`} href={`/users/${props.user.username}`}/>
                         <TwitDropdownItem onClick={logOut}>Log out</TwitDropdownItem>
                     </TwitDropdown>
                 </div>
