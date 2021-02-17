@@ -6,6 +6,8 @@
     font-size: 1.5rem;
     line-height: 1.3125;
     border-bottom: var(--border);
+    width: 100%;
+    transition: background-color .2s cubic-bezier(0,0,1,1);
     cursor: pointer;
 
     &--active{

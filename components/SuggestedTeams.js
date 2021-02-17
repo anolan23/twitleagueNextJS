@@ -29,13 +29,13 @@ function SuggestedTeams(props){
 
     const onFollowToggleClick = (team) => {
         team.following = !team.following;
-        const teams = teams.map(suggestedTeam => {
+        const suggestedTeams = teams.map(suggestedTeam => {
             if(suggestedTeam.id === team.id){
                 return team
             }
             return suggestedTeam
         })
-        setTeams(teams);
+        setTeams(suggestedTeams);
 
         if(team.following){
             followTeam(props.userId, team.id);

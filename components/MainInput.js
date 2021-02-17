@@ -13,6 +13,7 @@ import TwitDropdown from "./TwitDropdown";
 import TwitItem from "./TwitItem";
 import backend from "../lib/backend";
 import TwitBadge from "./TwitBadge";
+import TwitIcon from "./TwitIcon";
 
 class MainInput extends React.Component {
     contentEditable = React.createRef();
@@ -223,16 +224,14 @@ class MainInput extends React.Component {
                 {this.renderGif()}
                 <div className={mainInput["main-input__actions"]}>
                     <div className={mainInput["main-input__media-types"]}>
-                            <TwitBadge active onClick={null}>Image</TwitBadge>
-                            <TwitBadge active onClick={this.props.toggleGifPopup}>GIF</TwitBadge>
-                    </div>
-                    <div className={mainInput["main-input__action"]}>
-                        <div className={mainInput["main-input__actions__action__outlook"]}>
-                            <TwitBadge active onClick={this.onMoneyClick}>$</TwitBadge>
-                            <TwitBadge active onClick={this.onAtClick}>@</TwitBadge>
+                            <TwitIcon onClick={null} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-image">Image</TwitIcon>
+                            <TwitIcon onClick={this.props.toggleGifPopup} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-plus-circle">GIF</TwitIcon>
+                            <TwitIcon onClick={this.onMoneyClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-map-pin">$</TwitIcon>
+                            <TwitIcon onClick={this.onAtClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-bookmark">@</TwitIcon>
                             <TwitBadge onClick={this.onHotClick} active={this.props.outlook === true}>Hot</TwitBadge>
                             <TwitBadge onClick={this.onColdClick} active={this.props.outlook === false}>Cold</TwitBadge>
-                        </div>
+                    </div>
+                    <div className={mainInput["main-input__action"]}>
                         <div className={mainInput["main-input__action__char-count"]} disabled={this.chars()>this.allowableChars}>{this.allowableChars - this.chars()}</div>
                         <TwitButton disabled={this.disabled()} color="twit-button--primary">{this.props.buttonText}</TwitButton>
                     </div>

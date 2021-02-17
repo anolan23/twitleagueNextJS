@@ -9,10 +9,6 @@ import MyTeams from "../components/MyTeams";
 
 function MyTeamsPage(props) {
 
-  useEffect(() => {
-    props.fetchUserTeams();
-  }, []);
-
   return (
     <React.Fragment>
       <MainBody>

@@ -1,14 +1,14 @@
 :root{
     --color-text: #101010;
     --color-text-secondary: rgb(91, 112, 131);
-    // --color-primary: rgb(29, 161, 242);
-    --color-primary: #222831;
+    --color-primary: rgb(29, 161, 242);
     --color-secondary: #393e46;
     --color-tertiary: #00adb5;
     --color-four: #eeeeee;
+    --color-background: white;
     --GREEN_TEXT: #0aba74;
     --RED_TEXT: #ff3e3e;
-    --HIGHLIGHT: #f6f6f;
+    --HIGHLIGHT: #f6f6f6;
     --BLUE_BACKGROUND: rgba(29,161,242,0.1);
     --GREEN_BACKGROUND:#e6f8f1;
     --RED_BACKGROUND: #ffecec;
@@ -43,6 +43,7 @@ body {
 .twit-container{
     min-height: 100vh;
     margin-bottom: 75px;
+    background-color: var(--color-background);
 
     display: grid;
     grid-template-columns: [container-start header-start] 1fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
@@ -170,17 +171,31 @@ body {
         padding: 0 1.5rem;
         @media only screen and (max-width: 994px){
         display: none;
+        
     }
 
         &__input-box{
+            position: sticky;
+            background-color: white;
+            height: 50px;
+            width: 100%;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            background-color: var(--color-light-gray);
-            width: 100%;
-            height: min-content;
-            margin: 1.5rem 0;
-            border-radius: 100px;
+            top: 0;
+
+
+            &__input{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                background-color: var(--color-light-gray);
+                
+                height: 38px;
+                
+                
+                border-radius: 100px;
+            }
         }
 
         &__icon{

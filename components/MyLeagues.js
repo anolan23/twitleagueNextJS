@@ -29,7 +29,7 @@ function MyLeagues(props){
             return 
         }
         else if(leagues.length === 0){
-            return <Empty main="No leagues" sub="You haven't created a league"/>
+            return <Empty main="No leagues" sub="The leagues that you create will go here"/>
         }
         else{
             return leagues.map((league, index) => {
@@ -47,9 +47,10 @@ function MyLeagues(props){
 
     return (
         <div className={myTeams["my-teams"]}>
-            <TopBar main="My Leagues"/>
+            <TopBar main="My Leagues">
+                <TwitButton href="/create/league" color="twit-button--primary">Create league</TwitButton>
+            </TopBar>
             {renderLeagues()}
-            <TwitButton href="/create/league" square>Create new league</TwitButton>
         </div>
     )
 }

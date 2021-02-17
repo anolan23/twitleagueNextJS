@@ -144,18 +144,17 @@ export const fetchTeam = (teamAbbrev) => async dispatch => {
     dispatch({type: "FETCH_TEAM", payload: response.data})
 }
 
-export const fetchUserTeams = () => async (dispatch, getState) => {
-    const user = getState().user;
-    if(!user.isSignedIn){
+export const fetchUserTeams =  async (userId) => {
+    if(!userId){
         return;
     }
-    const response = await backend.get("/api/teams", {
+    const teams = await backend.get("/api/teams", {
         params: {
-            ownerId: user.id
+            ownerId: userId
         }
     });
-    
-    dispatch({type: "FETCH_USER_TEAMS", payload: response.data})
+
+    return teams.data;
 }
 
 export const fetchTeamAndTeamPosts = (teamAbbrev) => async (dispatch) => {
