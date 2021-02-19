@@ -1,0 +1,47 @@
+.twit-media{
+
+    border-radius: 1.6rem;
+    overflow: hidden;
+    border: 1px solid grey;
+    width: 100%;
+    position: relative;
+    padding-top: 56.25%;
+    grid-column: 2/3;
+    
+
+    &__player{
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    &__close{
+        cursor: pointer;
+        height: 3.2rem;
+        width: 3.2rem;
+        position: absolute;
+        top: 5px;
+        left: 5px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba($color: black, $alpha: .7);
+        border-radius: 50%;
+        border-width: 2px;
+        border-style: solid;
+        border-color: white;
+        z-index: 1;
+        transition: all .2s;
+
+        &:hover{
+            filter: brightness(75%); 
+        }
+    }
+
+    &__icon{
+        height: 2.2rem;
+        width: 2.2rem;
+        fill: white;
+    }
+}

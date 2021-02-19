@@ -5,12 +5,14 @@ import {connect} from "react-redux";
 import {Gif} from "@giphy/react-components";
 import { GiphyFetch } from "@giphy/js-fetch-api";
 import reactStringReplace from "react-string-replace";
+import ReactPlayer from "react-player";
 
 
 import {likePost, togglePopupReply, trackClickedPost} from "../actions";
 import post from "../sass/components/Post.module.scss";
 import Avatar from "./Avatar";
 import TwitBadge from "../components/TwitBadge";
+import TwitMedia from "../components/TwitMedia";
 
 function Post(props) {
 
@@ -30,19 +32,22 @@ function Post(props) {
   }
 
   const renderMedia = () => {
-    if(gif)
-    {
-      return (
-        <div className={post["post__gif"]}>
-          <Gif gif={gif} width="100%" height="auto"/>
-        </div>
-      );
-    }
-    else{
-      return null;
-    }
-  }
+    // if(gif)
+    // {
+    //   return (
+    //     <div className={post["post__gif"]}>
+    //       <Gif gif={gif} width="100%" height="auto"/>
+    //     </div>
+    //   );
+    // }
+    // else{
+    //   return null;
+    // }
+    return (
+      <TwitMedia url="https://youtu.be/-gKAjrFZRJY"/>
+    )
 
+  }
 
   const renderBadge = () => {
     if(props.post.outlook === null){
