@@ -17,6 +17,7 @@ import TwitIcon from "./TwitIcon";
 
 class MainInput extends React.Component {
     contentEditable = React.createRef();
+    hiddenFileInput = React.createRef();
     state = {html: '', showDropdown: false, options: [], cursor: 0};
     allowableChars = 300;
     chars = () => this.contentEditable.current ? this.contentEditable.current.innerText.length : 0;
@@ -176,6 +177,15 @@ class MainInput extends React.Component {
         }
     }
 
+    onUploadClick = event => {
+        this.hiddenFileInput.current.click();
+  };
+
+    handleUploadChange = event => {
+        const fileUploaded = event.target.files[0];
+        console.log(fileUploaded)
+  };
+
     renderOptions = () => {
         if(!this.state.options){
             return
@@ -224,7 +234,8 @@ class MainInput extends React.Component {
                 {this.renderGif()}
                 <div className={mainInput["main-input__actions"]}>
                     <div className={mainInput["main-input__media-types"]}>
-                            <TwitIcon onClick={null} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-image">Image</TwitIcon>
+                            <TwitIcon onClick={this.onUploadClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-image"></TwitIcon>
+                            <input type="file" ref={this.hiddenFileInput} onChange={this.handleUploadChange} style={{display:"none"}}></input>
                             <TwitIcon onClick={this.props.toggleGifPopup} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-plus-circle">GIF</TwitIcon>
                             <TwitIcon onClick={this.onMoneyClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-map-pin">$</TwitIcon>
                             <TwitIcon onClick={this.onAtClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-bookmark">@</TwitIcon>

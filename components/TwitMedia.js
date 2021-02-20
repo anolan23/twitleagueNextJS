@@ -22,7 +22,7 @@ function TwitMedia(props) {
     return (
         <div className={twitMedia["twit-media"]}>
             {renderClose()}
-            <ReactPlayer controls className={twitMedia["twit-media__player"]} url={props.url} height="100%" width="100%"></ReactPlayer>
+            <ReactPlayer controls muted className={twitMedia["twit-media__player"]} url={props.url} height="100%" width="100%"></ReactPlayer>
         </div>
     );
 }

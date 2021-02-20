@@ -44,7 +44,7 @@ function Post(props) {
     //   return null;
     // }
     return (
-      <TwitMedia url="https://youtu.be/-gKAjrFZRJY"/>
+      <TwitMedia url="https://twitleague.s3.amazonaws.com/Pexels+Videos+1576892.mp4"/>
     )
 
   }
