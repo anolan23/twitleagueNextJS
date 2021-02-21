@@ -1,12 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import {connect} from "react-redux";
-import {Gif} from "@giphy/react-components";
-import { GiphyFetch } from "@giphy/js-fetch-api";
 import reactStringReplace from "react-string-replace";
-import ReactPlayer from "react-player";
-
 
 import {likePost, togglePopupReply, trackClickedPost} from "../actions";
 import post from "../sass/components/Post.module.scss";
@@ -15,37 +11,19 @@ import TwitBadge from "../components/TwitBadge";
 import TwitMedia from "../components/TwitMedia";
 
 function Post(props) {
-
-  const [gif, SetGif] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if(props.post.gif){
-      fetchGif();
-    }
-  }, [])
-
-  const fetchGif = async () => {
-    const giphyFetch = new GiphyFetch("G2kN8IH9rTIuaG2IZGKO9il0kWamzKmX");
-    const {data} = await giphyFetch.gif(props.post.gif);
-    SetGif(data);
-  }
-
   const renderMedia = () => {
-    // if(gif)
-    // {
-    //   return (
-    //     <div className={post["post__gif"]}>
-    //       <Gif gif={gif} width="100%" height="auto"/>
-    //     </div>
-    //   );
-    // }
-    // else{
-    //   return null;
-    // }
-    return (
-      <TwitMedia url="https://twitleague.s3.amazonaws.com/Pexels+Videos+1576892.mp4"/>
-    )
+    if(props.post.media)
+    {
+      return (
+        <TwitMedia media={props.post.media}/>
+      );
+    }
+    else{
+      return null;
+    }
+   
 
   }
 

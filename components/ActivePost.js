@@ -1,30 +1,14 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 import Link from "next/link";
 
 import activePost from "../sass/components/ActivePost.module.scss";
-import post from "../sass/components/Post.module.scss";
 import Avatar from "../components/Avatar";
-import {Gif} from "@giphy/react-components";
-import { GiphyFetch } from "@giphy/js-fetch-api";
 import {trackClickedPost, togglePopupReply, likePost} from "../actions";
+import TwitMedia from "./TwitMedia";
 
 function ActivePost(props){
-
-  const [gif, setGif] = useState(null);
-
-  useEffect(() => {
-    if(props.post.gif){
-      fetchGif();
-    }
-  }, [])
-
-  const fetchGif = async () => {
-    const giphyFetch = new GiphyFetch("G2kN8IH9rTIuaG2IZGKO9il0kWamzKmX");
-    const {data} = await giphyFetch.gif(props.post.gif);
-    setGif(data);
-  }
 
   const renderBody = () => {
     const text = props.post.body;
@@ -41,11 +25,9 @@ function ActivePost(props){
   }
 
   const renderMedia = () => {
-    if(gif){
+    if(props.post.media){
       return (
-        <div className={post["post__gif"]}>
-          <Gif gif={gif} width="100%" height="auto"/>
-        </div>
+        <TwitMedia media={props.post.media}/>
       );
     }
     else{

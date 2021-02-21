@@ -4,7 +4,7 @@ import { GiphyFetch } from '@giphy/js-fetch-api'
 import {useFormik} from "formik";
 import {connect} from "react-redux";
 
-import {toggleGifPopup, saveCurrentPostGif} from "../../actions";
+import {toggleGifPopup, setMedia} from "../../actions";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import gifPopup from "../../sass/components/GifPopup.module.scss";
 import Popup from "./Popup";
@@ -30,6 +30,10 @@ function GifPopup(props){
         event.preventDefault();
         props.saveCurrentPostGif(gif);
         props.toggleGifPopup();
+        const gifClickEvent = new CustomEvent('gif-click', {
+            detail: {gif: gif}
+          });
+        document.dispatchEvent(gifClickEvent)
       }
 
     const renderHeading = () => {
@@ -72,5 +76,5 @@ const mapStateToProps = (state) => {
     return {showGifPopup: state.modals.showGifPopup}
 }
 
-export default connect(mapStateToProps,{toggleGifPopup, saveCurrentPostGif})(GifPopup);
+export default connect(mapStateToProps,{toggleGifPopup, saveCurrentPostGif: setMedia})(GifPopup);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 import Link from "next/link"
@@ -6,19 +6,31 @@ import ContentEditable from "react-contenteditable";
 
 import mainInput from "../sass/components/MainInput.module.scss";
 import TwitButton from "./TwitButton";
-import {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose} from "../actions";
-import TwitGif from "./TwitGif";
+import {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose, setMedia} from "../actions";
+import TwitMedia from "./TwitMedia";
 import Avatar from "./Avatar";
 import TwitDropdown from "./TwitDropdown";
 import TwitItem from "./TwitItem";
 import backend from "../lib/backend";
 import TwitBadge from "./TwitBadge";
 import TwitIcon from "./TwitIcon";
+import {uploadToS3} from "../lib/aws-helpers";
+
 
 class MainInput extends React.Component {
     contentEditable = React.createRef();
     hiddenFileInput = React.createRef();
-    state = {html: '', showDropdown: false, options: [], cursor: 0};
+    state = {
+        post: {
+            body: null, 
+            outlook: null
+        }, 
+        html: '', 
+        showDropdown: false, 
+        options: [], 
+        cursor: 0, 
+        media: null, 
+        file: null};
     allowableChars = 300;
     chars = () => this.contentEditable.current ? this.contentEditable.current.innerText.length : 0;
     expanded = this.props.expanded ? mainInput["main-input__text-area--expanded"] : null;
@@ -42,6 +54,8 @@ class MainInput extends React.Component {
                 }
             }
         });
+
+        document.addEventListener("gif-click", (e) => this.setState({media: {location: e.detail.gif.id, type: "gif"}}))
     }
 
     async teamSearch(search){
@@ -64,7 +78,8 @@ class MainInput extends React.Component {
 
     handleChange = (event) => {
         let text = this.contentEditable.current.innerText;
-        this.props.saveCurrentPostText(text);
+        let newPost = {...this.state.post, body: text};
+        this.setState({post: newPost});
         text = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
             `<a class="twit-link" id="team">$${match}</a>`
         ));
@@ -100,15 +115,37 @@ class MainInput extends React.Component {
         return this.chars() === 0 || this.chars() > this.allowableChars;
     }
 
-    onSubmit = (event) => {
-        event.preventDefault();
-        this.props.onSubmit();
-        this.setState({html: ""})
+    onUploadToS3 = (data) => {
+        let post = {...this.state.post, media: {location: data.Location, type: "file"}}
+        this.props.onSubmit(post);
+        this.setState({media: null, file: null, html: ""})
     }
 
-    renderGif = () => {
-        if(this.props.gif){
-            return <TwitGif gif={this.props.gif}/>
+    onSubmit = (event) => {
+        event.preventDefault();
+        
+        if(this.state.file){
+            uploadToS3(this.state.file, "posts", (data) => this.onUploadToS3(data)).on('httpUploadProgress', (progress) => {
+                const progressPercentage = Math.round(progress.loaded / progress.total * 100);
+                console.log(progressPercentage);
+            });
+
+        }
+        else{
+            let post = {...this.state.post, media: this.state.media}
+            this.props.onSubmit(post);
+            this.setState({media: null, file: null, html: ""})
+        }
+    }
+
+    renderMedia = () => {
+        if(this.state.media){
+            return (
+                <TwitMedia close media={this.state.media} onClick={() => this.setState({media: null, file: null})}/>
+            )
+        }
+        else{
+            return null;
         }
     }
 
@@ -157,23 +194,27 @@ class MainInput extends React.Component {
     }
 
     onHotClick = () => {
-        const outlook = this.props.outlook;
+        const outlook = this.state.post.outlook;
         if(outlook === null || !outlook){
-            this.props.saveCurrentOutlook(true);
+            let newPost = {...this.state.post, outlook: true};
+            this.setState({post: newPost});
         }
         else{
-            this.props.saveCurrentOutlook(null);
+            let newPost = {...this.state.post, outlook: null};
+            this.setState({post: newPost});
         }
         
     }
 
     onColdClick = () => {
-        const outlook = this.props.outlook;
+        const outlook = this.state.post.outlook;
         if(outlook === null || outlook){
-            this.props.saveCurrentOutlook(false);
+            let newPost = {...this.state.post, outlook: false};
+            this.setState({post: newPost});
         }
         else{
-            this.props.saveCurrentOutlook(null);
+            let newPost = {...this.state.post, outlook: null};
+            this.setState({post: newPost});
         }
     }
 
@@ -183,7 +224,11 @@ class MainInput extends React.Component {
 
     handleUploadChange = event => {
         const fileUploaded = event.target.files[0];
-        console.log(fileUploaded)
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.setState({media: {location: e.target.result, type: "file"}, file: fileUploaded})
+        }
+        reader.readAsDataURL(fileUploaded); // convert to base64 string
   };
 
     renderOptions = () => {
@@ -219,7 +264,7 @@ class MainInput extends React.Component {
     }
 
     render() {
-        console.log(this.state.outlook)
+        console.log(this.state.media)
         return(
             <form className={this.props.compose ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}` : mainInput["main-input"]} onSubmit={this.onSubmit} onKeyDown={this.handleKeyDown}>
                 <Avatar roundedCircle className={mainInput["main-input__image"]} src={this.props.avatar}/>
@@ -231,7 +276,7 @@ class MainInput extends React.Component {
                     onChange={this.handleChange}
                     placeholder={this.props.placeHolder}
                 />
-                {this.renderGif()}
+                {this.renderMedia()}
                 <div className={mainInput["main-input__actions"]}>
                     <div className={mainInput["main-input__media-types"]}>
                             <TwitIcon onClick={this.onUploadClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-image"></TwitIcon>
@@ -239,8 +284,8 @@ class MainInput extends React.Component {
                             <TwitIcon onClick={this.props.toggleGifPopup} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-plus-circle">GIF</TwitIcon>
                             <TwitIcon onClick={this.onMoneyClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-map-pin">$</TwitIcon>
                             <TwitIcon onClick={this.onAtClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-bookmark">@</TwitIcon>
-                            <TwitBadge onClick={this.onHotClick} active={this.props.outlook === true}>Hot</TwitBadge>
-                            <TwitBadge onClick={this.onColdClick} active={this.props.outlook === false}>Cold</TwitBadge>
+                            <TwitBadge onClick={this.onHotClick} active={this.state.post.outlook === true}>Hot</TwitBadge>
+                            <TwitBadge onClick={this.onColdClick} active={this.state.post.outlook === false}>Cold</TwitBadge>
                     </div>
                     <div className={mainInput["main-input__action"]}>
                         <div className={mainInput["main-input__action__char-count"]} disabled={this.chars()>this.allowableChars}>{this.allowableChars - this.chars()}</div>
@@ -259,195 +304,4 @@ class MainInput extends React.Component {
     }
 }
 
-// function MainInput(props) {
-
-//     const [display, setDisplay] = useState(false);
-//     const [html, setHtml] = useState(null);
-//     const ref = useRef();
-//     const contentEditable = useRef(null);
-
-//     useEffect(() => {
-//         document.body.addEventListener("click", clickOutsideInput);
-//         const contentElement = document.getElementById('my-content');
-//         contentElement.addEventListener('paste', function(e) {
-//             // Prevent the default action
-//             e.preventDefault();
-
-//             // Get the copied text from the clipboard
-//             const text = (e.clipboardData)
-//                 ? (e.originalEvent || e).clipboardData.getData('text/plain')
-//                 // For IE
-//                 : (window.clipboardData ? window.clipboardData.getData('Text') : '');
-            
-//             if (document.queryCommandSupported('insertText')) {
-//                 document.execCommand('insertText', false, text);
-//             } else {
-//                 // Insert text at the current position of caret
-//                 const range = document.getSelection().getRangeAt(0);
-//                 range.deleteContents();
-
-//                 const textNode = document.createTextNode(text);
-//                 range.insertNode(textNode);
-//                 range.selectNodeContents(textNode);
-//                 range.collapse(false);
-
-//                 const selection = window.getSelection();
-//                 selection.removeAllRanges();
-//                 selection.addRange(range);
-//             }
-//         });
-
-//             return () => {
-//                 document.body.removeEventListener("click", clickOutsideInput);
-//               }
-//     }, []);
-
-//     useEffect(() => {
-//         if(display){
-//             setCaret(contentEditable.current)
-//         }
-//     }, [display]);
-
-//     const clickOutsideInput = (event) => {
-//         if(ref.current.contains(event.target)){
-//             return;
-//         }
-//         setDisplay(false);
-//     }
-
-//     const onClick = (event) => {
-//         if(!display){
-//             setDisplay(true);
-//         }
-//         setCaret(contentEditable.current)
-//     }
-    
-
-//     const handleChange = (event) => {
-//         const html = event.target.value
-//         let text = contentEditable.current.innerText;
-//         props.saveCurrentPostText(text);
-//         setHtml(html);
-//         };
-
-//     const linkify = () => {
-//         const text = contentEditable.current.innerText;
-//         const html = replaceText(text)
-//         const newHTML = html.join("");
-//         setHtml(newHTML);
-//     }
-
-//     const renderGifThumbnail = () => {
-//         if(props.staticGifImage){
-//             return <GifThumb src={props.staticGifImage.url}/>
-//         }
-//     }
-
-//     const onBullishClick = () => {
-//         props.saveCurrentOutlook("bullish");
-//         linkify();
-        
-//     }
-
-//     const onBearishClick = () => {
-//         props.saveCurrentOutlook("bearish");
-//         setCaret(contentEditable.current)
-//     }
-
-//     const replaceText = (text) => {
-//         const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-//         `<span contenteditable="false" class="twit-link">${"$"+match}</span>`
-//     ));
-//     return replacedText
-//     }
-
-//     const setCaret = (el) => {
-//         console.log("setCaret")
-//         var range = document.createRange();  
-//         console.log(el.childNodes)
-//         range.setStart(el.lastChild, 0);
-//         var sel = window.getSelection();
-//         range.collapse(true);
-//         sel.removeAllRanges();
-//         sel.addRange(range);
-//         el.focus();    
-//      }
-
-//     const onContentEditableFocus = () => {
-//         console.log("focused")       
-//     }
-
-//     const renderInitials = () => {
-//             return `<span contenteditable="false" class="twit-link">${props.initialValue}&nbsp</span>`
-//     }
-
-//         return (
-//             <div className={styles["main-input"]}>
-//                 <Avatar roundedCircle className={styles.avatar}/>
-//                     <Form 
-//                     onSubmit={props.onSubmit} 
-//                     className={styles["post-form"]} 
-//                     style={{display: props.hide ? "none" : "flex"}}
-//                     >
-//                     <div onClick={onClick} className={styles["twit-post"]} ref={ref}>
-//                         <ContentEditable 
-//                             html={html || renderInitials()}
-//                             onChange={handleChange} 
-//                             innerRef={contentEditable}
-//                             style={{display: display || props.expanded ? "block" : "none"}} 
-//                             className={styles["twit-content"]} 
-//                             onFocus={onContentEditableFocus}
-//                             aria-expanded={display} 
-//                             spellCheck="true" 
-//                             id="my-content" 
-//                             >
-//                         </ContentEditable>
-//                         <div className={styles["gif-div"]}>
-//                         {renderGifThumbnail()}
-//                         </div>
-//                         <div className={styles["action-bar"]}>
-//                             <div 
-//                                 contentEditable="false" 
-//                                 className = {styles.placeHolder}
-//                                 id="placeHolder"
-//                                 style={{display: display ? "none" : "block"}}
-//                                 suppressContentEditableWarning={true}
-//                             >
-//                             {props.placeHolder}
-//                             </div>
-//                             <div className={styles["actions"]}>
-//                                 <Button onClick={onBullishClick} variant="success" className={props.outlook === "bullish" ? styles["outlook-pressed"] : styles.outlook}>
-//                                 Bullish
-//                                 </Button>
-//                                 <Button onClick={onBearishClick} variant="danger" className={props.outlook === "bearish" ? styles["outlook-pressed"] : styles.outlook}>
-//                                 Bearish
-//                                 </Button>
-//                                 <i onClick={props.toggleGifPopup} className={"far fa-image " + styles.icons}></i>                        
-//                             </div>
-//                         </div>
-//                     </div>
-
-//                     <textarea id="my-textarea" style={{display:"none"}}></textarea>   
-                        
-//                     <Button type="submit">
-//                         Post
-//                     </Button>
-//                 </Form>
-//             </div>
-//         );
-    
-
-
-// }
-
-const mapStateToProps = (state) => {
-  
-        return {
-            gif: state.post.gif ? state.post.gif : null,
-            outlook: state.post.outlook,
-            body: state.post.body,
-            avatar: state.user.avatar
-        }
-}
-
-export default connect(mapStateToProps, {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose})(MainInput);
+export default connect(null, {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose, setMedia})(MainInput);

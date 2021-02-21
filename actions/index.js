@@ -284,14 +284,11 @@ export const setLeague = league => (dispatch) => {
 }
 
 //Posts Action Creators
-export const createPost = () => async (dispatch, getState) => {
+export const createPost = (post) => async (dispatch, getState) => {
     const state = getState();
     const userId = state.user.id;
-    const body = state.post.body;
-    const gif = state.post.gif;
-    const outlook = state.post.outlook;
-    const post = {userId, body, gif, outlook}
-    const response = await backend.post("/api/posts", post);
+    const newPost = {...post, userId}
+    const response = await backend.post("/api/posts", newPost);
 
     dispatch({type: "CREATE_POST", payload: response.data})
     dispatch(emptyPostData());
@@ -301,9 +298,9 @@ export const createReply = (conversation_id, in_reply_to_post_id) => async (disp
     const state = getState();
     const userId = state.user.id;
     const body = state.post.body;
-    const gif = state.post.gif;
+    const media = state.post.media;
     const outlook = state.post.outlook;
-    const reply = {userId, body, gif, outlook, conversation_id, in_reply_to_post_id};
+    const reply = {userId, body, media, outlook, conversation_id, in_reply_to_post_id};
     const response = await backend.post("/api/posts", {reply});
 
     dispatch({type: "CREATE_REPLY", payload: response.data})
@@ -430,12 +427,12 @@ export const saveCurrentPostText = (body) => {
     return {type: "SAVE_CURRENT_BODY", payload: body};
 }
 
-export const saveCurrentPostGif = (gif) => {
-    return {type: "SAVE_CURRENT_POST_GIF", payload: gif};
+export const setMedia = (media) => async (dispatch) => {
+    dispatch({type: "SET_MEDIA", payload: media})
 }
 
-export const closeGif = () => {
-    return {type: "CLOSE_GIF"};
+export const closeMedia = () => {
+    return {type: "CLOSE_MEDIA"};
 }
 
 export const saveCurrentOutlook = (outlook) => {

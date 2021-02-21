@@ -42,8 +42,8 @@ function Home(props) {
         
     }
 
-    const onSubmit = () => {
-        props.createPost();
+    const onSubmit = (values) => {
+        props.createPost(values);
     }
 
         return (

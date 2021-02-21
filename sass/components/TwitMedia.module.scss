@@ -5,9 +5,15 @@
     // border: 1px solid grey;
     width: 100%;
     position: relative;
-    padding-top: 56.25%;
     grid-column: 2/3;
     
+    &__file{
+        padding-top: 56.25%;
+    }
+
+    &__gif{
+
+    }
 
     &__player{
         position: absolute;
