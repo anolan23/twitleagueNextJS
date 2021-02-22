@@ -13,6 +13,11 @@ import TwitMedia from "../components/TwitMedia";
 function Post(props) {
   const router = useRouter();
 
+  const truncate = (string, length) => {
+    const newString = string.length > length ? string.substring(0, length - 3) + "..." : string;
+    return newString;
+  }
+
   const renderMedia = () => {
     if(props.post.media)
     {
@@ -48,6 +53,10 @@ function Post(props) {
 
     replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
       <Link key={match + i} href={`/users/${match}`}><a onClick={(e) => e.stopPropagation()} className="twit-link">@{match}</a></Link>
+    ));
+    
+    replacedText = reactStringReplace(replacedText, /(https?:\/\/\S+)/g, (match, i) => (
+      <Link key={match + i} href={match}><a onClick={(e) => e.stopPropagation()} className="twit-link">{truncate(match, 35)}</a></Link>
     ));
 
     return replacedText

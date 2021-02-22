@@ -38,7 +38,7 @@ function TwitMedia(props) {
     }
 
     const renderMedia = () => {
-        if(props.media.type === "file"){
+        if(props.media.type === "file" || props.media.type === "link"){
             return (
                 <div className={twitMedia["twit-media__file"]}>
                     <ReactPlayer controls muted className={twitMedia["twit-media__player"]} url={props.media.location} height="100%" width="100%"></ReactPlayer>

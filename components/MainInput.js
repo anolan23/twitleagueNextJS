@@ -15,6 +15,7 @@ import backend from "../lib/backend";
 import TwitBadge from "./TwitBadge";
 import TwitIcon from "./TwitIcon";
 import {uploadToS3} from "../lib/aws-helpers";
+import ReactPlayer from "react-player";
 
 
 class MainInput extends React.Component {
@@ -39,7 +40,6 @@ class MainInput extends React.Component {
         this.contentEditable.current.addEventListener('keyup', (event) => {
             const selection = getSelection();
             if (selection.type === "Caret") {
-                console.log("componentDidMount keyup")
                 const id = selection.anchorNode.parentElement.id;
                 const data = selection.anchorNode.data;
                 if(id === "team"){
@@ -49,7 +49,6 @@ class MainInput extends React.Component {
                     this.userSearch(data);
                 }
                 else if((event.keyCode !== 38 && event.keyCode !== 40)){
-                    console.log(event.keyCode)
                     this.setState({showDropdown: false, cursor: 0})
                 }
             }
@@ -80,18 +79,36 @@ class MainInput extends React.Component {
         let text = this.contentEditable.current.innerText;
         let newPost = {...this.state.post, body: text};
         this.setState({post: newPost});
+        const media = reactStringReplace(text, /(https?:\/\/\w?w?w?.?youtube\S+)/g, (match, i) => {
+            console.log(match)
+            if(ReactPlayer.canPlay(match)){
+                this.setState({
+                    media: {
+                        location: match,
+                        type: "link"
+                    }
+                })
+            }
+            else{
+                this.setState({media: null})
+            }
+        }
+            
+        );
         text = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
             `<a class="twit-link" id="team">$${match}</a>`
         ));
         text = reactStringReplace(text, /\@(\w+)/g, (match, i) => (
             `<a class="twit-link" id="user">@${match}</a>`
         ));
+        text = reactStringReplace(text, /(https?:\/\/\S+)/g, (match, i) => (
+            `<a class="twit-link" id="link">${match}</a>`
+        ));
         text = text.join('');
         this.setState({html: text});
     };
 
     handleKeyDown = (event) => {
-        console.log(event.keyCode)
         if (event.keyCode === 38 && this.state.cursor > 0) {
             event.preventDefault();
             this.setState( prevState => ({
@@ -264,7 +281,6 @@ class MainInput extends React.Component {
     }
 
     render() {
-        console.log(this.state.media)
         return(
             <form className={this.props.compose ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}` : mainInput["main-input"]} onSubmit={this.onSubmit} onKeyDown={this.handleKeyDown}>
                 <Avatar roundedCircle className={mainInput["main-input__image"]} src={this.props.avatar}/>
