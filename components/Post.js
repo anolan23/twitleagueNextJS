@@ -22,7 +22,9 @@ function Post(props) {
     if(props.post.media)
     {
       return (
-        <TwitMedia media={props.post.media}/>
+        <div className={post["post__media-holder"]}>
+          <TwitMedia media={props.post.media}/>
+        </div>
       );
     }
     else{

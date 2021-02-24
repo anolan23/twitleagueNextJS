@@ -52,6 +52,10 @@
     margin-bottom: 0;
   }
 
+  &__media-holder{
+    grid-column: 2/3;
+  }
+
   &__gif{
     grid-column: 2/-1;
     border-radius: 1.6rem;

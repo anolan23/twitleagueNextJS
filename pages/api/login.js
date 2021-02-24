@@ -20,12 +20,12 @@ export default async (req,res) => {
                 sub: user.id,
                 username: user.username
             }
-            const jwt = sign(claims, process.env.AUTH_TOKEN_SECRET, {expiresIn: "1h"});
+            const jwt = sign(claims, process.env.AUTH_TOKEN_SECRET, {expiresIn: "24h"});
             res.setHeader('Set-Cookie', cookie.serialize('auth', jwt, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV !== 'development',
                 sameSite: 'strict',
-                maxAge: 3600,
+                maxAge: 36000,
                 path: '/'
                 }));
                     

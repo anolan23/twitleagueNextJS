@@ -31,7 +31,7 @@ class MainInput extends React.Component {
         options: [], 
         cursor: 0, 
         media: null, 
-        file: null};
+        files: null};
     allowableChars = 300;
     chars = () => this.contentEditable.current ? this.contentEditable.current.innerText.length : 0;
     expanded = this.props.expanded ? mainInput["main-input__text-area--expanded"] : null;
@@ -132,38 +132,49 @@ class MainInput extends React.Component {
         return this.chars() === 0 || this.chars() > this.allowableChars;
     }
 
-    onUploadToS3 = (data) => {
-        let post = {...this.state.post, media: {location: data.Location, type: "file"}}
+    onUploadToS3 = (uploadedFiles) => {
+        let media = uploadedFiles.map(uploadedFile => {
+            let type = uploadedFile.Location.substring(uploadedFile.Location.lastIndexOf('.') + 1);
+            return {location: uploadedFile.Location, type: type} 
+        });
+        media = JSON.stringify(media);
+        let post = {...this.state.post, media: media}
         this.props.onSubmit(post);
-        this.setState({media: null, file: null, html: ""})
+        this.setState({media: null, files: null, html: ""})
     }
 
     onSubmit = (event) => {
         event.preventDefault();
+        const files = this.state.files;
         
-        if(this.state.file){
-            uploadToS3(this.state.file, "posts", (data) => this.onUploadToS3(data)).on('httpUploadProgress', (progress) => {
-                const progressPercentage = Math.round(progress.loaded / progress.total * 100);
-                console.log(progressPercentage);
+        if(files){
+            let promises = [];
+            files.forEach(file => {
+                promises.push(uploadToS3(file, "posts"));
             });
+            Promise.all(promises).then((uploadedFiles) => this.onUploadToS3(uploadedFiles))
 
         }
         else{
             let post = {...this.state.post, media: this.state.media}
             this.props.onSubmit(post);
-            this.setState({media: null, file: null, html: ""})
+            this.setState({media: null, files: null, html: ""})
         }
     }
 
     renderMedia = () => {
-        if(this.state.media){
-            return (
-                <TwitMedia close media={this.state.media} onClick={() => this.setState({media: null, file: null})}/>
-            )
-        }
-        else{
+        const {media} = this.state;
+        if(media === null){
             return null;
         }
+        else{
+            return media.map((mediaItem, index) => {
+                const mediaItemArray = [mediaItem];
+                return (
+                        <TwitMedia key={index} close media={mediaItemArray} onClick={() => this.setState({media: null, files: null})}/> 
+                ) 
+            })
+        }     
     }
 
     setCaret = (element) => {
@@ -239,13 +250,52 @@ class MainInput extends React.Component {
         this.hiddenFileInput.current.click();
   };
 
+    promiseFileReader = (file) => {  
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();  
+            reader.onload = () => {
+                resolve(reader.result)
+            };  // CHANGE to whatever function you want which would eventually call resolve
+            reader.readAsDataURL(file);
+    });
+  }
+
     handleUploadChange = event => {
-        const fileUploaded = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            this.setState({media: {location: e.target.result, type: "file"}, file: fileUploaded})
+        let files = event.target.files;
+        files = Object.values(files);
+        const videos = files.filter(file => file.type.includes("video"));
+        const images = files.filter(file => file.type.includes("image"));
+        const gifs = files.filter(file => file.type.includes("gif"));
+        const numVideos = videos.length;
+        const numImages = images.length;
+        const numGifs = gifs.length;
+        let uploadData = [];
+        
+        if(numVideos === 1 && numImages === 0 && numGifs === 0){
+            const promise = Promise.resolve();
+            files.map(file => promise.then(() => this.promiseFileReader(file)).then((dataUrl) => {
+                uploadData.push({location: dataUrl, type: file.type})
+                this.setState({media: uploadData, files});
+            }));
         }
-        reader.readAsDataURL(fileUploaded); // convert to base64 string
+        else if(numImages > 0 && numImages <= 4 && numVideos === 0 && numGifs === 0){
+            const promise = Promise.resolve();
+            files.map(file => promise.then(() => this.promiseFileReader(file)).then((dataUrl) => {
+                uploadData.push({location: dataUrl, type: file.type})
+                this.setState({media: uploadData, files});
+            }));
+        }
+        else if(numGifs === 1 && numVideos === 0 & numImages === 1){
+            const promise = Promise.resolve();
+            files.map(file => promise.then(() => this.promiseFileReader(file)).then((dataUrl) => {
+                uploadData.push({location: dataUrl, type: file.type})
+                this.setState({media: uploadData, files});
+            }));
+        }
+        else{
+            alert("Please choose either 1 Gif or up to 4 photos")
+            this.setState({files: null})
+        }      
   };
 
     renderOptions = () => {
@@ -281,6 +331,7 @@ class MainInput extends React.Component {
     }
 
     render() {
+        console.log(this.state.files)
         return(
             <form className={this.props.compose ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}` : mainInput["main-input"]} onSubmit={this.onSubmit} onKeyDown={this.handleKeyDown}>
                 <Avatar roundedCircle className={mainInput["main-input__image"]} src={this.props.avatar}/>
@@ -292,11 +343,13 @@ class MainInput extends React.Component {
                     onChange={this.handleChange}
                     placeholder={this.props.placeHolder}
                 />
-                {this.renderMedia()}
+                <div className={mainInput["main-input__media-grid"]}>
+                    {this.renderMedia()}
+                </div>
                 <div className={mainInput["main-input__actions"]}>
                     <div className={mainInput["main-input__media-types"]}>
                             <TwitIcon onClick={this.onUploadClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-image"></TwitIcon>
-                            <input type="file" ref={this.hiddenFileInput} onChange={this.handleUploadChange} style={{display:"none"}}></input>
+                            <input multiple type="file" ref={this.hiddenFileInput} onChange={this.handleUploadChange} style={{display:"none"}}></input>
                             <TwitIcon onClick={this.props.toggleGifPopup} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-plus-circle">GIF</TwitIcon>
                             <TwitIcon onClick={this.onMoneyClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-map-pin">$</TwitIcon>
                             <TwitIcon onClick={this.onAtClick} className={mainInput["main-input__media-types__icon"]} icon="/sprites.svg#icon-bookmark">@</TwitIcon>

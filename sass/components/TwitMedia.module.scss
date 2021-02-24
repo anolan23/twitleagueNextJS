@@ -5,7 +5,30 @@
     border: var(--border);
     width: 100%;
     position: relative;
-    grid-column: 2/3;
+    
+    
+    &:nth-child(1){
+        &:last-child{
+        grid-column: 1/-1;
+        grid-row: 1/-1;
+        }
+    }
+    &:nth-child(2){
+        &:last-child{
+
+        }
+        }
+    &:nth-child(3){
+        &:last-child{
+        grid-row: 1/-1;
+        grid-column: 1/2;
+        }
+    }
+    &:nth-child(4){
+        &:last-child{
+        
+        }
+    }
     
     &__file{
         padding-top: 56.25%;
@@ -14,6 +37,54 @@
     &__gif{
 
     }
+
+    &__gallery{
+        height: 100%;
+        display: grid;
+        gap: 3px;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr; 
+
+        &__image-holder{
+            padding-top: 56.25%;
+            position: relative;
+            &:nth-child(1){
+                &:last-child{
+                grid-column: 1/-1;
+                grid-row: 1/-1;
+                }
+            }
+            &:nth-child(2){
+                &:last-child{
+        
+                }
+                }
+            &:nth-child(3){
+                &:last-child{
+                grid-row: 1/-1;
+                grid-column: 1/2;
+                }
+            }
+            &:nth-child(4){
+                &:last-child{
+                
+                }
+            }
+    
+            &__image{
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                background-size: cover;
+                background-position: center;
+                
+            }
+        }
+    }
+
+   
 
     &__player{
         position: absolute;

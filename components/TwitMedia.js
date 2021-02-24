@@ -7,16 +7,16 @@ import TwitIcon from "./TwitIcon";
 import ReactPlayer from "react-player";
 
 
-function TwitMedia(props) {
+function TwitMedia({media, onClick, close}) {
 
     const [gif, setGif] = useState(null);
-    console.log(gif);
+
 
     useEffect(() => {
-        if(props.media.type === "gif"){
-            fetchGif(props.media.location);
+        if(media.type === "gif"){
+            fetchGif(media.location);
         }
-    }, [props.media])
+    }, [media])
 
     const fetchGif = async (gifId) => {
         const giphyFetch = new GiphyFetch("G2kN8IH9rTIuaG2IZGKO9il0kWamzKmX");
@@ -25,9 +25,9 @@ function TwitMedia(props) {
       }
 
     const renderClose = () => {
-        if(props.close){
+        if(close){
             return(
-                <div onClick={props.onClick} className={twitMedia["twit-media__close"]}>
+                <div onClick={onClick} className={twitMedia["twit-media__close"]}>
                     <TwitIcon className={twitMedia["twit-media__icon"]} icon="/sprites.svg#icon-x"/>
                 </div>
             )
@@ -37,31 +37,77 @@ function TwitMedia(props) {
         }
     }
 
-    const renderMedia = () => {
-        if(props.media.type === "file" || props.media.type === "link"){
-            return (
-                <div className={twitMedia["twit-media__file"]}>
-                    <ReactPlayer controls muted className={twitMedia["twit-media__player"]} url={props.media.location} height="100%" width="100%"></ReactPlayer>
-                </div>
-            )
-        }
-        else if(props.media.type === "gif"){
-            if(gif){
-                return <Gif gif={gif} width="100%"/>
-            }
-            else{
-                return null;
-            }
+    const renderVideo = () => {
+        if(media === null){
+            return null;
         }
         else{
+           return media.map((mediaItem, index) => {
+                if(mediaItem.type.includes("mp4") || mediaItem.type.includes("link")){
+                    return (
+                        <div key={index} className={twitMedia["twit-media__file"]}>
+                            <ReactPlayer controls muted className={twitMedia["twit-media__player"]} url={mediaItem.location} height="100%" width="100%"></ReactPlayer>
+                        </div>
+                    )
+                }
+                else{
+                    return null;
+                }
+            })
+        }
+    }
+
+    const renderGif = () => {
+        if(media === null){
             return null;
+        }
+        else{
+            return media.map((mediaItem, index) => {
+                if(mediaItem.type.includes("gif")){
+                    if(gif){
+                        return <Gif key={index} gif={gif} width="100%"/>
+                    }
+                    else{
+                        return null;
+                    }
+                }
+            });
+        }
+    }
+
+    const renderImages = () => {
+        if(media === null){
+            return null;
+        }
+        else{
+           return media.map((mediaItem, index) => {
+                if(mediaItem.type.includes("png") || mediaItem.type.includes("jpeg") || mediaItem.type.includes("svg")){
+                    return (
+                        <div key={index} className={twitMedia["twit-media__gallery__image-holder"]}>
+                            <div style={{backgroundImage: `url(${mediaItem.location})`}} alt="post-image" className={twitMedia["twit-media__gallery__image-holder__image"]}>
+
+                            </div>
+                        </div>
+                    )
+                }
+                else{
+                    return null;
+                }
+            })
         }
     }
 
     return (
         <div className={twitMedia["twit-media"]}>
             {renderClose()}
-            {renderMedia()}
+            {renderVideo()}
+            <div className={twitMedia["twit-media__gif"]}>
+                {renderGif()}
+            </div>
+            <div className={twitMedia["twit-media__gallery"]}>
+                {renderImages()}
+            </div>
+            
         </div>
     );
 }
