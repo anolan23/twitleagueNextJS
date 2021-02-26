@@ -1,0 +1,46 @@
+.feed-card{
+
+    order: 1;
+
+    &__header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 1.6rem;
+        border-bottom: var(--border);
+
+        &__title{
+            font-size: 1.9rem;
+            font-weight: 800;
+        }
+
+        &__icon{
+            height: 18.75px;
+            width: 18.75px;
+            cursor: pointer;
+            fill: var(--color-secondary);
+        }
+    }
+
+    &__content{
+
+    }
+
+    &__footer{
+        border-bottom: var(--border);
+        transition: all .2s;
+
+        &:hover{
+            background-color: var(--GRAY_BACKGROUND);
+        }
+
+        &__box{
+            padding: 1.6rem;
+            cursor: pointer;
+            &__text{
+                font-size: 1.5rem;
+                color: var(--color-primary);
+            }
+        }
+    }
+}

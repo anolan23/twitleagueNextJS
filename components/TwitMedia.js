@@ -12,11 +12,11 @@ function TwitMedia({media, onClick, close}) {
     const [gif, setGif] = useState(null);
 
 
-    useEffect(() => {
-        if(media.type === "gif"){
-            fetchGif(media.location);
-        }
-    }, [media])
+    // useEffect(() => {
+    //     if(media.type.includes("gif")){
+    //         fetchGif(media.location);
+    //     }
+    // }, [media])
 
     const fetchGif = async (gifId) => {
         const giphyFetch = new GiphyFetch("G2kN8IH9rTIuaG2IZGKO9il0kWamzKmX");
@@ -63,7 +63,8 @@ function TwitMedia({media, onClick, close}) {
         }
         else{
             return media.map((mediaItem, index) => {
-                if(mediaItem.type.includes("gif")){
+                if(mediaItem.type.includes("giphy")){
+                    fetchGif(mediaItem.location);
                     if(gif){
                         return <Gif key={index} gif={gif} width="100%"/>
                     }

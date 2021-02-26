@@ -54,7 +54,15 @@ class MainInput extends React.Component {
             }
         });
 
-        document.addEventListener("gif-click", (e) => this.setState({media: {location: e.detail.gif.id, type: "gif"}}))
+        document.addEventListener("gif-click", this.onGifClick);
+    }
+
+    componentWillUnmount(){
+        document.removeEventListener("gif-click", this.onGifClick);
+    }
+
+    onGifClick = (event) => {
+        this.setState({media: [{location: event.detail.gif.id, type: "giphy"}]})
     }
 
     async teamSearch(search){
@@ -79,15 +87,13 @@ class MainInput extends React.Component {
         let text = this.contentEditable.current.innerText;
         let newPost = {...this.state.post, body: text};
         this.setState({post: newPost});
-        const media = reactStringReplace(text, /(https?:\/\/\w?w?w?.?youtube\S+)/g, (match, i) => {
-            console.log(match)
+        reactStringReplace(text, /(https?:\/\/\w?w?w?.?youtube\S+)/g, (match, i) => {
             if(ReactPlayer.canPlay(match)){
-                this.setState({
-                    media: {
-                        location: match,
-                        type: "link"
-                    }
-                })
+                let media = [{
+                    location: match,
+                    type: "link"
+                }];
+                this.setState({media});
             }
             else{
                 this.setState({media: null})
@@ -156,19 +162,19 @@ class MainInput extends React.Component {
 
         }
         else{
-            let post = {...this.state.post, media: this.state.media}
+            const media = this.state.media ? JSON.stringify(this.state.media) : null;
+            let post = {...this.state.post, media};
             this.props.onSubmit(post);
             this.setState({media: null, files: null, html: ""})
         }
     }
 
     renderMedia = () => {
-        const {media} = this.state;
-        if(media === null){
+        if(this.state.media === null){
             return null;
         }
         else{
-            return media.map((mediaItem, index) => {
+            return this.state.media.map((mediaItem, index) => {
                 const mediaItemArray = [mediaItem];
                 return (
                         <TwitMedia key={index} close media={mediaItemArray} onClick={() => this.setState({media: null, files: null})}/> 
@@ -331,7 +337,7 @@ class MainInput extends React.Component {
     }
 
     render() {
-        console.log(this.state.files)
+        console.log(this.state. media)
         return(
             <form className={this.props.compose ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}` : mainInput["main-input"]} onSubmit={this.onSubmit} onKeyDown={this.handleKeyDown}>
                 <Avatar roundedCircle className={mainInput["main-input__image"]} src={this.props.avatar}/>
@@ -373,4 +379,8 @@ class MainInput extends React.Component {
     }
 }
 
-export default connect(null, {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose, setMedia})(MainInput);
+const mapStateToProps = (state) => {
+    return {avatar: state.user.avatar}
+}
+
+export default connect(mapStateToProps, {toggleGifPopup, saveCurrentPostText, saveCurrentOutlook, togglePopupCompose, setMedia})(MainInput);

@@ -3,6 +3,7 @@ import React from "react";
 import SuggestedTeams from "./SuggestedTeams";
 import TwitSearch from "./modals/TwitSearch";
 import TwitIcon from "../components/TwitIcon";
+import SuggestedUsers from "./SuggestedUsers";
 
 function RightColumn(){
     return (
@@ -14,6 +15,7 @@ function RightColumn(){
                 </div>
             </div>
             <SuggestedTeams/>
+            <SuggestedUsers/>
         </div>
     )
 }

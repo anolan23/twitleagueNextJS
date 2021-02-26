@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 
 import TwitTabs from "./TwitTabs";
+import TwitItem from "./TwitItem";
 import TwitTab from "./TwitTab";
 import TwitButton from "./TwitButton";
 import Avatar from "../components/Avatar";
@@ -9,27 +10,39 @@ import Post from "./Post";
 import Empty from "./Empty";
 import {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser, togglePopupCompose} from "../actions";
 import TopBar from "./TopBar";
+import FeedCard from "./FeedCard";
+import backend from "../lib/backend";
 import teamHolder from "../sass/components/TeamHolder.module.scss";
+import user from "../sass/components/User.module.scss";
 
 function User(props) {
 
     const [activeLink, setActiveLink] = useState("posts");
+    const [users, setUsers] = useState(null);
+
 
     useEffect(() => {
-        const start = async () => {
-            if(props.isSignedIn){
-                props.fetchUserPosts(props.user.id,props.userId, 10, 0);
-            }
-            else{
-                await props.fetchUser();
-                props.fetchUserPosts(props.user.id,props.userId, 10, 0);
-            }
-        }
         start();
         return () => {
             props.clearPosts();
         }
-      }, [])
+      }, []);
+
+    const start = async () => {
+        if(props.isSignedIn){
+            props.fetchUserPosts(props.user.id,props.userId, 10, 0);
+        }
+        else{
+            await props.fetchUser();
+            props.fetchUserPosts(props.user.id,props.userId, 10, 0);
+        }
+        const users = await backend.get("/api/users/suggested", {
+            params:{
+                num: 3
+            }
+        });
+        setUsers(users.data);
+    }
 
     const onPostsSelect = (k) => {
         setActiveLink(k.target.id);
@@ -105,6 +118,28 @@ function User(props) {
         }
       }
 
+      const renderUsers = () => {
+        if(users === null){
+            return <div>Loading...</div>
+        }
+        else if(users.length === 0){
+            return <Empty main="No Users" sub="There are no users to scout"/>
+        }
+        else{
+            return users.map(user => {
+                return (
+                    <TwitItem 
+                        avatar={user.avatar}
+                        title={user.name}
+                        subtitle={`@${user.username}`} 
+                        actionText="Scout"   
+                        paragraph="The most beautiful thing we can experience is the mysterious. It is the source of all true art and science"
+                    />
+                )
+            })
+        }
+    }
+
         return (
             <div >
                 <TopBar main={props.user.username}/>
@@ -149,7 +184,13 @@ function User(props) {
                     <TwitTab onClick={onMediaSelect} id={"media"} active={activeLink === "media" ? true : false} title="Media"/>
                     <TwitTab onClick={onLikesSelect} id={"likes"} active={activeLink === "likes" ? true : false} title="Likes"/>
                 </TwitTabs>
-                {renderPosts()}
+                <div className={user["user__feed-holder"]}>   
+                    {renderPosts()}
+                    <FeedCard title="Who to Scout">
+                        {renderUsers()}
+                    </FeedCard>
+                </div>
+                
             </div>
         );
 }

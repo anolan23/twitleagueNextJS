@@ -2,7 +2,9 @@ import React from "react";
 import {connect} from "react-redux";
 
 import TwitNavItem from "./TwitNavItem";
+import TwitIcon from "./TwitIcon";
 import twitNav from "../sass/components/TwitNav.module.scss"
+import twitNavItem from "../sass/components/TwitNavItem.module.scss";
 
 function TwitNav(props) {
 
@@ -19,40 +21,26 @@ function TwitNav(props) {
     return(
         <nav className={twitNav["twit-nav"]}>
             <TwitNavItem href="/home" title="Home">
-                <svg className={twitNav["twit-nav__icon"]}>
-                    <use xlinkHref="/sprites.svg#icon-home"/>
-                </svg>
+                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-home"/>
             </TwitNavItem>
             <TwitNavItem href="/notifications" title="Notifications">
-                <svg className={twitNav["twit-nav__icon"]}>
-                    <use xlinkHref="/sprites.svg#icon-bell"/>
-                </svg>
+                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-bell"/>
                 {renderUnseenNotifcations()}
             </TwitNavItem>
             <TwitNavItem href="/messages" title="Messages">
-                <svg className={twitNav["twit-nav__icon"]}>
-                    <use xlinkHref="/sprites.svg#icon-mail"/>
-                </svg>
+                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-mail"/>
             </TwitNavItem>
             <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myTeams" title="My Teams">
-                <svg className={twitNav["twit-nav__icon"]}>
-                    <use xlinkHref="/sprites.svg#icon-server"/>
-                </svg>
+                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-server"/>
             </TwitNavItem>
             <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myLeagues" title="My Leagues">
-                <svg className={twitNav["twit-nav__icon"]}>
-                    <use xlinkHref="/sprites.svg#icon-trending-up"/>
-                </svg>
+                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-trending-up"/>
             </TwitNavItem>
             <TwitNavItem href={`/users/${props.username}`} title="User Profile">
-                <svg className={twitNav["twit-nav__icon"]}>
-                    <use xlinkHref="/sprites.svg#icon-user"/>
-                </svg>
+                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-user"/>
             </TwitNavItem>
             <TwitNavItem className={twitNav["twit-nav__hide"]} href="/more" title="More">
-                <svg className={twitNav["twit-nav__icon"]}>
-                    <use xlinkHref="/sprites.svg#icon-plus-circle"/>
-                </svg>
+                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-plus-circle"/>
             </TwitNavItem>
         </nav>
     );

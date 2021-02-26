@@ -22,7 +22,7 @@ function TwitItem(props) {
         else{
             return (
                 <div className={twitItem["twit-item__action"]}>
-                    <TwitButton onClick={props.onActionClick} color="twit-button--primary">{props.actionText}</TwitButton>
+                    <TwitButton onClick={props.onActionClick} color="twit-button--primary" outline="twit-button--primary--outline">{props.actionText}</TwitButton>
                 </div>
             )
         }
@@ -34,6 +34,7 @@ function TwitItem(props) {
             <div className={twitItem["twit-item__textbox"]}>
                 <span className={twitItem["twit-item__title"]}>{props.title}</span>
                 <span className={twitItem["twit-item__subtitle"]}>{props.subtitle}</span>
+                {props.paragraph ? <p className={twitItem["twit-item__paragraph"]}>{props.paragraph}</p> : null}
             </div>
             {renderAction()}
         </div>

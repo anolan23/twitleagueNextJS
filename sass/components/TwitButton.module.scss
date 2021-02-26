@@ -61,6 +61,10 @@ $button-brightness: 80%;
             background-color: transparent !important;
             transition: all .2s !important;
 
+            &:hover{
+                background-color: var(--BLUE_BACKGROUND) !important;
+            }
+
             &--large{
                 padding: 1rem 3rem;
                 &--expanded{

@@ -53,7 +53,7 @@ class Users {
         const teams = await pool.query(`
         SELECT *
         FROM users
-        ORDER BY users.avatar
+        ORDER BY avatar, RANDOM()
         LIMIT $1
         `, [num]);
         

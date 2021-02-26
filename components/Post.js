@@ -84,7 +84,7 @@ function Post(props) {
           <div className={post["post__content"]}>
               <div className={post["post__heading"]}>
                 <div className={post["post__heading-text"]}>
-                  <Link passHref href={props.post.username?"/users/" + props.post.username:""}><a className={post["post__display-name"]}>{props.post.name}</a></Link>
+                  <Link passHref href={props.post.username?"/users/" + props.post.username:""}><a className={post["post__display-name"]} onClick={(e) => e.stopPropagation()}>{props.post.name}</a></Link>
                   <span className={post["post__username"] + " muted"}>@{props.post.username}</span>
                   {renderBadge()}
                 </div>

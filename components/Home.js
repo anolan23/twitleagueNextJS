@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {connect} from "react-redux";
 
 import MainInput from "./MainInput";
@@ -11,8 +11,6 @@ import TwitButton from "./TwitButton";
 import Empty from "./Empty";
 
 function Home(props) {
-
-    let empty = true;
 
     const renderPosts = () => {
         if(props.posts === null){
