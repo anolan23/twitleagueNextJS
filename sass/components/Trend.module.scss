@@ -1,0 +1,27 @@
+.trend{
+    color: var(--color-text-secondary);
+    font-size: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    transition: all .2s;
+    cursor: pointer;
+    padding: 1.2rem 1.6rem;
+
+    &:hover{
+        background-color: var(--GRAY_BACKGROUND);
+    }
+
+    &__topic{
+        
+    }
+
+    &__trend{
+        color: var(--color-text);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    &__count{
+
+    }
+}

@@ -4,6 +4,7 @@ import SuggestedTeams from "./SuggestedTeams";
 import TwitSearch from "./modals/TwitSearch";
 import TwitIcon from "../components/TwitIcon";
 import SuggestedUsers from "./SuggestedUsers";
+import WhatsHappening from "./WhatsHappening";
 
 function RightColumn(){
     return (
@@ -14,6 +15,7 @@ function RightColumn(){
                     <TwitSearch inline placeHolder="Search twitleague"/>
                 </div>
             </div>
+            <WhatsHappening/>
             <SuggestedTeams/>
             <SuggestedUsers/>
         </div>

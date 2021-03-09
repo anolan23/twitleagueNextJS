@@ -179,7 +179,7 @@ class Posts {
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.id = $1
-                  ORDER BY created_at`, [postId, userId]
+                  ORDER BY created_at DESC`, [postId, userId]
               )
 
               posts = activePost.rows;
@@ -198,7 +198,7 @@ class Posts {
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.id = $1
-                  ORDER BY created_at`, [in_reply_to_post_id, userId]
+                  ORDER BY created_at DESC`, [in_reply_to_post_id, userId]
               )
               return previousPost.rows[0];
               }
@@ -227,7 +227,7 @@ class Posts {
                   FROM posts AS p1
                   JOIN users ON p1.author_id = users.id
                   WHERE p1.in_reply_to_post_id = $1
-                  ORDER BY created_at`, [activePost.rows[0].id, userId]
+                  ORDER BY created_at DESC`, [activePost.rows[0].id, userId]
               )
               
               posts = [...posts, ...replies.rows];
@@ -331,6 +331,26 @@ class Posts {
     
     return rows[0];
 }
+
+  static async search(query, userId, num, offset) {
+    const {rows} = await pool.query(`
+      SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+        CASE 
+        WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
+        WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+        ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+        END AS date,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
+      FROM posts AS p1
+      JOIN users ON p1.author_id = users.id
+      WHERE to_tsvector('simple', body) @@ to_tsquery('simple', $1)
+      ORDER BY created_at DESC
+      LIMIT $3
+      OFFSET $4
+      `, [query, userId, num, offset]);
+    
+    return rows;
+  }
 
 
 }

@@ -6,8 +6,15 @@ export default async (req,res) => {
         const num = req.query.num;
         const offset = req.query.offset;
         const userId = req.query.userId;
-        const posts = await Posts.findFollowedTeamsPosts(userId, num, offset);
-        res.send(posts);
+        const query = req.query.query;
+        if(query){
+            const posts = await Posts.search(query, userId, num, offset);
+            res.send(posts);
+        }
+        else{
+            const posts = await Posts.findFollowedTeamsPosts(userId, num, offset);
+            res.send(posts);
+        }       
     }
     else if(method === "POST"){
         const replyData = req.body.reply;

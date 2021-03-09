@@ -105,6 +105,24 @@ class Teams {
         return teams.rows;
     }
 
+    static async findTrending() {
+        const teams = await pool.query(`
+        SELECT teams.*, count
+            FROM (
+                SELECT team_id, count(*)
+                FROM team_mentions
+                JOIN posts ON posts.id = post_id
+                WHERE posts.created_at > current_timestamp - interval '20 day'
+                GROUP BY team_id
+                ORDER BY count DESC
+                LIMIT 3
+                ) AS popular_teams
+            JOIN teams ON teams.id = popular_teams.team_id;
+        `);
+        
+        return teams.rows;
+    }
+
     static async joinLeague(leagueId, teamId) {
         const team = await pool.query(`
         UPDATE teams
@@ -140,10 +158,10 @@ class Teams {
 
     static async createEvent(event) {
         const {rows} = await pool.query(`
-        INSERT INTO events (team_id, type, opponent_id, date, location, notes)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO events (team_id, type, opponent_id, date, location, notes, is_home_team)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *`
-        , [event.teamId, event.type, event.opponent, event.eventDate, event.location, event.notes]);
+        , [event.teamId, event.type, event.opponent, event.eventDate, event.location, event.notes, event.isHomeTeam]);
         
         return rows[0];
     }
@@ -154,10 +172,23 @@ class Teams {
         FROM events
         LEFT JOIN teams AS t1 ON events.team_id = t1.id
         LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
-        WHERE events.team_id = $1`
+        WHERE events.team_id = $1 OR events.opponent_id = $1`
         , [teamId]);
         
         return rows;
+    }
+
+    static async findOneEventByTeamId(eventId) {
+        const {rows} = await pool.query(`
+        SELECT events.*, leagues.league_name, to_char(events.date, 'Mon') AS month, to_char(events.date, 'DD') AS day, to_char(events.date, 'HH12:MIAM') AS time, t1.team_name, t1.abbrev, t1.avatar, t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar
+        FROM events
+        LEFT JOIN teams AS t1 ON events.team_id = t1.id
+        LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
+        LEFT JOIN leagues ON t1.league_id = leagues.id
+        WHERE events.id = $1`
+        , [eventId]);
+        
+        return rows[0];
     }
 
     static async search(search) {

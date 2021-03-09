@@ -13,8 +13,19 @@ export default async (req,res) => {
     
     else if(method === "GET"){
       const teamId = req.query.teamId;
-      const events = await Teams.findEventsByTeamId(teamId)
-      res.send(events);
+      const eventId = req.query.eventId;
+      if(teamId){
+        const events = await Teams.findEventsByTeamId(teamId)
+        res.send(events);
+      }
+      else if(eventId){
+        const event = await Teams.findOneEventByTeamId(eventId)
+        res.send(event);
+      }
+      else{
+        res.send([])
+      }
+      
         
     }
 

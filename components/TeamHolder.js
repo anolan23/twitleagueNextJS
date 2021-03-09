@@ -16,6 +16,7 @@ import teamHolder from "../sass/components/TeamHolder.module.scss";
 import TwitButton from "./TwitButton";
 import TwitDropdownButton from "./TwitDropdownButton";
 import TwitDropdownItem from "./TwitDropdownItem";
+import Link from 'next/link';
 
 
 function TeamHolder(props) {
@@ -81,6 +82,26 @@ function TeamHolder(props) {
     
   }
 
+  const renderLeagueName = () => {
+    return (
+      <Link href={`/leagues/${team.league_name}`} passHref>
+        <a className="twit-link">
+          {team.league_name}
+        </a>
+      </Link>
+    )
+  }
+
+  const renderHeadCoach = () => {
+    return (
+      <Link href={`/users/${team.owner}`} passHref>
+        <a className="twit-link">
+          {`@${team.owner}`}
+        </a>
+      </Link>
+    )
+  }
+
   return (
     <div className={teamHolder["team-holder"]}>
       <div className={teamHolder["team-holder__banner"]}>
@@ -99,9 +120,17 @@ function TeamHolder(props) {
             <h1 className="heading-1">{team.team_name}</h1>
             {team.verifiedTeam ? <i style={{color: "var(--color-primary)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
-          <h3 className={teamHolder["team-holder__info__league"] + " muted"}>{`${team.abbrev} · ${team.league_name}`}</h3>
-          <p className={teamHolder["team-holder__info__bio"] + " muted"}>{team.bio}</p>
-          <span className={teamHolder["team-holder__info__owner"] + " muted"}>Head Coach: {`@${team.owner}`}</span>
+          <div className={teamHolder["team-holder__info__name"]}>
+            <h3 className={teamHolder["team-holder__info__name__league"]}>{`${team.abbrev} · `}</h3>
+            &nbsp;
+            {renderLeagueName()}
+          </div>
+          {team.bio ? <p className={teamHolder["team-holder__info__bio"] + " muted"}>{team.bio}</p> : null}
+          <div className={teamHolder["team-holder__info__name"]}>
+            <h3 className={teamHolder["team-holder__info__name__league"]}>Head coach: </h3>
+            &nbsp;
+            {renderHeadCoach()}
+          </div>
           <h3 className={teamHolder["team-holder__attributes"] + " muted"}>
             <div className={teamHolder["team-holder__attribute"]}>
             <i className={"fas fa-map-marker-alt " + teamHolder["team-holder__icon"]}></i>

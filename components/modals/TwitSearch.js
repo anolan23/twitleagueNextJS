@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import {useFormik} from "formik";
 import Link from "next/link";
+import {useRouter} from "next/router";
 
 import AutoCompleteInput from "./AutoCompleteInput";
 import TwitItem from "../TwitItem";
@@ -11,9 +12,19 @@ function TwitSearch(props) {
     const [options, setOptions] = useState([]);
     const [show, setShow] = useState(false);
     const ref = useRef();
+    const router = useRouter();
 
     const formik = useFormik({
-        initialValues: {search: ""}
+        initialValues: {query: ""},
+        onSubmit: values => {
+            console.log(values);
+            router.push({
+                pathname: '/search',
+                query: {query: values.query}
+            });
+            setShow(false);
+        }
+        
     });
 
     useEffect(() => {
@@ -31,17 +42,23 @@ function TwitSearch(props) {
     }
 
     const onChange = (event) => {
+        const searchTerm = event.target.value;
         formik.handleChange(event);
-        
-        const search = async () => {
-            const {data} = await backend.get("api/search", {
-                params: {searchTerm: event.target.value}
-            });
+        if(searchTerm){
+            search(searchTerm);
+        }
+        else{
+            setShow(false);
+        }
+    }
+
+    const search = async (term) => {
+        const {data} = await backend.get("api/search", {
+            params: {searchTerm: term}
+        });
 
         setOptions(data);
-        event.target.value ? setShow(true) : setShow(false);
-        }
-        search();
+        setShow(true);
     }
 
     const renderTeams = () => {
@@ -79,11 +96,11 @@ function TwitSearch(props) {
     }
 
         return (
-            <div ref={ref} style={{width:"100%", position:"relative"}}>
+            <form ref={ref} onSubmit={formik.handleSubmit} style={{width:"100%", position:"relative"}}>
                 <AutoCompleteInput
                     onChange={onChange}
-                    value={formik.values.search}
-                    name="search" 
+                    value={formik.values.query}
+                    name="query" 
                     type="text" 
                     placeholder={props.placeHolder}  
                     autoComplete="off"
@@ -93,7 +110,7 @@ function TwitSearch(props) {
                     peopleOptions={renderUsers()}
                     peopleHeader="People"
                 /> 
-            </div>
+            </form>
           
             
         );

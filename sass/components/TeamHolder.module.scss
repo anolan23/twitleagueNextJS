@@ -61,9 +61,12 @@
         align-items: flex-start;
         padding: 0 1rem;
 
-        &__league{
-            font-size: 1.5rem;
-            font-weight: 400;
+        &__name{
+            display: flex;
+            &__league{
+                font-size: 1.5rem;
+                font-weight: 400;
+            }
         }
 
         &__bio{

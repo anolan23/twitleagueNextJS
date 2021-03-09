@@ -1,6 +1,7 @@
 :root{
     --color-text: rgb(15, 20, 25);
     --color-text-secondary: rgb(91, 112, 131);
+    --color-text-link: rgb(27, 149, 224);
     --color-primary: rgb(29, 161, 242);
     --color-secondary: #393e46;
     --color-tertiary: #00adb5;
@@ -38,6 +39,10 @@ html {
 body {
     box-sizing: border-box;
     padding: 0rem;
+}
+
+a {
+    color: var(--color-text-link);
 }
 
 .twit-container{
@@ -166,7 +171,7 @@ body {
 
     &__right-column{
         height: 100vh; //will remove
-        max-width: 35rem;
+        max-width: 38rem;
         align-items: center;
         padding: 0 1.5rem;
         @media only screen and (max-width: 994px){

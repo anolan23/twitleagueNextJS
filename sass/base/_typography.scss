@@ -29,7 +29,7 @@ body {
     &,
     &:link,
     &:visited{
-        color: var(--color-primary);
+        color: var(--color-text-link);
         text-decoration: none;
         cursor: pointer;
     }

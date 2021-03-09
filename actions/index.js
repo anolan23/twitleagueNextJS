@@ -366,6 +366,20 @@ export const fetchLeaguePosts = (leagueId) => async (dispatch) => {
     dispatch({type: "FETCH_LEAGUE_POSTS", payload: response.data});
 }
 
+export const fetchSearchedPosts = async (query, userId, num, offset) => {
+    const posts = await backend.get("/api/posts", {
+        params: {
+            query,
+            userId,
+            num,
+            offset
+        }
+    });
+
+    return posts.data;
+  
+}
+
 export const fetchThreadPosts = (postId) => async (dispatch, getState) => {
     const userId = getState().user.id;
     const response = await backend.get("/api/posts/thread", {
@@ -461,6 +475,18 @@ export const fetchNotifications = () => async (dispatch, getState) => {
     });
     dispatch({type: "FETCH_NOTIFICATIONS", payload: response.data})
 }
+
+export const fetchEvent = async (eventId) =>  {
+    const event = await backend.get("/api/teams/events", {
+        params: {
+            eventId
+        }
+    });
+    return event.data;
+}
+
+
+
 
 
 

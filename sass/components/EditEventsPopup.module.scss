@@ -6,6 +6,12 @@
         justify-content: flex-end;
         align-items: center;
         padding: 1.5rem;
+        position: relative;
+
+        &__title{
+            position: absolute;
+            left: 6rem;
+        }
 
         &__actions{
             display: grid;
