@@ -116,6 +116,11 @@ export const toggleEditEventsPopup = () => (dispatch) => {
         dispatch({type: "TOGGLE_EDIT_EVENTS_POPUP"});
 }
 
+export const toggleUpdateScorePopup = () => (dispatch) => {
+    dispatch({type: "TOGGLE_UPDATE_SCORE_POPUP"});
+}
+
+
 export const togglePanel = () => {
     return {type: "TOGGLE_PANEL"};
 }
@@ -163,11 +168,7 @@ export const fetchTeamAndTeamPosts = (teamAbbrev) => async (dispatch) => {
 }
 
 export const findEventsByTeamId = async teamId => {
-    const response = await backend.get("/api/teams/events", {
-        params:{
-            teamId
-        }  
-});
+    const response = await backend.get(`/api/teams/${teamId}/events`);
     return response.data;
 }
 
@@ -477,12 +478,15 @@ export const fetchNotifications = () => async (dispatch, getState) => {
 }
 
 export const fetchEvent = async (eventId) =>  {
-    const event = await backend.get("/api/teams/events", {
-        params: {
-            eventId
-        }
-    });
+    const event = await backend.get(`/api/events/${eventId}`);
     return event.data;
+}
+
+export const createEvent = async (event) => {
+    const response = await backend.post("/api/events", {
+            event
+    });
+    return response.data;
 }
 
 

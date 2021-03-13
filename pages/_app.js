@@ -16,6 +16,7 @@ import EditTeamPopup from '../components/modals/EditTeamPopup';
 import EditRoster from '../components/modals/EditRoster';
 import EditEventsPopup from "../components/modals/EditEventsPopup";
 import TwitPanel from '../components/TwitPanel';
+import UpdateScorePopup from "../components/modals/UpdateScorePopup";
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState)
@@ -38,6 +39,7 @@ function MyApp({ Component, pageProps }) {
       <EditRoster/>
       <EditEventsPopup/>
       <EditTeamPopup/>
+      <UpdateScorePopup/>
       <PopupCompose/>
       <PopupReply/>
       <TwitPanel/>

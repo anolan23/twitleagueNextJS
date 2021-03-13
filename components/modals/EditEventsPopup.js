@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {useFormik} from "formik";
 import {connect} from "react-redux";
 
-import {toggleEditEventsPopup, findEventsByTeamId} from "../../actions";
+import {toggleEditEventsPopup, findEventsByTeamId, createEvent} from "../../actions";
 import backend from "../../lib/backend";
 import editEventsPopup from "../../sass/components/EditEventsPopup.module.scss";
 import twitForm from "../../sass/components/TwitForm.module.scss";
@@ -47,7 +47,7 @@ function EditEventsPopup(props){
             month,
             time
         });
-        fetchEvents();
+        
     }
 
     const getOpponents = async () => {
@@ -71,20 +71,14 @@ function EditEventsPopup(props){
         },
         onSubmit: values => { 
             console.log(values)
-            createEvent(values);
+            const event = {...values, teamId: props.teamId}
+            createEvent(event);
           }
     });
 
     const fetchEvents = async () => {
         const events = await findEventsByTeamId(props.teamId);
         setEvents(events);
-    }
-
-    const createEvent = async (event) => {
-        console.log(props.teamId)
-        const response = await backend.post("/api/teams/events", {
-                event: {...event, teamId: props.teamId}
-        });
     }
 
     const assembleOpponent = (opponentId) => {

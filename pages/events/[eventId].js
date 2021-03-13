@@ -2,26 +2,22 @@ import React, {useEffect, useState} from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
 import Link from "next/link";
+import {toggleUpdateScorePopup} from "../../actions";
+import {connect} from "react-redux";
 
 import MainBody from "../../components/MainBody"
 import TopBar from "../../components/TopBar";
 import events from "../../sass/components/Events.module.scss"
 import {fetchEvent} from "../../actions";
 import Avatar from "../../components/Avatar";
+import TwitButton from "../../components/TwitButton";
 
 function EventsPage(props){
-    const router = useRouter();
-    const { eventId } = router.query;
-    const [event, setEvent] = useState(null);
-    console.log(event)
+    const {event} = props;
+    const router = useRouter()
 
-    useEffect(() => {
-        start();
-    }, [])
-
-    const start = async () => {
-        const event = await fetchEvent(eventId);
-        setEvent(event);
+    if (router.isFallback) {
+        return <div>Loading...</div>
     }
 
     const dateString = (string) => {
@@ -32,6 +28,14 @@ function EventsPage(props){
         const time = date.toLocaleTimeString([], timeOptions);
         const result = `${formattedDate}, ${time}`
         return result;
+    }
+
+    const onUpdateScoreClick = () => {
+        props.toggleUpdateScorePopup();
+        const updateScoreEvent = new CustomEvent('update-score', {
+            detail: {event: event}
+          });
+        document.dispatchEvent(updateScoreEvent)
     }
 
     const renderScore = () => {
@@ -69,6 +73,7 @@ function EventsPage(props){
                         ·
                         &nbsp;
                         <span className={events["events__event__info__date"]}>{dateString(event.date)}</span>
+                        <span className={events["events__event__info__status"]}>Final</span>
                     </div>
                     <div className={events["events__event__matchup"]}>
                         <div className={events["events__event__matchup__team"]}>
@@ -82,8 +87,12 @@ function EventsPage(props){
                         </div>
                     </div>
                     <div className={events["events__event__more-info"]}>
-                        <span className={events["events__event__more-info__type"]}>{event.type}</span>
+                        <span className={events["events__event__more-info__info"]}>{event.type}</span>
+                        <span className={events["events__event__more-info__info"]}>{event.location}</span>
                         <p className={events["events__event__more-info__notes"]}>{event.notes}</p>
+                        <div className={events["events__event__more-info__actions"]}>
+                            <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary" size="twit-button--expanded">Update score</TwitButton>
+                        </div>
                     </div>
                 </div>
             )
@@ -100,6 +109,25 @@ function EventsPage(props){
         </MainBody>
       </React.Fragment>
     )
+
 }
 
-  export default EventsPage;
+export async function getStaticPaths() {
+    return { paths: [], fallback: true };
+  }
+  
+export async function getStaticProps(context) {
+    const eventId = context.params.eventId;
+    const event = await fetchEvent(eventId);
+    console.log("event", event)
+
+    return {
+        revalidate: 1,
+        props: {
+        event
+        } // will be passed to the page component as props
+    }  
+
+}
+
+export default connect(null, {toggleUpdateScorePopup})(EventsPage);
