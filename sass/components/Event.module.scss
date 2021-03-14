@@ -8,7 +8,7 @@
     cursor: pointer;
     border-bottom: var(--border);
     font-size: 1.5rem;
-    gap: 1rem;
+    gap: 1.5rem;
     position: relative;
     min-height: 100px;
     
@@ -20,18 +20,19 @@
         flex-direction: column;
         align-items: center;
         line-height: 1;
-        z-index: 2;
+        z-index: 1;
+        text-align: center;
 
 
         &--day{
-            font-size: 2rem;
+            font-size: 3rem;
             font-weight: 700;
         }
 
         &--month{
             font-weight: 400;
             text-transform: uppercase;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
         }
     }
 
@@ -43,7 +44,9 @@
 
 
         &__vs{
-            font-size: 1.3rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text);
         }
 
     }
@@ -63,11 +66,11 @@
       justify-content: center;
       height: 100%;
       width: 106%;
-      opacity: .25;
+      opacity: 0;
       transition: all .2s;
 
       &:hover{
-        opacity: .5;
+        opacity: .15;
       }
 
       &__team{
@@ -84,12 +87,11 @@
     &__info{
         display: flex;
         flex-direction: column;
-        font-size: 1.3rem;
-        z-index: 2;
+        color: var(--color-text-secondary);
+        z-index: 1;
     }
 
     &__type{
-        font-weight: 800;
         &::first-letter{
             text-transform: uppercase;
         }
@@ -163,6 +165,31 @@
     
         &:hover{
           text-decoration: none;
+        }
+      }
+
+      &__status{
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 1.5rem;
+
+        &__text{
+          font-size: 1.3rem;
+          color: var(--color-text-secondary);
+
+          &--live{
+            font-size: 1.3rem;
+            color: var(--color-primary);
+            font-weight: 700;
+          }
+        }
+        &__score{
+          font-size: 1.9rem;
+          font-weight: 700;
         }
       }
 }

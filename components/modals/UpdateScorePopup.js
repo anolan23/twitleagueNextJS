@@ -5,37 +5,38 @@ import {useFormik} from "formik";
 import Popup from "./Popup";
 import Avatar from "../Avatar";
 import TwitButton from "../TwitButton";
-import {toggleUpdateScorePopup} from "../../actions";
+import {toggleUpdateScorePopup, updateEvent} from "../../actions";
 import updateScorePopup from "../../sass/components/UpdateScorePopup.module.scss";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 
 function UpdateScorePopup(props) {
-    const [_event, setEvent] = useState(null);
+    const {_event} = props;
 
     useEffect(() => {
-        document.addEventListener("update-score", onUpdateScoreClick);
-    }, [])
+        formik.setFieldValue("points", _event.points ? _event.points : 0);
+        formik.setFieldValue("opponent_points", _event.opponent_points ? _event.opponent_points : 0);
+        formik.setFieldValue("play_period", _event.play_period ? _event.play_period : "");
+
+    }, [props._event.id])
     
     const formik = useFormik({
         initialValues: {
-            
+            points: _event.points,
+            opponent_points: _event.opponent_points,
+            play_period: _event.play_period
         },
         onSubmit: (values) => {
-            
+            props.updateEvent(_event.id, values);
+            console.log("updating score...")
         }
 
     });
 
-    const onUpdateScoreClick = (event) => {
-        console.log("event.detail.event", event.detail.event);
-        setEvent(event.detail.event)
-    }
-
     const renderHeading = () => {
         return (
             <div className={updateScorePopup["update-score-popup__heading"]}>
-                <TwitButton form="edit-team-form" color="twit-button--primary">Save</TwitButton>
+                <TwitButton form="update-score-form" color="twit-button--primary">Save</TwitButton>
             </div>
         )
     }
@@ -46,16 +47,36 @@ function UpdateScorePopup(props) {
         }
         else{
             return (
-                <form className={updateScorePopup["update-score-popup"]}>
+                <form className={updateScorePopup["update-score-popup"]} id="update-score-form" onSubmit={formik.handleSubmit}>
                     <div className={updateScorePopup["update-score-popup__teams"]}>
                         <div className={updateScorePopup["update-score-popup__teams__team"]}>
                             <Avatar className={updateScorePopup["update-score-popup__teams__team__avatar"]} src={_event.avatar}/>
                             <span className={updateScorePopup["update-score-popup__teams__team__name"]}>{_event.team_name}</span>
                         </div>
                         <div className={updateScorePopup["update-score-popup__teams__score"]}>
-                            <input className={updateScorePopup["update-score-popup__teams__score__points"]} type="number" min={0} max={999}/>
+                            <input 
+                                className={updateScorePopup["update-score-popup__teams__score__points"]} 
+                                type="number" 
+                                min={0} 
+                                max={999}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                name="points"
+                                id="points"
+                                value={formik.values.points}
+                                />
                             <span className={updateScorePopup["update-score-popup__teams__score__dash"]}>-</span>
-                            <input className={updateScorePopup["update-score-popup__teams__score__points"]} type="number" min={0} max={999}/>
+                            <input 
+                                className={updateScorePopup["update-score-popup__teams__score__points"]} 
+                                type="number" 
+                                min={0} 
+                                max={999}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                name="opponent_points"
+                                id="opponent_points"
+                                value={formik.values.opponent_points}
+                            />
                         </div>
                         <div className={updateScorePopup["update-score-popup__teams__team"]}>
                             <Avatar className={updateScorePopup["update-score-popup__teams__team__avatar"]} src={_event.opponent_avatar}/>
@@ -63,8 +84,16 @@ function UpdateScorePopup(props) {
                         </div>
                     </div>
                     <TwitInputGroup labelText="Play period">
-                        <TwitInput select>
-                            <option selected value={null}>Start</option> 
+                        <TwitInput 
+                            select 
+                            value={formik.values.play_period} 
+                            onChange={formik.handleChange} 
+                            onBlur={formik.handleBlur}
+                            name="play_period"
+                            id="play_period"
+                            >
+
+                            <option defaultValue value={null}>Start</option> 
                             <option>1st Half</option> 
                             <option>1st Half</option>
                             <option>2nd Half</option>
@@ -96,6 +125,8 @@ function UpdateScorePopup(props) {
         
     }
 
+    console.log(formik.values);
+
     return (
         <Popup
             show={props.showUpdateScorePopup}
@@ -108,8 +139,9 @@ function UpdateScorePopup(props) {
 
 const mapStateToProps = (state) => {
     return {
-        showUpdateScorePopup: state.modals.showUpdateScorePopup
+        showUpdateScorePopup: state.modals.showUpdateScorePopup,
+        _event: state.event
         }
 }
 
-export default connect(mapStateToProps, {toggleUpdateScorePopup})(UpdateScorePopup);
+export default connect(mapStateToProps, {toggleUpdateScorePopup, updateEvent})(UpdateScorePopup);

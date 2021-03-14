@@ -170,7 +170,7 @@ a {
     border-left: var(--border);
 
     &__right-column{
-        height: 100vh; //will remove
+        height: auto; //will remove
         max-width: 38rem;
         align-items: center;
         padding: 0 1.5rem;
@@ -228,7 +228,7 @@ a {
         width: 600px;
         background-color: white;
         border-bottom: var(--border);
-        z-index: 1;
+        z-index: 2;
 
         display: flex;
         align-items: center;

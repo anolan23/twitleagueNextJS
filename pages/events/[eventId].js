@@ -8,17 +8,18 @@ import {connect} from "react-redux";
 import MainBody from "../../components/MainBody"
 import TopBar from "../../components/TopBar";
 import events from "../../sass/components/Events.module.scss"
-import {fetchEvent} from "../../actions";
+import {fetchEvent, setEvent} from "../../actions";
 import Avatar from "../../components/Avatar";
 import TwitButton from "../../components/TwitButton";
 
 function EventsPage(props){
-    const {event} = props;
-    const router = useRouter()
+    const event = props.event;
+    const _event = props._event;
+    const router = useRouter();
 
-    if (router.isFallback) {
-        return <div>Loading...</div>
-    }
+    useEffect(() => {
+        props.setEvent(_event);
+    }, [_event])
 
     const dateString = (string) => {
         const date = new Date(string);
@@ -32,14 +33,10 @@ function EventsPage(props){
 
     const onUpdateScoreClick = () => {
         props.toggleUpdateScorePopup();
-        const updateScoreEvent = new CustomEvent('update-score', {
-            detail: {event: event}
-          });
-        document.dispatchEvent(updateScoreEvent)
     }
 
     const renderScore = () => {
-        if(!event.score){
+        if(!event.points){
             return(
                 <div className={events["events__event__matchup__symbol-holder"]}>
                     <span className={events["events__event__matchup__symbol__symbol"]}>{event.is_home_team ? "vs" : "@"}</span>
@@ -49,9 +46,9 @@ function EventsPage(props){
         else{
             return(
                 <div className={events["events__event__matchup__score"]}>
-                    <span className={events["events__event__matchup__score__points"]}>24</span>
+                    <span className={events["events__event__matchup__score__points"]}>{event.points}</span>
                     <span className={events["events__event__matchup__score__dash"]}>-</span>
-                    <span className={events["events__event__matchup__score__points"]}>17</span>
+                    <span className={events["events__event__matchup__score__points"]}>{event.opponent_points}</span>
                 </div>
             )
         }
@@ -73,7 +70,7 @@ function EventsPage(props){
                         ·
                         &nbsp;
                         <span className={events["events__event__info__date"]}>{dateString(event.date)}</span>
-                        <span className={events["events__event__info__status"]}>Final</span>
+                        <span className={events["events__event__info__status"]}>{event.play_period}</span>
                     </div>
                     <div className={events["events__event__matchup"]}>
                         <div className={events["events__event__matchup__team"]}>
@@ -88,27 +85,35 @@ function EventsPage(props){
                     </div>
                     <div className={events["events__event__more-info"]}>
                         <span className={events["events__event__more-info__info"]}>{event.type}</span>
-                        <span className={events["events__event__more-info__info"]}>{event.location}</span>
+                        <span className={events["events__event__more-info__info"]}>{event.location ? event.location : "Unknown location"}</span>
                         <p className={events["events__event__more-info__notes"]}>{event.notes}</p>
-                        <div className={events["events__event__more-info__actions"]}>
-                            <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary" size="twit-button--expanded">Update score</TwitButton>
-                        </div>
                     </div>
                 </div>
             )
         }
     }
+
+    if (router.isFallback) {
+        return <div>Loading...</div>
+    }
+    else{
+        return (
+            <React.Fragment>
+            <MainBody>
+                <TopBar main="Event">
+                    <div className={events["events__event__more-info__actions"]}>
+                        <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary" size="twit-button--expanded">Update score</TwitButton>
+                    </div>
+                </TopBar>
+                <div className={events["events"]}>
+                    {renderEvent()}
+                </div>          
+            </MainBody>
+          </React.Fragment>
+        )
+    }
     
-    return (
-        <React.Fragment>
-        <MainBody>
-            <TopBar main="Event"/>
-            <div className={events["events"]}>
-                {renderEvent()}
-            </div>          
-        </MainBody>
-      </React.Fragment>
-    )
+    
 
 }
 
@@ -118,16 +123,21 @@ export async function getStaticPaths() {
   
 export async function getStaticProps(context) {
     const eventId = context.params.eventId;
-    const event = await fetchEvent(eventId);
-    console.log("event", event)
+    const _event = await fetchEvent(eventId);
 
     return {
         revalidate: 1,
         props: {
-        event
+        _event
         } // will be passed to the page component as props
     }  
 
 }
 
-export default connect(null, {toggleUpdateScorePopup})(EventsPage);
+const mapStateToProps = (state) => {
+    return {
+        event: state.event
+    }
+}
+
+export default connect(mapStateToProps, {toggleUpdateScorePopup, setEvent})(EventsPage);

@@ -35,6 +35,15 @@ function Event(props) {
     }
   }
 
+  const renderPlayPeriod = () => {
+    if(props.event.play_period){
+      return <span className={event["event__status__text--live"]}>{props.event.play_period}</span>
+    }
+    else{
+      return <span className={event["event__status__text"]}>Upcoming</span>
+    }
+  }
+
   return(
           <div onClick={() => router.push(`/events/${props.event.id}`).then(() => window.scrollTo(0, 0))} className={event["event"]}>
             {renderTeams()}
@@ -44,12 +53,16 @@ function Event(props) {
             </div>
             <div className={event["event__matchup"]}>
               <div className={event["event__info"]}>
-                    <span className={event["event__type"]}>{props.event.type}</span>
+                    <span className={event["event__type"]}>{props.event.type === "game" ? null : props.event.type}</span>
                     {renderTeamNames()}
-                    <span className={event["event__time"]}>{props.event.time}</span>
-                    <span className={event["event__location"]}>{props.event.location}</span>
+                    <span className={event["event__time"]}>{props.event.play_period ? null : props.event.time}</span>
+                    <span className={event["event__location"]}>{props.event.location ? `Location: ${props.event.location}` : "Unknown location"}</span>
               </div>
             </div> 
+            <div className={event["event__status"]}>
+              {renderPlayPeriod()}
+              <span className={event["event__status__score"]}>{props.event.points ? `${props.event.points} - ${props.event.opponent_points}` : null}</span>
+            </div>
           </div>
   );
 }

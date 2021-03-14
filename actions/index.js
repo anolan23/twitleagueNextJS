@@ -489,6 +489,22 @@ export const createEvent = async (event) => {
     return response.data;
 }
 
+export const setEvent = event => (dispatch) => {
+    if(event){
+        dispatch({type: "SET_EVENT", payload: event})
+    }
+}
+
+export const updateEvent = (eventId, values) => async (dispatch) => {
+    const event = await backend.patch(`/api/events/${eventId}`, {
+            values
+    });
+    dispatch({type: "UPDATE_EVENT", payload: event.data})
+    dispatch(toggleUpdateScorePopup());
+}
+
+
+
 
 
 

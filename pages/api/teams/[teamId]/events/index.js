@@ -1,4 +1,4 @@
-import Teams from "../../../../../db/repos/Teams";
+import Events from "../../../../../db/repos/Events";
 
 export default async (req,res) => {
     const method = req.method;
@@ -10,7 +10,7 @@ export default async (req,res) => {
     
     else if(method === "GET"){
         const query = req.query
-        const events = await Teams.findEventsByTeamId(query.teamId);
+        const events = await Events.findEventsByTeamId(query.teamId);
         res.send(events);
     }
 
