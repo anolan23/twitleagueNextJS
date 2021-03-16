@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
 import Link from "next/link";
-import {toggleUpdateScorePopup} from "../../actions";
+import {toggleUpdateScorePopup, approveEvent} from "../../actions";
 import {connect} from "react-redux";
 
 import MainBody from "../../components/MainBody"
@@ -35,6 +35,10 @@ function EventsPage(props){
         props.toggleUpdateScorePopup();
     }
 
+    const onApproveClick = () => {
+        props.approveEvent(event.id);
+    }
+
     const renderScore = () => {
         if(!event.points){
             return(
@@ -65,12 +69,12 @@ function EventsPage(props){
             return(
                 <div className={events["events__event"]}>
                     <div className={events["events__event__info"]}>
-                        <Link href={`/leagues/${events.league_name}`} passHref><a className="twit-link">{event.league_name}</a></Link>
+                        <Link href={`/leagues/${event.league_name}`} passHref><a className="twit-link">{event.league_name}</a></Link>
                         &nbsp;
                         ·
                         &nbsp;
                         <span className={events["events__event__info__date"]}>{dateString(event.date)}</span>
-                        <span className={events["events__event__info__status"]}>{event.play_period}</span>
+                        {renderPlayPeriod()}
                     </div>
                     <div className={events["events__event__matchup"]}>
                         <div className={events["events__event__matchup__team"]}>
@@ -93,6 +97,42 @@ function EventsPage(props){
         }
     }
 
+    const renderPlayPeriod = () => {
+        if(event.play_period){
+          return <span className={events["events__event__info__status--live"]}>{event.play_period}</span>
+        }
+        else{
+          return <span className={events["events__event__info__status"]}>Upcoming</span>
+        }
+      }
+
+      const renderUpdateScoreAction = () => {
+        const approvedUsers = [event.owner_id, event.team_owner_id, event.opponent_owner_id]
+        if(!approvedUsers.includes(props.userId) || event.league_approved){
+            return null
+        }
+        else{
+            return <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary">Update score</TwitButton>
+        }
+    }
+
+      const renderApproveAction = () => {
+          if(props.userId !== event.owner_id){
+              return null
+          }
+          else if(event.play_period === "Final"){
+              if(!event.league_approved){
+                return <TwitButton onClick={onApproveClick} color="twit-button--primary">Approve</TwitButton>
+              }
+              else{
+                return <TwitButton disabled color="twit-button--primary">Approved</TwitButton>
+              }
+          }
+          else{
+            return <TwitButton disabled color="twit-button--primary">Approve</TwitButton>
+          }
+      }
+
     if (router.isFallback) {
         return <div>Loading...</div>
     }
@@ -102,7 +142,8 @@ function EventsPage(props){
             <MainBody>
                 <TopBar main="Event">
                     <div className={events["events__event__more-info__actions"]}>
-                        <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary" size="twit-button--expanded">Update score</TwitButton>
+                        {renderUpdateScoreAction()}
+                        {renderApproveAction()}
                     </div>
                 </TopBar>
                 <div className={events["events"]}>
@@ -136,8 +177,9 @@ export async function getStaticProps(context) {
 
 const mapStateToProps = (state) => {
     return {
-        event: state.event
+        event: state.event,
+        userId: state.user.id
     }
 }
 
-export default connect(mapStateToProps, {toggleUpdateScorePopup, setEvent})(EventsPage);
+export default connect(mapStateToProps, {toggleUpdateScorePopup, setEvent, approveEvent})(EventsPage);

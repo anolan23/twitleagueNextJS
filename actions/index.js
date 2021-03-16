@@ -172,6 +172,11 @@ export const findEventsByTeamId = async teamId => {
     return response.data;
 }
 
+export const findEventsByTeamAbbrev = async abbrev => {
+    const response = await backend.get(`/api/teams/${abbrev}/events`);
+    return response.data;
+}
+
 export const addTeamEventAndFetchTeam = (values) => async (dispatch, getState) => {
     const teamAbbrev = getState().team.teamAbbrev.substring(1);
     await dispatch(addTeamEvent(values));
@@ -477,6 +482,15 @@ export const fetchNotifications = () => async (dispatch, getState) => {
     dispatch({type: "FETCH_NOTIFICATIONS", payload: response.data})
 }
 
+export const sendAwaitingEventApprovalNotification = async (userId, eventId) => {
+    const notification = await backend.post("/api/notifications", {
+        userId,
+        type: "Awaiting Event Approval",
+        eventId
+    });
+    return notification.data;
+}
+
 export const fetchEvent = async (eventId) =>  {
     const event = await backend.get(`/api/events/${eventId}`);
     return event.data;
@@ -496,12 +510,24 @@ export const setEvent = event => (dispatch) => {
 }
 
 export const updateEvent = (eventId, values) => async (dispatch) => {
-    const event = await backend.patch(`/api/events/${eventId}`, {
+    await backend.patch(`/api/events/${eventId}`, {
             values
     });
-    dispatch({type: "UPDATE_EVENT", payload: event.data})
+    //check for success before dispatching event
+    dispatch({type: "UPDATE_EVENT", payload: values})
     dispatch(toggleUpdateScorePopup());
 }
+
+export const approveEvent = (eventId) => async (dispatch) => {
+    backend.patch(`/api/events/${eventId}`, {
+        values: {
+            league_approved: true
+        }
+    });
+    dispatch({type: "APPROVE_EVENT"})
+}
+
+
 
 
 

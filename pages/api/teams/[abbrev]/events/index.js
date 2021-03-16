@@ -10,7 +10,7 @@ export default async (req,res) => {
     
     else if(method === "GET"){
         const query = req.query
-        const events = await Events.findEventsByTeamId(query.teamId);
+        const events = await Events.findEventsByTeamAbbrev(`$${query.abbrev}`);
         res.send(events);
     }
 

@@ -5,7 +5,11 @@ const eventReducer = (state = INITIAL_STATE, action) => {
         case "SET_EVENT":
             return action.payload;
         case "UPDATE_EVENT":
-            return action.payload;
+            let event = {...state};
+            Object.assign(event, action.payload)
+            return event;
+        case "APPROVE_EVENT":
+            return {...state, league_approved: true};
         default:
             return state;
     }

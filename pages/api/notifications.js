@@ -9,9 +9,22 @@ export default async (req,res) => {
         res.send(notifications);
     }
     else if(method === "POST"){
-        const joinTeamInvite = req.body;
-        const notification = await Notifications.sendJoinTeamInvite(joinTeamInvite);
-        res.send(notification);
+        const type = req.body.type;
+        switch(type){
+            case "Join Team Invite": {
+                const joinTeamInvite = req.body;
+                const notification = await Notifications.sendJoinTeamInvite(joinTeamInvite);
+                res.send(notification);
+            }
+            case "Awaiting Event Approval": {
+                const notification = req.body;
+                const createdNotification = await Notifications.sendAwaitingEventApproval(notification);
+                res.send(createdNotification);
+            }
+            default:
+                res.send("notification type unknown")
+        }
+        
     }
 
     else if(method === "DELETE"){

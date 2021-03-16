@@ -4,6 +4,7 @@
     padding: 1rem 1.5rem;
     border-bottom: var(--border);
     transition: background-color .2s;
+    cursor: pointer;
 
     &:hover{
         background-color:var(--GRAY_BACKGROUND);

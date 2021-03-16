@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import {connect} from "react-redux";
+import {useRouter} from "next/router";
 import reactStringReplace from "react-string-replace";
 
 import notification from "../sass/components/Notification.module.scss";
@@ -10,6 +11,7 @@ import backend from "../lib/backend";
 import {deleteNotification} from "../actions";
 
 function Notification(props) {
+    const router = useRouter();
 
     const onAcceptJoinLeagueRequestClick = () => {
         const leagueId = props.notification.league_id;
@@ -35,43 +37,68 @@ function Notification(props) {
         props.deleteNotification(props.notification.id);
     }
 
-    const renderNotification = () => {
-        if(props.notification.type ==="Join League Request")
-        {
-            const text = `${props.notification.abbrev}  wants to join your league: ${props.notification.league_name}`;
-            const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-                <Link key={match + i} passHref href={`/teams/${props.notification.abbrev.substring(1)}`}><a>${match}</a></Link>
-              ));
-            return (
-                <React.Fragment>
-                    <span className={notification["notification__text"]}>{replacedText}</span>
-                    <div className={notification["notification__actions"]}>
-                        <TwitButton onClick={onAcceptJoinLeagueRequestClick} color="twit-button--primary">Accept</TwitButton>
-                        <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
-                    </div>
-                </React.Fragment>
-            );
+    const renderSymbol = () => {
+        if(props.notification.is_home_team){
+            return "vs"
         }
-        else if(props.notification.type === "Join Team Invite"){
-            const text = `${props.notification.abbrev} wants you to play for their team`;
-            const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-                <Link key={match + i} passHref href={"/teams/"+ props.notification.abbrev}><a>${match}</a></Link>
-              ));
-            
-            return (
-                <React.Fragment>
-                    <span className={notification["notification__text"]}>{replacedText}</span>
-                    <div className={notification["notification__actions"]}>
-                        <TwitButton onClick={onAcceptJoinTeamInviteClick} color="twit-button--primary">Accept</TwitButton>
-                        <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
-                    </div>
-                </React.Fragment>
-            );
+        else{
+            return "@"
+        }
+    }
+
+    const renderNotification = () => {
+        switch(props.notification.type){
+            case "Join League Request": {
+                const text = `${props.notification.abbrev}  wants to join your league: ${props.notification.league_name}`;
+                const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
+                    <Link key={match + i} passHref href={`/teams/${props.notification.abbrev.substring(1)}`}><a>${match}</a></Link>
+                  ));
+                return (
+                    <React.Fragment>
+                        <span className={notification["notification__text"]}>{replacedText}</span>
+                        <div className={notification["notification__actions"]}>
+                            <TwitButton onClick={onAcceptJoinLeagueRequestClick} color="twit-button--primary">Accept</TwitButton>
+                            <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
+                        </div>
+                    </React.Fragment>
+                );
+            }
+            case "Join Team Invite": {
+                const text = `${props.notification.abbrev} wants you to play for their team`;
+                const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
+                    <Link key={match + i} passHref href={"/teams/"+ props.notification.abbrev}><a>${match}</a></Link>
+                  ));
+                
+                return (
+                    <React.Fragment>
+                        <span className={notification["notification__text"]}>{replacedText}</span>
+                        <div className={notification["notification__actions"]}>
+                            <TwitButton onClick={onAcceptJoinTeamInviteClick} color="twit-button--primary">Accept</TwitButton>
+                            <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
+                        </div>
+                    </React.Fragment>
+                );
+            }
+            case "Awaiting Event Approval": {
+                const event = `${props.notification.team_name} ${renderSymbol()} ${props.notification.opponent_team_name} `;
+                const text = `game has ended and is waiting for ${props.notification.events_league_name} approval`
+
+                return (
+                    <React.Fragment>
+                        <Link passHref href={"/events/"+ props.notification.event_id}><a className={notification["notification__text"]}>{event}</a></Link>
+                        &nbsp;
+                        <span className={notification["notification__text"]}>{text}</span>
+                        <div className={notification["notification__actions"]}>
+                            <TwitButton onClick={() => router.push(`/events/${props.notification.event_id}`)} color="twit-button--primary">Review</TwitButton>
+                        </div>
+                    </React.Fragment>
+                )
+            }
+
+            default:
+                return null;
         }
 
-        else{
-            return null;
-        }
     }
   
         return (

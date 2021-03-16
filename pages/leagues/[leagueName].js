@@ -1,7 +1,6 @@
 import React, {useEffect} from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
-import {initializeStore} from "../../redux/store";
 
 import MainBody from "../../components/MainBody"
 import League from "../../components/League";

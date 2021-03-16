@@ -30,6 +30,15 @@ class Leagues {
         return leagues.rows;
     }
 
+    static async findOneByLeagueId(leagueId) {
+        const {rows} = await pool.query(`
+        SELECT *
+        FROM leagues
+        WHERE id = $1`, [leagueId]);
+        
+        return rows[0];
+    }
+
     static async find() {
         const leagues = await pool.query(`
         SELECT *

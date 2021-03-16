@@ -1,4 +1,4 @@
-import Leagues from "../../../db/repos/Leagues";
+import Leagues from "../../../../db/repos/Leagues";
 
 export default async (req,res) => {
     const method = req.method;
@@ -7,11 +7,11 @@ export default async (req,res) => {
     }
     else if(method === "GET"){
       const leagueName = req.query.leagueName;
-      const league = await Leagues.findOne(leagueName);
+      const league = await Leagues.findOne(leagueName)
       res.send(league);
       
     }
     else{
-        res.status(405).json({message: "api/league/[leagueName] only supports GET"});
+        res.status(405).json({message: "api/leagues/[leagueId] only supports GET"});
     }
 }

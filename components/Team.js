@@ -6,7 +6,7 @@ import Post from "./Post";
 import TwitTab from "./TwitTab";
 import TwitTabs from "./TwitTabs";
 import Empty from "./Empty";
-import {setTeam, createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, toggleEditTeamPopup, findEventsByTeamId} from "../actions";
+import {setTeam, createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, toggleEditTeamPopup, findEventsByTeamAbbrev} from "../actions";
 import TopBar from "./TopBar";
 import TwitItem from "./TwitItem";
 import team from "../sass/components/Team.module.scss"
@@ -51,7 +51,7 @@ function Team(props) {
     }
 
     const fetchEvents = async () => {
-        const events = await findEventsByTeamId(team.id);
+        const events = await findEventsByTeamAbbrev(team.abbrev.substring(1));
         console.log(events);
         setEvents(events);
     }

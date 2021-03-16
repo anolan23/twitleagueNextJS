@@ -11,6 +11,7 @@ import TwitDropdownItem from "./TwitDropdownItem";
 import TwitButton from "./TwitButton";
 import Division from "./Division";
 import Divide from "./Divide";
+import Empty from "./Empty";
 
 function League(props) {
     const league = props.league;
@@ -26,11 +27,7 @@ function League(props) {
       }, [props.league])
 
     const getTeams = async () => {
-        const teams = await backend.get("/api/teams", {
-            params:{
-                leagueId: league.id
-            }
-        })
+        const teams = await backend.get(`/api/leagues/${league.league_name}/teams`);
         setTeams(teams.data);
     }
 

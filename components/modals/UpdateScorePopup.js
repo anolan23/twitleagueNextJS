@@ -5,7 +5,7 @@ import {useFormik} from "formik";
 import Popup from "./Popup";
 import Avatar from "../Avatar";
 import TwitButton from "../TwitButton";
-import {toggleUpdateScorePopup, updateEvent} from "../../actions";
+import {toggleUpdateScorePopup, updateEvent, sendAwaitingEventApprovalNotification} from "../../actions";
 import updateScorePopup from "../../sass/components/UpdateScorePopup.module.scss";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
@@ -27,8 +27,15 @@ function UpdateScorePopup(props) {
             play_period: _event.play_period
         },
         onSubmit: (values) => {
-            props.updateEvent(_event.id, values);
-            console.log("updating score...")
+            if(values.play_period === "Final"){
+                props.updateEvent(_event.id, values);
+                props.sendAwaitingEventApprovalNotification(_event.owner_id, _event.id);
+            }
+            else{
+                props.updateEvent(_event.id, values);
+                console.log("updating score...")
+            }
+            
         }
 
     });
@@ -36,7 +43,7 @@ function UpdateScorePopup(props) {
     const renderHeading = () => {
         return (
             <div className={updateScorePopup["update-score-popup__heading"]}>
-                <TwitButton form="update-score-form" color="twit-button--primary">Save</TwitButton>
+                <TwitButton form="update-score-form" color="twit-button--primary">Update</TwitButton>
             </div>
         )
     }
@@ -144,4 +151,4 @@ const mapStateToProps = (state) => {
         }
 }
 
-export default connect(mapStateToProps, {toggleUpdateScorePopup, updateEvent})(UpdateScorePopup);
+export default connect(mapStateToProps, {toggleUpdateScorePopup, updateEvent, sendAwaitingEventApprovalNotification})(UpdateScorePopup);

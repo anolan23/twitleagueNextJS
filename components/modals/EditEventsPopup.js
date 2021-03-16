@@ -29,7 +29,7 @@ function EditEventsPopup(props){
     const start = async () => {
         const opponents = await getOpponents();
         setOpponents(opponents);
-        formik.setFieldValue("opponent", opponents[0].id);
+        formik.setFieldValue("opponent", opponents[0] ? opponents[0].id : "");
         let date = new Date();
         const day = date.getDate();
         let month = date.getMonth();
@@ -41,8 +41,8 @@ function EditEventsPopup(props){
             type: "game",
             eventDate: "date",
             time: "time",
-            opponent_team_name: opponents[0].team_name,
-            opponent_avatar: opponents[0].avatar,
+            opponent_team_name: opponents[0] ? opponents[0].team_name : "",
+            opponent_avatar: opponents[0] ? opponents[0].avatar : "",
             day,
             month,
             time
@@ -51,11 +51,8 @@ function EditEventsPopup(props){
     }
 
     const getOpponents = async () => {
-        const opponents = await backend.get("/api/teams", {
-            params: {
-                leagueId: props.leagueId
-            }
-        });
+        const opponents = await backend.get(`/api/leagues/${props.team.league_name}/teams`);
+        console.log(props.team.league_name)
 
         return opponents.data.filter(opponent => opponent.id !== props.team.id);
     }
@@ -285,7 +282,6 @@ const mapStateToProps = (state) => {
     return {
         showEditEventsPopup: state.modals.showEditEventsPopup,
         teamId: state.team.id,
-        leagueId: state.team.league_id,
         team: state.team
     }
 }

@@ -1,16 +1,17 @@
-import Teams from "../../../db/repos/Teams";
+import Events from "../../../db/repos/Events";
 
 export default async (req,res) => {
     const method = req.method;
     
     if(method === "POST"){
         const {event} = req.body;
-        const createdEvent = await Teams.createEvent(event);
+        const createdEvent = await Events.createEvent(event);
         res.send(createdEvent);
     }
     
     else if(method === "GET"){
-        
+        const events = await Events.find();
+        res.send(events);
     }
 
     else if(method === "PATCH"){

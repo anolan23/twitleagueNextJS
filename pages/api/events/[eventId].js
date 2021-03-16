@@ -1,4 +1,5 @@
 import Events from "../../../db/repos/Events";
+import Database from "../../../db/repos/Database";
 
 export default async (req,res) => {
     const method = req.method;
@@ -16,7 +17,7 @@ export default async (req,res) => {
     else if(method === "PATCH"){
       const query = req.query;
       const body = req.body;
-      const event = await Events.updateEvent(query.eventId, body.values);
+      const event = await Database.updateById(query.eventId, "events", body.values);
       res.send(event);
     }
     

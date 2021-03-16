@@ -31,13 +31,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-    const abbrev = "$" + context.params.abbrev;
-    let result = await backend.get("/api/teams", {
-      params:{
-        abbrev
-      }
-    });
-    
+    let result = await backend.get(`/api/teams/${context.params.abbrev}`);
     const team = result.data;
 
     return {

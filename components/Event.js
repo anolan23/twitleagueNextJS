@@ -27,7 +27,10 @@ function Event(props) {
   }
 
   const renderTeamNames = () => {
-    if(props.event.isHomeTeam == true || props.event.is_home_team == true){
+    if(props.event.type !== "game"){
+      return null
+    }
+    else if(props.event.isHomeTeam == true || props.event.is_home_team == true){
       return <span className={event["event__matchup__vs"]}>{`${props.event.team_name} vs ${props.event.opponent_team_name}`}</span>
     }
     else{
@@ -56,7 +59,8 @@ function Event(props) {
                     <span className={event["event__type"]}>{props.event.type === "game" ? null : props.event.type}</span>
                     {renderTeamNames()}
                     <span className={event["event__time"]}>{props.event.play_period ? null : props.event.time}</span>
-                    <span className={event["event__location"]}>{props.event.location ? `Location: ${props.event.location}` : "Unknown location"}</span>
+                    <span className={event["event__location"]}>{props.event.location ? props.event.location : "Unknown location"}</span>
+                    <span className={event["event__notes"]}>{props.event.notes}</span>
               </div>
             </div> 
             <div className={event["event__status"]}>
