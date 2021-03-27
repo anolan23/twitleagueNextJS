@@ -94,6 +94,10 @@ export const togglePopupReply = () => {
     return {type: "TOGGLE_POPUP_REPLY"};
 }
 
+export const togglePopupEventReply = () => {
+    return {type: "TOGGLE_POPUP_EVENT_REPLY"};
+}
+
 export const toggleSignupPopup = () => {
     return {type: "TOGGLE_SIGNUP_POPUP"};
 }
@@ -175,6 +179,11 @@ export const findEventsByTeamId = async teamId => {
 export const findEventsByTeamAbbrev = async abbrev => {
     const response = await backend.get(`/api/teams/${abbrev}/events`);
     return response.data;
+}
+
+export const findSeasonsByLeagueName = async leagueName => {
+    const seasons = await backend.get(`/api/leagues/${leagueName}/seasons`);
+    return seasons.data;
 }
 
 export const addTeamEventAndFetchTeam = (values) => async (dispatch, getState) => {
@@ -261,9 +270,9 @@ export const updateTeamProfile = (values) => async (dispatch, getState) => {
 }
 
 //League Action Creators
-export const createLeague = formValues => async (dispatch, getState) => {
+export const createLeague = values => async (dispatch, getState) => {
     const ownerId = getState().user.id;
-    backend.post("/api/leagues", {...formValues, ownerId});
+    backend.post("/api/leagues", {...values, ownerId});
 }
 
 export const createLeagueAndFetchUser = (formValues) => async (dispatch) => {
@@ -311,6 +320,21 @@ export const createReply = (conversation_id, in_reply_to_post_id) => async (disp
 
     dispatch({type: "CREATE_REPLY", payload: response.data})
     dispatch(emptyPostData());
+}
+
+export const sendEventReply = (reply) => async (dispatch, getState) => {
+    const state = getState();
+    const userId = state.user.id;
+    const response = await backend.post(`/api/events/posts`, {
+        reply: {...reply, userId}
+    });
+    dispatch({type: "SEND_EVENT_POST", payload: response.data})
+    dispatch(togglePopupEventReply());
+}
+
+export const fetchEventPosts = async (eventId) => {
+    const posts = await backend.get(`/api/events/${eventId}/posts`);
+    return posts.data;
 }
 
 export const fetchTeamPosts = (teamId) => async (dispatch, getState) => {

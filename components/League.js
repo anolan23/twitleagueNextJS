@@ -57,12 +57,28 @@ function League(props) {
         })
     }
 
+    const onDropdownItemClick = (fn) => {
+        
+    }
+
     const createDivision = async () => {
         const division = await backend.post("/api/leagues/divisions", {
             leagueId: league.id
         })
         let newDivisions = [...divisions, division.data];
         setDivisions(newDivisions);
+    }
+
+    const newSeason = async () => {
+        const season = await backend.post("/api/seasons", {
+            leagueId: league.id
+        })
+    }
+
+    const endSeason = async () => {
+        const season = await backend.patch("/api/seasons", {
+            leagueId: league.id
+        })
     }
 
     const addTeams = (division) => {
@@ -150,6 +166,8 @@ function League(props) {
             return(
                 <TwitDropdownButton actionText="Manage league">
                     <TwitDropdownItem onClick={createDivision}>Create division</TwitDropdownItem>
+                    <TwitDropdownItem onClick={newSeason}>Start new season</TwitDropdownItem>
+                    <TwitDropdownItem onClick={endSeason}>End current season</TwitDropdownItem>
                 </TwitDropdownButton>
             )
         }

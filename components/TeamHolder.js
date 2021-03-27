@@ -102,6 +102,15 @@ function TeamHolder(props) {
     )
   }
 
+  const renderRecord = () => {
+    const {current_season_wins, current_season_losses} = team;
+    if(current_season_wins !== null && current_season_losses !== null)
+      return <span className={teamHolder["team-holder__info__record"]}>{`${team.current_season_wins} - ${team.current_season_losses}`}</span>
+      else{
+        return <span className={teamHolder["team-holder__info__record"]}>{"0 - 0"}</span>
+      }
+    }
+
   return (
     <div className={teamHolder["team-holder"]}>
       <div className={teamHolder["team-holder__banner"]}>
@@ -120,6 +129,7 @@ function TeamHolder(props) {
             <h1 className="heading-1">{team.team_name}</h1>
             {team.verifiedTeam ? <i style={{color: "var(--color-primary)", marginLeft: "5px"}} className="fas fa-check-circle"></i> : null}
           </div>
+          {renderRecord()}
           <div className={teamHolder["team-holder__info__name"]}>
             <h3 className={teamHolder["team-holder__info__name__league"]}>{`${team.abbrev} · `}</h3>
             &nbsp;

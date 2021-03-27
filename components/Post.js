@@ -7,8 +7,9 @@ import reactStringReplace from "react-string-replace";
 import {likePost, togglePopupReply, trackClickedPost} from "../actions";
 import post from "../sass/components/Post.module.scss";
 import Avatar from "./Avatar";
-import TwitBadge from "../components/TwitBadge";
-import TwitMedia from "../components/TwitMedia";
+import TwitBadge from "./TwitBadge";
+import TwitMedia from "./TwitMedia";
+import TwitIcon from "./TwitIcon";
 
 function Post(props) {
   const router = useRouter();
@@ -97,27 +98,19 @@ function Post(props) {
           {renderMedia()}
           <div className={post["post__icons"]}>
                   <div className={post["post__icons__holder"]}>
-                    <svg className={post["post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-message-square"/>
-                    </svg>
+                    <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-message-square"/>
                     <span className={post["post__icons__count"]}>{props.post.replies > 0 ? props.post.replies : null}</span>
                   </div>
                   <div className={post["post__icons__holder"]}>
-                    <svg className={post["post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-repeat"/>
-                    </svg>
+                    <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-repeat"/>
                     <span className={post["post__icons__count"]}>{props.post.reposts}</span>
                   </div>
                   <div onClick={onLikeClick} className={`${post["post__icons__holder"]} ${props.post.liked?post["post__icons__holder__active"]: null}`}>
-                    <svg className={post["post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-heart"/>
-                    </svg>
+                    <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-heart"/>
                     <span className={post["post__icons__count"]}>{props.post.likes > 0 ? props.post.likes : null}</span>
                   </div>
                   <div className={post["post__icons__holder"]}>
-                    <svg onClick={onReplyClick} className={post["post__icon"]}>
-                      <use xlinkHref="/sprites.svg#icon-corner-up-right"/>
-                    </svg>
+                    <TwitIcon onClick={onReplyClick} className={post["post__icon"]} icon="/sprites.svg#icon-corner-up-right"/>
                   </div>
             </div>
       </div>

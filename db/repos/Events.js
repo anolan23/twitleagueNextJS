@@ -3,11 +3,12 @@ import Database from "./Database";
 
 class Events {
     static async createEvent(event) {
+        const {teamId, type, opponent, eventDate, location, notes, isHomeTeam, seasonId} = event;
         const {rows} = await pool.query(`
-        INSERT INTO events (team_id, type, opponent_id, date, location, notes, is_home_team)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO events (team_id, type, opponent_id, date, location, notes, is_home_team, season_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *`
-        , [event.teamId, event.type, event.opponent, event.eventDate, event.location, event.notes, event.isHomeTeam]);
+        , [teamId, type, opponent, eventDate, location, notes, isHomeTeam, seasonId]);
         
         return rows[0];
     }

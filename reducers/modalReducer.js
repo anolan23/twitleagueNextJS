@@ -15,7 +15,8 @@ const INITIAL_STATE = {
     showEditRosterPopup: false,
     showPanel: false,
     showEditEventsPopup: false,
-    showUpdateScorePopup: false
+    showUpdateScorePopup: false,
+    showPopupEventReply: false
 }
 
 const modalReducer = (state = INITIAL_STATE, action) => {
@@ -54,6 +55,8 @@ const modalReducer = (state = INITIAL_STATE, action) => {
             return {...state, showEditEventsPopup: !state.showEditEventsPopup}
         case "TOGGLE_UPDATE_SCORE_POPUP":
             return {...state, showUpdateScorePopup: !state.showUpdateScorePopup}
+        case "TOGGLE_POPUP_EVENT_REPLY":
+            return {...state, showPopupEventReply: !state.showPopupEventReply}
         default:
             return state;
     }

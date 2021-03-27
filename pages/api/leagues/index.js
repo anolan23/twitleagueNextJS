@@ -26,9 +26,9 @@ export default async (req,res) => {
       
     }
     else if(method === "POST"){
-        const leagueData = req.body;
-        console.log("leagueData", leagueData)
-        Leagues.create(leagueData);
+        const league = req.body;
+        console.log("leagueData", league)
+        Leagues.create(league);
         res.send({});
     }
     

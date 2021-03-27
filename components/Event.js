@@ -2,6 +2,8 @@ import React from "react";
 import {useRouter} from "next/router";
 
 import event from "../sass/components/Event.module.scss";
+import post from "../sass/components/Post.module.scss"
+import TwitIcon from "./TwitIcon";
 
 function Event(props) {
   const router = useRouter();
@@ -40,10 +42,47 @@ function Event(props) {
 
   const renderPlayPeriod = () => {
     if(props.event.play_period){
-      return <span className={event["event__status__text--live"]}>{props.event.play_period}</span>
+      return <span className={event["event__status__text"]}>{props.event.play_period}</span>
     }
     else{
       return <span className={event["event__status__text"]}>Upcoming</span>
+    }
+  }
+
+  const renderResult = () => {
+    if(props.event.league_approved){
+      const {points, opponent_points, team_id, opponent_id} = props.event;
+      if(props.teamId === team_id){
+        if(points > opponent_points){
+          return <span className={event["event__status__result--win"]}>W</span>
+        }
+        else if(points < opponent_points){
+          return <span className={event["event__status__result--loss"]}>L</span>
+        }
+        else if(points === opponent_points){
+          return <span className={event["event__status__result"]}>T</span>
+        }
+        else{
+          return null;
+        }
+      }
+      else if(props.teamId === opponent_id){
+        if(points > opponent_points){
+          return <span className={event["event__status__result--loss"]}>L</span>
+        }
+        else if(points < opponent_points){
+          return <span className={event["event__status__result--win"]}>W</span>
+        }
+        else if(points === opponent_points){
+          return <span className={event["event__status__result"]}>T</span>
+        }
+        else{
+          return null;
+        }
+      }
+    }
+    else{
+      return null;
     }
   }
 
@@ -54,18 +93,38 @@ function Event(props) {
                 <span className={event["event__date--day"]}>{props.event.day}</span>
                 <span className={event["event__date--month"]}>{props.event.month}</span>
             </div>
-            <div className={event["event__matchup"]}>
-              <div className={event["event__info"]}>
-                    <span className={event["event__type"]}>{props.event.type === "game" ? null : props.event.type}</span>
-                    {renderTeamNames()}
-                    <span className={event["event__time"]}>{props.event.play_period ? null : props.event.time}</span>
-                    <span className={event["event__location"]}>{props.event.location ? props.event.location : "Unknown location"}</span>
-                    <span className={event["event__notes"]}>{props.event.notes}</span>
+            <div className={event["event__content"]}>
+              <div className={event["event__matchup"]}>
+                <div className={event["event__info"]}>
+                  <span className={event["event__type"]}>{props.event.type === "game" ? null : props.event.type}</span>
+                  {renderTeamNames()}
+                  <span className={event["event__time"]}>{props.event.play_period ? null : props.event.time}</span>
+                  <span className={event["event__location"]}>{props.event.location ? props.event.location : "Unknown location"}</span>
+                  <span className={event["event__notes"]}>{props.event.notes}</span>
+                </div>
               </div>
-            </div> 
-            <div className={event["event__status"]}>
-              {renderPlayPeriod()}
-              <span className={event["event__status__score"]}>{props.event.points ? `${props.event.points} - ${props.event.opponent_points}` : null}</span>
+              <div className={event["event__status"]}>
+                {renderPlayPeriod()}
+                <span className={event["event__status__score"]}>{props.event.points ? `${props.event.points} - ${props.event.opponent_points}` : null}</span>
+                {renderResult()}
+              </div>
+            </div>
+            <div className={post["post__icons"]}>
+                  <div className={post["post__icons__holder"]}>
+                    <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-message-square"/>
+                    <span className={post["post__icons__count"]}>{0}</span>
+                  </div>
+                  <div className={post["post__icons__holder"]}>
+                    <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-repeat"/>
+                    <span className={post["post__icons__count"]}>{0}</span>
+                  </div>
+                  <div onClick={null} className={`${post["post__icons__holder"]}`}>
+                    <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-heart"/>
+                    <span className={post["post__icons__count"]}>{0}</span>
+                  </div>
+                  <div className={post["post__icons__holder"]}>
+                    <TwitIcon onClick={null} className={post["post__icon"]} icon="/sprites.svg#icon-corner-up-right"/>
+                  </div>
             </div>
           </div>
   );

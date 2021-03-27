@@ -6,7 +6,9 @@ import Post from "./Post";
 import TwitTab from "./TwitTab";
 import TwitTabs from "./TwitTabs";
 import Empty from "./Empty";
-import {setTeam, createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, toggleEditEventsPopup, toggleEditTeamPopup, findEventsByTeamAbbrev} from "../actions";
+import {setTeam, createPost, fetchUser, fetchTeamPosts, fetchLeaguePosts, clearPosts, toggleEditRosterPopup, 
+    toggleEditEventsPopup, toggleEditTeamPopup, findEventsByTeamAbbrev, findSeasonsByLeagueName} from "../actions";
+import {dateString} from "../lib/twit-helpers";
 import TopBar from "./TopBar";
 import TwitItem from "./TwitItem";
 import team from "../sass/components/Team.module.scss"
@@ -14,25 +16,27 @@ import Event from "./Event";
 import backend from "../lib/backend";
 import TwitDropdownButton from "./TwitDropdownButton";
 import TwitDropdownItem from "./TwitDropdownItem";
+import TwitSelect from "./TwitSelect";
 
 function Team(props) {
 
     const team = props.team
-    const [activeLink, setActiveLink] = useState("team");
+    const [activeTab, setActiveTab] = useState("team");
     const [roster, setRoster] = useState(null);
     const [events, setEvents] = useState(null);
+    const [seasons, setSeasons] = useState(null);
+    const [season, setSeason] = useState(null);
+
 
     useEffect(() => {
         props.setTeam(props.team)
-        setActiveLink("team")
+        setActiveTab("team")
         const start = async () => {
-            if(props.user.isSignedIn){
-                props.fetchTeamPosts(team.id);
-            }
-            else{
+            if(!props.user.isSignedIn){
                 await props.fetchUser();
-                props.fetchTeamPosts(team.id);
             }
+            props.fetchTeamPosts(team.id);
+            fetchSeasons();
         }
         start();
     
@@ -40,6 +44,13 @@ function Team(props) {
             props.clearPosts();
         }
       }, [props.team])
+
+      useEffect(() => {
+        if(!seasons){
+            return;
+        }
+        setSeason(seasons[seasons.length - 1]);
+      }, [seasons])
 
     const fetchRoster = async () => {
         const response = await backend.get("api/teams/rosters", {
@@ -50,18 +61,34 @@ function Team(props) {
         setRoster(response.data);
     }
 
-    const fetchEvents = async () => {
-        const events = await findEventsByTeamAbbrev(team.abbrev.substring(1));
-        console.log(events);
-        setEvents(events);
+    const fetchEventsBySeasonId = async (seasonId) => {
+        const events = await backend.get(`api/teams/${team.abbrev.substring(1)}/events`, {
+            params: {
+                seasonId: seasonId
+            }
+        });
+        setEvents(events.data);
+    }
+
+    const fetchSeasons = async () => {
+        let seasons = await findSeasonsByLeagueName(team.league_name);
+        seasons.map((season, index)=> {
+            if(season.id === team.season_id){
+                season.text = `Current season - ${season.text}`
+            }
+            else{
+                season.text = `Season ${index+1} - ${season.text}`
+            }
+        })
+        setSeasons(seasons);
     }
 
     const updateTeam = (team) => {
         setTeam(team);
     }
 
-    const renderPosts = () => {
-        if(activeLink ==="team" || activeLink === "league"){
+    const renderContent = () => {
+        if(activeTab ==="team" || activeTab === "league"){
             if(props.posts === null){
                 return;
             }
@@ -69,7 +96,7 @@ function Team(props) {
                 return (
                     <Empty
                         main="No posts yet"
-                        sub="Be the first to make a post mentioning this team!"
+                        sub="Be the first to make a post mentioning this team"
                         actionText="Post now"
                         
                     />
@@ -86,7 +113,7 @@ function Team(props) {
                 });
             }
         }
-        else if(activeLink === "roster"){
+        else if(activeTab === "roster"){
             if(!roster){
                 return null;
             }
@@ -126,38 +153,55 @@ function Team(props) {
             }
         }
 
-        else if(activeLink === "schedule"){
+        else if(activeTab === "schedule"){
             if(!events){
                 return <div className="">spinner</div>
             }
             else if(events.length === 0){
                 if(props.user.id === team.owner_id){
                     return (
-                        <Empty 
+                        <React.Fragment>
+                            {renderTwitSelect()}
+                            <Empty 
                             main="No events" 
-                            sub="You haven't scheduled any events for this team"
+                            sub="Nothing scheduled for this season"
                             actionText="Edit Events"
                             onActionClick={props.toggleEditEventsPopup}
                             />
+                        </React.Fragment>
                     )
                 }
                 else{
                     return (
-                        <Empty 
+                        <React.Fragment>
+                            {renderTwitSelect()}
+                            <Empty 
                             main="No events" 
-                            sub="The head coach hasn't scheduled any events"
+                            sub="Nothing scheduled for this season"
                             />
+                        </React.Fragment>
                     )
                 }
             }
             else{
-                return events.map((event, index) => {
-                    return (
-                        <Event key={index} event={event}/>
-                    )
-                });
+                return (
+                    <React.Fragment>
+                        {renderTwitSelect()}
+                        {renderEvents()}
+                    </React.Fragment>
+                )
             }
         }
+      }
+
+      console.log("season", season)
+
+      const renderEvents = () => {
+        return events.map((event, index) => {
+            return (
+                <Event key={index} event={event} teamId={team.id}/>
+            )
+        });
       }
 
       const renderButton = () => {
@@ -175,25 +219,36 @@ function Team(props) {
           }
       }
 
+      const renderTwitSelect = () => {
+          if(!season){
+              return null;
+          }
+          else{
+              return <TwitSelect onSelect={fetchEventsBySeasonId} options={seasons} defaultValue={season.text}/>
+
+          }
+      }
+
 
         const onTeamSelect = (k) => {
-            setActiveLink(k.target.id);
+            setActiveTab(k.target.id);
             props.fetchTeamPosts(team.id);
         }
 
         const onLeagueSelect = async (k) => {
-            setActiveLink(k.target.id);
+            setActiveTab(k.target.id);
             props.fetchLeaguePosts(team.league_id);
         }
 
         const onRosterSelect = (k) => {
-            setActiveLink(k.target.id);
+            setActiveTab(k.target.id);
             fetchRoster();
         }
 
         const onScheduleClick = (k) => {
-            setActiveLink(k.target.id);
-            fetchEvents();
+            setActiveTab(k.target.id);
+            setSeason(seasons[seasons.length - 1]);
+            fetchEventsBySeasonId(team.season_id);
         }
 
         const editTeam = () => {
@@ -222,13 +277,13 @@ function Team(props) {
                 </TopBar>
                 <TeamHolder team={team} updateTeam={updateTeam}/>
                 <TwitTabs>
-                    <TwitTab onClick={onTeamSelect} id={"team"} active={activeLink === "team" ? true : false} title="Team"/>
-                    <TwitTab onClick={onLeagueSelect} id={"league"} active={activeLink === "league" ? true : false} title="League"/>
-                    <TwitTab onClick={onScheduleClick} id={"schedule"} active={activeLink === "schedule" ? true : false} title="Schedule"/>
-                    <TwitTab onClick={onRosterSelect} id={"roster"} active={activeLink === "roster" ? true : false} title="Roster"/>
-                    <TwitTab onClick={(k) => setActiveLink(k.target.id)} id={"media"} active={activeLink === "media" ? true : false} title="Media"/>
+                    <TwitTab onClick={onTeamSelect} id={"team"} active={activeTab === "team" ? true : false} title="Team"/>
+                    <TwitTab onClick={onLeagueSelect} id={"league"} active={activeTab === "league" ? true : false} title="League"/>
+                    <TwitTab onClick={onScheduleClick} id={"schedule"} active={activeTab === "schedule" ? true : false} title="Schedule"/>
+                    <TwitTab onClick={onRosterSelect} id={"roster"} active={activeTab === "roster" ? true : false} title="Roster"/>
+                    <TwitTab onClick={(k) => setActiveTab(k.target.id)} id={"media"} active={activeTab === "media" ? true : false} title="Media"/>
                 </TwitTabs>
-                {renderPosts()}
+                {renderContent()}
             </div>
         );
 }

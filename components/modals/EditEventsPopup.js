@@ -13,7 +13,7 @@ import TwitInput from "../TwitInput";
 import TwitDropdownItem from "../TwitDropdownItem";
 import Empty from "../Empty";
 import Event from "../Event";
-import TwitHelpers from "../../lib/twit-helpers";
+import {monthIndexToName} from "../../lib/twit-helpers";
 
 function EditEventsPopup(props){
 
@@ -33,7 +33,7 @@ function EditEventsPopup(props){
         let date = new Date();
         const day = date.getDate();
         let month = date.getMonth();
-        month = TwitHelpers.monthIndexToName(month);
+        month = monthIndexToName(month);
         let time = date.toISOString().split(11,-1);
         setMatchup({
             team_name: props.team.team_name,
@@ -68,7 +68,7 @@ function EditEventsPopup(props){
         },
         onSubmit: values => { 
             console.log(values)
-            const event = {...values, teamId: props.teamId}
+            const event = {...values, teamId: props.team.id, seasonId: props.team.season_id}
             createEvent(event);
           }
     });
@@ -100,7 +100,7 @@ function EditEventsPopup(props){
         let date = new Date(event.target.value);
         const day = date.getDate();
         let month = date.getMonth();
-        month = TwitHelpers.monthIndexToName(month);
+        month = monthIndexToName(month);
         let time = date.toISOString().split(11,-1);
         setMatchup({...matchup, day, month, time})
 

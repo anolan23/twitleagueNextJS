@@ -1,0 +1,37 @@
+.twit-select{
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    color: var(--color-primary);
+    align-items: center;
+    gap: 5px;
+    padding: 1rem;
+    border-bottom: var(--border);
+
+    &:hover{
+        background-color: var(--GRAY_BACKGROUND);
+    }
+
+    &__value{
+        font-size: 1.5rem;
+        color: inherit;
+    }
+
+    &__icon{
+        height: 20px;
+        width: 20px;
+        color: inherit;
+        fill: currentColor;
+    }
+
+    &__dropdown{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 2;
+        
+        
+    }
+}

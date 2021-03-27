@@ -8,27 +8,28 @@ import {connect} from "react-redux";
 import MainBody from "../../components/MainBody"
 import TopBar from "../../components/TopBar";
 import events from "../../sass/components/Events.module.scss"
-import {fetchEvent, setEvent} from "../../actions";
-import Avatar from "../../components/Avatar";
+import activePost from "../../sass/components/ActivePost.module.scss";
+import {fetchEvent, setEvent, fetchEventPosts} from "../../actions";
 import TwitButton from "../../components/TwitButton";
+import SmallInput from "../../components/SmallInput";
+import Matchup from "../../components/Matchup";
+import Empty from "../../components/Empty";
+import Post from "../../components/Post";
 
 function EventsPage(props){
     const event = props.event;
     const _event = props._event;
     const router = useRouter();
+    const [posts, setPosts] = useState(null);
 
     useEffect(() => {
-        props.setEvent(_event);
+        start();
     }, [_event])
 
-    const dateString = (string) => {
-        const date = new Date(string);
-        const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-        const formattedDate = date.toLocaleDateString([], dateOptions);
-        const timeOptions = {hour12: true, hour: '2-digit', minute:'2-digit'};
-        const time = date.toLocaleTimeString([], timeOptions);
-        const result = `${formattedDate}, ${time}`
-        return result;
+    const start = async () => {
+        props.setEvent(_event);
+        const posts = await fetchEventPosts(props.event.id);
+        setPosts(posts);
     }
 
     const onUpdateScoreClick = () => {
@@ -39,25 +40,6 @@ function EventsPage(props){
         props.approveEvent(event.id);
     }
 
-    const renderScore = () => {
-        if(!event.points){
-            return(
-                <div className={events["events__event__matchup__symbol-holder"]}>
-                    <span className={events["events__event__matchup__symbol__symbol"]}>{event.is_home_team ? "vs" : "@"}</span>
-                </div>
-            )
-        }
-        else{
-            return(
-                <div className={events["events__event__matchup__score"]}>
-                    <span className={events["events__event__matchup__score__points"]}>{event.points}</span>
-                    <span className={events["events__event__matchup__score__dash"]}>-</span>
-                    <span className={events["events__event__matchup__score__points"]}>{event.opponent_points}</span>
-                </div>
-            )
-        }
-    }
-
     const renderEvent = () => {
         if(event === null){
             return <div>Loading...</div>
@@ -66,47 +48,46 @@ function EventsPage(props){
             return null;
         }
         else{
-            return(
+            return (
                 <div className={events["events__event"]}>
-                    <div className={events["events__event__info"]}>
-                        <Link href={`/leagues/${event.league_name}`} passHref><a className="twit-link">{event.league_name}</a></Link>
-                        &nbsp;
-                        ·
-                        &nbsp;
-                        <span className={events["events__event__info__date"]}>{dateString(event.date)}</span>
-                        {renderPlayPeriod()}
+                    <Matchup event={event}/>
+                    <div className={activePost["active-post__timestamp"]}>
+                        {event.created_at} · twitleague Web App
                     </div>
-                    <div className={events["events__event__matchup"]}>
-                        <div className={events["events__event__matchup__team"]}>
-                            <Avatar className={events["events__event__matchup__team__avatar"]} src={event.avatar}/>
-                            <span className={events["events__event__matchup__team__name"]}>{event.team_name}</span>
-                        </div>
-                        {renderScore()}
-                        <div className={events["events__event__matchup__team"]}>
-                            <Avatar className={events["events__event__matchup__team__avatar"]} src={event.opponent_avatar}/>
-                            <span className={events["events__event__matchup__team__name"]}>{event.opponent_team_name}</span>
+                    <div className={activePost["active-post__stats"]}>
+                        <div className={activePost["active-post__stat-box"]}>
+                            <span className={activePost["active-post__value"]}>{0}</span>
+                            <span className={activePost["active-post__stat"]}>Likes</span>
                         </div>
                     </div>
-                    <div className={events["events__event__more-info"]}>
-                        <span className={events["events__event__more-info__info"]}>{event.type}</span>
-                        <span className={events["events__event__more-info__info"]}>{event.location ? event.location : "Unknown location"}</span>
-                        <p className={events["events__event__more-info__notes"]}>{event.notes}</p>
+                    <div className={activePost["active-post__icons"]}>
+                            <div className={activePost["active-post__icons__holder"]}>
+                            <svg className={activePost["active-post__icon"]}>
+                                <use xlinkHref="/sprites.svg#icon-message-square"/>
+                            </svg> 
+                            </div>                  
+                            <div className={activePost["active-post__icons__holder"]}>
+                            <svg className={activePost["active-post__icon"]}>
+                                <use xlinkHref="/sprites.svg#icon-repeat"/>
+                            </svg>
+                            </div> 
+                            <div onClick={null} className={`${activePost["active-post__icons__holder"]}`}>
+                            <svg className={activePost["active-post__icon"]}>
+                                <use xlinkHref="/sprites.svg#icon-heart"/>
+                            </svg>
+                            </div>               
+                            <div onClick={null} className={activePost["active-post__icons__holder"]}>
+                            <svg className={activePost["active-post__icon"]}>
+                                <use xlinkHref="/sprites.svg#icon-corner-up-right"/>
+                            </svg>
+                            </div> 
                     </div>
                 </div>
             )
         }
     }
 
-    const renderPlayPeriod = () => {
-        if(event.play_period){
-          return <span className={events["events__event__info__status--live"]}>{event.play_period}</span>
-        }
-        else{
-          return <span className={events["events__event__info__status"]}>Upcoming</span>
-        }
-      }
-
-      const renderUpdateScoreAction = () => {
+    const renderUpdateScoreAction = () => {
         const approvedUsers = [event.owner_id, event.team_owner_id, event.opponent_owner_id]
         if(!approvedUsers.includes(props.userId) || event.league_approved){
             return null
@@ -116,22 +97,36 @@ function EventsPage(props){
         }
     }
 
-      const renderApproveAction = () => {
-          if(props.userId !== event.owner_id){
-              return null
-          }
-          else if(event.play_period === "Final"){
-              if(!event.league_approved){
-                return <TwitButton onClick={onApproveClick} color="twit-button--primary">Approve</TwitButton>
-              }
-              else{
-                return <TwitButton disabled color="twit-button--primary">Approved</TwitButton>
-              }
-          }
-          else{
-            return <TwitButton disabled color="twit-button--primary">Approve</TwitButton>
-          }
-      }
+    const renderPosts = () => {
+        if(posts === null){
+            return <div>spinner</div>
+        }
+        else if(posts.length === 0){
+            return <Empty main="No posts" sub="Be the first to post about this event"/>
+        }
+        else{
+            return posts.map((post, index) => {
+                return <Post key={index} post={post}/>
+            })
+        }
+    } 
+
+    const renderApproveAction = () => {
+        if(props.userId !== event.owner_id){
+            return null
+        }
+        else if(event.play_period === "Final"){
+            if(!event.league_approved){
+            return <TwitButton onClick={onApproveClick} color="twit-button--primary">Approve</TwitButton>
+            }
+            else{
+            return <TwitButton disabled color="twit-button--primary">Approved</TwitButton>
+            }
+        }
+        else{
+        return <TwitButton disabled color="twit-button--primary">Approve</TwitButton>
+        }
+    }
 
     if (router.isFallback) {
         return <div>Loading...</div>
@@ -148,7 +143,9 @@ function EventsPage(props){
                 </TopBar>
                 <div className={events["events"]}>
                     {renderEvent()}
-                </div>          
+                </div> 
+                <SmallInput/>
+                {renderPosts()}       
             </MainBody>
           </React.Fragment>
         )

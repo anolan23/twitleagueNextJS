@@ -2,6 +2,7 @@ import React , {useState} from "react";
 import {connect} from "react-redux";
 import {useFormik} from "formik";
 import * as Yup from "yup";
+import {useRouter} from "next/router";
 
 import twitForm from "../sass/components/TwitForm.module.scss";
 import TopBar from "./TopBar";
@@ -12,6 +13,7 @@ import backend from "../lib/backend";
 import TwitInput from "./TwitInput";
 
 function CreateLeague(props){
+    const router = useRouter();
 
     const validationSchema = Yup.object({
         sport: Yup.string().required("Required")
@@ -22,9 +24,10 @@ function CreateLeague(props){
         if(!values.leagueName){
             return errors.leagueName = "Required";
         }
-        return backend.get(`/api/leagues/${values.league}`).then((results) => {
-            if (Object.keys(results.data).length !== 0) {
-                errors.league = "League already exists";
+        return backend.get(`/api/leagues/${values.leagueName}`).then((results) => {
+            console.log(results.data)
+            if (Object.keys(results.data).length > 0) {
+                errors.leagueName = "League already exists";
             }
             console.log("errors", errors);
             return errors;
@@ -38,12 +41,9 @@ function CreateLeague(props){
             sport: ""
           },
         onSubmit: values => { 
-          const {leagueName, sport} = values;  
-          const formData = {
-            leagueName,
-            sport
-          }
-          props.createLeague(formData);
+            console.log("submit", values);
+            props.createLeague(values);
+            router.push(`/leagues/${values.leagueName}`)
         },
         validate,
         validationSchema

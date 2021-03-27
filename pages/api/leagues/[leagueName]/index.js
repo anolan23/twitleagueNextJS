@@ -8,10 +8,15 @@ export default async (req,res) => {
     else if(method === "GET"){
       const leagueName = req.query.leagueName;
       const league = await Leagues.findOne(leagueName)
-      res.send(league);
+      if(league){
+        res.send(league);
+      }
+      else{
+        res.send([])
+      }
       
     }
     else{
-        res.status(405).json({message: "api/leagues/[leagueId] only supports GET"});
+        res.status(405).json({message: "api/leagues/[leagueName] only supports GET"});
     }
 }

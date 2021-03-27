@@ -9,8 +9,11 @@ export default async (req,res) => {
     }
     
     else if(method === "GET"){
-        const query = req.query
-        const events = await Events.findEventsByTeamAbbrev(`$${query.abbrev}`);
+        const {abbrev, seasonId} = req.query;
+        let events = await Events.findEventsByTeamAbbrev(`$${abbrev}`);
+        if (seasonId) {
+            events = events.filter(event => event.season_id == seasonId);
+        }
         res.send(events);
     }
 

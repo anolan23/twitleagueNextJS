@@ -30,6 +30,7 @@ export default async (req,res) => {
             const userRegex = /\@(\w+)/g;
             const teamMentions = req.body.body.match(teamRegex);
             const userMentions = req.body.body.match(userRegex);
+            console.log(userMentions);
             const postData = req.body;
             const post = await Posts.create(postData, teamMentions, userMentions);
             res.send(post);

@@ -10,8 +10,11 @@
     box-shadow: var(--box-shadow);
     cursor: pointer;
     z-index: 1;
+    min-width: min-content;
 
     &__item{
+        display: flex;
+        justify-content: flex-end;
         font-size: 1.5rem;
         font-weight: 400;
         color: var(--color-text);

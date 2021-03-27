@@ -1,5 +1,5 @@
-import Events from "../../../db/repos/Events";
-import Database from "../../../db/repos/Database";
+import Events from "../../../../db/repos/Events";
+import Database from "../../../../db/repos/Database";
 
 export default async (req,res) => {
     const method = req.method;
