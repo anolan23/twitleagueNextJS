@@ -16,6 +16,9 @@ function ThreadPage(props){
 
   useEffect(() => {
     start();
+    return () => {
+      setReplies(null);
+    }
   }, [props.threadId])
 
   const start = async () => {
