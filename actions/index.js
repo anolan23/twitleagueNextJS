@@ -309,14 +309,13 @@ export const createPost = (post) => async (dispatch, getState) => {
     dispatch(emptyPostData());
 }
 
-export const createReply = (conversation_id, in_reply_to_post_id) => async (dispatch, getState) => {
+export const createReply = (reply) => async (dispatch, getState) => {
     const state = getState();
     const userId = state.user.id;
-    const body = state.post.body;
-    const media = state.post.media;
-    const outlook = state.post.outlook;
-    const reply = {userId, body, media, outlook, conversation_id, in_reply_to_post_id};
-    const response = await backend.post("/api/posts", {reply});
+    const _reply = {...reply, userId};
+    const response = await backend.post(`/api/thread/${reply.conversation_id}/replies`, {
+        reply: _reply
+    });
 
     dispatch({type: "CREATE_REPLY", payload: response.data})
     dispatch(emptyPostData());

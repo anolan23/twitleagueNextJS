@@ -17,15 +17,6 @@ export default async (req,res) => {
         }       
     }
     else if(method === "POST"){
-        const replyData = req.body.reply;
-        const recent = req.body.recent;
-        if(replyData){
-            const teamRegex = /\$(\w+)/g;
-            const teamAbbrevs = replyData.body.match(teamRegex);
-            const reply = await Posts.reply(replyData, teamAbbrevs);
-            res.send(reply);
-        }
-        else{
             const teamRegex = /\$(\w+)/g;
             const userRegex = /\@(\w+)/g;
             const teamMentions = req.body.body.match(teamRegex);
@@ -34,8 +25,6 @@ export default async (req,res) => {
             const postData = req.body;
             const post = await Posts.create(postData, teamMentions, userMentions);
             res.send(post);
-        }
-        
     }
     else{
         res.status(405).json({message: "api/posts only supports GET/POST method"})

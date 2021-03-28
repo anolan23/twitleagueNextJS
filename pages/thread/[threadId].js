@@ -32,7 +32,7 @@ function ThreadPage(props){
   const renderThread = () => {
     return props.thread.map((post, index) => {
         if(post.id != props.threadId){
-            return <Post key={index} post={post}/>
+            return <Post key={index} post={post} history/>
         }
         else if(post.id == props.threadId){
             return (

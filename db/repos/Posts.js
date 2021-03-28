@@ -312,33 +312,47 @@ static async findThreadHistory(threadId) {
           return posts;
     }
 
-    static async reply(reply, abbrevs) {
-        let results;
+    static async reply(reply, teamMentions, userMentions) {
+        let createdPost;
         const {userId, body, media, outlook, conversation_id, in_reply_to_post_id} = reply;
         await (async () => {
             const client = await pool.connect()
             try {
                 await client.query('BEGIN')
-                results = await client.query(
+                createdPost = await client.query(
                   `INSERT INTO posts (author_id, body, media, outlook, conversation_id, in_reply_to_post_id)
                   VALUES
                   ($1, $2, $3, $4, $5, $6)
                   RETURNING *`, [userId, body, media, outlook, conversation_id, in_reply_to_post_id]
               )
-
-              if(abbrevs){
-                  abbrevs.forEach(async abbrev => {
-                      const team = await client.query(
-                          `SELECT id
-                          FROM teams
-                          WHERE abbrev = $1`, [abbrev]
-                      )
-                      const insertTeamMention = await client.query(
-                          `INSERT INTO team_mentions (team_id, post_id)
-                          VALUES ($1, $2)`, [team.rows[0].id, results.rows[0].id]
-                      )
-                  });
+              if(teamMentions){
+                teamMentions.forEach(async teamMention => {
+                  await client.query(
+                    `WITH team AS (
+                      SELECT id
+                      FROM teams
+                      WHERE abbrev = $1
+                    )
+                    INSERT INTO team_mentions (team_id, post_id)
+                    VALUES ((SELECT id FROM team), $2)`, [teamMention, createdPost.rows[0].id]
+                  )
+                });
               }
+              if(userMentions){
+                userMentions.forEach(async userMention => {
+                  const mention = userMention.substring(1);
+                  console.log(mention)
+                  await client.query(
+                    `WITH user_mentioned AS (
+                      SELECT id
+                      FROM users
+                      WHERE username = $1
+                    )
+                    INSERT INTO user_mentions (user_id, post_id)
+                    VALUES ((SELECT id FROM user_mentioned), $2)`, [mention, createdPost.rows[0].id]
+                  )
+                });
+            }
               await client.query('COMMIT')
               
             } catch (e) {
@@ -350,7 +364,7 @@ static async findThreadHistory(threadId) {
             }
 
           })().catch(e => console.error(e.stack))
-          return results.rows[0]
+          return createdPost.rows[0]
     }
 
     static async eventReply(reply, teamMentions, userMentions) {

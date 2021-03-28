@@ -26,10 +26,19 @@ function EventsPage(props){
         start();
     }, [_event])
 
+    useEffect(() => {
+        getPosts();
+    }, [props.event.id]);
+
     const start = async () => {
         props.setEvent(_event);
-        const posts = await fetchEventPosts(props.event.id);
-        setPosts(posts);
+    }
+
+    const getPosts = async () => {
+        if(props.event.id){
+            const posts = await fetchEventPosts(props.event.id);
+            setPosts(posts);
+        }
     }
 
     const onUpdateScoreClick = () => {

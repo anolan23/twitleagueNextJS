@@ -9,10 +9,11 @@ import {createReply} from "../../actions";
 
 function PopupReply(props){
 
-    const onSubmit = () => {
+    const onSubmit = (values) => {
         const conversation_id = props.trackedPost.conversation_id;
         const in_reply_to_post_id = props.trackedPost.id;
-        props.createReply(conversation_id, in_reply_to_post_id);
+        const reply = {...values, conversation_id, in_reply_to_post_id}
+        props.createReply(reply);
     }
     
     const renderBody = () => {

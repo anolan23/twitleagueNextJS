@@ -21,6 +21,21 @@
     background-color:var(--GRAY_BACKGROUND);
   }
 
+  &--history{
+    grid-template-rows: min-content min-content min-content;
+    border-bottom: none;
+  }
+
+  &__tree{
+    grid-row: 2/-1;
+    grid-column: 1/2;
+    width: 2px;
+    height: calc(100% + 10px);
+    margin-left: auto;
+    margin-right: auto;
+    background-color: lightgray;
+  }
+
   &__selected &__content{
     font-size: 2.4rem;
   }
@@ -33,6 +48,9 @@
 
   &__content{
     width:100%;
+    &--tree{
+      grid-row: 1/3;
+    }
     
   }
 
@@ -73,6 +91,10 @@
     grid-column: 1/-1;
     display: flex;
     justify-content: space-around;
+
+    &--tree{
+      grid-row: 3/-1;
+    }
 
     &__holder{
       display: flex;

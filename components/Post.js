@@ -65,6 +65,17 @@ function Post(props) {
     return replacedText
   }
 
+  const renderTree = () => {
+    if(!props.history){
+      return null;
+    }
+    else{
+      return(
+        <div className={post["post__tree"]}></div>
+      )
+    }
+  }
+
   const onPostClick = () => {
     router.push(`/thread/${props.post.id}`).then(() => window.scrollTo(0, 0))
   }
@@ -80,9 +91,10 @@ function Post(props) {
   }
 
     return (
-      <div onClick={onPostClick} className={post.post}>
+      <div onClick={onPostClick} className={`${post["post"]} ${props.history ? post["post--history"] : null}`}>
           <Avatar roundedCircle className={post["post__image"]} src={props.post.avatar}/>
-          <div className={post["post__content"]}>
+          {renderTree()}
+          <div className={`${post["post__content"]} ${props.history ? post["post__content--tree"] : null}`}>
               <div className={post["post__heading"]}>
                 <div className={post["post__heading-text"]}>
                   <Link passHref href={props.post.username?"/users/" + props.post.username:""}><a className={post["post__display-name"]} onClick={(e) => e.stopPropagation()}>{props.post.name}</a></Link>
@@ -96,7 +108,7 @@ function Post(props) {
                
           </div>
           {renderMedia()}
-          <div className={post["post__icons"]}>
+          <div className={`${post["post__icons"]} ${props.history ? post["post__icons--tree"] : null}`}>
                   <div className={post["post__icons__holder"]}>
                     <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-message-square"/>
                     <span className={post["post__icons__count"]}>{props.post.replies > 0 ? props.post.replies : null}</span>

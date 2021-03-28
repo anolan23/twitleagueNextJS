@@ -8,8 +8,17 @@ export default async (req,res) => {
         const replies = await Posts.findThreadReplies(threadId);
         res.send(replies);
     }
+    else if(method === "POST"){
+        const {reply} = req.body;
+        const teamRegex = /\$(\w+)/g;
+        const userRegex = /\@(\w+)/g;
+        const teamMentions = reply.body.match(teamRegex);
+        const userMentions = reply.body.match(userRegex);
+        const post = await Posts.reply(reply, teamMentions, userMentions);
+        res.send(post);
+    }
     else{
-        res.status(405).json({message: "api/thread/:threadId only supports GET method"})
+        res.status(405).json({message: "api/thread/:threadId/replies only supports GET method"})
     }
     
 }

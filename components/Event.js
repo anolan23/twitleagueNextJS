@@ -7,6 +7,7 @@ import TwitIcon from "./TwitIcon";
 
 function Event(props) {
   const router = useRouter();
+  console.log(props.event)
 
   const renderTeams = () => {
     if(props.event.type === "game"){
@@ -112,7 +113,7 @@ function Event(props) {
             <div className={post["post__icons"]}>
                   <div className={post["post__icons__holder"]}>
                     <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-message-square"/>
-                    <span className={post["post__icons__count"]}>{0}</span>
+                    <span className={post["post__icons__count"]}>{props.event.replies ? props.event.replies : 0}</span>
                   </div>
                   <div className={post["post__icons__holder"]}>
                     <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-repeat"/>
