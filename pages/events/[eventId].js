@@ -24,10 +24,12 @@ function EventsPage(props){
 
     useEffect(() => {
         start();
+        
     }, [_event])
 
     useEffect(() => {
         getPosts();
+        
     }, [props.event.id]);
 
     const start = async () => {
@@ -38,6 +40,9 @@ function EventsPage(props){
         if(props.event.id){
             const posts = await fetchEventPosts(props.event.id);
             setPosts(posts);
+        }
+        else{
+            setPosts(null);
         }
     }
 

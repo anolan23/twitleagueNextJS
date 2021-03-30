@@ -1,14 +1,17 @@
-import React from "react";
+import React, {useState} from "react";
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 import Link from "next/link";
 
 import activePost from "../sass/components/ActivePost.module.scss";
 import Avatar from "../components/Avatar";
-import {trackClickedPost, togglePopupReply, likePost} from "../actions";
+import {trackClickedPost, togglePopupReply, likePost, unLikePost} from "../actions";
+import {truncate} from "../lib/twit-helpers";
 import TwitMedia from "./TwitMedia";
 
 function ActivePost(props){
+  const [liked, setLiked] = useState(props.post.liked);
+  const [likes, setLikes] = useState(props.post.likes);
 
   const renderBody = () => {
     const text = props.post.body;
@@ -19,6 +22,10 @@ function ActivePost(props){
 
     replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
       <Link key={match + i} href={`/users/${match}`}><a className="twit-link">@{match}</a></Link>
+    ));
+    
+    replacedText = reactStringReplace(replacedText, /(https?:\/\/\S+)/g, (match, i) => (
+      <Link key={match + i} href={match}><a onClick={(e) => e.stopPropagation()} className="twit-link">{truncate(match, 35)}</a></Link>
     ));
 
     return replacedText
@@ -35,9 +42,18 @@ function ActivePost(props){
     }
   }
 
-  const onLikeClick = (event) => {
+  const onLikeClick = async (event) => {
     event.stopPropagation();
-    props.likePost(props.post.id);
+    if(!liked){
+      await props.likePost(props.post.id);
+      setLiked(true);
+      setLikes((likes) => parseInt(likes) + 1);
+    }
+    else{
+      await props.unLikePost(props.post.id);
+      setLiked(false);
+      setLikes((likes) => parseInt(likes) - 1);
+    }
   }
 
   const onReplyClick = () => {
@@ -63,7 +79,7 @@ function ActivePost(props){
             </div>
             <div className={activePost["active-post__stats"]}>
                 <div className={activePost["active-post__stat-box"]}>
-                    <span className={activePost["active-post__value"]}>{props.post.likes}</span>
+                    <span className={activePost["active-post__value"]}>{likes}</span>
                     <span className={activePost["active-post__stat"]}>Likes</span>
                 </div>
             </div>
@@ -78,7 +94,7 @@ function ActivePost(props){
                         <use xlinkHref="/sprites.svg#icon-repeat"/>
                       </svg>
                     </div> 
-                    <div onClick={onLikeClick} className={`${activePost["active-post__icons__holder"]} ${props.post.liked?activePost["active-post__icons__holder__active"]: null}`}>
+                    <div onClick={onLikeClick} className={`${activePost["active-post__icons__holder"]} ${liked?activePost["active-post__icons__holder__active"]: null}`}>
                       <svg className={activePost["active-post__icon"]}>
                         <use xlinkHref="/sprites.svg#icon-heart"/>
                       </svg>
@@ -93,4 +109,4 @@ function ActivePost(props){
     )
 }
 
-export default connect(null, {trackClickedPost, togglePopupReply, likePost})(ActivePost);
+export default connect(null, {trackClickedPost, togglePopupReply, likePost, unLikePost})(ActivePost);

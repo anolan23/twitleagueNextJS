@@ -33,7 +33,6 @@ function UpdateScorePopup(props) {
             }
             else{
                 props.updateEvent(_event.id, values);
-                console.log("updating score...")
             }
             
         }
@@ -131,8 +130,6 @@ function UpdateScorePopup(props) {
         }
         
     }
-
-    console.log(formik.values);
 
     return (
         <Popup

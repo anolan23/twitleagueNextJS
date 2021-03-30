@@ -9,8 +9,10 @@ import TwitDropdown from "../components/TwitDropdown";
 import TwitDropdownItem from "../components/TwitDropdownItem";
 import TwitItem from "../components/TwitItem";
 import TwitIcon from "./TwitIcon";
+import useUser from "../lib/useUser";
 
 function UserToggle(props){
+    const { user } = useUser();
     const router = useRouter();
     const ref = useRef();
 
@@ -38,21 +40,21 @@ function UserToggle(props){
         setShow(false);
 }
 
-    if(!props.user.isSignedIn){
+    if(user === undefined || !user.isSignedIn){
         return null;
     }
     else{
         return(
             <div className={userToggle["user-toggle"]} onClick={() => setShow(true)} ref={ref}>
-                <Avatar roundedCircle className={userToggle["user-toggle__image"]} src={props.user.avatar}/>
+                <Avatar roundedCircle className={userToggle["user-toggle__image"]} src={user.avatar}/>
                 <div className={userToggle["user-toggle__textbox"]}>
-                    <span className={userToggle["user-toggle__username"]}>{props.user.name}</span>
-                    <span className="muted">{`@${props.user.username}`}</span>
+                    <span className={userToggle["user-toggle__username"]}>{user.name}</span>
+                    <span className="muted">{`@${user.username}`}</span>
                 </div>
                 <TwitIcon className={userToggle["user-toggle__icon"]} icon="/sprites.svg#icon-chevron-down"/>
                 <div className={userToggle["user-toggle__dropdown"]}>
                     <TwitDropdown show={show} >
-                        <TwitItem  avatar={props.user.avatar} title={props.user.name} subtitle={`@${props.user.username}`} href={`/users/${props.user.username}`}/>
+                        <TwitItem  avatar={user.avatar} title={user.name} subtitle={`@${user.username}`} href={`/users/${user.username}`}/>
                         <TwitDropdownItem onClick={logOut}>Log out</TwitDropdownItem>
                     </TwitDropdown>
                 </div>
@@ -62,8 +64,4 @@ function UserToggle(props){
     }
 }
 
-const mapStateToProps = (state) => {
-    return {user: state.user};
-}
-
-export default connect(mapStateToProps, {logOutUser})(UserToggle);
+export default connect(null, {logOutUser})(UserToggle);

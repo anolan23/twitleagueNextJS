@@ -177,7 +177,7 @@ class Posts {
       return rows;
   }
 
-  static async findThreadReplies(threadId) {
+  static async findThreadReplies(threadId, userId) {
     const {rows} = await pool.query(`
     SELECT p1.*, avatar, users.name, users.username,
       (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, 
@@ -188,12 +188,13 @@ class Posts {
         WHEN (now() - p1.created_at < '1 Hour') 
         THEN (to_char(now() - p1.created_at, 'FMMIm'))
         ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-      END AS date
+      END AS date,
+      EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
     FROM posts AS p1
     JOIN users ON p1.author_id = users.id
     WHERE in_reply_to_post_id = $1
     ORDER BY likes DESC, replies DESC, p1.created_at DESC
-    `, [threadId]);
+    `, [threadId, userId]);
     
     return rows;
 }
@@ -219,7 +220,7 @@ static async findThreadHistory(threadId) {
       END AS date
     FROM history AS p1
     JOIN users ON p1.author_id = users.id
-    ORDER BY likes DESC, replies DESC, p1.created_at DESC
+    ORDER BY p1.created_at
   `, [threadId]);
   
   return rows;
@@ -435,13 +436,21 @@ static async findThreadHistory(threadId) {
         return createdPost.rows[0]
   }
 
-    static async like(post_id, user_id) {
+    static async like(postId, userId) {
         const {rows} = await pool.query(`
         INSERT INTO likes (post_id, user_id)
         VALUES ($1, $2)
-        RETURNING id`, [post_id, user_id]);
+        RETURNING *`, [postId, userId]);
         return rows;
     }
+
+    static async unLike(postId, userId) {
+      const {rows} = await pool.query(`
+      DELETE FROM likes
+      WHERE post_id = $1 AND user_id = $2
+      RETURNING *`, [postId, userId]);
+      return rows;
+  }
 
     static async findFollowedTeamsPosts(userId, num, offset) {
       const {rows} = await pool.query(`
@@ -499,6 +508,17 @@ static async findThreadHistory(threadId) {
     
     return rows;
   }
+
+  static async findUsersWhoLiked(postId) {
+    const {rows} = await pool.query(`
+    SELECT likes.*, users.name, users.username, users.avatar
+    FROM likes
+    JOIN users ON users.id = user_id
+    WHERE post_id = $1
+    `, [postId]);
+    
+    return rows;
+}
 
 
 }

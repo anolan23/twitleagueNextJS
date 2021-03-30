@@ -35,6 +35,9 @@ function TwitSearch(props) {
     }, [])
 
     const clickOutsideInput = (event) => {
+        if(!ref.current){
+            return;
+        }
         if(ref.current.contains(event.target)){
             return;
         }

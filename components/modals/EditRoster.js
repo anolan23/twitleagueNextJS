@@ -19,7 +19,6 @@ function EditRoster(props){
     const [users, setUsers] = useState(null);
 
     useEffect(() => {
-        console.log("render")
         const getRoster = async () => {
             const response = await backend.get("api/teams/rosters", {
                 params: {

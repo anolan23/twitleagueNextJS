@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
+import {connect} from "react-redux";
 
 import MainBody from "../../components/MainBody"
 import thread from "../../sass/components/Thread.module.scss";
@@ -9,26 +10,26 @@ import backend from "../../lib/backend";
 import Post from "../../components/Post"
 import ActivePost from "../../components/ActivePost";
 import Divide from "../../components/Divide";
+import useUser from "../../lib/useUser";
+import useSWR from 'swr';
+
 
 function ThreadPage(props){
-  const [replies, setReplies] = useState(null);
+  const { user } = useUser();
   const router = useRouter();
 
-  useEffect(() => {
-    start();
-    return () => {
-      setReplies(null);
-    }
-  }, [props.threadId])
-
-  const start = async () => {
-    if(props.threadId){
-      let result = await backend.get(`/api/thread/${props.threadId}/replies`);
-      const replies = result.data;
-      setReplies(replies);
-    }
+  const fetcher = async (url) => {
+    const response = await backend.get(url, {
+      params: {
+        userId: user.id
+      }
+    });
+  return response.data;
   }
 
+  const { data, error } = useSWR(props.threadId && user ? `/api/thread/${props.threadId}/replies` : null, fetcher);
+  const replies = data;
+  
   const renderThread = () => {
     return props.thread.map((post, index) => {
         if(post.id != props.threadId){
@@ -47,7 +48,7 @@ function ThreadPage(props){
 }
 
 const renderReplies = () => {
-  if(replies === null){
+  if(replies === null || replies === undefined){
     return <div>spinner</div>
   }
   else if(replies.length === 0){

@@ -321,6 +321,13 @@ export const createReply = (reply) => async (dispatch, getState) => {
     dispatch(emptyPostData());
 }
 
+export const fetchThreadReplies = async (threadId, userId) => {
+    const response = await backend.get(`/api/thread/${threadId}/replies`, {
+        userId
+    });
+    return response.data;
+}
+
 export const sendEventReply = (reply) => async (dispatch, getState) => {
     const state = getState();
     const userId = state.user.id;
@@ -429,36 +436,23 @@ export const fetchUserAndWatchListPosts = () => async (dispatch) => {
 
 
 export const likePost = (postId) => async (dispatch, getState) => {
-    const userId = getState().user.id;
-    if(!userId){
-        return;
-    }
-
-    const posts = getState().posts;
-    let newPosts = posts.map(post => {
-        let temp = Object.assign({}, post);
-        if(temp.id === postId){
-            temp.liked = true;
-            temp.likes++;
-        }
-        return temp;
-    })
-
-    dispatch({type: "LIKE_POST", payload: newPosts})
-    const response = await backend.patch("/api/posts/like", {
-        postId,
+    const state = getState();
+    const userId = state.user.id;
+    const response = await backend.post(`/api/posts/${postId}/likes`, {
         userId
     });
+    return response.data;
 }
 
-export const unlikePost = (postId) => async (dispatch) => {
-    const response = await backend.patch("/api/posts/like", {
+export const unLikePost = (postId) => async (dispatch, getState) => {
+    const state = getState();
+    const userId = state.user.id;
+    const response = await backend.delete(`/api/posts/${postId}/likes`, {
         params: {
-            postId
+            userId
         }
     });
-
-    dispatch({type: "UNLIKE_POST", payload: response.data})
+    return response.data;
 }
 
 export const clearPosts = () => async (dispatch) => {

@@ -52,7 +52,6 @@ function EditEventsPopup(props){
 
     const getOpponents = async () => {
         const opponents = await backend.get(`/api/leagues/${props.team.league_name}/teams`);
-        console.log(props.team.league_name)
 
         return opponents.data.filter(opponent => opponent.id !== props.team.id);
     }
@@ -67,7 +66,6 @@ function EditEventsPopup(props){
             isHomeTeam: null
         },
         onSubmit: values => { 
-            console.log(values)
             const event = {...values, teamId: props.team.id, seasonId: props.team.season_id}
             createEvent(event);
           }
@@ -81,7 +79,6 @@ function EditEventsPopup(props){
     const assembleOpponent = (opponentId) => {
         let event = formik.values;
         const opponent = opponents.find(opponent => opponent.id == opponentId);
-        console.log(opponent);
         event = {
             ...matchup, 
             opponent_team_name: opponent.team_name,
@@ -108,7 +105,6 @@ function EditEventsPopup(props){
 
     const onCheckboxChange = (event) => {
         formik.handleChange(event);
-        console.log(event.target.checked)
         setMatchup({...matchup, isHomeTeam: event.target.checked});
     }
 
@@ -264,9 +260,6 @@ function EditEventsPopup(props){
             </div>
         );
     }
-
-    // console.log(formik.values.isHomeTeam)
-    // console.log("matchup", matchup.isHomeTeam)
 
     return(
         <Popup 

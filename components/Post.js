@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 
-import {likePost, togglePopupReply, trackClickedPost} from "../actions";
+import {likePost, unLikePost, togglePopupReply, trackClickedPost} from "../actions";
 import post from "../sass/components/Post.module.scss";
+import {truncate} from "../lib/twit-helpers";
 import Avatar from "./Avatar";
 import TwitBadge from "./TwitBadge";
 import TwitMedia from "./TwitMedia";
@@ -13,17 +14,14 @@ import TwitIcon from "./TwitIcon";
 
 function Post(props) {
   const router = useRouter();
-
-  const truncate = (string, length) => {
-    const newString = string.length > length ? string.substring(0, length - 3) + "..." : string;
-    return newString;
-  }
+  const [liked, setLiked] = useState(props.post.liked);
+  const [likes, setLikes] = useState(props.post.likes);
 
   const renderMedia = () => {
     if(props.post.media)
     {
       return (
-        <div className={post["post__media-holder"]}>
+        <div className={`${post["post__media-holder"]} ${props.history ? post["post__media-holder--tree"] : null}`}>
           <TwitMedia media={props.post.media}/>
         </div>
       );
@@ -85,9 +83,18 @@ function Post(props) {
     props.togglePopupReply();
   }
 
-  const onLikeClick = (event) => {
+  const onLikeClick = async (event) => {
     event.stopPropagation();
-    props.likePost(props.post.id);
+    if(!liked){
+      await props.likePost(props.post.id);
+      setLiked(true);
+      setLikes((likes) => parseInt(likes) + 1);
+    }
+    else{
+      await props.unLikePost(props.post.id);
+      setLiked(false);
+      setLikes((likes) => parseInt(likes) - 1);
+    }
   }
 
     return (
@@ -117,9 +124,9 @@ function Post(props) {
                     <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-repeat"/>
                     <span className={post["post__icons__count"]}>{props.post.reposts}</span>
                   </div>
-                  <div onClick={onLikeClick} className={`${post["post__icons__holder"]} ${props.post.liked?post["post__icons__holder__active"]: null}`}>
+                  <div onClick={onLikeClick} className={`${post["post__icons__holder"]} ${liked?post["post__icons__holder__active"]: null}`}>
                     <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-heart"/>
-                    <span className={post["post__icons__count"]}>{props.post.likes > 0 ? props.post.likes : null}</span>
+                    <span className={post["post__icons__count"]}>{likes > 0 ? likes : null}</span>
                   </div>
                   <div className={post["post__icons__holder"]}>
                     <TwitIcon onClick={onReplyClick} className={post["post__icon"]} icon="/sprites.svg#icon-corner-up-right"/>
@@ -131,4 +138,4 @@ function Post(props) {
   
 }
 
-export default connect(null, {likePost, togglePopupReply, trackClickedPost})(Post);
+export default connect(null, {likePost, unLikePost, togglePopupReply, trackClickedPost})(Post);
