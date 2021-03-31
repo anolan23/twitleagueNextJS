@@ -6,6 +6,7 @@ import {toggleUpdateScorePopup, approveEvent} from "../../actions";
 import {connect} from "react-redux";
 
 import MainBody from "../../components/MainBody"
+import useUser from "../../lib/useUser";
 import TopBar from "../../components/TopBar";
 import events from "../../sass/components/Events.module.scss"
 import activePost from "../../sass/components/ActivePost.module.scss";
@@ -17,32 +18,26 @@ import Empty from "../../components/Empty";
 import Post from "../../components/Post";
 
 function EventsPage(props){
+    const { user } = useUser();
     const event = props.event;
     const _event = props._event;
     const router = useRouter();
     const [posts, setPosts] = useState(null);
 
     useEffect(() => {
-        start();
-        
+        props.setEvent(_event);        
     }, [_event])
 
     useEffect(() => {
         getPosts();
         
-    }, [props.event.id]);
-
-    const start = async () => {
-        props.setEvent(_event);
-    }
+    }, [props.event.id, user]);
 
     const getPosts = async () => {
-        if(props.event.id){
-            const posts = await fetchEventPosts(props.event.id);
+        if(props.event.id && user){
+            console.log("fetch")
+            const posts = await fetchEventPosts(props.event.id, user.id);
             setPosts(posts);
-        }
-        else{
-            setPosts(null);
         }
     }
 

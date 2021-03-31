@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 
 import {likePost, unLikePost, togglePopupReply, trackClickedPost} from "../actions";
+import useUser from "../lib/useUser";
 import post from "../sass/components/Post.module.scss";
 import {truncate} from "../lib/twit-helpers";
 import Avatar from "./Avatar";
@@ -13,6 +14,7 @@ import TwitMedia from "./TwitMedia";
 import TwitIcon from "./TwitIcon";
 
 function Post(props) {
+  const { user } = useUser();
   const router = useRouter();
   const [liked, setLiked] = useState(props.post.liked);
   const [likes, setLikes] = useState(props.post.likes);
@@ -85,15 +87,21 @@ function Post(props) {
 
   const onLikeClick = async (event) => {
     event.stopPropagation();
-    if(!liked){
-      await props.likePost(props.post.id);
-      setLiked(true);
-      setLikes((likes) => parseInt(likes) + 1);
+    console.log(user)
+    if(!user || !user.isSignedIn){
+      return
     }
     else{
-      await props.unLikePost(props.post.id);
-      setLiked(false);
-      setLikes((likes) => parseInt(likes) - 1);
+      if(!liked){
+        await likePost(props.post.id, user.id);
+        setLiked(true);
+        setLikes((likes) => parseInt(likes) + 1);
+      }
+      else{
+        await unLikePost(props.post.id, user.id);
+        setLiked(false);
+        setLikes((likes) => parseInt(likes) - 1);
+      }
     }
   }
 
@@ -138,4 +146,4 @@ function Post(props) {
   
 }
 
-export default connect(null, {likePost, unLikePost, togglePopupReply, trackClickedPost})(Post);
+export default connect(null, {togglePopupReply, trackClickedPost})(Post);

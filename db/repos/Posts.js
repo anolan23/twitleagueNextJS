@@ -156,7 +156,7 @@ class Posts {
         return rows;
     }
 
-    static async findByEventConversationId(event_conversation_id) {
+    static async findByEventConversationId(event_conversation_id, userId) {
       const {rows} = await pool.query(`
       SELECT p1.*, avatar, users.name, users.username,
         (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, 
@@ -167,12 +167,13 @@ class Posts {
           WHEN (now() - p1.created_at < '1 Hour') 
           THEN (to_char(now() - p1.created_at, 'FMMIm'))
           ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-        END AS date
+        END AS date,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
       FROM posts AS p1
       JOIN users ON p1.author_id = users.id
       WHERE event_conversation_id = $1 AND in_reply_to_post_id IS NULL
       ORDER BY p1.created_at DESC
-      `, [event_conversation_id]);
+      `, [event_conversation_id, userId]);
       
       return rows;
   }

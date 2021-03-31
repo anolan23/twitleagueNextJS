@@ -299,9 +299,7 @@ export const setLeague = league => (dispatch) => {
 }
 
 //Posts Action Creators
-export const createPost = (post) => async (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
+export const createPost = (post, userId) => async (dispatch) => {
     const newPost = {...post, userId}
     const response = await backend.post("/api/posts", newPost);
 
@@ -338,8 +336,12 @@ export const sendEventReply = (reply) => async (dispatch, getState) => {
     dispatch(togglePopupEventReply());
 }
 
-export const fetchEventPosts = async (eventId) => {
-    const posts = await backend.get(`/api/events/${eventId}/posts`);
+export const fetchEventPosts = async (eventId, userId) => {
+    const posts = await backend.get(`/api/events/${eventId}/posts`, {
+        params: {
+            userId
+        }
+    });
     return posts.data;
 }
 
@@ -368,8 +370,7 @@ export const fetchWatchListPosts = () => async (dispatch, getState) => {
     }
 }
 
-export const fetchPosts = (num, offset) => async (dispatch, getState) => {
-        const userId = getState().user.id;
+export const fetchPosts = (num, offset, userId) => async (dispatch) => {
         const response = await backend.get("/api/posts", {
             params: {
                 userId,
@@ -435,18 +436,14 @@ export const fetchUserAndWatchListPosts = () => async (dispatch) => {
 
 
 
-export const likePost = (postId) => async (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
+export const likePost = async (postId, userId) => {
     const response = await backend.post(`/api/posts/${postId}/likes`, {
         userId
     });
     return response.data;
 }
 
-export const unLikePost = (postId) => async (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
+export const unLikePost = async (postId, userId) => {
     const response = await backend.delete(`/api/posts/${postId}/likes`, {
         params: {
             userId

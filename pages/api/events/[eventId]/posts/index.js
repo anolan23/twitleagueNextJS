@@ -8,9 +8,8 @@ export default async (req,res) => {
     }
     
     else if(method === "GET"){
-        const {eventId} = req.query;
-        const posts = await Posts.findByEventConversationId(eventId);
-        
+        const {eventId, userId} = req.query;
+        const posts = await Posts.findByEventConversationId(eventId, userId);
         res.send(posts);   
     }
 
