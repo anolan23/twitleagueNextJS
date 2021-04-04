@@ -32,24 +32,22 @@ function EventsPage(props){
         });
         return event.data;
     }
-    const { data, mutate } = useSWR(props.event && user ? `/api/events/${props.event.id}` : null, fetcher);
-    console.log("data", data);
+    const { data: event, mutate } = useSWR(props.event && user ? `/api/events/${props.event.id}` : null, fetcher, {initialData: props.event});
     
     useEffect(() => {
-        props.setEvent(data);  
-    }, [data])
+        props.setEvent(event);  
+    }, [event])
 
     useEffect(() => {
         getPosts();        
-    }, [data, user]);
+    }, [event, user]);
 
     const getPosts = async () => {
-        if(!data){
+        if(!event){
             return;
         }
-        if(data.id && user){
-            console.log("fetch")
-            const posts = await fetchEventPosts(data.id, user.id);
+        if(event.id && user){
+            const posts = await fetchEventPosts(event.id, user.id);
             setPosts(posts);
         }
     }
@@ -59,43 +57,43 @@ function EventsPage(props){
     }
 
     const onApproveClick = () => {
-        approveEvent(data.id);
+        approveEvent(event.id);
     }
 
-    const onLikeClick = async (event) => {
-        event.stopPropagation();
+    const onLikeClick = async (e) => {
+        e.stopPropagation();
         if(!user || !user.isSignedIn){
           return
         }
         else{
-          if(!data.liked){
-            await likeEvent(data.id, user.id);
+          if(!event.liked){
+            await likeEvent(event.id, user.id);
             mutate();
           }
           else{
-            await unLikeEvent(data.id, user.id);
+            await unLikeEvent(event.id, user.id);
             mutate();
           }
         }
       }
 
     const renderEvent = () => {
-        if(data === null){
+        if(event === null){
             return <div>Loading...</div>
         }
-        else if(data.length === 0){
+        else if(event.length === 0){
             return null;
         }
         else{
             return (
                 <div className={events["events__event"]}>
-                    <Matchup event={data}/>
+                    <Matchup event={event}/>
                     <div className={activePost["active-post__timestamp"]}>
-                        {data.created_at} · twitleague Web App
+                        {event.created_at} · twitleague Web App
                     </div>
                     <div className={activePost["active-post__stats"]}>
                         <div className={activePost["active-post__stat-box"]}>
-                            <span className={activePost["active-post__value"]}>{data.likes}</span>
+                            <span className={activePost["active-post__value"]}>{event.likes}</span>
                             <span className={activePost["active-post__stat"]}>Likes</span>
                         </div>
                     </div>
@@ -127,12 +125,12 @@ function EventsPage(props){
     }
 
     const renderUpdateScoreAction = () => {
-        const approvedUsers = [data.owner_id, data.team_owner_id, data.opponent_owner_id]
+        const approvedUsers = [event.owner_id, event.team_owner_id, event.opponent_owner_id]
 
         if(!user){
             return null;
         }
-        else if(approvedUsers.includes(user.id) && !data.league_approved){
+        else if(approvedUsers.includes(user.id) && !event.league_approved){
             return <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary">Update score</TwitButton>
         }
         else{
@@ -158,11 +156,11 @@ function EventsPage(props){
         if(!user){
             return null;
         }
-        else if(user.id !== data.owner_id){
+        else if(user.id !== event.owner_id){
             return null
         }
-        else if(data.play_period === "Final"){
-            if(!data.league_approved){
+        else if(event.play_period === "Final"){
+            if(!event.league_approved){
             return <TwitButton onClick={onApproveClick} color="twit-button--primary">Approve</TwitButton>
             }
             else{
@@ -178,8 +176,8 @@ function EventsPage(props){
         return <div>Loading...</div>
     }
 
-    else if(!data){
-        return <div>no data</div>
+    else if(!event){
+        return <div>no event</div>
     }
     else{
         return (
