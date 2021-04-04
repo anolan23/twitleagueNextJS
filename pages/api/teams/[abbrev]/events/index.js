@@ -2,15 +2,14 @@ import Events from "../../../../../db/repos/Events";
 
 export default async (req,res) => {
     const method = req.method;
-    
+    const {abbrev, seasonId, userId} = req.query;
     if(method === "POST"){
      
 
     }
     
     else if(method === "GET"){
-        const {abbrev, seasonId} = req.query;
-        let events = await Events.findEventsByTeamAbbrev(`$${abbrev}`);
+        let events = await Events.findEventsByTeamAbbrev(`$${abbrev}`, userId);
         if (seasonId) {
             events = events.filter(event => event.season_id == seasonId);
         }

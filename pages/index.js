@@ -1,24 +1,25 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Head from 'next/head'
 import index from "../sass/pages/Index.module.scss";
 import Link from "next/link"
 import {connect} from "react-redux";
-import {useRouter} from "next/router";
 
+import useUser from "../lib/useUser";
 import TwitButton from "../components/TwitButton";
 import {fetchUser, toggleSignupPopup} from "../actions";
 
 function IndexPage(props) {
+    const { user } = useUser({redirectIfFound: true, redirectTo: "/home"});
 
-    useEffect(() => {
-        props.fetchUser();
-    }, [])
+    if(!user){
+        return <div>...Loading user</div>
+    } 
+    
+    else if(user.isSignedIn){
+        return <div>redirecting...</div>
+    }
 
-  if(props.isSignedIn == null){
-    return <div>...Loading</div>
-  }  
-  else if (props.isSignedIn === false){
-  return (
+    return (
     <div className={index["index"]}>
         <div className={index["index__left"]}>
             <div className={index["index__left__items"]}>
@@ -101,15 +102,5 @@ function IndexPage(props) {
     </div>
         )
     }
-    else if(props.isSignedIn){
-        const router = useRouter();
-        router.push("/home");
-        return <div>null</div>;
-    }
-}
 
-const mapStateToProps = (state) => {
-    return {isSignedIn: state.user.isSignedIn}
-}
-
-export default connect(mapStateToProps, {fetchUser, toggleSignupPopup})(IndexPage);
+export default connect(null, {fetchUser, toggleSignupPopup})(IndexPage);

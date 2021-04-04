@@ -17,7 +17,6 @@ import TwitIcon from "./TwitIcon";
 import {uploadToS3} from "../lib/aws-helpers";
 import ReactPlayer from "react-player";
 
-
 class MainInput extends React.Component {
     contentEditable = React.createRef();
     hiddenFileInput = React.createRef();

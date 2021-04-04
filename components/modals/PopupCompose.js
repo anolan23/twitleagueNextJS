@@ -2,10 +2,16 @@ import React from "react";
 import {connect} from "react-redux";
 import {togglePopupCompose, createPost} from "../../actions";
 
+import useUser from "../../lib/useUser";
 import Popup from "./Popup";
 import MainInput from "../MainInput";
 
 function PopupCompose(props){
+    const { user } = useUser();
+
+    const onSubmit = (post) => {
+        props.createPost(post, user.id);
+    }
     
     const renderBody = () => {
         return (
@@ -15,7 +21,7 @@ function PopupCompose(props){
                 placeHolder="$Team or @Username"
                 initialValue="" 
                 buttonText="Post"
-                onSubmit={props.createPost}
+                onSubmit={onSubmit}
                 />
         )
     }

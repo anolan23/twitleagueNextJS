@@ -1,30 +1,25 @@
 import React, {useEffect} from "react";
 import Head from 'next/head'
 import {connect} from "react-redux";
-import {useRouter} from "next/router";
 
+import useUser from "../lib/useUser"
 import {loginUser} from "../actions";
 import login from "../sass/pages/Login.module.scss";
 import twitForm from "../sass/components/TwitForm.module.scss";
 import TwitButton from "../components/TwitButton";
 
 function LoginPage(props) {
-    const router = useRouter();
-    useEffect(() => {
-        if(props.isSignedIn){
-            router.push("/home");
-        }
-    }, [props.isSignedIn])
+    const { user, mutateUser } = useUser({redirectIfFound: true, redirectTo: "/home"});
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
         event.preventDefault();
         const elements = event.target.elements;
         const formData = {
           username:elements.username.value,
           password:elements.password.value
         }
-        props.loginUser(formData);
-  
+        await props.loginUser(formData);
+        mutateUser();
       }
 
   return (

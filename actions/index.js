@@ -15,8 +15,8 @@ export const fetchUser = () => async dispatch => {
     dispatch({type: "FETCH_USER", payload: response.data})
 }
 
-export const loginUser = formValues => async dispatch => {
-    const response = await backend.post("/api/login", formValues);
+export const loginUser = values => async dispatch => {
+    const response = await backend.post("/api/login", values);
 
     dispatch({type: "LOGIN_USER", payload: response.data});
 }
@@ -445,6 +445,22 @@ export const likePost = async (postId, userId) => {
 
 export const unLikePost = async (postId, userId) => {
     const response = await backend.delete(`/api/posts/${postId}/likes`, {
+        params: {
+            userId
+        }
+    });
+    return response.data;
+}
+
+export const likeEvent = async (eventId, userId) => {
+    const response = await backend.post(`/api/events/${eventId}/likes`, {
+        userId
+    });
+    return response.data;
+}
+
+export const unLikeEvent = async (eventId, userId) => {
+    const response = await backend.delete(`/api/events/${eventId}/likes`, {
         params: {
             userId
         }

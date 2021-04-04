@@ -4,12 +4,14 @@ import reactStringReplace from "react-string-replace";
 import Link from "next/link";
 
 import activePost from "../sass/components/ActivePost.module.scss";
+import useUser from "../lib/useUser";
 import Avatar from "../components/Avatar";
 import {trackClickedPost, togglePopupReply, likePost, unLikePost} from "../actions";
 import {truncate} from "../lib/twit-helpers";
 import TwitMedia from "./TwitMedia";
 
 function ActivePost(props){
+  const { user } = useUser();
   const [liked, setLiked] = useState(props.post.liked);
   const [likes, setLikes] = useState(props.post.likes);
 
@@ -44,15 +46,20 @@ function ActivePost(props){
 
   const onLikeClick = async (event) => {
     event.stopPropagation();
-    if(!liked){
-      await props.likePost(props.post.id);
-      setLiked(true);
-      setLikes((likes) => parseInt(likes) + 1);
+    if(!user || !user.isSignedIn){
+      return
     }
     else{
-      await props.unLikePost(props.post.id);
-      setLiked(false);
-      setLikes((likes) => parseInt(likes) - 1);
+      if(!liked){
+        await likePost(props.post.id, user.id);
+        setLiked(true);
+        setLikes((likes) => parseInt(likes) + 1);
+      }
+      else{
+        await unLikePost(props.post.id, user.id);
+        setLiked(false);
+        setLikes((likes) => parseInt(likes) - 1);
+      }
     }
   }
 

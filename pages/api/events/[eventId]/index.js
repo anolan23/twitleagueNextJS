@@ -3,21 +3,20 @@ import Database from "../../../../db/repos/Database";
 
 export default async (req,res) => {
     const method = req.method;
-    
+    const {eventId, userId} = req.query;
     if(method === "POST"){
 
     }
     
     else if(method === "GET"){
-        const query = req.query;
-        const event = await Events.findOneEventById(query.eventId);
+        const event = await Events.findOneEventById(eventId, userId);
+        console.log("req.query", req.query)
         res.send(event);   
     }
 
     else if(method === "PATCH"){
-      const query = req.query;
       const body = req.body;
-      const event = await Database.updateById(query.eventId, "events", body.values);
+      const event = await Database.updateById(eventId, "events", body.values);
       res.send(event);
     }
     

@@ -15,7 +15,7 @@ import home from "../sass/components/Home.module.scss";
 import Empty from "../components/Empty";
 
 function HomePage(props) {
-  const {user} = useUser({redirectTo: "/"});
+  const { user } = useUser({redirectTo: "/"});
   
   useEffect(() => {
     start();

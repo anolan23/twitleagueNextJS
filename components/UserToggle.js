@@ -1,6 +1,5 @@
 import React, {useState, useEffect,useRef} from "react";
 import {useRouter} from "next/router";
-
 import Avatar from "./Avatar";
 import {connect} from "react-redux";
 import {logOutUser} from "../actions";
@@ -12,7 +11,7 @@ import TwitIcon from "./TwitIcon";
 import useUser from "../lib/useUser";
 
 function UserToggle(props){
-    const { user } = useUser();
+    const { user, mutateUser } = useUser();
     const router = useRouter();
     const ref = useRef();
 
@@ -20,7 +19,8 @@ function UserToggle(props){
     
     const logOut = async () => {
         await props.logOutUser();
-        router.push("/")
+        mutateUser();
+        router.push("/");
     }
 
     useEffect(() => {

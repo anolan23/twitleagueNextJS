@@ -1,13 +1,14 @@
 import React from "react";
 import {connect} from "react-redux";
 
+import useUser from "../lib/useUser";
 import TwitNavItem from "./TwitNavItem";
 import TwitIcon from "./TwitIcon";
 import twitNav from "../sass/components/TwitNav.module.scss"
 import twitNavItem from "../sass/components/TwitNavItem.module.scss";
 
 function TwitNav(props) {
-
+    const { user } = useUser();
     const unseenNotifications = props.notifications.length;
     const renderUnseenNotifcations = () => {
         if(unseenNotifications > 0){
@@ -36,7 +37,7 @@ function TwitNav(props) {
             <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myLeagues" title="My Leagues">
                 <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-trending-up"/>
             </TwitNavItem>
-            <TwitNavItem href={`/users/${props.username}`} title="User Profile">
+            <TwitNavItem href={`/users/${user ? user.username : null}`} title="User Profile">
                 <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-user"/>
             </TwitNavItem>
             <TwitNavItem className={twitNav["twit-nav__hide"]} href="/more" title="More">
@@ -49,7 +50,6 @@ function TwitNav(props) {
 const mapStateToProps = (state) => {
     return {
         notifications: state.user.notifications ? state.user.notifications : [],
-        username: state.user.username ? state.user.username : null
     }
 }
 

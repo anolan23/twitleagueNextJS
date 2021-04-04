@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 
+import useUser from "../lib/useUser";
 import TeamHolder from "./TeamHolder";
 import Post from "./Post";
 import TwitTab from "./TwitTab";
@@ -19,7 +20,7 @@ import TwitDropdownItem from "./TwitDropdownItem";
 import TwitSelect from "./TwitSelect";
 
 function Team(props) {
-
+    const { user } = useUser();
     const team = props.team
     const [activeTab, setActiveTab] = useState("team");
     const [roster, setRoster] = useState(null);
@@ -64,10 +65,13 @@ function Team(props) {
     const fetchEventsBySeasonId = async (seasonId) => {
         const events = await backend.get(`api/teams/${team.abbrev.substring(1)}/events`, {
             params: {
-                seasonId: seasonId
+                seasonId: seasonId,
+                userId: user.id
             }
         });
         setEvents(events.data);
+        console.log(events)
+
     }
 
     const fetchSeasons = async () => {
@@ -194,7 +198,6 @@ function Team(props) {
         }
       }
 
-      console.log("season", season)
 
       const renderEvents = () => {
         return events.map((event, index) => {

@@ -4,68 +4,98 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 import {toggleUpdateScorePopup, approveEvent} from "../../actions";
 import {connect} from "react-redux";
+import useSWR, { mutate } from "swr"
 
 import MainBody from "../../components/MainBody"
 import useUser from "../../lib/useUser";
 import TopBar from "../../components/TopBar";
 import events from "../../sass/components/Events.module.scss"
 import activePost from "../../sass/components/ActivePost.module.scss";
-import {fetchEvent, setEvent, fetchEventPosts} from "../../actions";
+import {fetchEvent, setEvent, fetchEventPosts, likeEvent, unLikeEvent} from "../../actions";
 import TwitButton from "../../components/TwitButton";
 import SmallInput from "../../components/SmallInput";
 import Matchup from "../../components/Matchup";
 import Empty from "../../components/Empty";
 import Post from "../../components/Post";
+import backend from "../../lib/backend";
 
 function EventsPage(props){
     const { user } = useUser();
-    const event = props.event;
-    const _event = props._event;
     const router = useRouter();
     const [posts, setPosts] = useState(null);
+    
+    const fetcher = async (url) => {
+        const event = await backend.get(url, {
+            params: {
+                userId: user.id
+            }
+        });
+        return event.data;
+    }
+    const { data, mutate } = useSWR(props.event && user ? `/api/events/${props.event.id}` : null, fetcher);
+    console.log("data", data);
+    
+    useEffect(() => {
+        props.setEvent(data);  
+    }, [data])
 
     useEffect(() => {
-        props.setEvent(_event);        
-    }, [_event])
-
-    useEffect(() => {
-        getPosts();
-        
-    }, [props.event.id, user]);
+        getPosts();        
+    }, [data, user]);
 
     const getPosts = async () => {
-        if(props.event.id && user){
+        if(!data){
+            return;
+        }
+        if(data.id && user){
             console.log("fetch")
-            const posts = await fetchEventPosts(props.event.id, user.id);
+            const posts = await fetchEventPosts(data.id, user.id);
             setPosts(posts);
         }
     }
 
     const onUpdateScoreClick = () => {
-        props.toggleUpdateScorePopup();
+        toggleUpdateScorePopup();
     }
 
     const onApproveClick = () => {
-        props.approveEvent(event.id);
+        approveEvent(data.id);
     }
 
+    const onLikeClick = async (event) => {
+        event.stopPropagation();
+        if(!user || !user.isSignedIn){
+          return
+        }
+        else{
+          if(!data.liked){
+            await likeEvent(data.id, user.id);
+            mutate();
+          }
+          else{
+            await unLikeEvent(data.id, user.id);
+            mutate();
+          }
+        }
+      }
+
     const renderEvent = () => {
-        if(event === null){
+        if(data === null){
             return <div>Loading...</div>
         }
-        else if(event.length === 0){
+        else if(data.length === 0){
             return null;
         }
         else{
             return (
                 <div className={events["events__event"]}>
-                    <Matchup event={event}/>
+                    <Matchup event={data}/>
                     <div className={activePost["active-post__timestamp"]}>
-                        {event.created_at} · twitleague Web App
+                        {data.created_at} · twitleague Web App
                     </div>
                     <div className={activePost["active-post__stats"]}>
                         <div className={activePost["active-post__stat-box"]}>
-                            <span className={activePost["active-post__value"]}>{0}</span>
+                            <span className={activePost["active-post__value"]}>{data.likes}</span>
                             <span className={activePost["active-post__stat"]}>Likes</span>
                         </div>
                     </div>
@@ -80,7 +110,7 @@ function EventsPage(props){
                                 <use xlinkHref="/sprites.svg#icon-repeat"/>
                             </svg>
                             </div> 
-                            <div onClick={null} className={`${activePost["active-post__icons__holder"]}`}>
+                            <div onClick={onLikeClick} className={`${activePost["active-post__icons__holder"]} ${props.e.liked ? activePost["active-post__icons__holder__active"] : null}`}>
                             <svg className={activePost["active-post__icon"]}>
                                 <use xlinkHref="/sprites.svg#icon-heart"/>
                             </svg>
@@ -97,12 +127,16 @@ function EventsPage(props){
     }
 
     const renderUpdateScoreAction = () => {
-        const approvedUsers = [event.owner_id, event.team_owner_id, event.opponent_owner_id]
-        if(!approvedUsers.includes(props.userId) || event.league_approved){
-            return null
+        const approvedUsers = [data.owner_id, data.team_owner_id, data.opponent_owner_id]
+
+        if(!user){
+            return null;
+        }
+        else if(approvedUsers.includes(user.id) && !data.league_approved){
+            return <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary">Update score</TwitButton>
         }
         else{
-            return <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary">Update score</TwitButton>
+            return null;
         }
     }
 
@@ -121,11 +155,14 @@ function EventsPage(props){
     } 
 
     const renderApproveAction = () => {
-        if(props.userId !== event.owner_id){
+        if(!user){
+            return null;
+        }
+        else if(user.id !== data.owner_id){
             return null
         }
-        else if(event.play_period === "Final"){
-            if(!event.league_approved){
+        else if(data.play_period === "Final"){
+            if(!data.league_approved){
             return <TwitButton onClick={onApproveClick} color="twit-button--primary">Approve</TwitButton>
             }
             else{
@@ -139,6 +176,10 @@ function EventsPage(props){
 
     if (router.isFallback) {
         return <div>Loading...</div>
+    }
+
+    else if(!data){
+        return <div>no data</div>
     }
     else{
         return (
@@ -170,12 +211,12 @@ export async function getStaticPaths() {
   
 export async function getStaticProps(context) {
     const eventId = context.params.eventId;
-    const _event = await fetchEvent(eventId);
+    const event = await fetchEvent(eventId);
 
     return {
         revalidate: 1,
         props: {
-        _event
+        event
         } // will be passed to the page component as props
     }  
 
@@ -183,8 +224,7 @@ export async function getStaticProps(context) {
 
 const mapStateToProps = (state) => {
     return {
-        event: state.event,
-        userId: state.user.id
+        e: state.event
     }
 }
 

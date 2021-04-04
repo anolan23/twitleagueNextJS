@@ -27,7 +27,9 @@ class Events {
         to_char(events.date, 'HH12:MIAM') AS time, t1.team_name, t1.abbrev, t1.avatar, t1.owner_id AS team_owner_id, 
         t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar, 
         t2.owner_id AS opponent_owner_id,
-        (SELECT COUNT(*) FROM posts WHERE event_conversation_id = events.id) AS replies
+        (SELECT COUNT(*) FROM posts WHERE event_conversation_id = events.id) AS replies,
+        EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
+        (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
         FROM events
         LEFT JOIN teams AS t1 ON events.team_id = t1.id
         LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
@@ -38,36 +40,40 @@ class Events {
         return rows;
     }
 
-    static async findEventsByTeamAbbrev(teamAbbrev) {
+    static async findEventsByTeamAbbrev(teamAbbrev, userId) {
         const {rows} = await pool.query(`
         SELECT events.*, to_char(events.date, 'Mon') AS month, to_char(events.date, 'DD') AS day, 
         to_char(events.date, 'HH12:MIAM') AS time, t1.team_name, t1.abbrev, t1.avatar, t1.owner_id AS team_owner_id, 
         t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar, 
         t2.owner_id AS opponent_owner_id,
-        (SELECT COUNT(*) FROM posts WHERE event_conversation_id = events.id) AS replies
+        (SELECT COUNT(*) FROM posts WHERE event_conversation_id = events.id) AS replies,
+        EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
+        (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
         FROM events
         LEFT JOIN teams AS t1 ON events.team_id = t1.id
         LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
         WHERE t1.abbrev = $1 OR t2.abbrev = $1
         ORDER BY date DESC`
-        , [teamAbbrev]);
+        , [teamAbbrev, userId]);
         
         return rows;
     }
 
-    static async findOneEventById(eventId) {
+    static async findOneEventById(eventId, userId) {
         const {rows} = await pool.query(`
         SELECT events.*, leagues.league_name, leagues.owner_id , to_char(events.date, 'Mon') AS month, 
         to_char(events.date, 'DD') AS day, to_char(events.date, 'HH12:MIAM') AS time, 
         t1.team_name, t1.abbrev, t1.avatar, t1.owner_id AS team_owner_id,
         t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar, 
-        t2.owner_id AS opponent_owner_id
+        t2.owner_id AS opponent_owner_id,
+        EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
+        (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
         FROM events
         LEFT JOIN teams AS t1 ON events.team_id = t1.id
         LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
         LEFT JOIN leagues ON t1.league_id = leagues.id
         WHERE events.id = $1`
-        , [eventId]);
+        , [eventId, userId]);
         
         return rows[0];
     }
@@ -94,6 +100,33 @@ class Events {
         
         return rows[0];
     }
+
+    static async like(eventId, userId) {
+        const {rows} = await pool.query(`
+        INSERT INTO event_likes (event_id, user_id)
+        VALUES ($1, $2)
+        RETURNING *`, [eventId, userId]);
+        return rows;
+    }
+
+    static async unLike(eventId, userId) {
+      const {rows} = await pool.query(`
+      DELETE FROM event_likes
+      WHERE event_id = $1 AND user_id = $2
+      RETURNING *`, [eventId, userId]);
+      return rows;
+  }
+
+  static async findUsersWhoLiked(eventId) {
+    const {rows} = await pool.query(`
+    SELECT event_likes.*, users.name, users.username, users.avatar
+    FROM event_likes
+    JOIN users ON users.id = user_id
+    WHERE event_id = $1
+    `, [eventId]);
+    
+    return rows;
+}
 }
 
 export default Events;
