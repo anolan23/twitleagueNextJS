@@ -125,12 +125,11 @@ function EventsPage(props){
     }
 
     const renderUpdateScoreAction = () => {
-        const approvedUsers = [event.owner_id, event.team_owner_id, event.opponent_owner_id]
-
         if(!user){
             return null;
         }
-        else if(approvedUsers.includes(user.id) && !event.league_approved){
+        const approvedUsers = [event.owner_id, event.team_owner_id, event.opponent_owner_id]
+        if(approvedUsers.includes(user.id) && !event.league_approved){
             return <TwitButton onClick={onUpdateScoreClick} color="twit-button--primary">Update score</TwitButton>
         }
         else{
@@ -156,7 +155,8 @@ function EventsPage(props){
         if(!user){
             return null;
         }
-        else if(user.id !== event.owner_id){
+        
+        if(user.id !== event.owner_id){
             return null
         }
         else if(event.play_period === "Final"){
@@ -176,28 +176,23 @@ function EventsPage(props){
         return <div>Loading...</div>
     }
 
-    else if(!event){
-        return <div>no event</div>
-    }
-    else{
-        return (
-            <React.Fragment>
-            <MainBody>
-                <TopBar main="Event">
-                    <div className={events["events__event__more-info__actions"]}>
-                        {renderUpdateScoreAction()}
-                        {renderApproveAction()}
-                    </div>
-                </TopBar>
-                <div className={events["events"]}>
-                    {renderEvent()}
-                </div> 
-                <SmallInput/>
-                {renderPosts()}       
-            </MainBody>
-          </React.Fragment>
-        )
-    }
+    return (
+        <React.Fragment>
+        <MainBody>
+            <TopBar main="Event">
+                <div className={events["events__event__more-info__actions"]}>
+                    {renderUpdateScoreAction()}
+                    {renderApproveAction()}
+                </div>
+            </TopBar>
+            <div className={events["events"]}>
+                {renderEvent()}
+            </div> 
+            <SmallInput/>
+            {renderPosts()}       
+        </MainBody>
+      </React.Fragment>
+    )
     
     
 
