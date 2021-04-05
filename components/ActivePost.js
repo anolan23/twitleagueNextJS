@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import reactStringReplace from "react-string-replace";
 import Link from "next/link";
@@ -14,6 +14,14 @@ function ActivePost(props){
   const { user } = useUser();
   const [liked, setLiked] = useState(props.post.liked);
   const [likes, setLikes] = useState(props.post.likes);
+
+  useEffect(() => {
+    setLiked(props.post.liked);
+  }, [props.post.liked])
+
+  useEffect(() => {
+    setLikes(props.post.likes);
+  }, [props.post.likes])
 
   const renderBody = () => {
     const text = props.post.body;
@@ -101,7 +109,7 @@ function ActivePost(props){
                         <use xlinkHref="/sprites.svg#icon-repeat"/>
                       </svg>
                     </div> 
-                    <div onClick={onLikeClick} className={`${activePost["active-post__icons__holder"]} ${liked?activePost["active-post__icons__holder__active"]: null}`}>
+                    <div onClick={onLikeClick} className={`${activePost["active-post__icons__holder"]} ${liked ? activePost["active-post__icons__holder__active"] : null}`}>
                       <svg className={activePost["active-post__icon"]}>
                         <use xlinkHref="/sprites.svg#icon-heart"/>
                       </svg>

@@ -18,7 +18,16 @@ function ThreadPage(props){
   const { user } = useUser();
   const router = useRouter();
 
-  const fetcher = async (url) => {
+  const getThread = async (url) => {
+    const response = await backend.get(url, {
+      params: {
+        userId: user.id
+      }
+    });
+    return response.data;
+  }
+
+  const getReplies = async (url) => {
     const response = await backend.get(url, {
       params: {
         userId: user.id
@@ -26,12 +35,11 @@ function ThreadPage(props){
     });
   return response.data;
   }
-
-  const { data, error } = useSWR(props.threadId && user ? `/api/thread/${props.threadId}/replies` : null, fetcher);
-  const replies = data;
-  
+  const { data: thread } = useSWR(props.threadId && user ? `/api/thread/${props.threadId}` : null, getThread, {initialData: props.thread, revalidateOnMount:true});
+  const { data: replies } = useSWR(props.threadId && user ? `/api/thread/${props.threadId}/replies` : null, getReplies);
+  console.log(thread);
   const renderThread = () => {
-    return props.thread.map((post, index) => {
+    return thread.map((post, index) => {
         if(post.id != props.threadId){
             return <Post key={index} post={post} history/>
         }

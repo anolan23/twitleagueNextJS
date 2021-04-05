@@ -32,14 +32,14 @@ function EventsPage(props){
         });
         return event.data;
     }
-    const { data: event, mutate } = useSWR(props.event && user ? `/api/events/${props.event.id}` : null, fetcher, {initialData: props.event});
+    const { data: event, mutate } = useSWR(props.event && user ? `/api/events/${props.event.id}` : null, fetcher, {initialData: props.event, revalidateOnMount: true});
     
     useEffect(() => {
-        props.setEvent(event);  
+        props.setEvent(event);   
     }, [event])
 
     useEffect(() => {
-        getPosts();        
+        getPosts();         
     }, [event, user]);
 
     const getPosts = async () => {

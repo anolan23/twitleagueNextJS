@@ -200,7 +200,7 @@ class Posts {
     return rows;
 }
 
-static async findThreadHistory(threadId) {
+static async findThreadHistory(threadId, userId) {
   const {rows} = await pool.query(`
     WITH RECURSIVE history AS (
       SELECT * FROM posts WHERE id = $1
@@ -218,11 +218,12 @@ static async findThreadHistory(threadId) {
         WHEN (now() - p1.created_at < '1 Hour') 
         THEN (to_char(now() - p1.created_at, 'FMMIm'))
         ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-      END AS date
+      END AS date,
+      EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
     FROM history AS p1
     JOIN users ON p1.author_id = users.id
     ORDER BY p1.created_at
-  `, [threadId]);
+  `, [threadId, userId]);
   
   return rows;
 }

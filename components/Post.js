@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import {connect} from "react-redux";
@@ -18,6 +18,14 @@ function Post(props) {
   const router = useRouter();
   const [liked, setLiked] = useState(props.post.liked);
   const [likes, setLikes] = useState(props.post.likes);
+
+  useEffect(() => {
+    setLiked(props.post.liked);
+  }, [props.post.liked])
+
+  useEffect(() => {
+    setLikes(props.post.likes);
+  }, [props.post.likes])
 
   const renderMedia = () => {
     if(props.post.media)
