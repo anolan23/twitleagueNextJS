@@ -19,7 +19,7 @@ function PopupReply(props){
     const renderBody = () => {
         return (
             <React.Fragment>
-                <Post post={props.trackedPost}/>
+                <Post post={props.trackedPost} history/>
                 <MainInput 
                     onSubmit={onSubmit} 
                     buttonText="Reply" 
