@@ -6,8 +6,8 @@ import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
 import TwitCard from "./TwitCard";
 import TwitItem from "./TwitItem";
 import backend from "../lib/backend";
-import {followTeam, unFollowTeam} from "../actions";
 import Empty from "./Empty";
+import ScoutItem from "./ScoutItem";
 
 function SuggestedUsers(props){
 
@@ -25,24 +25,6 @@ function SuggestedUsers(props){
         });
         setUsers(users.data);
     }
-
-    // const onScoutToggleClick = (user) => {
-    //     user.following = !user.following;
-    //     const suggestedUsers = users.map(suggestedUser => {
-    //         if(suggestedUser.id === user.id){
-    //             return user
-    //         }
-    //         return suggestedUser
-    //     })
-    //     setUsers(suggestedUsers);
-
-    //     if(user.following){
-    //         followTeam(props.userId, user.id);
-    //     }
-    //     else if(!user.following){
-    //         unFollowTeam(props.userId, user.id);
-    //     }
-    // }
 
     const renderFooter = () => {
         return(
@@ -62,15 +44,11 @@ function SuggestedUsers(props){
             return <Empty main="No suggested teams" sub="Try again once more teams are created"/>
         }
         else{
-            return users.map((suggestedUser, index) => {
+            return users.map((user, index) => {
                 return (
-                    <TwitItem 
+                    <ScoutItem
                         key={index}
-                        avatar={suggestedUser.avatar}
-                        title={suggestedUser.name} 
-                        subtitle={`@${suggestedUser.username}`}
-                        actionText={suggestedUser.following?"Scout":"Unscout"}
-                        href={`/users/${suggestedUser.username}`}
+                        user={user}
                     />
                 )
             });

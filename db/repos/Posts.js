@@ -2,77 +2,73 @@ import pool from "../pool";
 
 class Posts {
     static async create(post, teamMentions, userMentions) {
-        let createdPost;
-        let results;
-        await (async () => {
-          const client = await pool.connect()
-          try {
-            await client.query('BEGIN')
-            createdPost = await client.query(
-              `INSERT INTO posts (author_id, body, media, outlook)
+      const {userId, body, media, outlook} = post;  
+      let createdPost;
+      await (async () => {
+        const client = await pool.connect()
+        
+        try {
+          await client.query('BEGIN')
+          createdPost = await client.query(
+            `WITH inserted_post AS (
+              INSERT INTO posts (author_id, body, media, outlook, conversation_id)
               VALUES
-              ($1, $2, $3, $4)
-              RETURNING *`, [post.userId, post.body, post.media, post.outlook]
+              ($1, $2, $3, $4, lastval())
+              RETURNING *
             )
-            await client.query(
-                `UPDATE posts
-                SET conversation_id = $1
-                WHERE id = $1
-                `, [createdPost.rows[0].id]
-            )
-            if(teamMentions){
-              teamMentions.forEach(async teamMention => {
-                await client.query(
-                  `WITH team AS (
-                    SELECT id
-                    FROM teams
-                    WHERE abbrev = $1
-                  )
-                  INSERT INTO team_mentions (team_id, post_id)
-                  VALUES ((SELECT id FROM team), $2)`, [teamMention, createdPost.rows[0].id]
-                )
-              });
-            }
-            if(userMentions){
-              userMentions.forEach(async userMention => {
-                const mention = userMention.substring(1);
-                console.log(mention)
-                await client.query(
-                  `WITH user_mentioned AS (
-                    SELECT id
-                    FROM users
-                    WHERE username = $1
-                  )
-                  INSERT INTO user_mentions (user_id, post_id)
-                  VALUES ((SELECT id FROM user_mentioned), $2)`, [mention, createdPost.rows[0].id]
-                )
-              });
-          }
-            results = await client.query(
-              `SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
-              CASE 
-              WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
-              WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
-              ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-              END AS date,
-              EXISTS (SELECT 1 FROM likes WHERE likes.user_id = NULL AND p1.id = likes.post_id ) AS liked
-              FROM posts AS p1
-              JOIN users ON p1.author_id = users.id
-              WHERE p1.id = $1
-              `, [createdPost.rows[0].id]
-            )
-
-            await client.query('COMMIT')
             
-          } catch (e) {
-            await client.query('ROLLBACK')
-            throw e
-          } finally {
-            client.release()
+            SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+            CASE 
+            WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
+            WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+            ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+            END AS date,
+            EXISTS (SELECT 1 FROM likes WHERE likes.user_id = NULL AND p1.id = likes.post_id ) AS liked
+            FROM inserted_post AS p1
+            JOIN users ON p1.author_id = users.id`, [userId, body, media, outlook]
+          )
+
+          if(teamMentions){
+            teamMentions.forEach(async teamMention => {
+              await client.query(
+                `WITH team AS (
+                  SELECT id
+                  FROM teams
+                  WHERE abbrev = $1
+                )
+                INSERT INTO team_mentions (team_id, post_id)
+                VALUES ((SELECT id FROM team), $2)`, [teamMention, createdPost.rows[0].id]
+              )
+            });
           }
 
-        })().catch(e => console.error(e.stack))
-        return results.rows[0]
+          if(userMentions){
+            userMentions.forEach(async userMention => {
+              const mention = userMention.substring(1);
+              console.log(mention)
+              await client.query(
+                `WITH user_mentioned AS (
+                  SELECT id
+                  FROM users
+                  WHERE username = $1
+                )
+                INSERT INTO user_mentions (user_id, post_id)
+                VALUES ((SELECT id FROM user_mentioned), $2)`, [mention, createdPost.rows[0].id]
+              )
+            });
+        }
+
+          await client.query('COMMIT')
+          
+        } catch (e) {
+          await client.query('ROLLBACK')
+          throw e
+        } finally {
+          client.release()
+        }
+
+      })().catch(e => console.error(e.stack))
+      return createdPost.rows[0]
     }
 
     static async findByUserId(targetUserId, userId, num, offset) {
@@ -323,10 +319,22 @@ static async findThreadHistory(threadId, userId) {
             try {
                 await client.query('BEGIN')
                 createdPost = await client.query(
-                  `INSERT INTO posts (author_id, body, media, outlook, conversation_id, in_reply_to_post_id)
-                  VALUES
-                  ($1, $2, $3, $4, $5, $6)
-                  RETURNING *`, [userId, body, media, outlook, conversation_id, in_reply_to_post_id]
+                  `WITH inserted_post AS (
+                    INSERT INTO posts (author_id, body, media, outlook, conversation_id, in_reply_to_post_id)
+                    VALUES
+                    ($1, $2, $3, $4, $5, $6)
+                    RETURNING *
+                  )
+                  
+                  SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+                  CASE 
+                  WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
+                  WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+                  ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+                  END AS date,
+                  EXISTS (SELECT 1 FROM likes WHERE likes.user_id = NULL AND p1.id = likes.post_id ) AS liked
+                  FROM inserted_post AS p1
+                  JOIN users ON p1.author_id = users.id`, [userId, body, media, outlook, conversation_id, in_reply_to_post_id]
               )
               if(teamMentions){
                 teamMentions.forEach(async teamMention => {

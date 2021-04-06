@@ -49,13 +49,14 @@ class Users {
         return rows;
     }
 
-    static async findSuggested(num) {
+    static async findSuggested(userId, num) {
         const teams = await pool.query(`
-        SELECT *
+        SELECT *,
+        EXISTS (SELECT 1 FROM scouts WHERE scout_user_id = $1 AND users.id = scouted_user_id) AS scouted
         FROM users
         ORDER BY avatar, RANDOM()
-        LIMIT $1
-        `, [num]);
+        LIMIT $2
+        `, [userId, num]);
         
         return teams.rows;
     }

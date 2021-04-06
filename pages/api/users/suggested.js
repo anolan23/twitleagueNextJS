@@ -3,9 +3,8 @@ import Users from "../../../db/repos/Users";
 export default async (req,res) => {
     const method = req.method;
     if(method === "GET"){
-        const userId = req.query.userId;
-        const num = req.query.num;
-        const users = await Users.findSuggested(num);
+        const {userId, num} = req.query;
+        const users = await Users.findSuggested(userId, num);
         res.send(users);
     }
     

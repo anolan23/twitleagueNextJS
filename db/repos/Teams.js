@@ -139,10 +139,7 @@ class Teams {
         EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $1 AND teams.id = followers.team_id ) AS following
         FROM teams
         JOIN leagues ON leagues.id = teams.league_id
-        WHERE teams.avatar IS NOT NULL AND teams.id NOT IN (
-            SELECT team_id
-            FROM followers
-            WHERE user_id = $1)
+        WHERE teams.avatar IS NOT NULL
         ORDER BY RANDOM()
         LIMIT $2
         `, [userId, num]);

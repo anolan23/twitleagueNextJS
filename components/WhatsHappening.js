@@ -6,7 +6,7 @@ import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
 import TwitCard from "./TwitCard";
 import TwitItem from "./TwitItem";
 import backend from "../lib/backend";
-import {followTeam, unFollowTeam} from "../actions";
+import {follow, unFollow} from "../actions";
 import Empty from "./Empty";
 import Trend from "./Trend";
 

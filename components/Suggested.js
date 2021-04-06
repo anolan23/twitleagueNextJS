@@ -1,28 +1,32 @@
 import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 
+import useUser from "../lib/useUser";
 import suggested from "../sass/components/Suggested.module.scss";
-import {followTeam, unFollowTeam} from "../actions";
 import TwitItem from "./TwitItem";
 import TopBar from "./TopBar";
 import TwitTabs from "./TwitTabs";
 import TwitTab from "./TwitTab";
-import Post from "./Post";
 import Empty from "./Empty";
 import backend from "../lib/backend";
+import FollowItem from "./FollowItem";
+import ScoutItem from "./ScoutItem";
 
 function Suggested(props) {
+    const { user } = useUser();
     const [tab, setTab] = useState("teams");
     const [suggestions, setSuggestions] = useState(null);
 
     useEffect(() => {
-        getSuggestedTeams();
-    }, [])
+        if(user){
+            getSuggestedTeams();
+        }
+    }, [user])
 
     const getSuggestedTeams = async () => {
         const teams = await backend.get("/api/teams/suggested",{
             params:{
-                userId: props.userId,
+                userId: user.id,
                 num: 50
             }
         });
@@ -32,30 +36,12 @@ function Suggested(props) {
     const getSuggestedUsers = async () => {
         const users = await backend.get("/api/users/suggested",{
             params:{
-                userId: props.userId,
+                userId: user.id,
                 num: 50
             }
         });
         setSuggestions(users.data);
      }
-
-    const onFollowToggleClick = (team) => {
-        team.following = !team.following;
-        const teams = suggestions.map(suggestion => {
-            if(suggestion.id === team.id){
-                return team
-            }
-            return suggestion
-        })
-        setSuggestions(teams);
-
-        if(team.following){
-            followTeam(props.userId, team.id);
-        }
-        else if(!team.following){
-            unFollowTeam(props.userId, team.id);
-        }
-    }
 
     const renderContent = () => {
         if(suggestions === null){
@@ -65,27 +51,18 @@ function Suggested(props) {
             return suggestions.map((suggestion, index) => {
                 if(suggestion.team_name){
                     return (
-                        <TwitItem 
-                          key={index}
-                          href={`/teams/${suggestion.abbrev.substring(1)}`}
-                          avatar={suggestion.avatar}
-                          title={suggestion.team_name}
-                          subtitle={`${suggestion.abbrev} · ${suggestion.league_name}`}
-                          actionText={suggestion.following ? "Unfollow" : "Follow"}
-                          onActionClick={() => onFollowToggleClick(suggestion)}
-                          />
+                        <FollowItem
+                            key={index}
+                            team={suggestion}
+                        />
                       );
                 }
                 else if(suggestion.username){
                     return (
-                        <TwitItem 
-                          key={index}
-                          href={`/users/${suggestion.username}`}
-                          avatar={suggestion.avatar}
-                          title={suggestion.name}
-                          subtitle={`@${suggestion.username}`}
-                          actionText="Scout"
-                          />
+                        <ScoutItem
+                            key={index}
+                            user={suggestion}
+                        />
                       );
                 }
                 

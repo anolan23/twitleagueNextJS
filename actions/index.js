@@ -209,21 +209,35 @@ export const saveTeamImages = (teamImageUrl, bannerImageUrl) => async (dispatch,
     }
 }
 
-export const followTeam =  async (userId, teamId) => {
-    if(userId && teamId){
-        const response = await backend.patch("/api/followers", {userId, teamId});
-    }
+export const follow =  async (teamId, userId) => {
+    const response = await backend.post("/api/followers", {teamId, userId});
+    return response.data;
 }
 
-export const unFollowTeam =  async (userId, teamId) => {
-    if(userId && teamId){
-        const response = await backend.delete("/api/followers", {
-            params:{
-                userId, 
-                teamId
-            }
-        });
-    }
+export const unFollow =  async (teamId, userId) => {
+    const response = await backend.delete("/api/followers", {
+        params:{
+            userId, 
+            teamId
+        }
+    });
+    return response.data;
+}
+
+
+export const scout =  async (scouted_user_id, scout_user_id) => {
+    const response = await backend.post("/api/scouts", {scouted_user_id, scout_user_id});
+    return response.data;
+}
+
+export const unScout =  async (scouted_user_id, scout_user_id) => {
+    const response = await backend.delete("/api/scouts", {
+        params:{
+            scouted_user_id, 
+            scout_user_id
+        }
+    });
+    return response.data;
 }
 
 export const watchTeamAndFetchUser = () => async (dispatch) => {

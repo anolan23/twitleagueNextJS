@@ -3,8 +3,8 @@ import Avatar from './Avatar';
 import {connect} from "react-redux";
 
 import {
-  followTeam,
-  unFollowTeam,  
+  follow,
+  unFollow,  
   toggleEditTeamPopup,
   toggleScheduleModal,
   toggleEditRosterPopup,
@@ -33,10 +33,10 @@ function TeamHolder(props) {
     setSuggestions(teams);
 
     if(team.following){
-        followTeam(props.userId, team.id);
+        follow(props.userId, team.id);
     }
     else if(!team.following){
-        unFollowTeam(props.userId, team.id);
+        unFollow(props.userId, team.id);
     }
   }
 
@@ -67,7 +67,7 @@ function TeamHolder(props) {
     else{
       if(!props.following.some(obj => obj.team_id === team.id))
       {
-        return <TwitButton onClick={props.followTeam} color="twit-button--primary">Follow</TwitButton>
+        return <TwitButton onClick={props.follow} color="twit-button--primary">Follow</TwitButton>
       }
       else
       {
@@ -171,7 +171,7 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps,{
-  followTeam,  
+  follow,  
   toggleEditTeamPopup,
   toggleScheduleModal,
   toggleEditRosterPopup,

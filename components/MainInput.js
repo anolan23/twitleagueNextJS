@@ -128,7 +128,6 @@ function MainInput(props) {
 
         }
         else if (event.keyCode === 13 || event.keyCode === 9) {
-            const {options, cursor} = state;
             event.preventDefault();
             onOptionClick(options[cursor]);
         }

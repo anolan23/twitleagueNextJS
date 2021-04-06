@@ -2,20 +2,25 @@ import React, {useState, useEffect} from "react"
 import {connect} from "react-redux"
 import Link from "next/link";
 
+import useUser from "../lib/useUser";
 import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
 import TwitCard from "../components/TwitCard";
 import TwitItem from "../components/TwitItem";
 import backend from "../lib/backend";
-import {followTeam, unFollowTeam} from "../actions";
+import {followTeam, unFollow} from "../actions";
 import Empty from "./Empty";
+import FollowItem from "./FollowItem";
+
 
 function SuggestedTeams(props){
-
+    const { user } = useUser();
     const [teams, setTeams] = useState(null); 
 
     useEffect(() => {
-        fetchSuggestedTeams(props.userId, 3);
-    }, [])
+        if(user){
+            fetchSuggestedTeams(user.id, 3);
+        }
+    }, [user])
 
     const fetchSuggestedTeams = async (userId, num) => {
         const response = await backend.get("/api/teams/suggested", {
@@ -25,24 +30,6 @@ function SuggestedTeams(props){
             }
         });
         setTeams(response.data);
-    }
-
-    const onFollowToggleClick = (team) => {
-        team.following = !team.following;
-        const suggestedTeams = teams.map(suggestedTeam => {
-            if(suggestedTeam.id === team.id){
-                return team
-            }
-            return suggestedTeam
-        })
-        setTeams(suggestedTeams);
-
-        if(team.following){
-            followTeam(props.userId, team.id);
-        }
-        else if(!team.following){
-            unFollowTeam(props.userId, team.id);
-        }
     }
 
     const renderFooter = () => {
@@ -63,16 +50,11 @@ function SuggestedTeams(props){
             return <Empty main="No suggested teams" sub="Try again once more teams are created"/>
         }
         else{
-            return teams.map((suggestedTeam, index) => {
+            return teams.map((team, index) => {
                 return (
-                    <TwitItem 
-                        key={index}
-                        avatar={suggestedTeam.avatar}
-                        title={suggestedTeam.team_name} 
-                        subtitle={`${suggestedTeam.abbrev} · ${suggestedTeam.league_name}`}
-                        actionText={suggestedTeam.following?"Unfollow":"Follow"}
-                        onActionClick={() => onFollowToggleClick(suggestedTeam)}
-                        href={`/teams/${suggestedTeam.abbrev.substring(1)}`}
+                    <FollowItem
+                            key={index}
+                            team={team}
                     />
                 )
             });

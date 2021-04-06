@@ -17,9 +17,16 @@ function TwitItem(props) {
 
     const renderAction = () => {
         if(!props.actionText){
-            return;
+            return null;
         }
-        else{
+        else if(props.actionText === "Follow" || props.actionText === "Scout"){
+            return (
+                <div className={twitItem["twit-item__action"]}>
+                    <TwitButton onClick={props.onActionClick} color="twit-button--primary">{props.actionText}</TwitButton>
+                </div>
+            )
+        }
+        else if(props.actionText === "Unfollow" || props.actionText === "Unscout"){
             return (
                 <div className={twitItem["twit-item__action"]}>
                     <TwitButton onClick={props.onActionClick} color="twit-button--primary" outline="twit-button--primary--outline">{props.actionText}</TwitButton>

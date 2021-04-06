@@ -96,7 +96,6 @@ function Post(props) {
 
   const onLikeClick = async (event) => {
     event.stopPropagation();
-    console.log(user)
     if(!user || !user.isSignedIn){
       return
     }
