@@ -34,7 +34,7 @@ function HomePage(props) {
   }
 
   const onSubmit = (values) => {
-    props.createPost(values);
+    props.createPost(values, user.id);
   }
 
   const renderPosts = () => {

@@ -2,18 +2,20 @@ import React from "react";
 import {connect} from "react-redux";
 import {togglePopupReply} from "../../actions";
 
+import useUser from "../../lib/useUser";
 import Popup from "./Popup";
 import MainInput from "../MainInput";
 import Post from "../Post";
 import {createReply} from "../../actions";
 
 function PopupReply(props){
-
+    const { user } = useUser();
+    
     const onSubmit = (values) => {
         const conversation_id = props.trackedPost.conversation_id;
         const in_reply_to_post_id = props.trackedPost.id;
         const reply = {...values, conversation_id, in_reply_to_post_id}
-        props.createReply(reply);
+        props.createReply(reply, user.id);
     }
     
     const renderBody = () => {

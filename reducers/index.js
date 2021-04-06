@@ -6,6 +6,7 @@ import leagueReducer from "./leagueReducer";
 import postsReducer from "./postsReducer";
 import trackedPostReducer from "./trackedPostReducer";
 import eventReducer from "./eventReducer";
+import threadRepliesReducer from "./threadRepliesReducer";
 
 export default combineReducers({
     user: userReducer,
@@ -13,6 +14,7 @@ export default combineReducers({
     event: eventReducer,
     league: leagueReducer,
     posts: postsReducer,
+    threadReplies: threadRepliesReducer,
     modals: modalReducer,
     trackedPost: trackedPostReducer
 });

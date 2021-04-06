@@ -307,23 +307,23 @@ export const createPost = (post, userId) => async (dispatch) => {
     dispatch(emptyPostData());
 }
 
-export const createReply = (reply) => async (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
-    const _reply = {...reply, userId};
+export const createReply = (reply, userId) => async (dispatch) => {
     const response = await backend.post(`/api/thread/${reply.conversation_id}/replies`, {
-        reply: _reply
+        reply: {...reply, userId}
     });
 
     dispatch({type: "CREATE_REPLY", payload: response.data})
+    dispatch(togglePopupReply())
     dispatch(emptyPostData());
 }
 
-export const fetchThreadReplies = async (threadId, userId) => {
+export const fetchThreadReplies = (threadId, userId) => async (dispatch) => {
     const response = await backend.get(`/api/thread/${threadId}/replies`, {
-        userId
+        params: {
+            userId
+        }
     });
-    return response.data;
+    dispatch({type: "FETCH_REPLIES", payload: response.data})
 }
 
 export const sendEventReply = (reply) => async (dispatch, getState) => {
@@ -470,6 +470,10 @@ export const unLikeEvent = async (eventId, userId) => {
 
 export const clearPosts = () => async (dispatch) => {
     dispatch({type: "CLEAR_POSTS", payload: null});
+}
+
+export const clearReplies = () => async (dispatch) => {
+    dispatch({type: "CLEAR_REPLIES", payload: null});
 }
 
 //Post Action Creators

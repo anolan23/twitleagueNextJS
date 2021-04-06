@@ -71,7 +71,8 @@ function ActivePost(props){
     }
   }
 
-  const onReplyClick = () => {
+  const onReplyClick = (event) => {
+    event.stopPropagation();
     props.trackClickedPost(props.post);
     props.togglePopupReply();
   }
