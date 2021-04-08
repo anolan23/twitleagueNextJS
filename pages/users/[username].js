@@ -1,14 +1,154 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
+import {connect} from "react-redux";
 
-import MainBody from "../../components/MainBody"
+import useUser from "../../lib/useUser";
+import MainBody from "../../components/MainBody";
 import Users from "../../db/repos/Users";
-import User from "../../components/User";
+import TwitItem from "../../components/TwitItem";
+import TwitTab from "../../components/TwitTab";
+import TwitTabs from "../../components/TwitTabs";
+import TwitButton from "../../components/TwitButton";
+import Avatar from "../../components/Avatar";
+import Post from "../../components/Post";
+import Empty from "../../components/Empty";
+import {clearPosts, toggleEditProfilePopup, fetchUserPosts, fetchUser, togglePopupCompose} from "../../actions";
+import TopBar from "../../components/TopBar";
+import FeedCard from "../../components/FeedCard";
+import UserProfile from "../../components/UserProfile";
+import backend from "../../lib/backend";
+import teamHolder from "../../sass/components/TeamProfile.module.scss";
+import userStyle from "../../sass/components/User.module.scss";
 
-function TeamPage(props) {
+function User(props) {
+  const { user } = useUser();
   const router = useRouter()
+  const [activeLink, setActiveLink] = useState("posts");
+  const [users, setUsers] = useState(null);
 
+
+  useEffect(() => {
+      getSuggestedUsers()
+    }, []);
+
+    useEffect(() => {
+      if(!user || !props.user){
+        return;
+      }
+      props.fetchUserPosts(props.user.id, user.id, 10, 0);
+      return () => {
+          props.clearPosts();
+      }
+    }, [user, props.user]);
+
+  const getSuggestedUsers = async () => {
+      const users = await backend.get("/api/users/suggested", {
+          params:{
+              num: 3
+          }
+      });
+      setUsers(users.data);
+  }
+
+  const onPostsSelect = (k) => {
+      setActiveLink(k.target.id);
+      //fetch user posts
+      props.fetchUserPosts(props.user.id, user.id, 10, 0);
+  }
+
+  const onMediaSelect = async (k) => {
+      setActiveLink(k.target.id);
+      //fetch user posts with media
+  }
+
+  const onLikesSelect = async (k) => {
+      setActiveLink(k.target.id);
+      //fetch user liked posts
+  }
+
+  const onAvatarClick = () => {
+      if(props.user.id == props.userId){
+          props.toggleEditProfilePopup();
+      }
+  }
+
+  const renderAction = () => {
+      if(props.user.id == props.userId){
+          return <TwitButton onClick={props.toggleEditProfilePopup} color="twit-button--primary" outline="twit-button--primary--outline">Edit Profile</TwitButton>
+      }
+      else{
+          return <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Scout</TwitButton>
+
+      }
+  }
+
+  const renderPosts = () => {
+      if(props.posts === null){
+          return;
+      }
+      if(props.posts.length > 0){
+          if(activeLink === "posts"){
+              return props.posts.map((post, index) => {
+                  return (
+                    <Post 
+                      key={index}
+                      post={post}
+                      />
+                  );
+                });
+          }
+          else{
+              return null;
+          }
+      }
+      else if(props.posts.length === 0){
+          if(props.user.id === props.userId){
+              return (
+                  <Empty
+                      main="You haven’t posted yet"
+                      sub="When you make a post, it’ll show up here."
+                      actionText="Post now"
+                      onActionClick={props.togglePopupCompose}
+                  />
+              )
+          }
+          else{
+              return (
+                  <Empty
+                      main="This user hasn't posted yet"
+                      sub="When they make a post, it’ll show up here."
+                      actionText="Send message"
+                  />
+              )
+          }
+      }
+    }
+
+    const renderUsers = () => {
+      if(users === null){
+          return <div>Loading...</div>
+      }
+      else if(users.length === 0){
+          return <Empty main="No Users" sub="There are no users to scout"/>
+      }
+      else{
+          return users.map((user, index) => {
+              return (
+                  <TwitItem 
+                      key={index}
+                      avatar={user.avatar}
+                      title={user.name}
+                      subtitle={`@${user.username}`} 
+                      actionText="Scout"   
+                      paragraph="The most beautiful thing we can experience is the mysterious. It is the source of all true art and science"
+                  />
+              )
+          })
+      }
+  }
+  
+  
   if (router.isFallback) {
     return <div>Loading...</div>
   }
@@ -16,7 +156,19 @@ function TeamPage(props) {
     return (
       <React.Fragment>
         <MainBody>
-          <User user={props.user}/>
+          <TopBar main={props.user.username}/>
+          <UserProfile user={props.user}/>
+          <TwitTabs>
+              <TwitTab onClick={onPostsSelect} id={"posts"} active={activeLink === "posts" ? true : false} title="Posts"/>
+              <TwitTab onClick={onMediaSelect} id={"media"} active={activeLink === "media" ? true : false} title="Media"/>
+              <TwitTab onClick={onLikesSelect} id={"likes"} active={activeLink === "likes" ? true : false} title="Likes"/>
+          </TwitTabs>
+          <div className={userStyle["user__feed-holder"]}>   
+              {renderPosts()}
+              <FeedCard title="Who to Scout">
+                  {renderUsers()}
+              </FeedCard>
+          </div>
         </MainBody>
       </React.Fragment>
       
@@ -36,10 +188,23 @@ export async function getStaticProps(context) {
     return {
         revalidate: 1,
         props: {
-          user: user
-        } // will be passed to the page component as props
+          user
+        } 
     }  
 
   }
 
-  export default TeamPage;
+  const mapStateToProps = (state) => {
+    return {
+        userId: state.user.id ? state.user.id : null,
+        isSignedIn: state.user.isSignedIn,
+        posts: state.posts ? state.posts : null
+    }
+}
+
+  export default connect(mapStateToProps, {
+    clearPosts, 
+    toggleEditProfilePopup, 
+    fetchUserPosts, 
+    fetchUser, 
+    togglePopupCompose})(User);

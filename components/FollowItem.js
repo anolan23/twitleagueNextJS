@@ -26,7 +26,6 @@ function FollowItem(props){
 
     return (
         <TwitItem 
-            key={props.key}
             href={`/teams/${props.team.abbrev.substring(1)}`}
             avatar={props.team.avatar}
             title={props.team.team_name}

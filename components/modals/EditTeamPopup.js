@@ -11,6 +11,7 @@ import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss
 import TwitIcon from "../TwitIcon";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
+import Profile from "../Profile";
 
 function EditTeamPopup(props) {
 
@@ -44,13 +45,7 @@ function EditTeamPopup(props) {
     const renderForm = () => {
         return (
             <div className={editProfilePopup["edit-profile-popup"]}>
-                <div className={editProfilePopup["edit-profile-popup__banner"]}>
-                    <img className={editProfilePopup["edit-profile-popup__banner__image"]} src={formik.values.banner}></img>
-                    <TwitIcon className={editProfilePopup["edit-profile-popup__banner__icon"]} icon="/sprites.svg#icon-plus-circle"/>
-                </div>
-                <div className={editProfilePopup["edit-profile-popup__team-avatar"]}>
-                    <Avatar className={editProfilePopup["edit-profile-popup__team-avatar__avatar"]} src={formik.values.avatar} alt="edit team profile image"/>
-                </div>
+                <Profile avatar={formik.values.avatar} banner={formik.values.banner}/>
                 <form id="edit-team-form" onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
                     <div className={twitForm["twit-form__group"]}>
                         <label htmlFor="avatar" className={twitForm["twit-form__label"]}>Avatar URL</label>

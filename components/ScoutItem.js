@@ -26,7 +26,6 @@ function ScoutItem(props){
 
     return (
         <TwitItem 
-            key={props.key}
             href={`/users/${props.user.username}`}
             avatar={props.user.avatar}
             title={props.user.name}

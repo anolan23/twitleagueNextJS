@@ -8,6 +8,7 @@ import {toggleEditProfilePopup, updateUserProfile} from "../../actions";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss";
 import Avatar from "../Avatar";
+import Profile from "../Profile";
 
 function EditProfilePopup(props) {
     
@@ -35,8 +36,8 @@ function EditProfilePopup(props) {
 
     const renderForm = () => {
         return (
-            <form id="edit-profile-form" onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
-                <Avatar rounded className={editProfilePopup["edit-profile-popup__avatar"]} src={formik.values.avatar}/>
+            <form id="edit-profile-form" onSubmit={formik.handleSubmit} className={editProfilePopup["edit-profile-popup"]}>
+                <Profile avatar={formik.values.avatar} banner={formik.values.banner}/>
               <div className={twitForm["twit-form__group"]}>
                   <label htmlFor="avatar" className={twitForm["twit-form__label"]}>Avatar URL</label>
                   <input 
