@@ -350,17 +350,34 @@ function MainInput(props) {
         })
     }
 
+    const renderAction = () => {
+        return (
+            <div className={mainInput["main-input__action"]}>
+                <div className={mainInput["main-input__action__char-count"]} disabled={chars()>allowableChars}>{allowableChars - chars()}</div>
+                <TwitButton disabled={disabled()} color="twit-button--primary">{props.buttonText}</TwitButton>
+            </div>
+        )
+    }
+
     return(
-        <form className={props.compose ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}` : mainInput["main-input"]} onSubmit={onSubmit} onKeyDown={handleKeyDown}>
+        <form id="main-input-form" className={props.compose ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}` : mainInput["main-input"]} onSubmit={onSubmit} onKeyDown={handleKeyDown}>
             <Avatar roundedCircle className={mainInput["main-input__image"]} src={user ? user.avatar : null}/>
-            <ContentEditable
-                className={`${mainInput["main-input__text-area"]} ${expanded}`}
-                innerRef={contentEditable}
-                html={html}
-                disabled={false}
-                onChange={handleChange}
-                placeholder={props.placeHolder}
-            />
+            <div className={mainInput["main-input__text-area-container"]}>
+                <ContentEditable
+                    className={`${mainInput["main-input__text-area"]} ${expanded}`}
+                    innerRef={contentEditable}
+                    html={html}
+                    disabled={false}
+                    onChange={handleChange}
+                    placeholder={props.placeHolder}
+                />
+                <div className={mainInput["main-input__dropdown-wrapper"]}>
+                    <TwitDropdown show={showDropdown} className={mainInput["main-input__dropdown-wrapper__dropdown"]}>
+                        {renderOptions()}
+                    </TwitDropdown>
+                </div>
+            </div>
+            
             <div className={mainInput["main-input__media-grid"]}>
                 {renderMedia()}
             </div>
@@ -374,17 +391,7 @@ function MainInput(props) {
                         <TwitBadge onClick={onHotClick} active={post.outlook === true}>Hot</TwitBadge>
                         <TwitBadge onClick={onColdClick} active={post.outlook === false}>Cold</TwitBadge>
                 </div>
-                <div className={mainInput["main-input__action"]}>
-                    <div className={mainInput["main-input__action__char-count"]} disabled={chars()>allowableChars}>{allowableChars - chars()}</div>
-                    <TwitButton disabled={disabled()} color="twit-button--primary">{props.buttonText}</TwitButton>
-                </div>
-                <div className={mainInput["main-input__dropdown"]}>
-                    <TwitDropdown show={showDropdown}>
-                        {renderOptions()}
-                    </TwitDropdown>
-                </div>
-                
-
+                {renderAction()}
             </div>
         </form>
     )

@@ -6,6 +6,7 @@ import {likeEvent, unLikeEvent} from "../actions";
 import event from "../sass/components/Event.module.scss";
 import post from "../sass/components/Post.module.scss"
 import TwitIcon from "./TwitIcon";
+import Like from "./Like";
 
 function Event(props) {
   const { user } = useUser();
@@ -143,7 +144,7 @@ function Event(props) {
                     <span className={post["post__icons__count"]}>{0}</span>
                   </div>
                   <div onClick={onLikeClick} className={`${post["post__icons__holder"]} ${liked ? post["post__icons__holder__active"] : null}`}>
-                    <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-heart"/>
+                    <Like className={post["post__icon"]} liked={liked}/>
                     <span className={post["post__icons__count"]}>{likes > 0 ? likes : null}</span>
                   </div>
                   <div className={post["post__icons__holder"]}>

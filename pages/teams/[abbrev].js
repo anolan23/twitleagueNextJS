@@ -37,7 +37,7 @@ function Team(props) {
         return;
       }
       props.setTeam(team)
-      setActiveTab("team")
+      setActiveTab("mentions")
       props.fetchTeamPosts(team.id);
       fetchSeasons();
       
@@ -91,14 +91,14 @@ function Team(props) {
   }
 
   const renderContent = () => {
-      if(activeTab ==="team" || activeTab === "league"){
+      if(activeTab === "mentions"){
           if(props.posts === null){
               return;
           }
           else if(props.posts.length === 0){
               return (
                   <Empty
-                      main="No posts yet"
+                      main="No team mentions yet"
                       sub="Be the first to make a post mentioning this team"
                       actionText="Post now"
                       
@@ -240,11 +240,6 @@ function Team(props) {
           props.fetchTeamPosts(team.id);
       }
 
-      const onLeagueSelect = async (k) => {
-          setActiveTab(k.target.id);
-          props.fetchLeaguePosts(team.league_id);
-      }
-
       const onRosterSelect = (k) => {
           setActiveTab(k.target.id);
           fetchRoster();
@@ -286,8 +281,7 @@ function Team(props) {
           </TopBar>
           <TeamProfile team={team}/>
           <TwitTabs>
-              <TwitTab onClick={onTeamSelect} id={"team"} active={activeTab === "team" ? true : false} title="Team"/>
-              <TwitTab onClick={onLeagueSelect} id={"league"} active={activeTab === "league" ? true : false} title="League"/>
+              <TwitTab onClick={onTeamSelect} id={"mentions"} active={activeTab === "mentions" ? true : false} title="Mentions"/>
               <TwitTab onClick={onScheduleClick} id={"schedule"} active={activeTab === "schedule" ? true : false} title="Schedule"/>
               <TwitTab onClick={onRosterSelect} id={"roster"} active={activeTab === "roster" ? true : false} title="Roster"/>
               <TwitTab onClick={(k) => setActiveTab(k.target.id)} id={"media"} active={activeTab === "media" ? true : false} title="Media"/>

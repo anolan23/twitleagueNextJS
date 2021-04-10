@@ -23,8 +23,9 @@ class Users {
     static async findOne(username) {
         const {rows} = await pool.query(`
         SELECT *,
-        (SELECT count(*) FROM followers WHERE user_id = users.id) AS following,
-        (SELECT count(*) FROM scouts WHERE scout_user_id = users.id) AS scouting
+        (SELECT count(*) FROM scouts WHERE scouted_user_id = users.id) AS scouts,
+        (SELECT count(*) FROM scouts WHERE scout_user_id = users.id) AS scouting,
+        (SELECT count(*) FROM followers WHERE user_id = users.id) AS following
         FROM users
         WHERE username = $1`, [username]);
         

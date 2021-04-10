@@ -3,8 +3,10 @@ import {connect} from "react-redux";
 import {togglePopupCompose, createPost} from "../../actions";
 
 import useUser from "../../lib/useUser";
+import popupCompose from "../../sass/components/PopupCompose.module.scss";
 import Popup from "./Popup";
 import MainInput from "../MainInput";
+import TwitButton from "../TwitButton";
 
 function PopupCompose(props){
     const { user } = useUser();
@@ -25,12 +27,21 @@ function PopupCompose(props){
                 />
         )
     }
+
+    const renderHeading = () => {
+        return (
+            <div className={popupCompose["popup-compose"]}>
+                <TwitButton form="main-input-form" color="twit-button--primary">Post</TwitButton>
+            </div>
+        )
+    }
     
     return (
         <Popup
             show={props.showPopupCompose}
             onHide={props.togglePopupCompose}
             body={renderBody()}
+            heading={renderHeading()}
         />
     )
 }

@@ -9,7 +9,7 @@ function TwitDropdown(props){
     }
     else{
         return (
-            <div className={twitDropdown["twit-dropdown"]}>
+            <div className={`${twitDropdown["twit-dropdown"]} ${props.className}`}>
                 {props.children}
             </div>
         )

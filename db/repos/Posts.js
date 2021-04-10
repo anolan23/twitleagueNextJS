@@ -482,6 +482,42 @@ static async findThreadHistory(threadId, userId) {
       return rows;
   }
 
+  static async homeTimeline(userId, num, offset) {
+    const {rows} = await pool.query(`
+    WITH followed_team_posts AS (
+      SELECT posts.*
+      FROM posts
+      JOIN team_mentions ON posts.id = team_mentions.post_id
+      WHERE team_mentions.team_id IN (SELECT team_id FROM followers WHERE followers.user_id = $1)
+    ), scouted_user_posts AS (
+      SELECT *
+      FROM posts
+      WHERE author_id IN (SELECT scouted_user_id FROM scouts WHERE scout_user_id = $1)
+    ), home_timeline AS (
+      SELECT * FROM followed_team_posts
+      UNION
+      SELECT * FROM scouted_user_posts
+    )
+    SELECT ht.*, avatar, users.name, users.username, 
+      (SELECT COUNT(*) FROM likes WHERE post_id = ht.id) AS likes, 
+      (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = ht.id) AS replies,
+      CASE 
+        WHEN (now() - ht.created_at < '1 Day' AND now() - ht.created_at > '1 Hour') 
+          THEN (to_char(now() - ht.created_at, 'FMHHh'))
+        WHEN (now() - ht.created_at < '1 Hour') 
+          THEN (to_char(now() - ht.created_at, 'FMMIm'))
+        ELSE (to_char(ht.created_at, 'Mon FMDDth, YYYY'))
+      END AS date,
+      EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND ht.id = likes.post_id ) AS liked
+    FROM home_timeline AS ht
+    JOIN users ON users.id = ht.author_id
+    ORDER BY ht.created_at DESC
+    LIMIT $2
+    OFFSET $3`, [userId, num, offset]);
+    
+    return rows;
+}
+
   static async findOne(postId, userId) {
     const {rows} = await pool.query(`
     SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,

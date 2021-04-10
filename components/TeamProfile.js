@@ -127,8 +127,8 @@ function TeamProfile(props) {
               <Attribute icon={"/sprites.svg#icon-home"} text={`Joined ${team.joined}`}/>
             </div>
             <div className={teamProfile["team-profile__counts"]}>
-              <Count href="/" value={10} text="Following"/>
-              <Count href="/" value={19} text="Followers"/>
+              <Count href="/" value={team.followers} text="Followers"/>
+              <Count href="/" value={team.players} text="Players"/>
             </div>
         </div>
       </Profile>

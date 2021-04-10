@@ -385,7 +385,7 @@ export const fetchWatchListPosts = () => async (dispatch, getState) => {
 }
 
 export const fetchPosts = (num, offset, userId) => async (dispatch) => {
-        const response = await backend.get("/api/posts", {
+        const response = await backend.get("/api/posts/home", {
             params: {
                 userId,
                 num,

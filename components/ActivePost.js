@@ -9,6 +9,7 @@ import Avatar from "../components/Avatar";
 import {trackClickedPost, togglePopupReply, likePost, unLikePost} from "../actions";
 import {truncate} from "../lib/twit-helpers";
 import TwitMedia from "./TwitMedia";
+import Like from "./Like";
 
 function ActivePost(props){
   const { user } = useUser();
@@ -111,9 +112,7 @@ function ActivePost(props){
                       </svg>
                     </div> 
                     <div onClick={onLikeClick} className={`${activePost["active-post__icons__holder"]} ${liked ? activePost["active-post__icons__holder__active"] : null}`}>
-                      <svg className={activePost["active-post__icon"]}>
-                        <use xlinkHref="/sprites.svg#icon-heart"/>
-                      </svg>
+                      <Like className={activePost["active-post__icon"]} liked={liked}/>
                     </div>               
                     <div onClick={onReplyClick} className={activePost["active-post__icons__holder"]}>
                       <svg className={activePost["active-post__icon"]}>

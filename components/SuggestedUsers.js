@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react"
 import {connect} from "react-redux"
 import Link from "next/link";
 
+import useUser from "../lib/useUser";
 import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
 import TwitCard from "./TwitCard";
 import TwitItem from "./TwitItem";
@@ -10,17 +11,21 @@ import Empty from "./Empty";
 import ScoutItem from "./ScoutItem";
 
 function SuggestedUsers(props){
-
+    const { user } = useUser();
     const [users, setUsers] = useState(null); 
 
     useEffect(() => {
+        if(!user){
+            return;
+        }
         fetchSuggestedUsers(3);
-    }, [])
+    }, [user])
 
     const fetchSuggestedUsers = async (num) => {
         const users = await backend.get("/api/users/suggested", {
             params: {
-                num
+                num,
+                userId: user.id
             }
         });
         setUsers(users.data);
@@ -45,6 +50,7 @@ function SuggestedUsers(props){
         }
         else{
             return users.map((user, index) => {
+                console.log(user);
                 return (
                     <ScoutItem
                         key={index}

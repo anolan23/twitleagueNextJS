@@ -11,6 +11,7 @@ import Profile from "./Profile";
 import userProfile from "../sass/components/UserProfile.module.scss";
 import TwitButton from "./TwitButton";
 import Attribute from "./Attribute";
+import Count from "./Count";
 
 function UserProfile(props) {
   console.log(props.user)
@@ -64,11 +65,10 @@ function UserProfile(props) {
               <Attribute icon={"/sprites.svg#icon-trending-up"} text="mywebsite.com"/>
               <Attribute icon={"/sprites.svg#icon-home"} text="Joined December 2010"/>
             </div>
-            <div style={{width: "100%"}}>
-              <div>
-                <span style={{fontWeight:900, marginRight:"3px"}}>{props.user.num_followers}</span>
-                <span className={userProfile["user-profile__info__bio"] + " muted"}>Followers</span>
-              </div>
+            <div className={userProfile["user-profile__counts"]}>
+              <Count href="/" value={props.user.scouts} text={props.user.scouts == 1 ? "Scout" : "Scouts"}/>
+              <Count href="/" value={props.user.scouting} text="Scouting"/>
+              <Count href="/" value={props.user.following} text="Following"/>
             </div>
         </div>
       </Profile>

@@ -85,7 +85,9 @@ class Teams {
                     WHERE team_id = teams.id),
                     (SELECT current_season_total_games FROM record WHERE team_id = teams.id AND season_id = leagues.season_id),
                     (SELECT current_season_wins FROM record WHERE team_id = teams.id AND season_id = leagues.season_id),
-                    (SELECT current_season_losses FROM record WHERE team_id = teams.id AND season_id = leagues.season_id)
+                    (SELECT current_season_losses FROM record WHERE team_id = teams.id AND season_id = leagues.season_id),
+                    (SELECT count(*) AS followers FROM followers WHERE team_id = teams.id),
+			        (SELECT count(*) AS players FROM rosters WHERE team_id = teams.id)
             FROM teams
             JOIN users ON teams.owner_id = users.id
             LEFT JOIN leagues ON teams.league_id = leagues.id

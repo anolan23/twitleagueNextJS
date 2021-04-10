@@ -12,6 +12,7 @@ import Avatar from "./Avatar";
 import TwitBadge from "./TwitBadge";
 import TwitMedia from "./TwitMedia";
 import TwitIcon from "./TwitIcon";
+import Like from "./Like";
 
 function Post(props) {
   const { user } = useUser();
@@ -141,7 +142,7 @@ function Post(props) {
                     <span className={post["post__icons__count"]}>{props.post.reposts}</span>
                   </div>
                   <div onClick={onLikeClick} className={`${post["post__icons__holder"]} ${liked?post["post__icons__holder__active"]: null}`}>
-                    <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-heart"/>
+                    <Like className={post["post__icon"]} liked={liked}/>
                     <span className={post["post__icons__count"]}>{likes > 0 ? likes : null}</span>
                   </div>
                   <div className={post["post__icons__holder"]}>

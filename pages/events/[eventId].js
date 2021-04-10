@@ -18,6 +18,7 @@ import Matchup from "../../components/Matchup";
 import Empty from "../../components/Empty";
 import Post from "../../components/Post";
 import backend from "../../lib/backend";
+import Like from "../../components/Like";
 
 function EventsPage(props){
     const { user } = useUser();
@@ -109,9 +110,7 @@ function EventsPage(props){
                             </svg>
                             </div> 
                             <div onClick={onLikeClick} className={`${activePost["active-post__icons__holder"]} ${props.e.liked ? activePost["active-post__icons__holder__active"] : null}`}>
-                            <svg className={activePost["active-post__icon"]}>
-                                <use xlinkHref="/sprites.svg#icon-heart"/>
-                            </svg>
+                            <Like className={activePost["active-post__icon"]} liked={props.e.liked}/>
                             </div>               
                             <div onClick={null} className={activePost["active-post__icons__holder"]}>
                             <svg className={activePost["active-post__icon"]}>
