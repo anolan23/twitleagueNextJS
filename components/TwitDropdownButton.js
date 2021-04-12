@@ -17,10 +17,13 @@ function TwitDropdownButton(props){
     }, [])
 
     const clickOutsideDropdownButton = (event) => {
-            if(ref.current.contains(event.target)){
-                return;
-            }
-            setShow(false);
+        if(!ref.current){
+            return;
+        }
+        if(ref.current.contains(event.target)){
+            return;
+        }
+        setShow(false);
     }
 
     return (

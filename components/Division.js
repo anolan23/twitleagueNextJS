@@ -30,6 +30,9 @@ function Division(props){
     }, [])
 
     const clickOutsideDropdownButton = (event) => {
+            if(!ref.current){
+                return;
+            }
             if(ref.current.contains(event.target)){
                 return;
             }

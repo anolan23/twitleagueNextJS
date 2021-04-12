@@ -1,0 +1,101 @@
+.league-profile{
+    font-size: 1.5rem;
+
+    &__banner{
+        background-color: lightgrey;
+        width: 100%;
+        height: 20rem;
+        @media only screen and (max-width: 760px){
+            height: 15rem;
+        }
+    }
+
+    &__banner-image{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &__league-image{
+        position: relative;
+        margin-top: -10%;
+        margin-left: 1rem;
+        margin-bottom: -.4rem;
+        width: 12.5rem;
+        height: 12.5rem;
+        min-width: 4.9rem;
+        border-width: 4px;
+        border-color: white;
+        border-style: solid;
+        border-radius: 9999px;
+        @media only screen and (max-width: 500px){
+            width: 10rem;
+            height: 10rem;
+        }
+    }
+
+    &__image{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+    &__action-box{
+        display: flex;
+        align-items: center; 
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    &__action{
+        margin-right: 1rem;
+        position: relative;
+    }
+
+    &__info{
+        display: grid;
+        row-gap: 1.2rem;
+        line-height: 1;
+ 
+        &__name{
+            display: flex;
+            &__league{
+                font-size: 1.5rem;
+                font-weight: 400;
+            }
+        }
+
+        &__bio{
+            color: var(--color-text);
+            line-height: 1.33;
+            overflow-wrap: break-word;
+        }
+
+        &__owner{
+        }
+
+        &__record{
+            font-size: 3rem;
+            font-weight: 900;
+        }
+    }
+
+    &__teamname-box{
+        display: flex;
+        align-items: center;
+    }
+
+    &__attributes{
+        display: flex;
+    }
+
+    &__icon{
+        margin-right: 5px;
+        color: var(--color-text-secondary);
+    }
+
+    &__counts{
+        display: flex;
+    }
+}

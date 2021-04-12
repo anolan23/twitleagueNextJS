@@ -1,4 +1,3 @@
-import League from "../../../components/League";
 import Leagues from "../../../db/repos/Leagues";
 
 export default async (req,res) => {

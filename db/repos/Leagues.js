@@ -13,7 +13,8 @@ class Leagues {
 
     static async findOne(leagueName) {
         const {rows} = await pool.query(`
-        SELECT *
+        SELECT *,
+            (SELECT count(*) FROM teams WHERE teams.league_id = leagues.id) AS team_count
         FROM leagues
         WHERE league_name = $1;`, [leagueName]);
         console.log("rows", rows)
@@ -105,6 +106,98 @@ class Leagues {
         `, [leagueId]);
         
         return division.rows;
+    }
+
+    static async standings(leagueName, seasonId) {
+        const {rows} = await pool.query(`
+        WITH results AS (
+            SELECT team_id as team_id, 
+                CASE 
+                    WHEN points > opponent_points THEN 'W' 
+                    WHEN points < opponent_points THEN 'L'
+                    ELSE NULL 
+                    END 
+                AS outcome, 
+                season_id, points, opponent_points, league_approved FROM events 
+                UNION ALL
+            SELECT opponent_id as team_id, 
+                CASE 
+                    WHEN opponent_points > points THEN 'W' 
+                    WHEN opponent_points < points THEN 'L'
+                    ELSE NULL 
+                    END 
+                AS outcome, 
+                season_id, points, opponent_points, league_approved FROM events
+        ), records AS (
+            SELECT results.season_id, team_id, division_id,
+                count(*) AS total_games,
+                count(case when outcome = 'W' then 1 else null end) AS wins,
+                count(case when outcome = 'L' then 0 else null end) AS losses
+            FROM results
+            JOIN teams ON teams.id = results.team_id
+            JOIN leagues ON leagues.id = teams.league_id
+            WHERE league_approved = true AND leagues.league_name = $1 AND results.season_id = $2
+            GROUP BY results.season_id, team_id, division_id
+        )
+        SELECT teams.*,
+            divisions.division_name,
+            total_games, wins, losses,
+            to_char(wins/total_games::float, '0.999') AS win_percentage,
+            RANK() OVER(PARTITION BY teams.division_id ORDER BY wins DESC NULLS LAST, wins/total_games::float DESC) AS place
+        FROM teams
+        FULL JOIN records ON records.team_id = teams.id
+        FULL JOIN divisions ON divisions.id = teams.division_id
+        FULL JOIN leagues ON leagues.id = teams.league_id
+        WHERE leagues.league_name = $1
+        `, [leagueName, seasonId]);
+        
+        return rows;
+    }
+
+    static async currentSeasonStandings(leagueName) {
+        const {rows} = await pool.query(`
+        WITH results AS (
+            SELECT team_id as team_id, 
+                CASE 
+                    WHEN points > opponent_points THEN 'W' 
+                    WHEN points < opponent_points THEN 'L'
+                    ELSE NULL 
+                    END 
+                AS outcome, 
+                season_id, points, opponent_points, league_approved FROM events 
+                UNION ALL
+            SELECT opponent_id as team_id, 
+                CASE 
+                    WHEN opponent_points > points THEN 'W' 
+                    WHEN opponent_points < points THEN 'L'
+                    ELSE NULL 
+                    END 
+                AS outcome, 
+                season_id, points, opponent_points, league_approved FROM events
+        ), records AS (
+            SELECT results.season_id, team_id, division_id,
+                count(*) AS total_games,
+                count(case when outcome = 'W' then 1 else null end) AS wins,
+                count(case when outcome = 'L' then 0 else null end) AS losses
+            FROM results
+            JOIN teams ON teams.id = results.team_id
+            JOIN leagues ON leagues.id = teams.league_id
+            WHERE league_approved = true AND leagues.league_name = $1 AND results.season_id = leagues.season_id
+            GROUP BY results.season_id, team_id, division_id
+        )
+        SELECT teams.*,
+            divisions.division_name,
+            total_games, wins, losses,
+            to_char(wins/total_games::float, '0.999') AS win_percentage,
+            RANK() OVER(PARTITION BY teams.division_id ORDER BY wins DESC NULLS LAST, wins/total_games::float DESC) AS place
+        FROM teams
+        FULL JOIN records ON records.team_id = teams.id
+        FULL JOIN divisions ON divisions.id = teams.division_id
+        FULL JOIN leagues ON leagues.id = teams.league_id
+        WHERE leagues.league_name = $1
+        `, [leagueName]);
+        
+        return rows;
     }
 }
 
