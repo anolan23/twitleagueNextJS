@@ -120,6 +120,10 @@ export const toggleEditEventsPopup = () => (dispatch) => {
         dispatch({type: "TOGGLE_EDIT_EVENTS_POPUP"});
 }
 
+export const toggleEditDivisionsPopup = () => (dispatch) => {
+    dispatch({type: "TOGGLE_EDIT_DIVISIONS_POPUP"});
+}
+
 export const toggleUpdateScorePopup = () => (dispatch) => {
     dispatch({type: "TOGGLE_UPDATE_SCORE_POPUP"});
 }
@@ -573,6 +577,13 @@ export const approveEvent = (eventId) => async (dispatch) => {
         }
     });
     dispatch({type: "APPROVE_EVENT"})
+}
+
+export const createDivision = async (leagueId) => {
+    const division = await backend.post("/api/leagues/divisions", {
+        leagueId
+    })
+    return division.data;
 }
 
 

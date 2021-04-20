@@ -13,6 +13,12 @@ import {createPost} from "../actions";
 import Divide from "../components/Divide";
 import home from "../sass/components/Home.module.scss";
 import Empty from "../components/Empty";
+import SuggestedUsers from "../components/SuggestedUsers";
+import WhatsHappening from "../components/WhatsHappening";
+import SuggestedTeams from "../components/SuggestedTeams";
+import LeftColumn from "../components/LeftColumn";
+import RightColumn from "../components/RightColumn";
+
 
 function HomePage(props) {
   const { user } = useUser({redirectTo: "/"});
@@ -65,26 +71,48 @@ function HomePage(props) {
     
   }
 
+  const right = () => {
+    return (
+      <React.Fragment>
+        <WhatsHappening/>
+        <SuggestedTeams/>
+        <SuggestedUsers/>
+      </React.Fragment>
+    )
+  }
+
   if(!user || !user.isSignedIn){
     return <div style={{fontSize: "30px"}}>loading homepage</div>;
   }
   
   return (
     <React.Fragment>
-      <MainBody>
-        <div className={home["home"]}>
-          <TopBar main="Home"/>
-          <MainInput 
-              placeHolder="$Team or @Username" 
-              initialValue=""
-              buttonText="Post"
-              onSubmit={onSubmit}    
-          />
-          <Divide first/>
-          {renderPosts()}
+      <div className="twit-container">
+        <header className="header">
+          <LeftColumn/>
+        </header>
+        <main className="main">
+          <div className={home["home"]}>
+            <TopBar main="Home"/>
+            <MainInput 
+                placeHolder="$Team or @Username" 
+                initialValue=""
+                buttonText="Post"
+                onSubmit={onSubmit}    
+            />
+            <Divide first/>
+            {renderPosts()}
+          </div>
+          <AuthBanner/>
+        </main>
+        <div className="right-bar">
+          <RightColumn>
+            <WhatsHappening/>
+            <SuggestedTeams/>
+            <SuggestedUsers/>
+          </RightColumn>
         </div>
-        <AuthBanner/>
-      </MainBody>
+      </div>
     </React.Fragment>
   )
 

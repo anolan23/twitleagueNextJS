@@ -1,22 +1,32 @@
 .twit-stat{
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: .5rem 1rem;
     font-size: 1.3rem;
-    
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: var(--border);
+
     &:not(:last-child){
-        border-bottom: var(--border);
+        // border-bottom: var(--border);
     }
 
     &:hover{
         background-color: var(--GRAY_BACKGROUND);
     }
 
+    &--disabled{
+        opacity: .3;
+        &:hover{
+            background-color: transparent;
+        }
+    }
+
 
     &__avatar{
         height: 30px;
         width: 30px;
+        object-fit: cover;
+        vertical-align: middle;
     }
 
     &__text{
@@ -25,5 +35,14 @@
 
     &__action{
         margin-left: auto;
+    }
+
+    &__data{
+        padding: .5rem 0;
+
+        &--team{
+            padding: .5rem 0;
+            text-align: left;
+        }
     }
 }

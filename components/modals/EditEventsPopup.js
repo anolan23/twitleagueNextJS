@@ -16,8 +16,6 @@ import Event from "../Event";
 import {monthIndexToName} from "../../lib/twit-helpers";
 
 function EditEventsPopup(props){
-
-    const [step, setStep] = useState("events")
     const [events, setEvents] = useState(null);
     const [opponents, setOpponents] = useState(null);
     const [matchup, setMatchup] = useState(null);
@@ -125,26 +123,14 @@ function EditEventsPopup(props){
     }
 
     const renderHeading = () => {
-        if(step === "events"){
-            return (
-                <div className={editEventsPopup["edit-events-popup__heading"]}>
-                    <h1 className={editEventsPopup["edit-events-popup__heading__title"]}>Scheduled events</h1>
-                    <TwitButton onClick={() => setStep("create")} color="twit-button--primary">New event</TwitButton>
-                </div>
-            )
-        }
-        else{
             return (
                 <div className={editEventsPopup["edit-events-popup__heading"]}>
                     <h1 className={editEventsPopup["edit-events-popup__heading__title"]}>Create event</h1>
                     <div className={editEventsPopup["edit-events-popup__heading__actions"]}>
-                        <TwitButton onClick={() => setStep("events")} color="twit-button--primary">Back</TwitButton>
                         <TwitButton form="add-event-form" color="twit-button--primary">Save</TwitButton>
                     </div>
                 </div>
             )
-        }
-        
     }
 
     const renderOpponentInput = () => {
@@ -183,74 +169,59 @@ function EditEventsPopup(props){
     }
 
     const renderContent = () => {
-        if(step === "events"){
-            if(events === null){
-                return <div>Loading...</div>
-            }
-            else if( events.length === 0){
-                return <Empty main="No events" sub="The team has no scheduled events"/>
-            }
-            else{
-                return events.map((event, index) => {
-                    return <Event key={index} event={event}/>
-                })
-            }
-        }
-        else if(step === "create"){
-            return(
-                <form id="add-event-form" onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
-                    <Event event={matchup}/>
-                    <TwitInputGroup labelText="Event type">
-                        <TwitInput
-                            select
-                            id="type"
-                            onChange={onChange} 
-                            onBlur={formik.handleBlur} 
-                            value={formik.values.type} 
-                            name="type" 
-                            type="select" 
-                        >   
-                            <option value="game">Game</option>
-                            <option value="practice">Practice</option>
-                            <option value="workout">Workout</option>
-                            <option value="meeting">Meeting</option>
-                            <option value="party">Party</option>
-                        </TwitInput>
-                    </TwitInputGroup>
-                    {renderOpponentInput()}
-                    <TwitInputGroup labelText="Event date">
-                        <TwitInput
-                            id="eventDate"
-                            onChange={onDateTimeChange} 
-                            onBlur={formik.handleBlur} 
-                            value={formik.values.eventDate} 
-                            name="eventDate" 
-                            type="datetime-local" 
-                        />   
-                    </TwitInputGroup>
-                    <TwitInputGroup labelText="Location">
-                        <TwitInput
-                            id="location"
-                            onChange={onChange} 
-                            onBlur={formik.handleBlur} 
-                            value={formik.values.location} 
-                            name="location" 
-                            type="text" 
-                        />   
-                    </TwitInputGroup>
-                    <TwitInputGroup labelText="Notes">
-                        <TwitInput
-                            id="notes"
-                            onChange={onChange} 
-                            onBlur={formik.handleBlur} 
-                            value={formik.values.notes} 
-                            name="notes" 
-                            type="text-area" 
-                        />   
-                    </TwitInputGroup>
-                </form>
-            )
-        }
+        return(
+            <form id="add-event-form" onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
+                <Event event={matchup}/>
+                <TwitInputGroup labelText="Event type">
+                    <TwitInput
+                        select
+                        id="type"
+                        onChange={onChange} 
+                        onBlur={formik.handleBlur} 
+                        value={formik.values.type} 
+                        name="type" 
+                        type="select" 
+                    >   
+                        <option value="game">Game</option>
+                        <option value="practice">Practice</option>
+                        <option value="workout">Workout</option>
+                        <option value="meeting">Meeting</option>
+                        <option value="party">Party</option>
+                    </TwitInput>
+                </TwitInputGroup>
+                {renderOpponentInput()}
+                <TwitInputGroup labelText="Event date">
+                    <TwitInput
+                        id="eventDate"
+                        onChange={onDateTimeChange} 
+                        onBlur={formik.handleBlur} 
+                        value={formik.values.eventDate} 
+                        name="eventDate" 
+                        type="datetime-local" 
+                    />   
+                </TwitInputGroup>
+                <TwitInputGroup labelText="Location">
+                    <TwitInput
+                        id="location"
+                        onChange={onChange} 
+                        onBlur={formik.handleBlur} 
+                        value={formik.values.location} 
+                        name="location" 
+                        type="text" 
+                    />   
+                </TwitInputGroup>
+                <TwitInputGroup labelText="Notes">
+                    <TwitInput
+                        id="notes"
+                        onChange={onChange} 
+                        onBlur={formik.handleBlur} 
+                        value={formik.values.notes} 
+                        name="notes" 
+                        type="text-area" 
+                    />   
+                </TwitInputGroup>
+            </form>
+        )
     }
 
     const renderBody = () => {
@@ -260,6 +231,7 @@ function EditEventsPopup(props){
             </div>
         );
     }
+
 
     return(
         <Popup 

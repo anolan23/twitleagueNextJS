@@ -4,9 +4,8 @@ import {useRouter} from "next/router";
 import { connect } from "react-redux";
 import useSWR from "swr";
 
-import MainBody from "../../components/MainBody"
 import leagueStyle from "../../sass/components/League.module.scss";
-import {fetchLeague, fetchLeaguePosts, clearPosts, setLeague} from "../../actions";
+import {fetchLeague, fetchLeaguePosts, clearPosts, setLeague, toggleEditDivisionsPopup} from "../../actions";
 import useUser from "../../lib/useUser";
 import TopBar from "../../components/TopBar";
 import backend from "../../lib/backend";
@@ -21,12 +20,16 @@ import LeagueProfile from "../../components/LeagueProfile";
 import TwitTab from "../../components/TwitTab";
 import TwitTabs from "../../components/TwitTabs";
 import Post from "../../components/Post";
+import LeftColumn from "../../components/LeftColumn";
+import RightColumn from "../../components/RightColumn";
+import StandingsCard from "../../components/StandingsCard";
+import {groupBy} from "../../lib/twit-helpers";
+import StandingsDivision from "../../components/StandingsDivision";
 
 function League(props) {
     const router = useRouter()
     const { user } = useUser();
     const [activeTab, setActiveTab] = useState("mentions");
-    const [teams, setTeams] = useState(null);
     const [divisions, setDivisions] = useState([]);
     const [division, setDivision] = useState({});
     const [mode, setMode] = useState("default")
@@ -45,8 +48,7 @@ function League(props) {
         props.setLeague(props.league)
         setActiveTab("mentions");
         props.fetchLeaguePosts(props.league.id);
-        getTeams();
-        getDivisions();
+        getStandings();
 
         return () => {
         props.clearPosts();
@@ -62,46 +64,12 @@ function League(props) {
 
     }, [league]);
 
-    const getTeams = async () => {
-        const teams = await backend.get(`/api/leagues/${league.league_name}/teams`);
-        setTeams(teams.data);
-    }
-
-    const getDivisions = async () => {
-        const divisions = await backend.get("/api/leagues/divisions", {
-            params:{
-                leagueId: league.id
-            }
-        })
-        let reformat = divisions.data.map(row => row.division) 
-        setDivisions(reformat);
-    }
-
-    const onAddButtonClick = (team) => {
-        let teams = division.teams?division.teams:[]
-        teams.push(team);
-        const divisionIndex = divisions.findIndex(_division => _division === division);
-        const newDivision = {...division, teams}
-        setDivision(newDivision)
-        let newDivisions = [...divisions];
-        newDivisions[divisionIndex] = newDivision;
-        setDivisions(newDivisions);
-        backend.patch("/api/teams", {
-            teamId: team.id,
-            values: {divisionId: division.id}
-        })
-    }
-
-    const onDropdownItemClick = (fn) => {
-        
-    }
-
-    const createDivision = async () => {
-        const division = await backend.post("/api/leagues/divisions", {
-            leagueId: league.id
-        })
-        let newDivisions = [...divisions, division.data];
-        setDivisions(newDivisions);
+    const getStandings = async () => {
+        const response = await backend.get(`/api/leagues/${props.league.league_name}/standings`);
+        const groupByDivisionName = groupBy('division_name');
+        let divisions = groupByDivisionName(response.data);
+        divisions = Object.values(divisions);   
+        setDivisions(divisions);
     }
 
     const newSeason = async () => {
@@ -154,59 +122,17 @@ function League(props) {
         setActiveTab(k.target.id);
     }
 
-    const renderTeamButton = (team) => {
-        if(mode === "addTeams"){
-            return <TwitButton size="twit-button--primary--small" onClick={() => onAddButtonClick(team)} color="twit-button--primary">Add</TwitButton>
+    const renderDivisions = () => {
+        if(!divisions){
 
+            return null
         }
-        else{
+        else if(divisions.length === 0){
             return null;
         }
-    }
-
-    const renderTeams = () => {
-        if(teams === null){
-            return;
-        }
-        else if(teams.length === 0){
-            return <Empty main="No teams" sub="This league doesn't have any teams"/>
-        }
-        else
-        {
-            return teams.map((team, index) => {
-                if(!divisions.some(division => division.teams?division.teams.find(thisTeam => thisTeam.id === team.id):false)){
-                    return (
-                        <TwitStat 
-                        key={index} 
-                        avatar={team.avatar}
-                        text={team.team_name}
-                        href={`/teams/${team.abbrev.substring(1)}`}
-                        >
-                        {renderTeamButton(team)}
-                        </TwitStat>
-                        
-                ) 
-                }
-            });
-        }
-        
-    }
-
-    const renderDivisions = () => {
-        if(divisions.length > 0){
+        else{
             return divisions.map((division, index) => {
-                return (
-                <Division 
-                    key={index} 
-                    division={division} 
-                    addTeams={addTeams} 
-                    removeTeams={removeTeams}
-                    editName={editName} 
-                    updateDivisions={updateDivisions}
-                    editable={user.id === league.owner_id}
-                />
-            
-                )
+                return <StandingsDivision key={index} division={division}/>
             })
         }
     }
@@ -240,9 +166,6 @@ function League(props) {
         case "standings":
         return (
             <React.Fragment>
-            <div className={leagueStyle["league__teams"]}>
-                {renderTeams()}
-            </div>
             <Divide/>
             {renderDivisions()}
             </React.Fragment>
@@ -261,7 +184,7 @@ function League(props) {
         if(user.id === league.owner_id){
             return(
                 <TwitDropdownButton actionText="Manage league">
-                    <TwitDropdownItem onClick={createDivision}>Create division</TwitDropdownItem>
+                    <TwitDropdownItem onClick={props.toggleEditDivisionsPopup}>Edit divisions</TwitDropdownItem>
                     <TwitDropdownItem onClick={newSeason} disabled={league.season_id ? true : false}>Start new season</TwitDropdownItem>
                     <TwitDropdownItem onClick={endSeason} disabled={league.season_id ? false : true}>End current season</TwitDropdownItem>
                 </TwitDropdownButton>
@@ -278,20 +201,30 @@ function League(props) {
 
     return (
         <React.Fragment>
-        <MainBody>
-            <div className={leagueStyle["league"]}>
-                <TopBar main={league.league_name}>
-                    {renderManageLeagueButon()}
-                </TopBar>
-                <LeagueProfile league={league}/>
-                <TwitTabs>
-                <TwitTab onClick={onMentionsSelect} id={"mentions"} active={activeTab === "mentions" ? true : false} title="Mentions"/>
-                <TwitTab onClick={onStandingSelect} id={"standings"} active={activeTab === "standings" ? true : false} title="Standings"/>
-                <TwitTab onClick={onMediaSelect} id={"media"} active={activeTab === "media" ? true : false} title="Media"/>
-                </TwitTabs> 
-                {renderContent()} 
-            </div> 
-        </MainBody>
+            <div className="twit-container">
+                <header className="header">
+                    <LeftColumn/>
+                </header>
+                <main className="main">
+                    <div className={leagueStyle["league"]}>
+                        <TopBar main={league.league_name}>
+                            {renderManageLeagueButon()}
+                        </TopBar>
+                        <LeagueProfile league={league}/>
+                        <TwitTabs>
+                            <TwitTab onClick={onMentionsSelect} id={"mentions"} active={activeTab === "mentions" ? true : false} title="Mentions"/>
+                            <TwitTab onClick={onStandingSelect} id={"standings"} active={activeTab === "standings" ? true : false} title="Standings"/>
+                            <TwitTab onClick={onMediaSelect} id={"media"} active={activeTab === "media" ? true : false} title="Media"/>
+                        </TwitTabs> 
+                        {renderContent()} 
+                    </div> 
+                </main>
+                <div className="right-bar">
+                    <RightColumn>
+                        <StandingsCard league={league}/>
+                    </RightColumn>
+                </div>
+            </div>
         </React.Fragment>
         
     )
@@ -320,4 +253,4 @@ function League(props) {
     }
   }
 
-  export default connect(mapStateToProps, {setLeague, fetchLeaguePosts, clearPosts})(League);
+  export default connect(mapStateToProps, {setLeague, fetchLeaguePosts, clearPosts, toggleEditDivisionsPopup})(League);

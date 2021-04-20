@@ -21,6 +21,10 @@ import Event from "../../components/Event";
 import TwitDropdownButton from "../../components/TwitDropdownButton";
 import TwitDropdownItem from "../../components/TwitDropdownItem";
 import TwitSelect from "../../components/TwitSelect";
+import LeftColumn from "../../components/LeftColumn";
+import RightColumn from "../../components/RightColumn";
+import StandingsCard from "../../components/StandingsCard";
+
 
 function Team(props) {
   const router = useRouter()
@@ -215,7 +219,7 @@ function Team(props) {
               <TwitDropdownButton actionText="Manage team">
                   <TwitDropdownItem onClick={editTeam}>Edit team page</TwitDropdownItem>
                   <TwitDropdownItem onClick={editRoster}>Edit roster</TwitDropdownItem>
-                  <TwitDropdownItem onClick={editEvents}>Edit events</TwitDropdownItem>
+                  <TwitDropdownItem onClick={editEvents}>Create event</TwitDropdownItem>
               </TwitDropdownButton>
             )
         }
@@ -272,22 +276,33 @@ function Team(props) {
   if (router.isFallback) {
     return <div>Loading...</div>
   }
+  console.log(team)
 
     return (
       <React.Fragment>
-        <MainBody>
-          <TopBar main={team.team_name} sub={`${team.num_posts} Posts`}>
-              {renderButton()}
-          </TopBar>
-          <TeamProfile team={team}/>
-          <TwitTabs>
-              <TwitTab onClick={onTeamSelect} id={"mentions"} active={activeTab === "mentions" ? true : false} title="Mentions"/>
-              <TwitTab onClick={onScheduleClick} id={"schedule"} active={activeTab === "schedule" ? true : false} title="Schedule"/>
-              <TwitTab onClick={onRosterSelect} id={"roster"} active={activeTab === "roster" ? true : false} title="Roster"/>
-              <TwitTab onClick={(k) => setActiveTab(k.target.id)} id={"media"} active={activeTab === "media" ? true : false} title="Media"/>
-          </TwitTabs>
-          {renderContent()}
-        </MainBody>
+        <div className="twit-container">
+            <header className="header">
+                <LeftColumn/>
+            </header>
+            <main className="main">
+                <TopBar main={team.team_name} sub={`${team.num_posts} Posts`}>
+                {renderButton()}
+                </TopBar>
+                <TeamProfile team={team}/>
+                <TwitTabs>
+                    <TwitTab onClick={onTeamSelect} id={"mentions"} active={activeTab === "mentions" ? true : false} title="Mentions"/>
+                    <TwitTab onClick={onScheduleClick} id={"schedule"} active={activeTab === "schedule" ? true : false} title="Schedule"/>
+                    <TwitTab onClick={onRosterSelect} id={"roster"} active={activeTab === "roster" ? true : false} title="Roster"/>
+                    <TwitTab onClick={(k) => setActiveTab(k.target.id)} id={"media"} active={activeTab === "media" ? true : false} title="Media"/>
+                </TwitTabs>
+                {renderContent()}
+            </main>
+            <div className="right-bar">
+                <RightColumn>
+                    <StandingsCard league={{league_name: team.league_name}}/>
+                </RightColumn>
+            </div>
+        </div>
         <AuthBanner/>
       </React.Fragment>
       

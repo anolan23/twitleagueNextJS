@@ -5,6 +5,7 @@ import TwitButton from "./TwitButton";
 
 function TwitStat(props){
     const router = useRouter();
+    const { team } = props
 
     const onClick = () => {
         if(props.href){
@@ -17,7 +18,7 @@ function TwitStat(props){
     }
 
     const renderAvatar = () => {
-            return <Avatar roundedCircle className={twitStat["twit-stat__avatar"]} src={props.avatar}/>
+            return <Avatar roundedCircle className={twitStat["twit-stat__avatar"]} src={team.avatar}/>
     
     }
 
@@ -34,12 +35,30 @@ function TwitStat(props){
         }
     }
 
+    if(props.disabled){
+        return (
+            <tr onClick={null} className={`${twitStat["twit-stat"]} ${props.disabled ? twitStat["twit-stat--disabled"] : null}`}>
+                <td className={twitStat["twit-stat__data"]}>{renderAvatar()}</td>
+                <td className={twitStat["twit-stat__data--team"]}>{team.team_name}</td>
+                <td className={twitStat["twit-stat__data"]}>{team.wins ? team.wins : 0}</td>
+                <td className={twitStat["twit-stat__data"]}>{team.losses ? team.losses : 0}</td>
+                <td className={twitStat["twit-stat__data"]}>{team.ties ? team.ties : 0}</td>
+                <td className={twitStat["twit-stat__data"]}>{team.win_percentage ? team.win_percentage : '0.000'}</td>
+                <td className={twitStat["twit-stat__data"]}>{team.gb ? team.gb : 0}</td>
+            </tr>
+        );
+    }
+
     return (
-        <div onClick={onClick} className={twitStat["twit-stat"]}>
-            {renderAvatar()}
-            <span className={twitStat["twit-stat__text"]}>{props.text}</span>
-            {renderAction()}
-        </div>
+        <tr onClick={onClick} className={twitStat["twit-stat"]}>
+            <td className={twitStat["twit-stat__data"]}>{renderAvatar()}</td>
+            <td className={twitStat["twit-stat__data--team"]}>{team.team_name}</td>
+            <td className={twitStat["twit-stat__data"]}>{team.wins ? team.wins : 0}</td>
+            <td className={twitStat["twit-stat__data"]}>{team.losses ? team.losses : 0}</td>
+            <td className={twitStat["twit-stat__data"]}>{team.ties ? team.ties : 0}</td>
+            <td className={twitStat["twit-stat__data"]}>{team.win_percentage ? team.win_percentage : '0.000'}</td>
+            <td className={twitStat["twit-stat__data"]}>{team.gb ? team.gb : 0}</td>
+        </tr>
     );
 } 
 

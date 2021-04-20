@@ -123,15 +123,15 @@ function Event(props) {
                 <div className={event["event__info"]}>
                   <span className={event["event__type"]}>{props.event.type === "game" ? null : props.event.type}</span>
                   {renderTeamNames()}
+                  {renderResult()}
                   <span className={event["event__time"]}>{props.event.play_period ? null : props.event.time}</span>
-                  <span className={event["event__location"]}>{props.event.location ? props.event.location : "Unknown location"}</span>
+                  <span className={event["event__location"]}>{props.event.location}</span>
                   <span className={event["event__notes"]}>{props.event.notes}</span>
                 </div>
               </div>
               <div className={event["event__status"]}>
                 {renderPlayPeriod()}
                 <span className={event["event__status__score"]}>{props.event.points ? `${props.event.points} - ${props.event.opponent_points}` : null}</span>
-                {renderResult()}
               </div>
             </div>
             <div className={post["post__icons"]}>

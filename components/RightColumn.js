@@ -1,12 +1,9 @@
 import React from "react";
 
-import SuggestedTeams from "./SuggestedTeams";
 import TwitSearch from "./modals/TwitSearch";
 import TwitIcon from "../components/TwitIcon";
-import SuggestedUsers from "./SuggestedUsers";
-import WhatsHappening from "./WhatsHappening";
 
-function RightColumn(){
+function RightColumn(props){
     return (
         <div className="right-bar__right-column">
             <div className="right-bar__right-column__input-box">
@@ -15,9 +12,7 @@ function RightColumn(){
                     <TwitSearch inline placeHolder="Search twitleague"/>
                 </div>
             </div>
-            <WhatsHappening/>
-            <SuggestedTeams/>
-            <SuggestedUsers/>
+            {props.children}
         </div>
     )
 }

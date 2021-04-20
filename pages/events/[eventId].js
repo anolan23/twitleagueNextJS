@@ -54,11 +54,11 @@ function EventsPage(props){
     }
 
     const onUpdateScoreClick = () => {
-        toggleUpdateScorePopup();
+        props.toggleUpdateScorePopup();
     }
 
     const onApproveClick = () => {
-        approveEvent(event.id);
+        props.approveEvent(event.id);
     }
 
     const onLikeClick = async (e) => {
@@ -154,8 +154,9 @@ function EventsPage(props){
         if(!user){
             return null;
         }
-        
-        if(user.id !== event.owner_id){
+        const approvedUsers = [event.owner_id, event.team_owner_id, event.opponent_owner_id]
+
+        if(!approvedUsers.includes(user.id)){
             return null
         }
         else if(event.play_period === "Final"){

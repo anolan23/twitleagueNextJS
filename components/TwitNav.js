@@ -31,11 +31,11 @@ function TwitNav(props) {
             <TwitNavItem href="/messages" title="Messages">
                 <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-mail"/>
             </TwitNavItem>
-            <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myTeams" title="My Teams">
-                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-server"/>
-            </TwitNavItem>
             <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myLeagues" title="My Leagues">
                 <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-trending-up"/>
+            </TwitNavItem>
+            <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myTeams" title="My Teams">
+                <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-server"/>
             </TwitNavItem>
             <TwitNavItem href={`/users/${user ? user.username : null}`} title="User Profile">
                 <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-user"/>
