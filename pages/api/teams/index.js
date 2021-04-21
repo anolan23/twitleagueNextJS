@@ -1,4 +1,5 @@
 import Teams from "../../../db/repos/Teams";
+import Database from "../../../db/repos/Database";
 
 export default async (req,res) => {
     const method = req.method;
@@ -49,9 +50,8 @@ export default async (req,res) => {
     }
 
     else if(method === "PATCH"){
-      const teamId = req.body.teamId;
-      const values = req.body.values;
-      const team = await Teams.update(teamId, values);
+      const {teamId, columns} = req.body;
+      const team = await Database.updateById(teamId, "teams", columns);
       res.send(team);
     }
     

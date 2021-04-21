@@ -25,6 +25,7 @@ import RightColumn from "../../components/RightColumn";
 import StandingsCard from "../../components/StandingsCard";
 import {groupBy} from "../../lib/twit-helpers";
 import StandingsDivision from "../../components/StandingsDivision";
+import Prompt from "../../components/modals/Prompt";
 
 function League(props) {
     const router = useRouter()
@@ -32,6 +33,8 @@ function League(props) {
     const [activeTab, setActiveTab] = useState("mentions");
     const [divisions, setDivisions] = useState([]);
     const [division, setDivision] = useState({});
+    const [showStartSeasonPrompt, setShowStartSeasonPrompt] = useState(false);
+    const [showEndSeasonPrompt, setShowEndSeasonPrompt] = useState(false);
     const [mode, setMode] = useState("default")
 
     const getLeague = async (url) => {
@@ -65,11 +68,8 @@ function League(props) {
     }, [league]);
 
     const getStandings = async () => {
-        const response = await backend.get(`/api/leagues/${props.league.league_name}/standings`);
-        const groupByDivisionName = groupBy('division_name');
-        let divisions = groupByDivisionName(response.data);
-        divisions = Object.values(divisions);   
-        setDivisions(divisions);
+        const response = await backend.get(`/api/leagues/${props.league.league_name}/standings`);  
+        setDivisions(response.data);
     }
 
     const newSeason = async () => {
@@ -77,6 +77,7 @@ function League(props) {
             leagueId: league.id
         });
         mutateLeague()
+        setShowStartSeasonPrompt(false);
     }
 
     const endSeason = async () => {
@@ -84,6 +85,7 @@ function League(props) {
             leagueId: league.id
         });
         mutateLeague()
+        setShowEndSeasonPrompt(false);
     }
 
     const addTeams = (division) => {
@@ -132,7 +134,7 @@ function League(props) {
         }
         else{
             return divisions.map((division, index) => {
-                return <StandingsDivision key={index} division={division}/>
+                return <StandingsDivision key={index} division={division.division}/>
             })
         }
     }
@@ -147,7 +149,7 @@ function League(props) {
             return (
                 <Empty
                     main="No team mentions yet"
-                    sub="Be the first to make a post mentioning a team wihtin this league"
+                    sub="Be the first to make a post mentioning a team within this league"
                     actionText="Post now"
                     
                 />
@@ -185,13 +187,52 @@ function League(props) {
             return(
                 <TwitDropdownButton actionText="Manage league">
                     <TwitDropdownItem onClick={props.toggleEditDivisionsPopup}>Edit divisions</TwitDropdownItem>
-                    <TwitDropdownItem onClick={newSeason} disabled={league.season_id ? true : false}>Start new season</TwitDropdownItem>
-                    <TwitDropdownItem onClick={endSeason} disabled={league.season_id ? false : true}>End current season</TwitDropdownItem>
+                    <TwitDropdownItem onClick={() => setShowStartSeasonPrompt(true)} disabled={league.season_id ? true : false}>Start new season</TwitDropdownItem>
+                    <TwitDropdownItem onClick={() => setShowEndSeasonPrompt(true)} disabled={league.season_id ? false : true}>End current season</TwitDropdownItem>
                 </TwitDropdownButton>
             )
         }
         else{
             return null;
+        }
+    }
+
+    const renderStartSeasonPrompt = () => {
+        if(!showStartSeasonPrompt){
+            return null;
+        }
+        else{
+            return (
+                <Prompt
+                    show={showStartSeasonPrompt}
+                    main="New season"
+                    sub="This will start a new season for your league"
+                    secondaryActionText="Cancel"
+                    primaryActionText="Continue"
+                    onSecondaryActionClick={() => setShowStartSeasonPrompt(false)}
+                    onPrimaryActionClick={newSeason}
+                />
+            )
+        }
+    }
+
+
+    const renderEndSeasonPrompt = () => {
+        if(!showEndSeasonPrompt){
+            return null;
+        }
+        else{
+            return (
+                <Prompt
+                    show={showEndSeasonPrompt}
+                    main="End season"
+                    sub="Are you sure you want to enter the offseason?"
+                    secondaryActionText="Cancel"
+                    primaryActionText="Continue"
+                    onSecondaryActionClick={() => setShowEndSeasonPrompt(false)}
+                    onPrimaryActionClick={endSeason}
+                />
+            )
         }
     }
 
@@ -225,6 +266,8 @@ function League(props) {
                     </RightColumn>
                 </div>
             </div>
+            {renderStartSeasonPrompt()}
+            {renderEndSeasonPrompt()}
         </React.Fragment>
         
     )

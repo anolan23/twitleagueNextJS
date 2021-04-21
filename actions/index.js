@@ -287,6 +287,11 @@ export const updateTeamProfile = (values) => async (dispatch, getState) => {
     }
 }
 
+export const updateTeam =  async (teamId, columns) => {
+    const team = await backend.patch("/api/teams", {teamId, columns});
+    return team.data;
+}
+
 //League Action Creators
 export const createLeague = values => async (dispatch, getState) => {
     const ownerId = getState().user.id;
@@ -580,6 +585,13 @@ export const approveEvent = (eventId) => async (dispatch) => {
 }
 
 export const createDivision = async (leagueId) => {
+    const division = await backend.post("/api/leagues/divisions", {
+        leagueId
+    })
+    return division.data;
+}
+
+export const assignDivision = async (leagueId) => {
     const division = await backend.post("/api/leagues/divisions", {
         leagueId
     })

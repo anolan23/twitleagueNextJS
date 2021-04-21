@@ -19,6 +19,12 @@ export default async (req,res) => {
         const division = await Leagues.updateDivisionName(divisionId, newDivisionName);
         res.send(division);
     }
+
+    else if(method === "DELETE"){
+        const {divisionId} = req.query;
+        const division = await Leagues.deleteDivision(divisionId);
+        res.send(division);
+    }
     
     else{
         res.status(405).json({message: "api/leagues/divisions only supports GET/POST"})

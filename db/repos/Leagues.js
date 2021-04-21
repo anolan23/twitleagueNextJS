@@ -74,6 +74,16 @@ class Leagues {
         return division.rows[0];
     }
 
+    static async deleteDivision(divisionId) {
+        const division = await pool.query(`
+        DELETE FROM divisions
+        WHERE id = $1
+        RETURNING *
+        `, [divisionId]);
+        
+        return division.rows[0];
+    }
+
     static async updateDivisionName(divisionId, newDivisionName) {
         const division = await pool.query(`
         UPDATE divisions
@@ -185,16 +195,28 @@ class Leagues {
             WHERE league_approved = true AND leagues.league_name = $1 AND results.season_id = leagues.season_id
             GROUP BY results.season_id, team_id, division_id
         )
-        SELECT teams.*,
-            divisions.division_name,
-            total_games, wins, losses,
-            to_char(wins/total_games::float, '0.999') AS win_percentage,
-            RANK() OVER(PARTITION BY teams.division_id ORDER BY wins DESC NULLS LAST, wins/total_games::float DESC) AS place
-        FROM teams
-        FULL JOIN records ON records.team_id = teams.id
-        FULL JOIN divisions ON divisions.id = teams.division_id
-        FULL JOIN leagues ON leagues.id = teams.league_id
-        WHERE leagues.league_name = $1
+		
+        SELECT row_to_json(final) AS division
+        FROM (
+            SELECT
+                divisions.*,
+                (
+                    SELECT jsonb_agg(nested_team)
+                    FROM (
+                        SELECT
+                            teams.*, 
+							total_games, wins, losses,
+							to_char(wins/total_games::float, '0.999') AS win_percentage,
+            				RANK() OVER(PARTITION BY teams.division_id ORDER BY wins DESC NULLS LAST, wins/total_games::float DESC) AS place
+                        FROM teams
+						FULL JOIN records ON records.team_id = teams.id
+                        WHERE teams.division_id = divisions.id
+                    ) AS nested_team
+                ) AS teams
+            FROM divisions
+			JOIN leagues ON leagues.id = divisions.league_id
+            WHERE leagues.league_name = $1
+        ) AS final;
         `, [leagueName]);
         
         return rows;

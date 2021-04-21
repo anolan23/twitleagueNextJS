@@ -16,16 +16,13 @@ function StandingsCard(props){
 
     useEffect(() => {
         if(user){
-            getDivisions();
+            getStandings();
         }
     }, [user, props.league])
 
-    const getDivisions = async () => {
+    const getStandings = async () => {
         const response = await backend.get(`/api/leagues/${props.league.league_name}/standings`);
-        const groupByDivisionName = groupBy('division_name');
-        let divisions = groupByDivisionName(response.data);
-        divisions = Object.values(divisions);   
-        setDivisions(divisions);
+        setDivisions(response.data);
     }
 
 
@@ -49,7 +46,7 @@ function StandingsCard(props){
         }
         else{
             return divisions.map((division, index) => {
-                return <StandingsDivision key={index} division={division}/>
+                return <StandingsDivision key={index} division={division.division}/>
             })
         }
     }

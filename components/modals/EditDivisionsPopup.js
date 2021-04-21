@@ -2,7 +2,8 @@ import React, {useState, useEffect} from "react";
 import {useFormik} from "formik";
 import {connect} from "react-redux";
 
-import {toggleEditDivisionsPopup} from "../../actions";
+import useUser from "../../lib/useUser";
+import {toggleEditDivisionsPopup, updateTeam, createDivision} from "../../actions";
 import backend from "../../lib/backend";
 import editDivisionsPopup from "../../sass/components/EditDivisionsPopup.module.scss";
 import twitForm from "../../sass/components/TwitForm.module.scss";
@@ -11,25 +12,37 @@ import TwitButton from "../TwitButton";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 import Empty from "../Empty";
-import {groupBy} from "../../lib/twit-helpers";
 import StandingsDivision from "../StandingsDivision";
+import useSWR from "swr";
 
 function EditDivisionsPopup(props){
-    const [divisions, setDivisions] = useState(null);
+    const { user } = useUser();
     const [team, setTeam] = useState(null);
-
+    const [unassignedTeams, setUnassignedTeams] = useState(null);
+    const getDivisions = async (url) => {
+        const response = await backend.get(url);   
+        return response.data;
+    }
+    const { data: divisions, mutate: mutateDivisions } = useSWR(`/api/leagues/${props.league.league_name}/standings`, getDivisions, {revalidateOnMount:true});
     useEffect(() => {
         setTeam(null);
-        getDivisions();
+
     }, [props.showEditDivisionsPopup]);
 
-    const getDivisions = async () => {
-        const response = await backend.get(`/api/leagues/${props.league.league_name}/standings`);
-        console.log(response.data)
-        const groupByDivisionName = groupBy('division_name');
-        let divisions = groupByDivisionName(response.data);
-        divisions = Object.values(divisions);   
-        setDivisions(divisions);
+    useEffect(() => {
+        getUnassignedTeams()
+        console.log("divisions changed");
+
+    }, [divisions]);
+
+    const getUnassignedTeams = async () => {
+        const teams = await backend.get(`/api/leagues/${props.league.league_name}/teams`);
+        filterTeams(teams.data);
+    }
+
+    const filterTeams = (teams) => {
+        const filteredTeams = teams.filter((team => team.division_id === null));
+        setUnassignedTeams(filteredTeams);
     }
         
     const formik = useFormik({
@@ -46,9 +59,9 @@ function EditDivisionsPopup(props){
           }
     });
 
-    const createDivision = () => {
-        let newDivisions = [...divisions, []];
-        setDivisions(newDivisions)
+    const create = async () => {
+        await createDivision(props.league.id);
+        mutateDivisions();
     }
 
     const onTeamClick = (clickedTeam) => {
@@ -61,25 +74,22 @@ function EditDivisionsPopup(props){
         console.log(clickedTeam)
     }
 
-    const onDivisionClick = (clickedDivision, index) => {
-        if(!team || clickedDivision.some(t => t.id === team.id)){
+    const onDivisionClick = async (clickedDivision, index) => {
+        if(!team){
             setTeam(null);
             return;
         }
         else{
-            let newDivisions = [...divisions]
-            newDivisions = newDivisions.map(newDivision => newDivision.filter(t => t.id !== team.id))
-            let newDivision = [...clickedDivision, team];
-            newDivision = newDivision.sort((a, b) => {
-                return a.place - b.place;
-            });
-            newDivisions[index] = newDivision;
-
-            setDivisions(newDivisions);
+            await updateTeam(team.id, {division_id: clickedDivision.division.id});
+            mutateDivisions();
             setTeam(null);
         }
-        console.log(clickedDivision)
+        console.log(clickedDivision.division)
         console.log(index)
+    }
+
+    const onDelete = async () => {
+        mutateDivisions();
     }
 
     const renderHeading = () => {
@@ -87,11 +97,20 @@ function EditDivisionsPopup(props){
                 <div className={editDivisionsPopup["edit-divisions-popup__heading"]}>
                     <h1 className={editDivisionsPopup["edit-divisions-popup__heading__title"]}>Divisions</h1>
                     <div className={editDivisionsPopup["edit-divisions-popup__heading__actions"]}>
-                        <TwitButton onClick={createDivision} color="twit-button--primary">Create</TwitButton>
-                        <TwitButton form="add-event-form" color="twit-button--primary">Done</TwitButton>
+                        <TwitButton onClick={create} color="twit-button--primary">Create</TwitButton>
                     </div>
                 </div>
             )
+    }
+
+    const renderUnassignedTeams = () => {
+        if(!unassignedTeams){
+            return null;
+        }
+        else if(unassignedTeams.length === 0){
+            return null;
+        }
+        return <StandingsDivision division={{division_name: 'Unassigned teams', teams: unassignedTeams}} onTeamClick={onTeamClick} team={team} onDivisionClick={null}/>
     }
 
     const renderDivisions = () => {
@@ -103,7 +122,17 @@ function EditDivisionsPopup(props){
         }
         else{
             return divisions.map((division, index) => {
-                return <StandingsDivision key={index} division={division} onTeamClick={onTeamClick} team={team} onDivisionClick={() => onDivisionClick(division, index)}/>
+                return (
+                    <StandingsDivision 
+                        key={index} 
+                        division={division.division} 
+                        onTeamClick={onTeamClick} 
+                        team={team} 
+                        onDivisionClick={() => onDivisionClick(division, index)}
+                        onDelete={onDelete}
+                        editable={user.id === props.league.owner_id}
+                    />
+                )
             })
         }
     }
@@ -111,6 +140,7 @@ function EditDivisionsPopup(props){
     const renderBody = () => {
         return (
             <div className={editDivisionsPopup["edit-divisions-popup__body"]}>
+                {renderUnassignedTeams()}
                 {renderDivisions()}
             </div>
         );
