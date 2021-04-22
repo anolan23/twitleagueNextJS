@@ -37,7 +37,7 @@ function TwitNav(props) {
             <TwitNavItem className={twitNav["twit-nav__hide"]} href="/myTeams" title="My Teams">
                 <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-server"/>
             </TwitNavItem>
-            <TwitNavItem href={`/users/${user ? user.username : null}`} title="User Profile">
+            <TwitNavItem href={`/users/${user ? user.username : null}`} title="Profile">
                 <TwitIcon className={twitNavItem["twit-nav-item__icon"]} icon="/sprites.svg#icon-user"/>
             </TwitNavItem>
             <TwitNavItem className={twitNav["twit-nav__hide"]} href="/more" title="More">

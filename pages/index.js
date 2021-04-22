@@ -21,84 +21,41 @@ function IndexPage(props) {
 
     return (
     <div className={index["index"]}>
-        <div className={index["index__left"]}>
-            <div className={index["index__left__items"]}>
-                <div className={index["index__left__items__item"]}>
-                    <svg className={index["index__left__items__item__icon"]}>
-                        <use xlinkHref="/sprites.svg#icon-plus-circle"/>
-                    </svg>
-                    <span className={index["index__left__items__item__text"]}>Join your youth sports team</span>
+       <nav className={index["index__navbar"]}>
+            <div className={index["index__navbar__logo"]}>twitleague</div>
+            <div className={index["index__navbar__actions"]}>
+                <TwitButton href="/login" color="twit-button--primary" outline="twit-button--primary--outline">Login</TwitButton>
+                <TwitButton onClick={props.toggleSignupPopup} color="twit-button--primary">Signup</TwitButton>
+            </div>
+       </nav>
+       <div className={index["index__main"]}>
+            <div className={index["index__main__content"]}>
+                <div className={index["index__main__content__title"]}>Social media for recreational sports leagues</div>
+                <div className={index["index__main__content__sub-title"]}>
+                    See what players, coaches, and parents are saying in 
+                    real time about the latest homerun, touchdown, and goal for free.
                 </div>
-                <div className={index["index__left__items__item"]}>
-                    <svg className={index["index__left__items__item__icon"]}>
-                        <use xlinkHref="/sprites.svg#icon-plus-circle"/>
-                    </svg>
-                    <span className={index["index__left__items__item__text"]}>Show off your highlight reels.</span>
-                </div>
-                <div className={index["index__left__items__item"]}>
-                    <svg className={index["index__left__items__item__icon"]}>
-                        <use xlinkHref="/sprites.svg#icon-plus-circle"/>
-                    </svg>
-                    <span className={index["index__left__items__item__text"]}>Join the conversation.</span>
+                <TwitButton onClick={props.toggleSignupPopup} color="twit-button--primary" size="twit-button--large">Signup</TwitButton>
+                <div className={index["index__main__content__check"]}>
+                    <span lassName={index["index__main__content__check__text"]}>Already have an account?</span>
+                    &nbsp;
+                    <Link passHref href="/login">
+                        <a className="twit-link">
+                            Login
+                        </a>
+                    </Link>
                 </div>
             </div>
-        </div>
-        <div className={index["index__right"]}>
-            <div className={index["index__right__content"]}>
-                <div className="index__right__content__logo">
-                </div>
-                <h1 className={index["index__right__content__heading"]}>See what’s happening in the world right now</h1>
-                <h3 className={index["index__right__content__subheading"]}>Join twitleague today.</h3>
-                <div className={index["index__right__content__actions"]}>
-                    <TwitButton onClick={props.toggleSignupPopup} color="twit-button--primary" size="twit-button--expanded-large">Sign up</TwitButton>
-                    <TwitButton href="/login" color="twit-button--primary" size="twit-button--expanded-large" outline="twit-button--primary--outline">Log in</TwitButton>
+            <div className={index["index__main__showcase"]}>
+                <div className={index["index__main__showcase__content"]}>
+                    <div className={index["index__main__showcase__content__video-box"]}>
+                        <video className={index["index__main__showcase__content__video-box__video"]} loop autoPlay muted>
+                            <source src="https://s3.amazonaws.com/st-assets/production/new-web/home-animation.mp4" type="video/mp4"/>
+                        </video>
+                    </div>
                 </div>
             </div>
-        </div>
-        <nav className={index["index__nav"]}>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>About</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Help Center</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Terms of Service</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Privacy Policy</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Cookie Policy</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Ads Info</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Blog</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Status</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Careers</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Brand Resource</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Advertising</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Marketing</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Developers</a>
-            </Link>
-            <Link href="/home" passHref>
-                <a className={index["index__link"]}>Settings</a>
-            </Link>
-        </nav>
+       </div>
     </div>
         )
     }

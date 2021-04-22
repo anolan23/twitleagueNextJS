@@ -21,14 +21,14 @@
         padding: 1rem 1.5rem;
         white-space: nowrap;
         border-bottom: var(--border);
-        transition: background-color .2s cubic-bezier(0, 0, 1, 1);
-
+        transition: color .2s;
+        
+        &:hover{
+            color: var(--color-primary);
+        }
         &--disabled{
             opacity: .3;
-        }
-
-        &:hover{
-            background-color: var(--GRAY_BACKGROUND);
+            
         }
 
     }

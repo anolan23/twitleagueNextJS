@@ -62,7 +62,7 @@ function HomePage(props) {
         return (
             <Empty
                 main="Welcome to twitleague!"
-                sub="This is the best place to see what’s happening in sports. Find some teams and players to follow."
+                sub="This is the best place to see what’s happening in sports. Find some teams to follow and players to scout."
                 actionText="Let's go!"
                 actionHref="/suggested"
             />
