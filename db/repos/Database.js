@@ -24,6 +24,7 @@ class Database {
         
         return rows[0];
     }
+
 }
 
 export default Database;

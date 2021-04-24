@@ -32,7 +32,6 @@ export default async (req,res) => {
         res.send({});
     }
     
-    
     else{
         res.status(405).json({message: "api/league only supports POST"})
     }

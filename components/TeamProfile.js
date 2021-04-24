@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import Link from 'next/link';
 
+import useUser from "../lib/useUser";
 import {
   follow,
   unFollow,  
@@ -16,9 +17,10 @@ import teamProfile from "../sass/components/TeamProfile.module.scss";
 import TwitButton from "./TwitButton";
 import Attribute from "./Attribute";
 import Count from "./Count";
+import FollowButton from './FollowButton';
 
 function TeamProfile(props) {
-
+  const {user} = useUser()
   const team = props.team;
 
   const onFollowClick = () => {
@@ -45,27 +47,17 @@ function TeamProfile(props) {
   }
 
   const renderButton = () => {
-    if(props.username === team.owner){
+    if(!user){
+      return null;
+    }
+    else if(user.id === team.owner_id){
       return (
            <TwitButton disabled color="twit-button--primary">Follow</TwitButton>
       )
     }
     else{
-      if(!props.following.some(obj => obj.team_id === team.id))
-      {
-        return <TwitButton onClick={null} color="twit-button--primary">Follow</TwitButton>
-      }
-      else
-      {
-        return (
-          <div className={teamProfile["team-profile__follow"]}>
-            <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Unfollow</TwitButton>
-          </div>
-          
-        );
-      }
+      return <FollowButton team={team}/>
     }
-    
   }
 
   const renderLeagueName = () => {

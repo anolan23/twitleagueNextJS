@@ -16,6 +16,14 @@ export default async (req,res) => {
       }
       
     }
+
+    else if(method === "PATCH"){
+      const {leagueName} = req.query;
+      const {columns} = req.body;
+      const league = await Leagues.updateByLeagueName(leagueName, columns);
+      res.send(league);
+    }
+    
     else{
         res.status(405).json({message: "api/leagues/[leagueName] only supports GET"});
     }

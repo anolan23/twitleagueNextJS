@@ -13,12 +13,6 @@ function LeagueProfile(props) {
   const { user } = useUser();
   const league = props.league;
 
-  const editLeague = () => {
-    // if(props.userId === league.owner_id){
-    //   props.toggleEditTeamPopup();
-    // }
-  }
-
   const renderButton = () => {
     if(!user){
       return null;
@@ -50,7 +44,7 @@ function LeagueProfile(props) {
       <Profile 
         banner={league.banner}
         avatar={league.avatar}
-        onAvatarClick={editLeague}
+        onAvatarClick={props.onAvatarClick}
         action={renderButton()}
       >
         <div className={leagueProfile["league-profile__info"]}>

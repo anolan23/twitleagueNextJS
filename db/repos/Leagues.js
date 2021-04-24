@@ -221,6 +221,32 @@ class Leagues {
         
         return rows;
     }
+
+    static async updateByLeagueName(leagueName, columns) {
+        console.log(columns)
+        const sqlQuery = () => {
+            var query = [`UPDATE leagues`];
+            query.push('SET');
+
+            var set = [];
+            Object.keys(columns).forEach((column, index) => {
+                set.push(column + ' = ($' + (index + 1) + ')'); 
+            });
+            query.push(set.join(', '));
+
+            // Add the WHERE statement to look up by id
+            query.push(`WHERE league_name = '${leagueName}'`  );
+            query.push('RETURNING *');
+
+            // Return a complete query string
+            return query.join(' ');
+        }
+        console.log(sqlQuery());
+
+        const {rows} = await pool.query(sqlQuery(), Object.values(columns));
+        
+        return rows[0];
+    }
 }
 
 export default Leagues;

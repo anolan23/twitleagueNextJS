@@ -16,13 +16,13 @@
                 font-size: 1.5rem;
                 font-weight: 700;
                 border-bottom: var(--border);
-                background-color: var(--color-primary);
-                color: white;
+                background-color: var(--color-secondary);
+                color: var(--color-text-secondary);
                 cursor: pointer;
                 &__text{
                     font-size: 1.3rem;
                     font-weight: 800;
-                    color: white;
+                    color: inherit
                 }
             }
 
@@ -38,7 +38,7 @@
             font-weight: 700;
             border-bottom: var(--border);
             background-color: var(--color-primary);
-            color: white;
+            color: inherit;
             
     
             &__text{
@@ -88,7 +88,8 @@
                 cursor: pointer;
                 height: 2.5rem;
                 width: 2.5rem;
-                fill: white;
+                color: var(--color-text-secondary);;
+                fill: currentColor;
             }
     
             &__dropdown{

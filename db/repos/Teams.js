@@ -137,7 +137,7 @@ class Teams {
 
     static async findSuggested(userId, num) {
         const teams = await pool.query(`
-        SELECT teams.id, avatar, team_name, abbrev, league_name,
+        SELECT teams.id, teams.avatar, team_name, abbrev, league_name,
         EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $1 AND teams.id = followers.team_id ) AS following
         FROM teams
         JOIN leagues ON leagues.id = teams.league_id

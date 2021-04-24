@@ -4,7 +4,8 @@
     justify-content: flex-start;
     width: 100%;
     margin-bottom: 2rem;
-    margin-top: 5rem;
+    margin-top: 1rem;
+    
     @media only screen and (max-width: 500px){
       flex-direction: row;
       justify-content: space-evenly;

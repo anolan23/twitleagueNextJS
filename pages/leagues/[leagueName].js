@@ -26,6 +26,7 @@ import StandingsCard from "../../components/StandingsCard";
 import {groupBy} from "../../lib/twit-helpers";
 import StandingsDivision from "../../components/StandingsDivision";
 import Prompt from "../../components/modals/Prompt";
+import EditLeaguePopup from "../../components/modals/EditLeaguePopup";
 
 function League(props) {
     const router = useRouter()
@@ -35,6 +36,7 @@ function League(props) {
     const [division, setDivision] = useState({});
     const [showStartSeasonPrompt, setShowStartSeasonPrompt] = useState(false);
     const [showEndSeasonPrompt, setShowEndSeasonPrompt] = useState(false);
+    const [showEditLeaguePopup, setShowEditLeaguePopup] = useState(false);
     const [mode, setMode] = useState("default")
 
     const getLeague = async (url) => {
@@ -251,7 +253,7 @@ function League(props) {
                         <TopBar main={league.league_name}>
                             {renderManageLeagueButon()}
                         </TopBar>
-                        <LeagueProfile league={league}/>
+                        <LeagueProfile league={league} onAvatarClick={() => setShowEditLeaguePopup(!showEditLeaguePopup)}/>
                         <TwitTabs>
                             <TwitTab onClick={onMentionsSelect} id={"mentions"} active={activeTab === "mentions" ? true : false} title="Mentions"/>
                             <TwitTab onClick={onStandingSelect} id={"standings"} active={activeTab === "standings" ? true : false} title="Standings"/>
@@ -266,6 +268,7 @@ function League(props) {
                     </RightColumn>
                 </div>
             </div>
+            <EditLeaguePopup show={showEditLeaguePopup} onHide={() => setShowEditLeaguePopup(false)} league={league}/>
             {renderStartSeasonPrompt()}
             {renderEndSeasonPrompt()}
         </React.Fragment>

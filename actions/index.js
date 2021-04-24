@@ -287,6 +287,13 @@ export const updateTeamProfile = (values) => async (dispatch, getState) => {
     }
 }
 
+export const updateLeagueProfile = async (leagueName, columns) => {
+    const league = await backend.patch(`/api/leagues/${leagueName}`, {
+        columns
+    });
+    return league.data;
+}
+
 export const updateTeam =  async (teamId, columns) => {
     const team = await backend.patch("/api/teams", {teamId, columns});
     return team.data;
