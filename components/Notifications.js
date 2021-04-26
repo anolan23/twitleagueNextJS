@@ -95,14 +95,14 @@ function Notifications(props) {
                     <TwitTabs>
                         <TwitTab 
                             onClick={onAllClick}
-                            id={"all"} 
+                            id="all"
                             title="All" 
                             active={tab === "all" ? true : false}
 
                             />
                         <TwitTab 
                             onClick={onMentionsClick}
-                            id={"mentions"} 
+                            id="mentions"
                             title="Mentions"
                             active={tab === "mentions" ? true : false}
                             />
