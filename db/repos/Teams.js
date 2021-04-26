@@ -45,7 +45,7 @@ class Teams {
           })().catch(e => console.error(e.stack))
     }
 
-    static async findOne(abbrev) {
+    static async findOne(abbrev, userId) {
         const team = await pool.query(`
         WITH record AS (
             SELECT team_id, season_id,
@@ -87,12 +87,13 @@ class Teams {
                     (SELECT current_season_wins FROM record WHERE team_id = teams.id AND season_id = leagues.season_id),
                     (SELECT current_season_losses FROM record WHERE team_id = teams.id AND season_id = leagues.season_id),
                     (SELECT count(*) AS followers FROM followers WHERE team_id = teams.id),
-			        (SELECT count(*) AS players FROM rosters WHERE team_id = teams.id)
+			        (SELECT count(*) AS players FROM rosters WHERE team_id = teams.id),
+                    EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $2 AND teams.id = followers.team_id ) AS following
             FROM teams
             JOIN users ON teams.owner_id = users.id
             LEFT JOIN leagues ON teams.league_id = leagues.id
             LEFT JOIN divisions ON teams.division_id = divisions.id
-            WHERE abbrev = $1`, [abbrev]);
+            WHERE abbrev = $1`, [abbrev, userId]);
         
         return team.rows[0];
     }
@@ -103,6 +104,19 @@ class Teams {
         FROM teams
         FULL JOIN leagues ON teams.league_id = leagues.id
         WHERE teams.owner_id = $1`, [ownerId]);
+        
+        return teams.rows;
+    }
+
+    static async findByUsername(username) {
+        const teams = await pool.query(`
+        SELECT teams.*, leagues.league_name
+        FROM teams
+        JOIN users ON users.id = teams.owner_id
+        JOIN leagues ON leagues.id = teams.league_id
+        WHERE users.username = $1
+        ORDER BY team_name
+        `, [username]);
         
         return teams.rows;
     }

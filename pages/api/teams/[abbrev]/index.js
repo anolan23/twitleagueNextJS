@@ -8,8 +8,8 @@ export default async (req,res) => {
     }
     
     else if(method === "GET"){
-        const query = req.query;
-        const team = await Teams.findOne(`$${query.abbrev}`);
+        const {abbrev, userId} = req.query;
+        const team = await Teams.findOne(`$${abbrev}`, userId);
         res.send(team);
     }
 

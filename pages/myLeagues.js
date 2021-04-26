@@ -44,6 +44,7 @@ function MyLeagues() {
                         title={league.league_name}
                         subtitle={league.sport}
                         href={`/leagues/${league.league_name}`}
+                        avatar={league.avatar}
                     />
                 )
             })

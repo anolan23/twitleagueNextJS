@@ -4,7 +4,7 @@ import {useFormik} from "formik";
 
 import Popup from "./Popup";
 import TwitButton from "../TwitButton";
-import {updateLeagueProfile} from "../../actions";
+import {updateLeagueByName} from "../../actions";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss";
 import TwitInputGroup from "../TwitInputGroup";
@@ -28,7 +28,7 @@ function EditLeaguePopup(props) {
             bio: league.bio ? league.bio : ""
         },
         onSubmit: (values) => {
-            updateLeagueProfile(league.league_name, values);
+            updateLeagueByName(league.league_name, values);
             console.log(values)
         }
 

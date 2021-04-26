@@ -3,7 +3,7 @@ import {useFormik} from "formik";
 import {connect} from "react-redux";
 
 import useUser from "../../lib/useUser";
-import {toggleEditDivisionsPopup, updateTeam, createDivision} from "../../actions";
+import {toggleEditDivisionsPopup, updateTeamById, createDivision} from "../../actions";
 import backend from "../../lib/backend";
 import editDivisionsPopup from "../../sass/components/EditDivisionsPopup.module.scss";
 import twitForm from "../../sass/components/TwitForm.module.scss";
@@ -80,7 +80,7 @@ function EditDivisionsPopup(props){
             return;
         }
         else{
-            await updateTeam(team.id, {division_id: clickedDivision.division.id});
+            await updateTeamById(team.id, {division_id: clickedDivision.division.id});
             mutateDivisions();
             setTeam(null);
         }

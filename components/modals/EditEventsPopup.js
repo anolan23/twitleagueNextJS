@@ -171,7 +171,6 @@ function EditEventsPopup(props){
     const renderContent = () => {
         return(
             <form id="add-event-form" onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
-                <Event event={matchup}/>
                 <TwitInputGroup labelText="Event type">
                     <TwitInput
                         select

@@ -12,15 +12,10 @@ import userProfile from "../sass/components/UserProfile.module.scss";
 import TwitButton from "./TwitButton";
 import Attribute from "./Attribute";
 import Count from "./Count";
+import ScoutButton from './ScoutButton';
 
 function UserProfile(props) {
-  console.log(props.user)
   const { user } = useUser();
-  
-  const onScoutClick = () => {
-
-  }
-
   const editUser = () => {
     if(user.id === props.user.id){
       props.toggleEditProfilePopup();
@@ -31,15 +26,11 @@ function UserProfile(props) {
     if(!user){
       return null;
     }
-    if(user.username === props.user.username){
-      return (
-           <TwitButton disabled color="twit-button--primary">Follow</TwitButton>
-      )
+    if(user.id === props.user.id){
+      return null;
     }
     else{
-      <div className={userProfile["user-profile__follow"]}>
-            <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Unfollow</TwitButton>
-      </div>
+      return  <ScoutButton user={props.user}/>
     }
     
   }

@@ -157,15 +157,11 @@ export const fetchTeam = (teamAbbrev) => async dispatch => {
     dispatch({type: "FETCH_TEAM", payload: response.data})
 }
 
-export const fetchUserTeams =  async (userId) => {
-    if(!userId){
+export const findTeamsByUsername =  async (username) => {
+    if(!username){
         return;
     }
-    const teams = await backend.get("/api/teams", {
-        params: {
-            ownerId: userId
-        }
-    });
+    const teams = await backend.get(`/api/users/${username}/teams`);
 
     return teams.data;
 }
@@ -272,30 +268,23 @@ export const sendJoinTeamInvite = (recipient, teamId) => async () => {
     });
 } 
 
-export const updateTeamProfile = (values) => async (dispatch, getState) => {
-    const state = getState();
-    const userId = state.user.id;
-    const ownerId = state.team.owner_id;
-    const teamId = state.team.id;
-    if(ownerId === userId){
-        const response = await backend.patch("/api/teams", {
-            teamId,
-            values
-        });
-    
-        dispatch({type: "UPDATE_TEAM_PROFILE", payload: response.data}) 
-    }
-}
-
-export const updateLeagueProfile = async (leagueName, columns) => {
+export const updateLeagueByName = async (leagueName, columns) => {
     const league = await backend.patch(`/api/leagues/${leagueName}`, {
         columns
     });
     return league.data;
 }
 
-export const updateTeam =  async (teamId, columns) => {
+export const updateTeamById =  async (teamId, columns) => {
     const team = await backend.patch("/api/teams", {teamId, columns});
+    return team.data;
+}
+
+export const updateTeamByAbbrev =  async (abbrev, columns) => {
+    //no route created yet...
+    const team = await backend.patch(`/api/teams/${abbrev.substring(1)}`, {
+        columns
+    });
     return team.data;
 }
 

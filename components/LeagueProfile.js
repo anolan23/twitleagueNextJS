@@ -17,9 +17,9 @@ function LeagueProfile(props) {
     if(!user){
       return null;
     }
-    if(user.username === league.owner){
+    if(user.id === league.owner_id){
       return (
-           <TwitButton disabled color="twit-button--primary">Follow</TwitButton>
+        <TwitButton onClick={props.onAvatarClick} color="twit-button--primary" outline="twit-button--primary--outline">Edit profile</TwitButton>
       )
     }
     else{

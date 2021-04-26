@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
 import {connect} from "react-redux";
+import useSWR from "swr";
 
 import MainBody from "../../components/MainBody"
 import backend from "../../lib/backend";
@@ -24,17 +25,32 @@ import TwitSelect from "../../components/TwitSelect";
 import LeftColumn from "../../components/LeftColumn";
 import RightColumn from "../../components/RightColumn";
 import StandingsCard from "../../components/StandingsCard";
+import Teams from "../../db/repos/Teams";
+import EditTeamPopup from "../../components/modals/EditTeamPopup";
+
 
 
 function Team(props) {
   const router = useRouter()
   const { user } = useUser();
-  const { team } = props;
   const [activeTab, setActiveTab] = useState("team");
   const [roster, setRoster] = useState(null);
   const [events, setEvents] = useState(null);
   const [seasons, setSeasons] = useState(null);
   const [season, setSeason] = useState(null);
+  const [showEditTeamPopup, setShowEditTeamPopup] = useState(false);
+
+  
+  const getTeam = async (url) => {
+    const response = await backend.get(url, {
+        params:{
+            userId: user.id
+        }
+    });
+    return response.data;
+  }
+
+  const { data: team } = useSWR(props.team && user ? `/api/teams/${props.team.abbrev.substring(1)}` : null, getTeam, {initialData: props.team, revalidateOnMount:true});
 
   useEffect(() => {
       if(!team){
@@ -172,7 +188,7 @@ function Team(props) {
                           <Empty 
                           main="No events" 
                           sub="Nothing scheduled for this season"
-                          actionText="Edit Events"
+                          actionText="Create event"
                           onActionClick={props.toggleEditEventsPopup}
                           />
                       </React.Fragment>
@@ -217,7 +233,7 @@ function Team(props) {
         if(user.id === team.owner_id){
             return(
               <TwitDropdownButton actionText="Manage team">
-                  <TwitDropdownItem onClick={editTeam}>Edit team page</TwitDropdownItem>
+                  <TwitDropdownItem onClick={() => setShowEditTeamPopup(true)}>Edit team page</TwitDropdownItem>
                   <TwitDropdownItem onClick={editRoster}>Edit roster</TwitDropdownItem>
                   <TwitDropdownItem onClick={editEvents}>Create event</TwitDropdownItem>
               </TwitDropdownButton>
@@ -276,7 +292,6 @@ function Team(props) {
   if (router.isFallback) {
     return <div>Loading...</div>
   }
-  console.log(team)
 
     return (
       <React.Fragment>
@@ -288,7 +303,7 @@ function Team(props) {
                 <TopBar main={team.team_name} sub={`${team.num_posts} Posts`}>
                 {renderButton()}
                 </TopBar>
-                <TeamProfile team={team}/>
+                <TeamProfile team={team} onAvatarClick={() => setShowEditTeamPopup(true)}/>
                 <TwitTabs>
                     <TwitTab onClick={onTeamSelect} id={"mentions"} active={activeTab === "mentions" ? true : false} title="Mentions"/>
                     <TwitTab onClick={onScheduleClick} id={"schedule"} active={activeTab === "schedule" ? true : false} title="Schedule"/>
@@ -304,6 +319,7 @@ function Team(props) {
             </div>
         </div>
         <AuthBanner/>
+        <EditTeamPopup show={showEditTeamPopup} onHide={() => setShowEditTeamPopup(false)} team={team}/>
       </React.Fragment>
       
     )
@@ -314,12 +330,14 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-    const team = await backend.get(`/api/teams/${context.params.abbrev}`);
+    let team = await Teams.findOne(`$${context.params.abbrev}`, null);
+    team = JSON.parse(JSON.stringify(team));
+
 
     return {
         revalidate: 1,
         props: {
-          team: team.data
+          team
         }
     }  
 

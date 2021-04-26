@@ -25,9 +25,15 @@
 
 
         &--day{
-            font-size: 3rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--color-text-secondary);
         }
+
+        &--date{
+          font-size: 2rem;
+          font-weight: 700;
+      }
 
         &--month{
             font-weight: 400;

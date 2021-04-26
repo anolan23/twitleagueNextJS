@@ -22,15 +22,8 @@ export default async (req,res) => {
     }
     
     else if(method === "GET"){
-      const ownerId = req.query.ownerId;
-      const leagueId = req.query.leagueId;
-      const search = req.query.search?req.query.search.toLowerCase():null;
-      const abbrev = req.query.abbrev;
-      if(ownerId){
-        const teams = await Teams.findByOwnerId(ownerId);
-        res.send(teams);
-      }
-      else if(leagueId){
+      const {leagueId, search, abbrev, userId} = req.query;
+      if(leagueId){
         const teams = await Teams.findByLeagueId(leagueId);
         res.send(teams)
       }
@@ -39,7 +32,8 @@ export default async (req,res) => {
         res.send(teams);
       }
       else if(abbrev){
-        const team = await Teams.findOne(abbrev);
+        console.log(abbrev)
+        const team = await Teams.findOne(abbrev, userId);
         res.send(team);
       }
       else{

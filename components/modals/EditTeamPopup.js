@@ -1,35 +1,25 @@
 import React, {useEffect} from "react";
-import {connect} from "react-redux";
 import {useFormik} from "formik";
 
 import Popup from "./Popup";
-import Avatar from "../Avatar";
 import TwitButton from "../TwitButton";
-import {toggleEditTeamPopup, updateTeamProfile} from "../../actions";
+import {updateTeamById} from "../../actions";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss";
-import TwitIcon from "../TwitIcon";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 import Profile from "../Profile";
 
 function EditTeamPopup(props) {
-
-    useEffect(() => {
-        formik.setFieldValue("avatar", props.avatar);
-        formik.setFieldValue("banner", props.banner);
-        formik.setFieldValue("bio", props.bio);
-
-    }, [props.teamId])
-    
+    const { team } = props
     const formik = useFormik({
         initialValues: {
-            avatar: props.avatar,
-            banner: props.banner,
-            bio: props.bio
+            avatar: team.avatar ? team.avatar : "",
+            banner: team.banner ? team.banner : "",
+            bio: team.bio ? team.bio : ""
         },
         onSubmit: (values) => {
-            props.updateTeamProfile(values);
+            updateTeamById(team.id, values);
         }
 
     });
@@ -93,22 +83,13 @@ function EditTeamPopup(props) {
 
     return (
         <Popup
-            show={props.showEditTeamPopup}
-            onHide={props.toggleEditTeamPopup}
+            show={props.show}
+            onHide={props.onHide}
             heading={renderHeading()}
             body={renderForm()}
         />
     );
 }
 
-const mapStateToProps = (state) => {
-    return {
-            showEditTeamPopup: state.modals.showEditTeamPopup,
-            avatar: state.team.avatar,
-            banner: state.team.banner,
-            bio: state.team.bio,
-            teamId: state.team.id
-        }
-}
 
-export default connect(mapStateToProps, {toggleEditTeamPopup, updateTeamProfile})(EditTeamPopup);
+export default EditTeamPopup;

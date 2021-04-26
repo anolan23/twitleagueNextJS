@@ -3,7 +3,7 @@ import Head from 'next/head'
 import {connect} from "react-redux";
 
 
-import {fetchUserTeams} from "../actions";
+import {findTeamsByUsername} from "../actions";
 import MainBody from "../components/MainBody"
 import myTeams from "../sass/components/MyTeams.module.scss";
 import TwitButton from "../components/TwitButton";
@@ -26,7 +26,7 @@ function MyTeams() {
       }
       else{
           console.log(user);
-          const teams =  await fetchUserTeams(user.id);
+          const teams =  await findTeamsByUsername(user.username);
           setTeams(teams)
       }
       

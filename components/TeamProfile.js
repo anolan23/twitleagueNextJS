@@ -23,36 +23,13 @@ function TeamProfile(props) {
   const {user} = useUser()
   const team = props.team;
 
-  const onFollowClick = () => {
-    const teams = suggestions.map(suggestion => {
-        if(suggestion.id === team.id){
-            return team
-        }
-        return suggestion
-    })
-    setSuggestions(teams);
-
-    if(team.following){
-        follow(props.userId, team.id);
-    }
-    else if(!team.following){
-        unFollow(props.userId, team.id);
-    }
-  }
-
-  const editTeam = () => {
-    if(props.userId === team.owner_id){
-      props.toggleEditTeamPopup();
-    }
-  }
-
   const renderButton = () => {
     if(!user){
       return null;
     }
     else if(user.id === team.owner_id){
       return (
-           <TwitButton disabled color="twit-button--primary">Follow</TwitButton>
+           <TwitButton onClick={props.onAvatarClick} color="twit-button--primary" outline="twit-button--primary--outline">Edit profile</TwitButton>
       )
     }
     else{
@@ -94,7 +71,7 @@ function TeamProfile(props) {
       <Profile 
         banner={team.banner}
         avatar={team.avatar}
-        onAvatarClick={editTeam}
+        onAvatarClick={props.onAvatarClick}
         action={renderButton()}
       >
         <div className={teamProfile["team-profile__info"]}>

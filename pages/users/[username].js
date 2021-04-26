@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import Head from 'next/head';
 import {useRouter} from "next/router";
 import {connect} from "react-redux";
+import useSWR from "swr";
 
 import useUser from "../../lib/useUser";
 import MainBody from "../../components/MainBody";
@@ -27,20 +28,31 @@ function User(props) {
   const [activeLink, setActiveLink] = useState("posts");
   const [users, setUsers] = useState(null);
 
+  const getUser = async (url) => {
+    const response = await backend.get(url, {
+        params:{
+            userId: user.id
+        }
+    });
+    return response.data;
+  }
+
+  const { data: userProfile } = useSWR(props.userProfile && user ? `/api/users/${props.userProfile.username}` : null, getUser, {initialData: props.userProfile, revalidateOnMount:true});
+console.log(userProfile);
 
   useEffect(() => {
       getSuggestedUsers()
     }, []);
 
     useEffect(() => {
-      if(!user || !props.user){
+      if(!user || !userProfile){
         return;
       }
-      props.fetchUserPosts(props.user.id, user.id, 10, 0);
+      props.fetchUserPosts(userProfile.id, user.id, 10, 0);
       return () => {
           props.clearPosts();
       }
-    }, [user, props.user]);
+    }, [user, userProfile]);
 
   const getSuggestedUsers = async () => {
       const users = await backend.get("/api/users/suggested", {
@@ -54,7 +66,7 @@ function User(props) {
   const onPostsSelect = (k) => {
       setActiveLink(k.target.id);
       //fetch user posts
-      props.fetchUserPosts(props.user.id, user.id, 10, 0);
+      props.fetchUserPosts(userProfile.id, user.id, 10, 0);
   }
 
   const onMediaSelect = async (k) => {
@@ -68,13 +80,13 @@ function User(props) {
   }
 
   const onAvatarClick = () => {
-      if(props.user.id == props.userId){
+      if(userProfile.id == props.userId){
           props.toggleEditProfilePopup();
       }
   }
 
   const renderAction = () => {
-      if(props.user.id == props.userId){
+      if(userProfile.id == props.userId){
           return <TwitButton onClick={props.toggleEditProfilePopup} color="twit-button--primary" outline="twit-button--primary--outline">Edit Profile</TwitButton>
       }
       else{
@@ -103,7 +115,7 @@ function User(props) {
           }
       }
       else if(props.posts.length === 0){
-          if(props.user.id === props.userId){
+          if(userProfile.id === props.userId){
               return (
                   <Empty
                       main="You haven’t posted yet"
@@ -156,8 +168,8 @@ function User(props) {
     return (
       <React.Fragment>
         <MainBody>
-          <TopBar main={props.user.username}/>
-          <UserProfile user={props.user}/>
+          <TopBar main={userProfile.username}/>
+          <UserProfile user={userProfile}/>
           <TwitTabs>
               <TwitTab onClick={onPostsSelect} id={"posts"} active={activeLink === "posts" ? true : false} title="Posts"/>
               <TwitTab onClick={onMediaSelect} id={"media"} active={activeLink === "media" ? true : false} title="Media"/>
@@ -180,15 +192,14 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-    const username = context.params.username;
-    let user = await Users.findOne(username);
-    user = JSON.parse(JSON.stringify(user));
-    console.log(user);
+    const { username } = context.params;
+    let userProfile = await Users.findOne(username, null);
+    userProfile = JSON.parse(JSON.stringify(userProfile));
     
     return {
         revalidate: 1,
         props: {
-          user
+          userProfile
         } 
     }  
 

@@ -25,7 +25,7 @@ function IndexPage(props) {
             <div className={index["index__navbar__logo"]}>twitleague</div>
             <div className={index["index__navbar__actions"]}>
                 <TwitButton href="/login" color="twit-button--primary" outline="twit-button--primary--outline">Login</TwitButton>
-                <TwitButton onClick={props.toggleSignupPopup} color="twit-button--primary">Signup</TwitButton>
+                <TwitButton onClick={props.toggleSignupPopup} color="twit-button--primary">Sign up</TwitButton>
             </div>
        </nav>
        <div className={index["index__main"]}>
@@ -35,7 +35,7 @@ function IndexPage(props) {
                     See what players, coaches, and parents are saying in 
                     real time about the latest homerun, touchdown, and goal for free.
                 </div>
-                <TwitButton onClick={props.toggleSignupPopup} color="twit-button--primary" size="twit-button--large">Signup</TwitButton>
+                <TwitButton onClick={props.toggleSignupPopup} color="twit-button--primary" size="twit-button--large">Sign up</TwitButton>
                 <div className={index["index__main__content__check"]}>
                     <span lassName={index["index__main__content__check__text"]}>Already have an account?</span>
                     &nbsp;

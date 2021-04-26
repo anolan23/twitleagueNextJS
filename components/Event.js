@@ -7,6 +7,7 @@ import event from "../sass/components/Event.module.scss";
 import post from "../sass/components/Post.module.scss"
 import TwitIcon from "./TwitIcon";
 import Like from "./Like";
+import TwitDate from "../lib/twit-date";
 
 function Event(props) {
   const { user } = useUser();
@@ -70,7 +71,7 @@ function Event(props) {
       return <span className={event["event__status__text"]}>{props.event.play_period}</span>
     }
     else{
-      return <span className={event["event__status__text"]}>Upcoming</span>
+      return null;
     }
   }
 
@@ -110,13 +111,14 @@ function Event(props) {
       return null;
     }
   }
-
+console.log(props.event)
   return(
           <div onClick={() => router.push(`/events/${props.event.id}`).then(() => window.scrollTo(0, 0))} className={event["event"]}>
             {renderTeams()}
             <div className={event["event__date"]}>
-                <span className={event["event__date--day"]}>{props.event.day}</span>
-                <span className={event["event__date--month"]}>{props.event.month}</span>
+                <span className={event["event__date--day"]}>{TwitDate.getDay(props.event.date)}</span>
+                <span className={event["event__date--date"]}>{TwitDate.getDate(props.event.date)}</span>
+                <span className={event["event__date--month"]}>{TwitDate.getMonth(props.event.date)}</span>
             </div>
             <div className={event["event__content"]}>
               <div className={event["event__matchup"]}>
@@ -124,7 +126,7 @@ function Event(props) {
                   <span className={event["event__type"]}>{props.event.type === "game" ? null : props.event.type}</span>
                   {renderTeamNames()}
                   {renderResult()}
-                  <span className={event["event__time"]}>{props.event.play_period ? null : props.event.time}</span>
+                  <span className={event["event__time"]}>{props.event.play_period ? null : TwitDate.formatAMPM(props.event.date)}</span>
                   <span className={event["event__location"]}>{props.event.location}</span>
                   <span className={event["event__notes"]}>{props.event.notes}</span>
                 </div>
@@ -137,11 +139,11 @@ function Event(props) {
             <div className={post["post__icons"]}>
                   <div className={post["post__icons__holder"]}>
                     <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-message-square"/>
-                    <span className={post["post__icons__count"]}>{props.event.replies ? props.event.replies : 0}</span>
+                    <span className={post["post__icons__count"]}>{props.event.replies > 0 ? props.event.replies : null}</span>
                   </div>
                   <div className={post["post__icons__holder"]}>
                     <TwitIcon className={post["post__icon"]} icon="/sprites.svg#icon-repeat"/>
-                    <span className={post["post__icons__count"]}>{0}</span>
+                    <span className={post["post__icons__count"]}>{props.event.reposts ? props.event.reposts : null}</span>
                   </div>
                   <div onClick={onLikeClick} className={`${post["post__icons__holder"]} ${liked ? post["post__icons__holder__active"] : null}`}>
                     <Like className={post["post__icon"]} liked={liked}/>

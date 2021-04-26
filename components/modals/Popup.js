@@ -3,17 +3,10 @@ import React from "react";
 import popup from "../../sass/components/Popup.module.scss";
 
 function Popup(props){
-
-    // const show = () => {
-    //     if(props.show){
-    //         return popup["popup__show"];
-    //     }
-    //     else{
-    //         return null;
-    //     }
-    // }
-
-    if(props.show){
+    if(!props.show){
+        return null
+    }
+    else{
         return(
             <div className={`${popup["popup"]} ${popup["popup__show"]}`}>
                 <div className={popup["popup__window"]}>
@@ -29,12 +22,7 @@ function Popup(props){
                 </div>
             </div>
         )
-    }
-    else{
-        return null;
-    }
-
-   
+    } 
 }
 
 export default Popup;

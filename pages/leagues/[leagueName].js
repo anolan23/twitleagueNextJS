@@ -188,6 +188,7 @@ function League(props) {
         if(user.id === league.owner_id){
             return(
                 <TwitDropdownButton actionText="Manage league">
+                    <TwitDropdownItem onClick={() => setShowEditLeaguePopup(true)}>Edit profile</TwitDropdownItem>
                     <TwitDropdownItem onClick={props.toggleEditDivisionsPopup}>Edit divisions</TwitDropdownItem>
                     <TwitDropdownItem onClick={() => setShowStartSeasonPrompt(true)} disabled={league.season_id ? true : false}>Start new season</TwitDropdownItem>
                     <TwitDropdownItem onClick={() => setShowEndSeasonPrompt(true)} disabled={league.season_id ? false : true}>End current season</TwitDropdownItem>
