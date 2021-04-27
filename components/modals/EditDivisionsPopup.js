@@ -31,7 +31,6 @@ function EditDivisionsPopup(props){
 
     useEffect(() => {
         getUnassignedTeams()
-        console.log("divisions changed");
 
     }, [divisions]);
 
@@ -71,7 +70,6 @@ function EditDivisionsPopup(props){
         else{
             setTeam(clickedTeam);
         }
-        console.log(clickedTeam)
     }
 
     const onDivisionClick = async (clickedDivision, index) => {
@@ -84,8 +82,7 @@ function EditDivisionsPopup(props){
             mutateDivisions();
             setTeam(null);
         }
-        console.log(clickedDivision.division)
-        console.log(index)
+
     }
 
     const onDelete = async () => {

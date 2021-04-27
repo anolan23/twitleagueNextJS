@@ -22,8 +22,6 @@ function ThreadPage(props){
 
   useEffect(() => {
     if(threadId && user){
-      console.log("user", user)
-      console.log("fetchingThreadReplies")
       props.fetchThreadReplies(threadId, user.id);
     }
 

@@ -5,7 +5,7 @@ class Notifications {
     static async findByUserId(userId) {
         const notifications = await pool.query(`
         SELECT notifications.*, username, t.team_name, t.abbrev, t.avatar AS team_avatar, l1.league_name, 
-        t2.team_name, t2.abbrev, t2.avatar, t3.team_name AS opponent_team_name, t3.abbrev AS opponent_abbrev, 
+        t2.team_name, t2.abbrev AS team_abbrev, t2.avatar, t3.team_name AS opponent_team_name, t3.abbrev AS opponent_abbrev, 
         t3.avatar AS opponent_avatar, events.points, events.opponent_points, events.play_period, events.is_home_team, 
         l2.league_name AS events_league_name
         FROM notifications
@@ -22,24 +22,24 @@ class Notifications {
         return notifications.rows;
     }
 
-    static async sendJoinTeamInvite(joinTeamInvite) {
-        const {userId, type, teamId} = joinTeamInvite;
-        const notification = await pool.query(`
+    static async sendJoinTeamInvite(notification) {
+        const {userId, type, payload} = notification;
+        const results = await pool.query(`
         INSERT INTO notifications (user_id, type, team_id)
         VALUES ($1, $2, $3)
-        RETURNING *`, [userId, type, teamId]);
+        RETURNING *`, [userId, type, payload.teamId]);
         
-        return notification.rows[0];
+        return results.rows[0];
     }
 
     static async sendAwaitingEventApproval(notification) {
-        const {userId, type, eventId} = notification;
-        const createdNotification = await pool.query(`
+        const {userId, type, payload} = notification;
+        const results = await pool.query(`
         INSERT INTO notifications (user_id, type, event_id)
         VALUES ($1, $2, $3)
-        RETURNING *`, [userId, type, eventId]);
+        RETURNING *`, [userId, type, payload.eventId]);
         
-        return createdNotification.rows[0];
+        return results.rows[0];
     }
 
     static async delete(notificationId) {

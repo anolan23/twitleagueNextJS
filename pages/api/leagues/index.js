@@ -3,8 +3,7 @@ import Leagues from "../../../db/repos/Leagues";
 export default async (req,res) => {
     const method = req.method;
     if(method === "GET"){
-      const ownerId = req.query.ownerId;
-      const leagueName = req.query.leagueName;
+      const {ownerId, leagueName} = req.query;
       let leagues;
       if(ownerId){
         leagues = await Leagues.findByOwnerId(ownerId);
@@ -27,7 +26,6 @@ export default async (req,res) => {
     }
     else if(method === "POST"){
         const league = req.body;
-        console.log("leagueData", league)
         Leagues.create(league);
         res.send({});
     }

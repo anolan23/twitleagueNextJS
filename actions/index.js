@@ -139,11 +139,12 @@ export const setTeam = team => (dispatch) => {
     dispatch({type: "SET_TEAM", payload: team})
 }
 
-export const createTeam = formValues => async (dispatch, getState) => {
-    const owner = getState().user.id;
-    const response = await backend.post("api/teams", {...formValues, owner: owner});
-
-    // dispatch({type: "CREATE_TEAM", payload: response.data})
+export const createTeam = async (userId, team) => {
+    const response = await backend.post("api/teams", {
+        userId,
+        team
+    });
+    return response.data;
 }
 
 export const createTeamAndFetchUser = (formValues) => async (dispatch) => {
@@ -260,11 +261,21 @@ export const unwatchTeamAndFetchUser = () => async (dispatch) => {
     dispatch(fetchUser());
  }
 
-export const sendJoinTeamInvite = (recipient, teamId) => async () => {
+export const sendJoinTeamInvite = (userId, teamId) => async () => {
     backend.post("/api/notifications", {
-        userId: recipient,
+        userId,
         type: "Join Team Invite",
-        teamId
+        payload: {
+            teamId
+        }
+    });
+} 
+
+export const sendNotification = (userId, type, payload) => async () => {
+    backend.post("/api/notifications", {
+        userId,
+        type,
+        payload
     });
 } 
 
@@ -522,24 +533,22 @@ export const trackClickedPost = (post) => {
 }
 
 //Notifications Action Creators
-export const fetchNotifications = () => async (dispatch, getState) => {
-    const user = getState().user;
-    if(!user.isSignedIn){
-        return;
-    }
+export const fetchNotifications = async (userId) => {
     const response = await backend.get("/api/notifications", {
         params: {
-            userId: user.id
+            userId
         }
     });
-    dispatch({type: "FETCH_NOTIFICATIONS", payload: response.data})
+    return response.data;
 }
 
 export const sendAwaitingEventApprovalNotification = async (userId, eventId) => {
     const notification = await backend.post("/api/notifications", {
         userId,
         type: "Awaiting Event Approval",
-        eventId
+        payload: {
+            eventId
+        }
     });
     return notification.data;
 }

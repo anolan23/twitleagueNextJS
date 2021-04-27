@@ -25,11 +25,9 @@ function CreateLeague(props){
             return errors.leagueName = "Required";
         }
         return backend.get(`/api/leagues/${values.leagueName}`).then((results) => {
-            console.log(results.data)
             if (Object.keys(results.data).length > 0) {
                 errors.leagueName = "League already exists";
             }
-            console.log("errors", errors);
             return errors;
         });
         
@@ -41,7 +39,6 @@ function CreateLeague(props){
             sport: ""
           },
         onSubmit: values => { 
-            console.log("submit", values);
             props.createLeague(values);
             router.push(`/leagues/${values.leagueName}`)
         },

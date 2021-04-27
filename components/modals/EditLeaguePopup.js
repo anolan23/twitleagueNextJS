@@ -29,7 +29,6 @@ function EditLeaguePopup(props) {
         },
         onSubmit: (values) => {
             updateLeagueByName(league.league_name, values);
-            console.log(values)
         }
 
     });

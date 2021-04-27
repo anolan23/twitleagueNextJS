@@ -68,7 +68,6 @@ function Division(props){
         setDivision(newDivision);
         props.updateDivisions(newDivision);
         setMode("default")
-        console.log("submit");
         backend.patch("/api/leagues/divisions", {
             divisionId: division.id,
             newDivisionName

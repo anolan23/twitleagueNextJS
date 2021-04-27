@@ -1,7 +1,6 @@
 import pg from "pg"
 
 const options = () => {
-    console.log("process.env.NODE_ENV", process.env.NODE_ENV);
     if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
         return {
             user: 'aaron',

@@ -2,47 +2,27 @@ import pool  from "../pool";
 
 class Teams {
 
-    static async create(team) {
-        let results;
-        await (async () => {
-            const client = await pool.connect()
-            try {
-                await client.query('BEGIN')
-                const teamId = await pool.query(
-                    `
-                    INSERT INTO teams (owner_id, team_name, abbrev, city, state)
-                    VALUES
-                    ($1, $2, $3, $4, $5)
-                    RETURNING id
-                    `, [team.owner, team.teamName, team.teamAbbrev, team.city, team.state]);
-                
-                const leagueData = await client.query(
-                    `
-                    SELECT id, owner_id
-                    FROM leagues
-                    WHERE league_name = $1
-                    `, [team.league]
-                )                 
-
-                const notification = await client.query(
-                    `
-                    INSERT INTO notifications (user_id, type, team_id, league_id)
-                    VALUES 
-                    ($1, 'Join League Request', $2, $3)
-                    `, [leagueData.rows[0].owner_id, teamId.rows[0].id, leagueData.rows[0].id]
-                )
-
-                await client.query('COMMIT')
-              
-            } catch (e) {
-              await client.query('ROLLBACK')
-              throw e
-            } finally {
-                await client.end();
-                await client.release()
-            }
-
-          })().catch(e => console.error(e.stack))
+    static async create(userId, team) {
+        console.log(team);
+        const {teamName, abbrev, city, state, leagueName} = team;
+        const results = await pool.query(`
+        WITH created_team AS (
+            INSERT INTO teams (owner_id, team_name, abbrev, city, state)
+            VALUES
+            ($1, $2, $3, $4, $5)
+            RETURNING id
+            ), league_data AS (
+                SELECT id, owner_id
+                FROM leagues
+                WHERE league_name = $6
+            )
+            
+        INSERT INTO notifications (user_id, type, team_id, league_id)
+        VALUES 
+        ((SELECT owner_id FROM league_data), 'Join League Request', (SELECT id FROM created_team), (SELECT id FROM league_data))`
+        , [userId, teamName, abbrev, city, state, leagueName]);
+        
+        return results.rows[0];
     }
 
     static async findOne(abbrev, userId) {
@@ -113,7 +93,7 @@ class Teams {
         SELECT teams.*, leagues.league_name
         FROM teams
         JOIN users ON users.id = teams.owner_id
-        JOIN leagues ON leagues.id = teams.league_id
+        FULL JOIN leagues ON leagues.id = teams.league_id
         WHERE users.username = $1
         ORDER BY team_name
         `, [username]);

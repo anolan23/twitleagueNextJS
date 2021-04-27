@@ -82,7 +82,6 @@ class Events {
     
 
     static async updateEvent(eventId, values) {
-        console.log(`Database.updateById(eventId, "events", values)`, Database.updateById(eventId, "events", values) );
         const {rows} = await pool.query(`
         WITH updated_event as
         ( 

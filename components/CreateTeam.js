@@ -1,9 +1,9 @@
 import React , {useState} from "react";
 import {useRouter} from "next/router";
-import {connect} from "react-redux";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 
+import useUser from "../lib/useUser";
 import twitForm from "../sass/components/TwitForm.module.scss";
 import TopBar from "./TopBar";
 import TwitButton from "./TwitButton";
@@ -14,6 +14,7 @@ import backend from "../lib/backend";
 
 function CreateTeam(props){
 
+    const { user } = useUser();
     const [options, setOptions] = useState([]);
     const [show, setShow] = useState(false);
     const router = useRouter();
@@ -21,33 +22,18 @@ function CreateTeam(props){
 
     const validationSchema = Yup.object({
         teamName: Yup.string().required("Required").min(3).max(30),
-        teamAbbrev: Yup.string().required("Required").max(6),
+        abbrev: Yup.string().required("Required").max(6),
         city: Yup.string().required("Required"),
         state: Yup.string().required("Required"),
-        league: Yup.string().required("Required")
+        leagueName: Yup.string().required("Required")
     });
-
-    // const validate = async values => {
-    //     let errors ={};
-    //     const results = await backend.get(`/api/league/${values.league}`);
-    //     console.log(results.data)
-    //     console.log("Object.keys(results.data).length", Object.keys(results.data).length)
-    //     if(Object.keys(results.data).length === 0){
-    //         errors.league = "You must join an active league";
-    //     }
-    //     console.log("errors", errors)
-    //     return errors;       
-    // }
  
     const validate = async values => {
         let errors ={};
-        return backend.get(`/api/leagues/${values.league}`).then((results) => {
-            console.log("results.data", results.data);
-            console.log("Object.keys(results.data).length", Object.keys(results.data).length);
+        return backend.get(`/api/leagues/${values.leagueName}`).then((results) => {
             if (Object.keys(results.data).length === 0) {
-                errors.league = "You must join an active league";
+                errors.leagueName = "You must join an active league";
             }
-            console.log("errors", errors);
             return errors;
         });
     };
@@ -55,18 +41,22 @@ function CreateTeam(props){
     const formik = useFormik({
         initialValues: {
           teamName:"",
-          teamAbbrev:"",
-          league:"",
+          abbrev:"",
+          leagueName:"",
           city:"",
           state:""
           },
         onSubmit: values => { 
-          props.createTeam(values);
-          router.push(`/teams/${values.teamAbbrev.substring(1)}`)
+          onSubmit(values);
         },
         validate,
         validationSchema
     });
+
+    const onSubmit = async (values) => {
+        await createTeam(user.id, values);
+        router.push(`/teams/${values.abbrev.substring(1)}`)
+    }
 
     const onAutoCompleteChange = async (event) => {
         formik.handleChange(event);
@@ -85,7 +75,7 @@ function CreateTeam(props){
       }
 
       const onDropdownItemClick = (option) => {
-        formik.setFieldValue("league", option.league_name);
+        formik.setFieldValue("leagueName", option.league_name);
         setShow(false);
         
       }
@@ -98,7 +88,6 @@ function CreateTeam(props){
           });
       }  
 
-    console.log("formik.errors", formik.errors)
 
     return (
         <div className="create-team">
@@ -124,33 +113,33 @@ function CreateTeam(props){
                       id="team-abbreviation" 
                       onChange={formik.handleChange} 
                       onBlur={formik.handleBlur} 
-                      value={formik.values.teamAbbrev} 
-                      name="teamAbbrev" 
+                      value={formik.values.abbrev} 
+                      name="abbrev" 
                       type="text" 
                       
                       autoComplete="off"  
-                      className={formik.errors.teamAbbrev && formik.touched.teamAbbrev ? twitForm["twit-form__input--errors"] : twitForm["twit-form__input"]}
+                      className={formik.errors.abbrev && formik.touched.abbrev ? twitForm["twit-form__input--errors"] : twitForm["twit-form__input"]}
                   />
-                  {formik.errors.teamAbbrev && formik.touched.teamAbbrev ? <div className={twitForm["twit-form__errors"]}>{formik.errors.teamAbbrev}</div> : null}
+                  {formik.errors.abbrev && formik.touched.abbrev ? <div className={twitForm["twit-form__errors"]}>{formik.errors.abbrev}</div> : null}
               </div>
               <div className={twitForm["twit-form__group"]}>
-                  <label for="league" className={twitForm["twit-form__label"]}>League</label>
+                  <label for="leagueName" className={twitForm["twit-form__label"]}>League</label>
                   <AutoCompleteInput 
                     show={show}
-                    name="league"
-                    id= "league" 
+                    name="leagueName"
+                    id= "leagueName" 
                     type="text" 
                     placeholder="Search leagues" 
                     autoComplete="off"
                     onChange={onAutoCompleteChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.league}
+                    value={formik.values.leagueName}
                     header="Active Leagues"
                     leagueOptions={renderOptions()}
-                    className={formik.errors.league && formik.touched.league ? twitForm["twit-form__input--errors"] : twitForm["twit-form__input"]}
-                    isValid={formik.touched.league && !formik.errors.league}
+                    className={formik.errors.leagueName && formik.touched.leagueName ? twitForm["twit-form__input--errors"] : twitForm["twit-form__input"]}
+                    isValid={formik.touched.leagueName && !formik.errors.leagueName}
                   />
-                  {formik.errors.league && formik.touched.league ? <div className={twitForm["twit-form__errors"]}>{formik.errors.league}</div> : null}
+                  {formik.errors.leagueName && formik.touched.leagueName ? <div className={twitForm["twit-form__errors"]}>{formik.errors.leagueName}</div> : null}
               </div>
               <div className={twitForm["twit-form__group"]}>
                   <label for="city" className={twitForm["twit-form__label"]}>City</label>
@@ -186,4 +175,4 @@ function CreateTeam(props){
     )
 }
 
-export default connect(null, {createTeam})(CreateTeam);
+export default CreateTeam;

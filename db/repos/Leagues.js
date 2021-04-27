@@ -17,7 +17,6 @@ class Leagues {
             (SELECT count(*) FROM teams WHERE teams.league_id = leagues.id) AS team_count
         FROM leagues
         WHERE league_name = $1;`, [leagueName]);
-        console.log("rows", rows)
         
         return rows[0];
     }
@@ -59,7 +58,6 @@ class Leagues {
         SELECT *
         FROM leagues
         WHERE (LOWER(league_name) LIKE $1);`, [`%${search}%`]);
-        console.log("rows", rows)
         
         return rows;
     }
@@ -223,7 +221,6 @@ class Leagues {
     }
 
     static async updateByLeagueName(leagueName, columns) {
-        console.log(columns)
         const sqlQuery = () => {
             var query = [`UPDATE leagues`];
             query.push('SET');
@@ -241,7 +238,6 @@ class Leagues {
             // Return a complete query string
             return query.join(' ');
         }
-        console.log(sqlQuery());
 
         const {rows} = await pool.query(sqlQuery(), Object.values(columns));
         

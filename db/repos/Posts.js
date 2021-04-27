@@ -45,7 +45,6 @@ class Posts {
           if(userMentions){
             userMentions.forEach(async userMention => {
               const mention = userMention.substring(1);
-              console.log(mention)
               await client.query(
                 `WITH user_mentioned AS (
                   SELECT id
@@ -249,7 +248,6 @@ static async findThreadHistory(threadId, userId) {
 
               posts = activePost.rows;
               post = activePost.rows[0];
-              console.log("post", post);
 
               const getPreviousPost = async (in_reply_to_post_id) => {
                 const previousPost = await client.query(`
@@ -352,7 +350,6 @@ static async findThreadHistory(threadId, userId) {
               if(userMentions){
                 userMentions.forEach(async userMention => {
                   const mention = userMention.substring(1);
-                  console.log(mention)
                   await client.query(
                     `WITH user_mentioned AS (
                       SELECT id
@@ -420,7 +417,6 @@ static async findThreadHistory(threadId, userId) {
             if(userMentions){
               userMentions.forEach(async userMention => {
                 const mention = userMention.substring(1);
-                console.log(mention)
                 await client.query(
                   `WITH user_mentioned AS (
                     SELECT id

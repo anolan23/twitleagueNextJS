@@ -10,7 +10,6 @@ export default async (req,res) => {
     
     else if(method === "GET"){
         const event = await Events.findOneEventById(eventId, userId);
-        console.log("req.query", req.query)
         res.send(event);   
     }
 

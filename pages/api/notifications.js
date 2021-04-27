@@ -4,22 +4,20 @@ import Notifications from "../../db/repos/Notifications";
 export default async (req,res) => {
     const method = req.method;
     if(method === "GET"){
-        const userId = req.query.userId;
+        const {userId} = req.query;
         const notifications = await Notifications.findByUserId(userId);
         res.send(notifications);
     }
     else if(method === "POST"){
-        const type = req.body.type;
+        const {type} = req.body;
         switch(type){
             case "Join Team Invite": {
-                const joinTeamInvite = req.body;
-                const notification = await Notifications.sendJoinTeamInvite(joinTeamInvite);
+                const notification = await Notifications.sendJoinTeamInvite(req.body);
                 res.send(notification);
             }
             case "Awaiting Event Approval": {
-                const notification = req.body;
-                const createdNotification = await Notifications.sendAwaitingEventApproval(notification);
-                res.send(createdNotification);
+                const notification = await Notifications.sendAwaitingEventApproval(req.body);
+                res.send(notification);
             }
             default:
                 res.send("notification type unknown")

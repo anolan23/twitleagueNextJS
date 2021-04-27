@@ -50,7 +50,6 @@ function SuggestedUsers(props){
         }
         else{
             return users.map((user, index) => {
-                console.log(user);
                 return (
                     <ScoutItem
                         key={index}

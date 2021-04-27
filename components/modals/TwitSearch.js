@@ -17,7 +17,6 @@ function TwitSearch(props) {
     const formik = useFormik({
         initialValues: {query: ""},
         onSubmit: values => {
-            console.log(values);
             router.push({
                 pathname: '/search',
                 query: {query: values.query}

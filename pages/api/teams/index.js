@@ -5,20 +5,9 @@ export default async (req,res) => {
     const method = req.method;
     
     if(method === "POST"){
-        //create Team
-        const {teamName, teamAbbrev, league, city, state, owner} = req.body;
-        const teamData = {
-            teamName,
-            teamAbbrev,
-            league,
-            city,
-            state,
-            owner
-          }
-        
-        await Teams.create(teamData);
-        res.status(200);
-
+        const {userId, team} = req.body;
+        const results = await Teams.create(userId, team);
+        res.send(results);
     }
     
     else if(method === "GET"){
@@ -32,7 +21,6 @@ export default async (req,res) => {
         res.send(teams);
       }
       else if(abbrev){
-        console.log(abbrev)
         const team = await Teams.findOne(abbrev, userId);
         res.send(team);
       }

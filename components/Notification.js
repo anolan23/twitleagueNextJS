@@ -49,6 +49,7 @@ function Notification(props) {
     const renderNotification = () => {
         switch(props.notification.type){
             case "Join League Request": {
+                console.log(props.notification)
                 const text = `${props.notification.abbrev}  wants to join your league: ${props.notification.league_name}`;
                 const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
                     <Link key={match + i} passHref href={`/teams/${props.notification.abbrev.substring(1)}`}><a>${match}</a></Link>

@@ -13,14 +13,12 @@ import TwitTab from "../../components/TwitTab";
 function Search(props) {
   const [posts, setPosts] = useState(null);
   const [activeTab, setActiveTab] = useState("top");
-  console.log(props.query);
 
   useEffect(() => {
     start();
   }, [props.query])
 
   const start = async () => {
-    console.log("fetching posts")
     const posts = await fetchSearchedPosts(props.query, props.userId, 10, 0);
     setPosts(posts);
   }

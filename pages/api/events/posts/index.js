@@ -6,12 +6,10 @@ export default async (req,res) => {
     if(method === "POST"){
         const {eventId} = req.query;
         const {reply} = req.body;
-        console.log(reply);
         const teamRegex = /\$(\w+)/g;
         const userRegex = /\@(\w+)/g;
         const teamMentions = reply.body.match(teamRegex);
         const userMentions = reply.body.match(userRegex);
-        console.log("userMentions", userMentions);
         const post = await Posts.eventReply(reply, teamMentions, userMentions)
         res.send(post)
 

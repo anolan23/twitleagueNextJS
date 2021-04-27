@@ -110,7 +110,6 @@ function StandingsDivision(props){
         })
         setEditingName(false);
 
-        console.log("submit");
 
     }
 

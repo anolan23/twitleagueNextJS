@@ -38,7 +38,6 @@ function User(props) {
   }
 
   const { data: userProfile } = useSWR(props.userProfile && user ? `/api/users/${props.userProfile.username}` : null, getUser, {initialData: props.userProfile, revalidateOnMount:true});
-console.log(userProfile);
 
   useEffect(() => {
       getSuggestedUsers()

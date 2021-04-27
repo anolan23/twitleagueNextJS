@@ -111,7 +111,6 @@ function Event(props) {
       return null;
     }
   }
-console.log(props.event)
   return(
           <div onClick={() => router.push(`/events/${props.event.id}`).then(() => window.scrollTo(0, 0))} className={event["event"]}>
             {renderTeams()}

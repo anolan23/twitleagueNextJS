@@ -31,7 +31,6 @@ export default async (req,res) => {
     else if(method === "PATCH"){
         const userId = req.body.userId;
         const values = req.body.values;
-        console.log("req.body", req.body)
         const user = await Users.update(userId, values);
         res.send(user);
     }

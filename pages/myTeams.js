@@ -25,7 +25,6 @@ function MyTeams() {
           return
       }
       else{
-          console.log(user);
           const teams =  await findTeamsByUsername(user.username);
           setTeams(teams)
       }
