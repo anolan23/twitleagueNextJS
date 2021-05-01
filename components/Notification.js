@@ -49,19 +49,19 @@ function Notification(props) {
     const renderNotification = () => {
         switch(props.notification.type){
             case "Join League Request": {
-                console.log(props.notification)
-                const text = `${props.notification.abbrev}  wants to join your league: ${props.notification.league_name}`;
+                const text = `${props.notification.abbrev}  wants to join ${props.notification.league_name}`;
                 const replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-                    <Link key={match + i} passHref href={`/teams/${props.notification.abbrev.substring(1)}`}><a>${match}</a></Link>
+                    <Link key={match + i} passHref href={`/teams/${props.notification.abbrev.substring(1)}`}><a className="twit-link">${match}</a></Link>
                   ));
                 return (
-                    <React.Fragment>
+                    <div className={notification["notification"]} onClick={() => router.push(`/teams/${props.notification.abbrev.substring(1)}`)}>
+                        <Avatar className={notification["notification__image"]} src={props.notification.team_avatar}/>
                         <span className={notification["notification__text"]}>{replacedText}</span>
                         <div className={notification["notification__actions"]}>
                             <TwitButton onClick={onAcceptJoinLeagueRequestClick} color="twit-button--primary">Accept</TwitButton>
                             <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
                         </div>
-                    </React.Fragment>
+                    </div>
                 );
             }
             case "Join Team Invite": {
@@ -71,13 +71,13 @@ function Notification(props) {
                   ));
                 
                 return (
-                    <React.Fragment>
+                    <div className={notification["notification"]} onClick={() => router.push(`/teams/${props.notification.abbrev.substring(1)}`)}>
                         <span className={notification["notification__text"]}>{replacedText}</span>
                         <div className={notification["notification__actions"]}>
                             <TwitButton onClick={onAcceptJoinTeamInviteClick} color="twit-button--primary">Accept</TwitButton>
                             <TwitButton color="twit-button--primary" outline="twit-button--primary--outline">Decline</TwitButton>
                         </div>
-                    </React.Fragment>
+                    </div>
                 );
             }
             case "Awaiting Event Approval": {
@@ -85,14 +85,11 @@ function Notification(props) {
                 const text = `game has ended and is waiting for ${props.notification.events_league_name} approval`
 
                 return (
-                    <React.Fragment>
+                    <div className={notification["notification"]} onClick={() => router.push("/events/" + props.notification.event_id)}>
                         <Link passHref href={"/events/"+ props.notification.event_id}><a className={notification["notification__text"]}>{event}</a></Link>
                         &nbsp;
                         <span className={notification["notification__text"]}>{text}</span>
-                        <div className={notification["notification__actions"]}>
-                            <TwitButton onClick={() => router.push(`/events/${props.notification.event_id}`)} color="twit-button--primary">Review</TwitButton>
-                        </div>
-                    </React.Fragment>
+                    </div>
                 )
             }
 
@@ -103,10 +100,9 @@ function Notification(props) {
     }
   
         return (
-            <div className={notification["notification"]}>
-                <Avatar className={notification["notification__image"]} src={props.notification.team_avatar}/>
+            <React.Fragment>
                 {renderNotification()}
-            </div>
+            </React.Fragment>
         );
 }
 
