@@ -151,7 +151,7 @@ class Leagues {
             divisions.division_name,
             total_games, wins, losses,
             to_char(wins/total_games::float, '0.999') AS win_percentage,
-            RANK() OVER(PARTITION BY teams.division_id ORDER BY wins DESC NULLS LAST, wins/total_games::float DESC) AS place
+            RANK() OVER(PARTITION BY teams.division_id ORDER BY wins/total_games::float DESC NULLS LAST) AS place
         FROM teams
         FULL JOIN records ON records.team_id = teams.id
         FULL JOIN divisions ON divisions.id = teams.division_id
@@ -169,19 +169,23 @@ class Leagues {
                 CASE 
                     WHEN points > opponent_points THEN 'W' 
                     WHEN points < opponent_points THEN 'L'
+                    WHEN points = opponent_points THEN 'T'
                     ELSE NULL 
                     END 
                 AS outcome, 
-                season_id, points, opponent_points, league_approved FROM events 
+                season_id, points, opponent_points, league_approved 
+                FROM events 
                 UNION ALL
             SELECT opponent_id as team_id, 
                 CASE 
                     WHEN opponent_points > points THEN 'W' 
                     WHEN opponent_points < points THEN 'L'
+                    WHEN points = opponent_points THEN 'T'
                     ELSE NULL 
                     END 
                 AS outcome, 
-                season_id, points, opponent_points, league_approved FROM events
+                season_id, points, opponent_points, league_approved 
+                FROM events
         ), records AS (
             SELECT results.season_id, team_id, division_id,
                 count(*) AS total_games,
@@ -204,8 +208,7 @@ class Leagues {
                         SELECT
                             teams.*, 
 							total_games, wins, losses,
-							to_char(wins/total_games::float, '0.999') AS win_percentage,
-            				RANK() OVER(PARTITION BY teams.division_id ORDER BY wins DESC NULLS LAST, wins/total_games::float DESC) AS place
+            				RANK() OVER(PARTITION BY teams.division_id ORDER BY wins/total_games::float DESC NULLS LAST) AS place
                         FROM teams
 						FULL JOIN records ON records.team_id = teams.id
                         WHERE teams.division_id = divisions.id

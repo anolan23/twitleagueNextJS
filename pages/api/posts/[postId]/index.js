@@ -10,6 +10,10 @@ export default async (req,res) => {
     else if(method === "PATCH"){
        
     }
+    else if(method === "DELETE"){
+        const post = await Posts.delete(postId);
+        res.send(post);
+    }
     else{
         res.status(405).json({message: "api/posts/likes only supports PATCH method"})
     }

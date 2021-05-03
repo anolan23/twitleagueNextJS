@@ -57,9 +57,11 @@ function StandingsDivision(props){
             return null;
         }
         else{
+            const leader = division.teams[0];
+
             return division.teams.map((team, index) => {
                 return (
-                    <TwitStat key={index} team={team} onClick={() => props.onTeamClick(team)} disabled={disabled(team)}/>
+                    <TwitStat key={index} team={team} leader={leader} onClick={() => props.onTeamClick(team)} disabled={disabled(team)}/>
                 )
             });
         }

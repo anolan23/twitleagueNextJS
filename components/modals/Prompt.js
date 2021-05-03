@@ -5,9 +5,14 @@ import TwitButton from "../../components/TwitButton";
 
 function Prompt(props){
 
+    const onPromptClick = (event) => {
+        event.stopPropagation();
+        props.onHide();
+    }
+
     if(props.show){
         return(
-            <div className={`${prompt["prompt"]} ${prompt["prompt__show"]}`}>
+            <div className={`${prompt["prompt"]} ${prompt["prompt__show"]}`} onClick={onPromptClick}>
                 <div className={prompt["prompt__window"]}>
                     <span className={prompt["prompt__window__main"]}>{props.main}</span>
                     <p className={prompt["prompt__window__sub"]}>{props.sub}</p>

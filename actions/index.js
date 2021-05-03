@@ -337,6 +337,11 @@ export const createPost = (post, userId) => async (dispatch) => {
     dispatch(emptyPostData());
 }
 
+export const deletePost = async (postId) => {
+    const post = await backend.delete(`/api/posts/${postId}`);
+    return post.data;
+}
+
 export const createReply = (reply, userId) => async (dispatch) => {
     const response = await backend.post(`/api/thread/${reply.conversation_id}/replies`, {
         reply: {...reply, userId}

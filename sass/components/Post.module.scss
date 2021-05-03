@@ -6,7 +6,7 @@
 
   font-size: 1.5rem;
   line-height: 1.3125;
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 1.6rem;
   cursor: pointer;
   transition: all .2s;
   border-bottom: var(--border);
@@ -59,6 +59,29 @@
     display:flex;
     align-items: center;
     margin-bottom: 2px;
+    justify-content: space-between;
+
+    &__icon-holder{
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-left: 2rem;
+      &__icon{
+          cursor: pointer;
+          height: 1.9rem;
+          width: 1.9rem;
+          color: var(--color-text-secondary);;
+          fill: currentColor;
+      }
+
+      &__dropdown{
+          position: absolute;
+          min-width: 250px;
+          right: 0;
+          bottom: 0;
+          
+      }
+    }
   }
 
   &__heading-text{
@@ -67,8 +90,7 @@
   }
 
   &__time{
-    margin-left: auto;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     color: var(--color-text-secondary);
   }
 

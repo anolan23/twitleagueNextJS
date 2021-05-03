@@ -497,13 +497,6 @@ static async findThreadHistory(threadId, userId) {
     SELECT ht.*, avatar, users.name, users.username, 
       (SELECT COUNT(*) FROM likes WHERE post_id = ht.id) AS likes, 
       (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = ht.id) AS replies,
-      CASE 
-        WHEN (now() - ht.created_at < '1 Day' AND now() - ht.created_at > '1 Hour') 
-          THEN (to_char(now() - ht.created_at, 'FMHHh'))
-        WHEN (now() - ht.created_at < '1 Hour') 
-          THEN (to_char(now() - ht.created_at, 'FMMIm'))
-        ELSE (to_char(ht.created_at, 'Mon FMDDth, YYYY'))
-      END AS date,
       EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND ht.id = likes.post_id ) AS liked
     FROM home_timeline AS ht
     JOIN users ON users.id = ht.author_id
@@ -560,6 +553,16 @@ static async findThreadHistory(threadId, userId) {
     `, [postId]);
     
     return rows;
+}
+
+static async delete(postId) {
+  const {rows} = await pool.query(`
+  DELETE FROM posts
+  WHERE id = $1
+  RETURNING *
+  `, [postId]);
+  
+  return rows[0];
 }
 
 

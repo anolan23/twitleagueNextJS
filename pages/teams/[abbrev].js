@@ -121,7 +121,7 @@ function Team(props) {
                       main="No team mentions yet"
                       sub="Be the first to make a post mentioning this team"
                       actionText="Post now"
-                      
+                      onActionClick={() => console.log("Hi")}
                   />
               )
           }
@@ -187,7 +187,7 @@ function Team(props) {
                           {renderTwitSelect()}
                           <Empty 
                           main="No events" 
-                          sub="Nothing scheduled for this season"
+                          sub="Nothing scheduled for the current season"
                           actionText="Create event"
                           onActionClick={props.toggleEditEventsPopup}
                           />
@@ -200,7 +200,7 @@ function Team(props) {
                           {renderTwitSelect()}
                           <Empty 
                           main="No events" 
-                          sub="Nothing scheduled for this season"
+                          sub="Nothing scheduled for the current season"
                           />
                       </React.Fragment>
                   )
