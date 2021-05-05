@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader';
 import List from 'react-virtualized/dist/commonjs/List';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import { CellMeasurer, CellMeasurerCache, WindowScroller } from 'react-virtualized';
 import 'react-virtualized/styles.css'; // only needs to be imported once
 
@@ -18,27 +19,21 @@ function InfinitePosts({getDataFromServer}) {
       fixedWidth: true
     });
 
-  // If there are more items to be loaded then add an extra row to hold a loading indicator.
-  const rowCount = hasNextPage ? posts.length + 1 : posts.length;
-
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const loadMoreRows = isNextPageLoading ? () => {} : loadNextPage;
 
   // // Every row is loaded except for our loading indicator row.
   const isRowLoaded = ({index}) => {
-    console.log("isRowLoaded",!hasNextPage || index < posts.length, "index", index, "posts.length", posts.length)
     return !hasNextPage || index < posts.length;
   }
 
   async function loadNextPage ({startIndex, stopIndex}) {
     isNextPageLoading = true;
     const results = await fetchHomeTimeline(11, startIndex, stopIndex);
-    console.log("loadNextPage", `startIndex: ${startIndex}, stopIndex: ${stopIndex}`)
     const newPosts = posts.concat(results);
     cache.clearAll();
     setPosts(newPosts);
-    console.log(posts);
     isNextPageLoading = false;
 
   }
@@ -70,7 +65,9 @@ function InfinitePosts({getDataFromServer}) {
               {({ onRowsRendered, registerChild }) => (
                   <WindowScroller>
                       {({ height, isScrolling, onChildScroll, scrollTop }) => (
-                          <List
+                        <AutoSizer disableHeight>
+                          {({ width }) => (
+                            <List
                               autoHeight
                               height={height}
                               isScrolling={isScrolling}
@@ -82,9 +79,11 @@ function InfinitePosts({getDataFromServer}) {
                               rowHeight={cache.rowHeight}
                               rowRenderer={rowRenderer}
                               scrollTop={scrollTop}
-                              width={600}
+                              width={width}
                               overscanRowCount={5}
                               />
+                          )}
+                        </AutoSizer>
                       )}
                   </WindowScroller>
               )}
