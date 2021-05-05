@@ -1,11 +1,12 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Head from 'next/head';
 import {connect} from "react-redux";
 
 import useUser from "../lib/useUser";
+import backend from "../lib/backend";
 import MainBody from "../components/MainBody"
 import AuthBanner from '../components/AuthBanner';
-import {fetchUser, clearPosts, fetchPosts} from "../actions";
+import {fetchUser, clearPosts, fetchHomeTimeline} from "../actions";
 import MainInput from "../components/MainInput";
 import TopBar from "../components/TopBar";
 import Post from "../components/Post";
@@ -18,30 +19,31 @@ import WhatsHappening from "../components/WhatsHappening";
 import SuggestedTeams from "../components/SuggestedTeams";
 import LeftColumn from "../components/LeftColumn";
 import RightColumn from "../components/RightColumn";
+import InfinitePosts from "../components/InfinitePosts";
 
 
 function HomePage(props) {
   const { user } = useUser({redirectTo: "/"});
-  
-  useEffect(() => {
-    start();
-    return () => {
-      props.clearPosts();
-    }
-  }, [user]);
-
-  const start = async () => {
-    if(!user){
-      return
-    }
-    else{
-      props.fetchPosts(10, 0, user.id);
-    }
-  }
-
+ 
   const onSubmit = (values) => {
     props.createPost(values, user.id);
   }
+
+  const getHomeTimeLine = ({startIndex, stopIndex }) => {
+    return new Promise((resolve, reject) => {
+      backend.get("/api/posts/home", {
+        params: {
+            userId: 11,
+            startIndex,
+            stopIndex
+        }
+    })
+     .then(response => response.data)
+     .then(result => {
+      resolve(result)
+     })
+    })
+   }
 
   const renderPosts = () => {
     if(props.posts === null){
@@ -101,7 +103,7 @@ function HomePage(props) {
                 onSubmit={onSubmit}    
             />
             <Divide first/>
-            {renderPosts()}
+            <InfinitePosts getDataFromServer={getHomeTimeLine}/>
           </div>
           <AuthBanner/>
         </main>
@@ -124,4 +126,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {fetchUser, clearPosts, fetchPosts, createPost})(HomePage);
+export default connect(mapStateToProps, {fetchUser, clearPosts, createPost})(HomePage);

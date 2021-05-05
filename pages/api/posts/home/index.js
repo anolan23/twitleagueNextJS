@@ -2,9 +2,11 @@ import Posts from "../../../../db/repos/Posts";
 
 export default async (req,res) => {
     const method = req.method;
-    const {num, offset, userId} = req.query;
+    const {userId, startIndex, stopIndex} = req.query;
     if(method === "GET"){
-        const posts = await Posts.homeTimeline(userId, num, offset);
+        const offset = startIndex;
+        const limit = stopIndex - startIndex;
+        const posts = await Posts.homeTimeline(userId, offset, limit);
         res.send(posts);
     }
     else if(method === "POST"){

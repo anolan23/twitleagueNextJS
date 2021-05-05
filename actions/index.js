@@ -405,15 +405,15 @@ export const fetchWatchListPosts = () => async (dispatch, getState) => {
     }
 }
 
-export const fetchPosts = (num, offset, userId) => async (dispatch) => {
-        const response = await backend.get("/api/posts/home", {
-            params: {
-                userId,
-                num,
-                offset
-            }
-        });
-        dispatch({type: "FETCH_POSTS", payload: response.data});
+export const fetchHomeTimeline = async (userId, startIndex, stopIndex) => {
+    const homeTimeLine = await backend.get("/api/posts/home", {
+        params: {
+            userId,
+            startIndex,
+            stopIndex
+        }
+    });
+    return homeTimeLine.data;
 }
 
 export const fetchUserPosts = (targetUserId, userId, num, offset) => async (dispatch) => {

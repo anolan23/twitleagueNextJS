@@ -478,7 +478,7 @@ static async findThreadHistory(threadId, userId) {
       return rows;
   }
 
-  static async homeTimeline(userId, num, offset) {
+  static async homeTimeline(userId, offset, limit) {
     const {rows} = await pool.query(`
     WITH followed_team_posts AS (
       SELECT posts.*
@@ -501,8 +501,8 @@ static async findThreadHistory(threadId, userId) {
     FROM home_timeline AS ht
     JOIN users ON users.id = ht.author_id
     ORDER BY ht.created_at DESC
-    LIMIT $2
-    OFFSET $3`, [userId, num, offset]);
+    OFFSET $2
+    LIMIT $3`, [userId, offset, limit]);
     
     return rows;
 }

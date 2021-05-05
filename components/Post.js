@@ -19,6 +19,9 @@ import TwitDropdownItem from "./TwitDropdownItem";
 import Prompt from "./modals/Prompt";
 
 function Post(props) {
+  if(!props.post){
+    return null;
+  }
   const { user } = useUser();
   const router = useRouter();
   const ref = useRef();
