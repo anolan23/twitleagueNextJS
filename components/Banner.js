@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 
 import banner from "../sass/components/Banner.module.scss";
 
@@ -9,37 +9,32 @@ function Banner(props) {
   useEffect(() => {
     setImage(props.src);
     setError(false);
-  }, [props.src])
-  
+  }, [props.src]);
+
   const onError = () => {
     if (!error) {
       setImage(null);
       setError(true);
     }
-  }
+  };
 
   const renderImage = () => {
-    if(error || !image){
+    if (error || !image) {
       return null;
-    }
-    else{
+    } else {
       return (
-        <img 
-        onClick={props.onClick}
-        className={banner["banner__image"]}  
-        src={image} 
-        onError={onError}
-        alt="profile banner"
-      />
-      )
+        <img
+          onClick={props.onClick}
+          className={banner["banner__image"]}
+          src={image}
+          onError={onError}
+          alt="profile banner"
+        />
+      );
     }
-  }
+  };
 
-  return (
-        <div className={banner["banner"]}>
-          {renderImage()}
-        </div>
-  );
+  return <div className={banner["banner"]}>{renderImage()}</div>;
 }
 
 export default Banner;
