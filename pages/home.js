@@ -85,11 +85,14 @@ function HomePage(props) {
               }
               list={posts}
               updateList={(posts) => setPosts(posts)}
+              emptyMain="Welcome to twitleague!"
+              emptySub="This is the best place to see what’s happening in sports. Find some teams to follow and players to scout."
+              emptyActionText="Let's go!"
+              emptyActionHref="/suggested"
             >
               <Post />
             </InfiniteList>
           </div>
-          <AuthBanner />
         </main>
         <div className="right-bar">
           <RightColumn>

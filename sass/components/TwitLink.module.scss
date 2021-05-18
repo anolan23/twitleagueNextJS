@@ -1,0 +1,15 @@
+.twit-link {
+  position: relative;
+  display: inline-block;
+
+  & dialog {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.2s;
+  }
+
+  &:hover dialog {
+    visibility: visible;
+    opacity: 1;
+  }
+}

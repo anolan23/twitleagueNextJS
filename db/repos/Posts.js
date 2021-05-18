@@ -525,29 +525,32 @@ class Posts {
   static async homeTimeline(userId, offset, limit) {
     const { rows } = await pool.query(
       `
-    WITH followed_team_posts AS (
-      SELECT posts.*
-      FROM posts
-      JOIN team_mentions ON posts.id = team_mentions.post_id
-      WHERE team_mentions.team_id IN (SELECT team_id FROM followers WHERE followers.user_id = $1)
-    ), scouted_user_posts AS (
-      SELECT *
-      FROM posts
-      WHERE author_id IN (SELECT scouted_user_id FROM scouts WHERE scout_user_id = $1)
-    ), home_timeline AS (
-      SELECT * FROM followed_team_posts
-      UNION
-      SELECT * FROM scouted_user_posts
-    )
-    SELECT ht.*, avatar, users.name, users.username, 
-      (SELECT COUNT(*) FROM likes WHERE post_id = ht.id) AS likes, 
-      (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = ht.id) AS replies,
-      EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND ht.id = likes.post_id ) AS liked
-    FROM home_timeline AS ht
-    JOIN users ON users.id = ht.author_id
-    ORDER BY ht.created_at DESC
-    OFFSET $2
-    LIMIT $3`,
+      WITH followed_team_posts AS (
+        SELECT posts.*
+        FROM posts
+        JOIN team_mentions ON posts.id = team_mentions.post_id
+        WHERE team_mentions.team_id IN (SELECT team_id FROM followers WHERE followers.user_id = $1)
+        ), scouted_user_posts AS (
+          SELECT *
+          FROM posts
+          WHERE author_id IN (SELECT scouted_user_id FROM scouts WHERE scout_user_id = $1)
+        ), home_timeline AS (
+            SELECT * FROM followed_team_posts
+            UNION
+            SELECT * FROM scouted_user_posts
+          )
+      SELECT ht.*, avatar, users.name, users.username, users.avatar, users.bio,
+        (SELECT COUNT(*) FROM scouts WHERE scouted_user_id = ht.author_id) AS scouts,
+        (SELECT COUNT(*) FROM followers WHERE user_id = ht.author_id) AS following,
+        (SELECT COUNT(*) FROM likes WHERE post_id = ht.id) AS likes, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = ht.id) AS replies,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND ht.id = likes.post_id ) AS liked,
+        EXISTS (SELECT 1 FROM scouts WHERE scouted_user_id = ht.author_id AND scout_user_id = 11 ) AS scouted
+      FROM home_timeline AS ht
+      JOIN users ON users.id = ht.author_id
+      ORDER BY ht.created_at DESC
+      OFFSET $2
+      LIMIT $3`,
       [userId, offset, limit]
     );
 

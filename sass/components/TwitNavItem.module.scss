@@ -1,60 +1,63 @@
-.twit-nav-item{
+.twit-nav-item {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  line-height: 1.3125;
+  cursor: pointer;
+  margin: 2px 0;
+
+  @media only screen and (max-width: 1240px) {
+    justify-content: center;
+  }
+
+  &__holder {
+    width: 100%;
+    border-radius: 1rem;
     display: flex;
-    align-items: flex-start;
-    position: relative;
-    line-height: 1.3125;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1rem;
+    // transition-duration: .2s;
     cursor: pointer;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: all 0.2s;
 
-    @media only screen and (max-width: 1240px){
-        justify-content: center;
+    @media only screen and (max-width: 1240px) {
+      justify-content: center;
     }
 
-    &__holder{
-        width: 100%;
-        border-radius: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 1rem;
-        // transition-duration: .2s;
-        cursor: pointer;
-        color: var(--color-text-secondary);
-        text-decoration: none;
-        transition: all .2s;
-
-        &:hover,
-        &:active{
-            background-color: rgba($color: #000000, $alpha: .05);
-            color: var(--color-text);
-            text-decoration: none;
-        }
-        
-        
+    &:hover,
+    &:active,
+    &--active {
+      background-color: rgba($color: #000000, $alpha: 0.05);
+      color: var(--color-text);
+      text-decoration: none;
     }
+  }
 
-    &__icon{
-        height: 2.3rem;
-        width: 2.3rem;
-        font-size: 1.75rem;
-        color:inherit;
-        fill: currentColor;
-        width: 2.5rem;
+  &__icon {
+    height: 2.3rem;
+    width: 2.3rem;
+    font-size: 1.75rem;
+    color: inherit;
+    fill: currentColor;
+    width: 2.5rem;
+  }
+
+  &__text-holder {
+    margin-left: 2rem;
+    margin-right: 1.5rem;
+    color: inherit;
+    @media only screen and (max-width: 1240px) {
+      display: none;
     }
+  }
 
-    &__text-holder{
-        margin-left: 2rem;
-        margin-right: 1.5rem;
-        color: inherit;
-        @media only screen and (max-width: 1240px){
-            display: none;
-        }
-    }
-
-    &__text{
-        font-size: 1.6rem;
-        font-weight: 400;
-        color:rgb(20, 23, 26);
-        color: inherit;
-    } 
+  &__text {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: rgb(20, 23, 26);
+    color: inherit;
+  }
 }
-

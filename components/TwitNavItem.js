@@ -1,20 +1,32 @@
-import React from "react"
-import Link from "next/link"
-import twitNavItem from "../sass/components/TwitNavItem.module.scss"
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import twitNavItem from "../sass/components/TwitNavItem.module.scss";
 
-function TwitNavItem(props){
-    return (
-        <div className={`${props.className} ${twitNavItem["twit-nav-item"]}`}>
-            <Link href={props.href} passHref>
-                <a className={`${twitNavItem["twit-nav-item__holder"]} ${twitNavItem["twit-nav-item__tagged"]}`}>
-                    {props.children} 
-                    <div className={twitNavItem["twit-nav-item__text-holder"]}>
-                        <span className={twitNavItem["twit-nav-item__text"]}>{props.title}</span>
-                    </div>
-                </a>     
-            </Link>
-        </div>
-    );
+function TwitNavItem({ className, href, children, title }) {
+  const { asPath } = useRouter();
+  console.log(asPath);
+
+  const active = () => {
+    if (asPath === href) {
+      return twitNavItem["twit-nav-item__holder--active"];
+    } else {
+      return null;
+    }
+  };
+
+  return (
+    <div className={`${className} ${twitNavItem["twit-nav-item"]}`}>
+      <Link href={href} passHref>
+        <a className={`${twitNavItem["twit-nav-item__holder"]} ${active()}`}>
+          {children}
+          <div className={twitNavItem["twit-nav-item__text-holder"]}>
+            <span className={twitNavItem["twit-nav-item__text"]}>{title}</span>
+          </div>
+        </a>
+      </Link>
+    </div>
+  );
 }
 
 export default TwitNavItem;

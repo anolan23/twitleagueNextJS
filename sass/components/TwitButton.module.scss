@@ -1,128 +1,123 @@
 $button-brightness: 80%;
 
-.twit-button{
-    font-size: 1.6rem;
-    font-weight: 700;
-    padding: .5rem 1.5rem;
-    width: max-content;
-    border: none;
-    border-radius: 1000px;
-    cursor: pointer;
-    text-decoration: none;
-    line-height: normal;
+.twit-button {
+  font-size: 1.6rem;
+  font-weight: 700;
+  padding: 0.5rem 1.5rem;
+  width: max-content;
+  border: none;
+  border-radius: 1000px;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: normal;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    &:active{
-        filter: brightness($button-brightness);
+  &:active {
+    filter: brightness($button-brightness);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:link,
+  &:visited,
+  &:not(:disabled),
+  &:not([disabled]) {
+    &:hover {
+      filter: brightness($button-brightness);
+      text-decoration: none;
     }
+  }
 
-    &:focus{
-        outline: none;
+  &:disabled,
+  &[disabled] {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  &--white {
+    color: var(--color-primary) !important;
+    background-color: white;
+    transition: all 0.2s;
+
+    &--outline {
+      border: 1px solid white !important;
+      color: white !important;
+      background-color: transparent;
+      transition: all 0.2s;
     }
+  }
 
-    &:link,
-    &:visited,
-    &:not(:disabled),
-    &:not([disabled]){
-        &:hover{
-            filter: brightness($button-brightness);
-            text-decoration: none;
-        }
+  &--primary {
+    color: white !important;
+    background-color: var(--color-primary);
+    transition: all 0.2s;
+
+    &--outline {
+      border: 1px solid var(--color-primary) !important;
+      color: var(--color-primary) !important;
+      background-color: transparent !important;
+      transition: all 0.2s !important;
+
+      &:hover {
+        background-color: var(--BLUE_BACKGROUND) !important;
+      }
     }
+  }
 
-    &:disabled,
-    &[disabled]{
-        opacity: .5;
-        cursor: default;
+  &--expanded {
+    width: 100%;
+  }
+
+  &--large {
+    padding: 1rem 3rem;
+  }
+
+  &--small {
+    padding: 0 1.5rem;
+  }
+
+  &--collapse {
+    @media only screen and (max-width: 1240px) {
+      display: none;
     }
+  }
 
-    &--white{
-        color: var(--color-primary) !important;
-        background-color: white;
-        transition: all .2s;
-
-        &--outline{
-            border: 1px solid white !important;
-            color: white !important;
-            background-color: transparent;
-            transition: all .2s;
-        }
-    }
-
-    &--primary{
-        color: white !important;
-        background-color:var(--color-primary);
-        transition: all .2s;
-      
-        &--outline{
-            border: 1px solid var(--color-primary) !important;
-            color: var(--color-primary) !important;
-            background-color: transparent !important;
-            transition: all .2s !important;
-
-            &:hover{
-                background-color: var(--BLUE_BACKGROUND) !important;
-            }
-
-            &--large{
-                padding: 1rem 3rem;
-                &--expanded{
-                    width: 100%;
-                }
-            }    
-        }
-
-        &--small{
-            padding: 0 1.5rem;
-        }
-    }
-
-    &--expanded{
-        width: 100%;
-        &-large{
-            width: 100%;
-            padding: 1rem 3rem;
-        }
-    }
-
-    &--large{
-        padding: 1rem 3rem;
-    }
-
-    &--collapse{
-        @media only screen and (max-width: 1240px){
-            display: none;
-        }
-        
-    }
+  &__icon {
+    color: inherit;
+    fill: currentColor;
+    height: 20px;
+    width: 20px;
+  }
 }
 
-.twit-button--square{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem;
-        border-bottom: var(--border);
-        font-size: 1.9rem;
-        font-weight: 700;
-        background-color: var(--color-primary);
-        color: white !important;
-        transition: all .2s;
-        cursor: pointer;
-        border: none;
-        width: 100%;
+.twit-button--square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: var(--border);
+  font-size: 1.9rem;
+  font-weight: 700;
+  background-color: var(--color-primary);
+  color: white !important;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  width: 100%;
 
-        &,
-        &:link,
-        &:visited{
-            text-decoration: none;
-        }
+  &,
+  &:link,
+  &:visited {
+    text-decoration: none;
+  }
 
-        &:hover{
-            filter: brightness($button-brightness); 
-            text-decoration: none;
-        }
+  &:hover {
+    filter: brightness($button-brightness);
+    text-decoration: none;
+  }
 }

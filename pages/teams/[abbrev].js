@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import useSWR from "swr";
 
-import MainBody from "../../components/MainBody";
 import backend from "../../lib/backend";
 import InfiniteList from "../../components/InfiniteList";
 import AuthBanner from "../../components/AuthBanner";
@@ -145,6 +144,10 @@ function Team(props) {
           list={posts}
           updateList={(posts) => setPosts(posts)}
           infiniteLoaderRef={infiniteLoaderRef}
+          emptyMain="No team mentions"
+          emptySub="Be the first to mention this team in a post!"
+          emptyActionText="Post now"
+          emptyActionHref="/suggested"
         >
           <Post />
         </InfiniteList>
@@ -230,7 +233,7 @@ function Team(props) {
     }
     if (user.id === team.owner_id) {
       return (
-        <TwitDropdownButton actionText="Manage team">
+        <TwitDropdownButton actionText="Manage team" color="primary">
           <TwitDropdownItem onClick={() => setShowEditTeamPopup(true)}>
             Edit team page
           </TwitDropdownItem>

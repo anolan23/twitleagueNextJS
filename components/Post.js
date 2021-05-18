@@ -10,6 +10,7 @@ import {
   togglePopupReply,
   trackClickedPost,
   deletePost,
+  fetchTeam,
 } from "../actions";
 import useUser from "../lib/useUser";
 import postStyle from "../sass/components/Post.module.scss";
@@ -23,6 +24,8 @@ import TwitDate from "../lib/twit-date";
 import TwitDropdown from "./TwitDropdown";
 import TwitDropdownItem from "./TwitDropdownItem";
 import Prompt from "./modals/Prompt";
+import TwitLink from "./TwitLink";
+import ScoutButton from "./ScoutButton";
 
 function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
   if (!post) {
@@ -92,19 +95,28 @@ function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
     const text = post.body;
     let replacedText;
     replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-      <Link key={match + i} href={`/teams/${match}`}>
-        <a onClick={(e) => e.stopPropagation()} className="twit-link">
-          ${match}
-        </a>
-      </Link>
+      <TwitLink
+        key={match + i}
+        className="twit-link"
+        href={`/teams/${match}`}
+        type="team"
+        info={null}
+        getInfo={async () => await fetchTeam(match, user.id)}
+      >
+        {`$${match}`}
+      </TwitLink>
     ));
 
     replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
-      <Link key={match + i} href={`/users/${match}`}>
-        <a onClick={(e) => e.stopPropagation()} className="twit-link">
-          @{match}
-        </a>
-      </Link>
+      <TwitLink
+        key={match + i}
+        className="twit-link"
+        href={`/users/`}
+        type="user"
+        info={null}
+      >
+        {`@${match}`}
+      </TwitLink>
     ));
 
     replacedText = reactStringReplace(
@@ -212,6 +224,10 @@ function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
     );
   };
 
+  const renderScoutButton = () => {
+    return <ScoutButton user={{ scouted: post.scouted, id: post.author_id }} />;
+  };
+
   if (!showPost) {
     return null;
   }
@@ -236,17 +252,22 @@ function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
       >
         <div className={postStyle["post__heading"]}>
           <div className={postStyle["post__heading-text"]}>
-            <Link
-              passHref
-              href={post.username ? "/users/" + post.username : ""}
+            <TwitLink
+              className={postStyle["post__display-name"]}
+              href={`/users/${post.username}`}
+              type="user"
+              info={{
+                name: post.name,
+                username: `@${post.username}`,
+                avatar: post.avatar,
+                scouts: post.scouts,
+                following: post.following,
+                bio: post.bio,
+                id: post.author_id,
+              }}
             >
-              <a
-                className={postStyle["post__display-name"]}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {post.name}
-              </a>
-            </Link>
+              {post.name}
+            </TwitLink>
             <span className={postStyle["post__username"] + " muted"}>
               @{post.username}
             </span>
@@ -258,7 +279,7 @@ function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
           {renderEditIcon()}
         </div>
 
-        <p className={postStyle["post__text"]}>{renderBody()}</p>
+        <div className={postStyle["post__text"]}>{renderBody()}</div>
       </div>
       {renderMedia()}
       <div

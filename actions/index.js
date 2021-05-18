@@ -25,21 +25,19 @@ export const logOutUser = () => async (dispatch) => {
   dispatch({ type: "LOGOUT_USER", payload: response.data });
 };
 
-export const deleteNotification = (notificationId) => async (
-  dispatch,
-  getState
-) => {
-  let notifications = getState().user.notifications;
-  notifications = notifications.filter((notification) => {
-    return notification.id !== notificationId;
-  });
-  dispatch({ type: "DELETE_NOTIFICATION", payload: notifications });
-  backend.delete("/api/notifications", {
-    params: {
-      notificationId,
-    },
-  });
-};
+export const deleteNotification =
+  (notificationId) => async (dispatch, getState) => {
+    let notifications = getState().user.notifications;
+    notifications = notifications.filter((notification) => {
+      return notification.id !== notificationId;
+    });
+    dispatch({ type: "DELETE_NOTIFICATION", payload: notifications });
+    backend.delete("/api/notifications", {
+      params: {
+        notificationId,
+      },
+    });
+  };
 
 export const updateUserProfile = (values) => async (dispatch, getState) => {
   const userId = getState().user.id;
@@ -150,10 +148,14 @@ export const createTeamAndFetchUser = (formValues) => async (dispatch) => {
   dispatch(fetchUser());
 };
 
-export const fetchTeam = (teamAbbrev) => async (dispatch) => {
-  const response = await backend.get(`/api/teams/${teamAbbrev}`);
+export const fetchTeam = async (abbrev, userId) => {
+  const team = await backend.get(`/api/teams/${abbrev}`, {
+    params: {
+      userId,
+    },
+  });
 
-  dispatch({ type: "FETCH_TEAM", payload: response.data });
+  return team.data;
 };
 
 export const findTeamsByUsername = async (username) => {
@@ -185,33 +187,29 @@ export const findSeasonsByLeagueName = async (leagueName) => {
   return seasons.data;
 };
 
-export const addTeamEventAndFetchTeam = (values) => async (
-  dispatch,
-  getState
-) => {
-  const teamAbbrev = getState().team.teamAbbrev.substring(1);
-  await dispatch(addTeamEvent(values));
-  dispatch(fetchTeam(teamAbbrev));
-};
+export const addTeamEventAndFetchTeam =
+  (values) => async (dispatch, getState) => {
+    const teamAbbrev = getState().team.teamAbbrev.substring(1);
+    await dispatch(addTeamEvent(values));
+    dispatch(fetchTeam(teamAbbrev));
+  };
 
-export const saveTeamImages = (teamImageUrl, bannerImageUrl) => async (
-  dispatch,
-  getState
-) => {
-  const state = getState();
-  const userId = state.user._id;
-  const owner = state.team.owner;
-  const teamAbbrev = getState().team.teamAbbrev.substring(1);
-  if (owner === userId) {
-    const response = await backend.patch(`api/teams/${teamAbbrev}`, {
-      teamImageUrl,
-      bannerImageUrl,
-    });
-    dispatch({ type: "SAVE_TEAM_IMAGES", payload: response.data });
-  } else {
-    console.error("owner !== userId");
-  }
-};
+export const saveTeamImages =
+  (teamImageUrl, bannerImageUrl) => async (dispatch, getState) => {
+    const state = getState();
+    const userId = state.user._id;
+    const owner = state.team.owner;
+    const teamAbbrev = getState().team.teamAbbrev.substring(1);
+    if (owner === userId) {
+      const response = await backend.patch(`api/teams/${teamAbbrev}`, {
+        teamImageUrl,
+        bannerImageUrl,
+      });
+      dispatch({ type: "SAVE_TEAM_IMAGES", payload: response.data });
+    } else {
+      console.error("owner !== userId");
+    }
+  };
 
 export const follow = async (teamId, userId) => {
   const response = await backend.post("/api/followers", { teamId, userId });
@@ -276,12 +274,13 @@ export const sendJoinTeamInvite = (userId, teamId) => async () => {
   });
 };
 
-export const sendNotification = (userId, type, payload) => async () => {
-  backend.post("/api/notifications", {
+export const sendNotification = async ({ userId, type, payload }) => {
+  const notification = await backend.post("/api/notifications", {
     userId,
     type,
     payload,
   });
+  return notification.data;
 };
 
 export const updateLeagueByName = async (leagueName, columns) => {
@@ -442,19 +441,18 @@ export const fetchHomeTimeline = async (userId, startIndex, stopIndex) => {
   return homeTimeLine.data;
 };
 
-export const fetchUserPosts = (targetUserId, userId, num, offset) => async (
-  dispatch
-) => {
-  const response = await backend.get("/api/posts/user", {
-    params: {
-      targetUserId,
-      userId,
-      num,
-      offset,
-    },
-  });
-  dispatch({ type: "FETCH_USER_POSTS", payload: response.data });
-};
+export const fetchUserPosts =
+  (targetUserId, userId, num, offset) => async (dispatch) => {
+    const response = await backend.get("/api/posts/user", {
+      params: {
+        targetUserId,
+        userId,
+        num,
+        offset,
+      },
+    });
+    dispatch({ type: "FETCH_USER_POSTS", payload: response.data });
+  };
 
 export const fetchLeaguePosts = (leagueId) => async (dispatch) => {
   const response = await backend.get("/api/posts/league", {
@@ -634,4 +632,11 @@ export const assignDivision = async (leagueId) => {
     leagueId,
   });
   return division.data;
+};
+
+export const addPlayerToRoster = async ({ teamId, userId }) => {
+  await backend.post("/api/teams/rosters", {
+    teamId,
+    userId,
+  });
 };

@@ -3,70 +3,47 @@ import { useRouter } from "next/router";
 
 import twitItem from "../sass/components/TwitItem.module.scss";
 import Avatar from "./Avatar";
-import TwitButton from "./TwitButton";
 
-function TwitItem(props) {
+function TwitItem({
+  active,
+  children,
+  avatar,
+  href,
+  title,
+  subtitle,
+  paragraph,
+}) {
   const router = useRouter();
 
   const onClick = () => {
-    if (!props.href) {
+    if (!href) {
       return;
     }
-    router.push(props.href);
+    router.push(href);
   };
 
   const renderAction = () => {
-    if (!props.actionText) {
-      return null;
-    } else if (props.actionText === "Follow" || props.actionText === "Scout") {
-      return (
-        <div className={twitItem["twit-item__action"]}>
-          <TwitButton
-            onClick={props.onActionClick}
-            color="twit-button--primary"
-          >
-            {props.actionText}
-          </TwitButton>
-        </div>
-      );
-    } else if (
-      props.actionText === "Unfollow" ||
-      props.actionText === "Unscout"
-    ) {
-      return (
-        <div className={twitItem["twit-item__action"]}>
-          <TwitButton
-            onClick={props.onActionClick}
-            color="twit-button--primary"
-            outline="twit-button--primary--outline"
-          >
-            {props.actionText}
-          </TwitButton>
-        </div>
-      );
-    }
+    return <div className={twitItem["twit-item__action"]}>{children}</div>;
   };
 
   return (
     <div
       onClick={onClick}
       className={`${twitItem["twit-item"]} ${
-        props.active ? twitItem["twit-item--active"] : ""
+        active ? twitItem["twit-item--active"] : ""
       }`}
       draggable="true"
     >
       <Avatar
         roundedCircle
         className={twitItem["twit-item__image"]}
-        src={props.avatar}
+        src={avatar}
       />
       <div className={twitItem["twit-item__textbox"]}>
-        <span className={twitItem["twit-item__title"]}>{props.title}</span>
-        <span className={twitItem["twit-item__subtitle"]}>
-          {props.subtitle}
-        </span>
-        {props.paragraph ? (
-          <p className={twitItem["twit-item__paragraph"]}>{props.paragraph}</p>
+        <span className={twitItem["twit-item__title"]}>{title}</span>
+        <span className={twitItem["twit-item__subtitle"]}>{subtitle}</span>
+        {paragraph ? (
+          <p className={twitItem["twit-item__paragraph"]}>{paragraph}</p>
         ) : null}
       </div>
       {renderAction()}

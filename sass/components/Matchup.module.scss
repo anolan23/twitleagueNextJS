@@ -1,99 +1,89 @@
-.matchup{
-    
-    
-    font-size: 1.5rem;
-    border-bottom: var(--border);
-    padding: 1rem 1.5rem;
+.matchup {
+  font-size: 1.5rem;
+  border-bottom: var(--border);
+  padding: 1rem 1.5rem;
 
-    &__info{
-        display: flex;
-        &__date{
-
-        }
-
-        &__league{
-        }
-
-        &__status{
-            margin-left: auto;
-            
-            &--live{
-                margin-left: auto;
-                color: green;
-                font-weight: 700;
-              }
-        }
+  &__info {
+    display: flex;
+    &__date {
     }
 
-    &__matchup{
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-        padding: 1rem;
-
-        &__team{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            &__avatar{
-                height: 100px;
-                width: 100px;
-                object-fit: cover;
-            }
-
-            &__name{
-
-            }
-        }
-
-        &__symbol-holder{
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0 1rem;
-
-            &__symbol{
-
-            }
-        }
-
-        &__score{
-            font-size: 4rem;
-            font-weight: 700;
-    
-            &__points{
-                margin: 0 1rem;
-            }
-
-            &__dash{
-
-            }
-        }
+    &__league {
     }
 
-    &__more-info{
-        font-size: 1.3rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: var(--color-text-secondary);
-        &__info{
-            &::first-letter{
-                text-transform: uppercase;
-            }
-        }
-
-        &__notes{
-            &::first-letter{
-                text-transform: uppercase;
-            }
-        }
-
-        &__actions{
-            display: grid;
-            grid-template-columns: max-content max-content;
-            column-gap: 1rem;
-        }
+    &__status {
+      margin-left: auto;
+      color: var(--color-text-secondary);
+      font-weight: 400;
     }
+  }
+
+  &__matchup {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 1rem;
+
+    &__team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      &__avatar {
+        height: 100px;
+        width: 100px;
+        object-fit: cover;
+      }
+
+      &__name {
+      }
+    }
+
+    &__symbol-holder {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 1rem;
+
+      &__symbol {
+      }
+    }
+
+    &__score {
+      font-size: 4rem;
+      font-weight: 700;
+
+      &__points {
+        margin: 0 1rem;
+      }
+
+      &__dash {
+      }
+    }
+  }
+
+  &__more-info {
+    font-size: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-text-secondary);
+    &__info {
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+
+    &__notes {
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+
+    &__actions {
+      display: grid;
+      grid-template-columns: max-content max-content;
+      column-gap: 1rem;
+    }
+  }
 }

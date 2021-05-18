@@ -1,0 +1,60 @@
+.infogram {
+  width: 300px;
+  border-radius: 1.6rem;
+  position: absolute;
+  background-color: white;
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  z-index: 1;
+  padding: 1.6rem;
+  left: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+
+  &__heading {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+    &__avatar {
+      height: 50px;
+      width: 50px;
+      object-fit: cover;
+    }
+    &__action {
+    }
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+
+    &__main {
+      &,
+      &:link,
+      &:visited {
+        font-weight: 700;
+        color: #101010;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &__sub {
+      color: var(--color-text-secondary);
+    }
+  }
+
+  &__bio {
+    margin-top: 1rem;
+  }
+
+  &__counts {
+    display: flex;
+    margin-top: 1rem;
+  }
+}

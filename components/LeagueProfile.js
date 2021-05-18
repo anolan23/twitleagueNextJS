@@ -21,18 +21,15 @@ function LeagueProfile(props) {
       return (
         <TwitButton
           onClick={props.onAvatarClick}
-          color="twit-button--primary"
-          outline="twit-button--primary--outline"
+          color="primary"
+          outline="primary"
         >
           Edit profile
         </TwitButton>
       );
     } else {
       return (
-        <TwitButton
-          color="twit-button--primary"
-          outline="twit-button--primary--outline"
-        >
+        <TwitButton color="primary" outline="primary">
           Unfollow
         </TwitButton>
       );

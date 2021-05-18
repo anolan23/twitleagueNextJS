@@ -4,9 +4,15 @@ import { toggleSignUpModal } from "../actions";
 
 import TwitButton from "./TwitButton";
 import authBanner from "../sass/components/AuthBanner.module.scss";
+import useUser from "../lib/useUser";
 
-function AuthBanner(props) {
-  if (props.isSignedIn === false) {
+function AuthBanner({ toggleSignUpModal }) {
+  const { user } = useUser();
+  if (!user) {
+    return null;
+  }
+
+  if (!user.isSignedIn) {
     return (
       <div className={authBanner["auth-banner"]}>
         <div className="auth-banner__text">
@@ -16,29 +22,18 @@ function AuthBanner(props) {
           </h2>
         </div>
         <div className={authBanner["auth-banner__actions"]}>
-          <TwitButton
-            href="/login"
-            color="twit-button--white"
-            outline="twit-button--white--outline"
-          >
+          <TwitButton href="/login" color="white" outline="white">
             Log in
           </TwitButton>
-          <TwitButton
-            onClick={props.toggleSignUpModal}
-            color="twit-button--white"
-          >
+          <TwitButton onClick={toggleSignUpModal} color="white">
             Sign up
           </TwitButton>
         </div>
       </div>
     );
-  } else {
+  } else if (user.isSignedIn) {
     return null;
   }
 }
 
-const mapStateToProps = (state) => {
-  return { isSignedIn: state.user.isSignedIn };
-};
-
-export default connect(mapStateToProps, { toggleSignUpModal })(AuthBanner);
+export default connect(null, { toggleSignUpModal })(AuthBanner);

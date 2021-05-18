@@ -28,18 +28,14 @@ function ScoutButton(props) {
   const renderButton = () => {
     if (!scouted) {
       return (
-        <TwitButton onClick={onScoutClick} color="twit-button--primary">
+        <TwitButton onClick={onScoutClick} color="primary">
           Scout
         </TwitButton>
       );
     } else {
       return (
-        <TwitButton
-          onClick={onScoutClick}
-          color="twit-button--primary"
-          outline="twit-button--primary--outline"
-        >
-          Unscout
+        <TwitButton onClick={onScoutClick} color="primary" outline="primary">
+          Scouting
         </TwitButton>
       );
     }
