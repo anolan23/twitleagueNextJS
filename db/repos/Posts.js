@@ -93,6 +93,70 @@ class Posts {
     return rows;
   }
 
+  static async findByUsername(username, userId, offset, limit) {
+    const { rows } = await pool.query(
+      `
+      SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+        CASE 
+        WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
+        WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
+        ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
+        END AS date,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
+      FROM posts AS p1
+      JOIN users ON p1.author_id = users.id
+      WHERE users.username = $1 AND p1.id = p1.conversation_id
+      ORDER BY created_at DESC
+      OFFSET $3
+      LIMIT $4`,
+      [username, userId, offset, limit]
+    );
+
+    return rows;
+  }
+
+  static async findByUsernameWithMedia(username, userId, offset, limit) {
+    const { rows } = await pool.query(
+      `
+      SELECT p1.*, 
+        users.avatar, users.name, users.username, 
+        (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
+      FROM posts AS p1
+      JOIN users ON p1.author_id = users.id
+      WHERE users.username = $1 AND p1.id = p1.conversation_id AND p1.media IS NOT NULL
+      ORDER BY p1.created_at DESC
+      OFFSET $3
+      LIMIT $4`,
+      [username, userId, offset, limit]
+    );
+
+    return rows;
+  }
+
+  static async findLikedByUsername(username, userId, offset, limit) {
+    const { rows } = await pool.query(
+      `
+      SELECT p1.*,
+        u1.avatar, u1.name, u1.username, 
+        (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+        EXISTS (SELECT 1 FROM likes AS l2 WHERE l2.user_id = $2 AND p1.id = l2.post_id ) AS liked
+      FROM likes AS l1
+      JOIN posts AS p1 ON p1.id = l1.post_id
+      JOIN users AS u1 ON u1.id = p1.author_id
+      JOIN users AS u2 ON u2.id = l1.user_id
+      WHERE u2.username = $1
+      ORDER BY p1.created_at DESC
+      OFFSET $3
+      LIMIT $4`,
+      [username, userId, offset, limit]
+    );
+
+    return rows;
+  }
+
   static async findUserMentioned(userId, num, offset) {
     const { rows } = await pool.query(
       `

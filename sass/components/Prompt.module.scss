@@ -1,59 +1,56 @@
-.prompt{
-    display: none;
-    justify-content: center;
+.prompt {
+  display: none;
+  justify-content: center;
+  align-items: center;
+
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3000;
+  background-color: rgba(black, $alpha: 0.75);
+  transition: all 0.1s;
+
+  &__show {
+    display: flex;
+  }
+
+  &__window {
+    width: 32rem;
+    max-width: 80vw;
+    max-height: 90vh;
+    border-radius: 1.6rem;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: white;
+    position: relative;
+    text-align: center;
     align-items: center;
+    padding: 3.2rem 2rem;
 
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 3000;
-    background-color: rgba(black, $alpha: .75);
-    transition: all .1s;
-
-    &__show {
-        display: flex;
+    &__main {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
     }
 
-    &__window{
-        width: 32rem;
-        max-width: 80vw;
-        max-height: 90vh;
-        border-radius: 1.6rem;
-
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        background-color: white;
-        position: relative;
-        text-align: center;
-        align-items: center;
-        padding: 3.2rem 2rem;
-
-    
-        &__main{
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1.2rem;
-        }
-    
-        &__sub{
-            font-size: 1.5rem;
-            color: var(--color-text-secondary);
-        }
-
-        &__actions{
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 2rem;
-            width: 100%;
-            &__action{
-                margin-top: 1rem;
-            }
-        }
-    
-        
+    &__sub {
+      font-size: 1.5rem;
+      color: var(--color-text-secondary);
     }
+
+    &__actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+      width: 100%;
+      &__action {
+        margin-top: 1rem;
+      }
+    }
+  }
 }

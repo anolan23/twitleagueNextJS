@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+
 import infogram from "../sass/components/Infogram.module.scss";
 import Avatar from "./Avatar";
 import Count from "./Count";
+import Linkify from "./Linkify";
 
 function Infogram({ action, info, href }) {
   const router = useRouter();
@@ -14,7 +16,11 @@ function Infogram({ action, info, href }) {
 
   const renderBio = () => {
     if (info.bio) {
-      return <p className={infogram["infogram__bio"]}>{info.bio}</p>;
+      return (
+        <p className={infogram["infogram__bio"]}>
+          <Linkify string={info.bio} />
+        </p>
+      );
     } else {
       return null;
     }

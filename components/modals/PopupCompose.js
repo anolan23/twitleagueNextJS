@@ -12,7 +12,7 @@ function PopupCompose(props) {
   const { user } = useUser();
 
   const onSubmit = (post) => {
-    props.createPost(post, user.id);
+    createPost(post, user.id);
   };
 
   const renderBody = () => {

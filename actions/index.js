@@ -13,6 +13,15 @@ export const fetchUser = () => async (dispatch) => {
   dispatch({ type: "FETCH_USER", payload: response.data });
 };
 
+export const fetchUserByUsername = async (username, userId) => {
+  const user = await backend.get(`/api/users/${username}`, {
+    params: {
+      userId,
+    },
+  });
+  return user.data;
+};
+
 export const loginUser = (values) => async (dispatch) => {
   const response = await backend.post("/api/login", values);
 
@@ -332,13 +341,9 @@ export const setLeague = (league) => (dispatch) => {
   dispatch({ type: "SET_LEAGUE", payload: league });
 };
 
-//Posts Action Creators
-export const createPost = (post, userId) => async (dispatch) => {
-  const newPost = { ...post, userId };
-  const response = await backend.post("/api/posts", newPost);
-
-  dispatch({ type: "CREATE_POST", payload: response.data });
-  dispatch(emptyPostData());
+export const createPost = async (post, userId) => {
+  const response = await backend.post("/api/posts", { ...post, userId });
+  return response.data;
 };
 
 export const deletePost = async (postId) => {
@@ -441,18 +446,56 @@ export const fetchHomeTimeline = async (userId, startIndex, stopIndex) => {
   return homeTimeLine.data;
 };
 
-export const fetchUserPosts =
-  (targetUserId, userId, num, offset) => async (dispatch) => {
-    const response = await backend.get("/api/posts/user", {
-      params: {
-        targetUserId,
-        userId,
-        num,
-        offset,
-      },
-    });
-    dispatch({ type: "FETCH_USER_POSTS", payload: response.data });
-  };
+export const fetchPostsByUsername = async ({
+  username,
+  userId,
+  startIndex,
+  stopIndex,
+}) => {
+  const posts = await backend.get(`/api/users/${username}/posts`, {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+
+  return posts.data;
+};
+
+export const fetchMediaPostsByUsername = async ({
+  username,
+  userId,
+  startIndex,
+  stopIndex,
+}) => {
+  const posts = await backend.get(`/api/users/${username}/posts/media`, {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+
+  return posts.data;
+};
+
+export const fetchLikedPostsByUsername = async ({
+  username,
+  userId,
+  startIndex,
+  stopIndex,
+}) => {
+  const posts = await backend.get(`/api/users/${username}/posts/likes`, {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+
+  return posts.data;
+};
 
 export const fetchLeaguePosts = (leagueId) => async (dispatch) => {
   const response = await backend.get("/api/posts/league", {

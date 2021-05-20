@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
@@ -17,7 +17,9 @@ import Empty from "../../components/Empty";
 import {
   clearPosts,
   toggleEditProfilePopup,
-  fetchUserPosts,
+  fetchPostsByUsername,
+  fetchMediaPostsByUsername,
+  fetchLikedPostsByUsername,
   fetchUser,
   togglePopupCompose,
 } from "../../actions";
@@ -25,14 +27,27 @@ import TopBar from "../../components/TopBar";
 import FeedCard from "../../components/FeedCard";
 import UserProfile from "../../components/UserProfile";
 import backend from "../../lib/backend";
-import teamHolder from "../../sass/components/TeamProfile.module.scss";
 import userStyle from "../../sass/components/User.module.scss";
+import InfiniteList from "../../components/InfiniteList";
+import SuggestedUsers from "../../components/SuggestedUsers";
+import WhatsHappening from "../../components/WhatsHappening";
+import SuggestedTeams from "../../components/SuggestedTeams";
+import LeftColumn from "../../components/LeftColumn";
+import RightColumn from "../../components/RightColumn";
 
 function User(props) {
   const { user } = useUser();
   const router = useRouter();
-  const [activeLink, setActiveLink] = useState("posts");
+  const { username } = router.query;
+  const [tab, setTab] = useState("posts");
   const [users, setUsers] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [mediaPosts, setMediaPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
+
+  // console.log("posts", posts);
+  // console.log("mediaPosts", mediaPosts);
+  // console.log("likedPosts", likedPosts);
 
   const getUser = async (url) => {
     const response = await backend.get(url, {
@@ -51,19 +66,39 @@ function User(props) {
     { initialData: props.userProfile, revalidateOnMount: true }
   );
 
+  const postsLoaderRef = useCallback(
+    (ref) => {
+      if (ref !== null) {
+        ref.resetLoadMoreRowsCache();
+        setPosts([]);
+      }
+    },
+    [userProfile]
+  );
+
+  const mediaPostsLoaderRef = useCallback(
+    (ref) => {
+      if (ref !== null) {
+        ref.resetLoadMoreRowsCache();
+        setMediaPosts([]);
+      }
+    },
+    [userProfile]
+  );
+
+  const likedPostsLoaderRef = useCallback(
+    (ref) => {
+      if (ref !== null) {
+        ref.resetLoadMoreRowsCache();
+        setLikedPosts([]);
+      }
+    },
+    [userProfile]
+  );
+
   useEffect(() => {
     getSuggestedUsers();
   }, []);
-
-  useEffect(() => {
-    if (!user || !userProfile) {
-      return;
-    }
-    props.fetchUserPosts(userProfile.id, user.id, 10, 0);
-    return () => {
-      props.clearPosts();
-    };
-  }, [user, userProfile]);
 
   const getSuggestedUsers = async () => {
     const users = await backend.get("/api/users/suggested", {
@@ -75,79 +110,18 @@ function User(props) {
   };
 
   const onPostsSelect = (k) => {
-    setActiveLink(k.target.id);
+    setTab(k.target.id);
     //fetch user posts
-    props.fetchUserPosts(userProfile.id, user.id, 10, 0);
   };
 
   const onMediaSelect = async (k) => {
-    setActiveLink(k.target.id);
+    setTab(k.target.id);
     //fetch user posts with media
   };
 
   const onLikesSelect = async (k) => {
-    setActiveLink(k.target.id);
+    setTab(k.target.id);
     //fetch user liked posts
-  };
-
-  const onAvatarClick = () => {
-    if (userProfile.id == props.userId) {
-      props.toggleEditProfilePopup();
-    }
-  };
-
-  const renderAction = () => {
-    if (userProfile.id == props.userId) {
-      return (
-        <TwitButton
-          onClick={props.toggleEditProfilePopup}
-          color="primary"
-          outline="primary"
-        >
-          Edit Profile
-        </TwitButton>
-      );
-    } else {
-      return (
-        <TwitButton color="primary" outline="primary">
-          Scout
-        </TwitButton>
-      );
-    }
-  };
-
-  const renderPosts = () => {
-    if (props.posts === null) {
-      return;
-    }
-    if (props.posts.length > 0) {
-      if (activeLink === "posts") {
-        return props.posts.map((post, index) => {
-          return <Post key={index} post={post} />;
-        });
-      } else {
-        return null;
-      }
-    } else if (props.posts.length === 0) {
-      if (userProfile.id === props.userId) {
-        return (
-          <Empty
-            main="You haven’t posted yet"
-            sub="When you make a post, it’ll show up here."
-            actionText="Post now"
-            onActionClick={props.togglePopupCompose}
-          />
-        );
-      } else {
-        return (
-          <Empty
-            main="This user hasn't posted yet"
-            sub="When they make a post, it’ll show up here."
-            actionText="Send message"
-          />
-        );
-      }
-    }
   };
 
   const renderUsers = () => {
@@ -171,40 +145,130 @@ function User(props) {
     }
   };
 
+  const renderContent = () => {
+    switch (tab) {
+      case "posts":
+        if (router.isReady) {
+          return (
+            <InfiniteList
+              getDataFromServer={(startIndex, stopIndex) =>
+                fetchPostsByUsername({
+                  username,
+                  userId: user.id,
+                  startIndex,
+                  stopIndex,
+                })
+              }
+              list={posts}
+              updateList={(posts) => setPosts(posts)}
+              infiniteLoaderRef={postsLoaderRef}
+            >
+              <Post />
+            </InfiniteList>
+          );
+        } else {
+          return null;
+        }
+
+      case "media":
+        if (router.isReady) {
+          return (
+            <InfiniteList
+              getDataFromServer={(startIndex, stopIndex) =>
+                fetchMediaPostsByUsername({
+                  username,
+                  userId: user.id,
+                  startIndex,
+                  stopIndex,
+                })
+              }
+              list={mediaPosts}
+              updateList={(mediaPosts) => setMediaPosts(mediaPosts)}
+              infiniteLoaderRef={mediaPostsLoaderRef}
+            >
+              <Post />
+            </InfiniteList>
+          );
+        } else {
+          return null;
+        }
+
+      case "likes":
+        if (router.isReady) {
+          return (
+            <InfiniteList
+              getDataFromServer={(startIndex, stopIndex) =>
+                fetchLikedPostsByUsername({
+                  username,
+                  userId: user.id,
+                  startIndex,
+                  stopIndex,
+                })
+              }
+              list={likedPosts}
+              updateList={(likedPosts) => setLikedPosts(likedPosts)}
+              infiniteLoaderRef={likedPostsLoaderRef}
+            >
+              <Post />
+            </InfiniteList>
+          );
+        } else {
+          return null;
+        }
+
+      default:
+        return null;
+    }
+  };
+
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
 
   return (
     <React.Fragment>
-      <MainBody>
-        <TopBar main={userProfile.username} />
-        <UserProfile user={userProfile} />
-        <TwitTabs>
-          <TwitTab
-            onClick={onPostsSelect}
-            id={"posts"}
-            active={activeLink === "posts" ? true : false}
-            title="Posts"
-          />
-          <TwitTab
-            onClick={onMediaSelect}
-            id={"media"}
-            active={activeLink === "media" ? true : false}
-            title="Media"
-          />
-          <TwitTab
-            onClick={onLikesSelect}
-            id={"likes"}
-            active={activeLink === "likes" ? true : false}
-            title="Likes"
-          />
-        </TwitTabs>
-        <div className={userStyle["user__feed-holder"]}>
-          {renderPosts()}
-          <FeedCard title="Who to Scout">{renderUsers()}</FeedCard>
+      <div className="twit-container">
+        <header className="header">
+          <LeftColumn />
+        </header>
+        <main className="main">
+          <div className={userStyle["user"]}>
+            <TopBar main={userProfile.username} />
+            <UserProfile user={userProfile} />
+            <TwitTabs>
+              <TwitTab
+                onClick={onPostsSelect}
+                id={"posts"}
+                active={tab === "posts" ? true : false}
+                title="Posts"
+              />
+              <TwitTab
+                onClick={onMediaSelect}
+                id={"media"}
+                active={tab === "media" ? true : false}
+                title="Media"
+              />
+              <TwitTab
+                onClick={onLikesSelect}
+                id={"likes"}
+                active={tab === "likes" ? true : false}
+                title="Likes"
+              />
+            </TwitTabs>
+            <div className={userStyle["user__feed-holder"]}>
+              {renderContent()}
+              <FeedCard title="Who to Scout">{renderUsers()}</FeedCard>
+            </div>
+          </div>
+        </main>
+        <div className="right-bar">
+          <RightColumn>
+            <WhatsHappening />
+            <SuggestedTeams />
+            <SuggestedUsers />
+          </RightColumn>
         </div>
-      </MainBody>
+      </div>
     </React.Fragment>
   );
 }
@@ -237,7 +301,6 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   clearPosts,
   toggleEditProfilePopup,
-  fetchUserPosts,
   fetchUser,
   togglePopupCompose,
 })(User);

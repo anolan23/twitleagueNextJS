@@ -11,6 +11,7 @@ import {
   trackClickedPost,
   deletePost,
   fetchTeam,
+  fetchUserByUsername,
 } from "../actions";
 import useUser from "../lib/useUser";
 import postStyle from "../sass/components/Post.module.scss";
@@ -26,6 +27,7 @@ import TwitDropdownItem from "./TwitDropdownItem";
 import Prompt from "./modals/Prompt";
 import TwitLink from "./TwitLink";
 import ScoutButton from "./ScoutButton";
+import Linkify from "./Linkify";
 
 function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
   if (!post) {
@@ -92,46 +94,8 @@ function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
   };
 
   const renderBody = () => {
-    const text = post.body;
-    let replacedText;
-    replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-      <TwitLink
-        key={match + i}
-        className="twit-link"
-        href={`/teams/${match}`}
-        type="team"
-        info={null}
-        getInfo={async () => await fetchTeam(match, user.id)}
-      >
-        {`$${match}`}
-      </TwitLink>
-    ));
-
-    replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
-      <TwitLink
-        key={match + i}
-        className="twit-link"
-        href={`/users/`}
-        type="user"
-        info={null}
-      >
-        {`@${match}`}
-      </TwitLink>
-    ));
-
-    replacedText = reactStringReplace(
-      replacedText,
-      /(https?:\/\/\S+)/g,
-      (match, i) => (
-        <Link key={match + i} href={match}>
-          <a onClick={(e) => e.stopPropagation()} className="twit-link">
-            {truncate(match, 35)}
-          </a>
-        </Link>
-      )
-    );
-
-    return replacedText;
+    const string = post.body;
+    return <Linkify string={string} user={user} hasTwitLinks />;
   };
 
   const renderTree = () => {
@@ -256,15 +220,7 @@ function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
               className={postStyle["post__display-name"]}
               href={`/users/${post.username}`}
               type="user"
-              info={{
-                name: post.name,
-                username: `@${post.username}`,
-                avatar: post.avatar,
-                scouts: post.scouts,
-                following: post.following,
-                bio: post.bio,
-                id: post.author_id,
-              }}
+              info={{ ...post, username: post.username }}
             >
               {post.name}
             </TwitLink>

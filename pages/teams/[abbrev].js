@@ -144,10 +144,6 @@ function Team(props) {
           list={posts}
           updateList={(posts) => setPosts(posts)}
           infiniteLoaderRef={infiniteLoaderRef}
-          emptyMain="No team mentions"
-          emptySub="Be the first to mention this team in a post!"
-          emptyActionText="Post now"
-          emptyActionHref="/suggested"
         >
           <Post />
         </InfiniteList>

@@ -3,26 +3,41 @@ import twitLink from "../sass/components/TwitLink.module.scss";
 import Link from "next/link";
 
 import Infogram from "./Infogram";
+import useUser from "../lib/useUser";
+
 import FollowButton from "./FollowButton";
 import ScoutButton from "./ScoutButton";
 
 function TwitLink({ href, children, className, getInfo, type, ...props }) {
+  const { user } = useUser();
   const [info, setInfo] = useState(props.info);
 
   const onMouseEnter = async (event) => {
+    
     if (!info) {
       const info = await getInfo();
       setInfo(info);
-      console.log(info);
     }
   };
 
   const renderAction = () => {
     switch (type) {
       case "team":
-        return <FollowButton team={info} />;
+        if (!info) {
+          return null;
+        } else {
+          return <FollowButton team={info} />;
+        }
       case "user":
-        return <ScoutButton user={info} />;
+        if (!info) {
+          return null;
+        } else {
+          if (user.username === info.username) {
+            return null;
+          } else {
+            return <ScoutButton user={info} />;
+          }
+        }
 
       default:
         return null;

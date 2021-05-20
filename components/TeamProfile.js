@@ -24,6 +24,7 @@ import TwitIcon from "./TwitIcon";
 import TwitDropdownButton from "./TwitDropdownButton";
 import TwitDropdownItem from "./TwitDropdownItem";
 import Prompt from "./modals/Prompt";
+import Linkify from "./Linkify";
 
 function TeamProfile(props) {
   const { user } = useUser();
@@ -146,7 +147,7 @@ function TeamProfile(props) {
           </div>
           {team.bio ? (
             <p className={teamProfile["team-profile__info__bio"] + " muted"}>
-              {team.bio}
+              <Linkify string={team.bio} user={user} hasTwitLinks />
             </p>
           ) : null}
           <div className={teamProfile["team-profile__info__name"]}>

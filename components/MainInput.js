@@ -23,6 +23,7 @@ import TwitBadge from "./TwitBadge";
 import TwitIcon from "./TwitIcon";
 import { uploadToS3 } from "../lib/aws-helpers";
 import ReactPlayer from "react-player";
+import TwitAlert from "./TwitAlert";
 
 function MainInput(props) {
   const { user } = useUser();
@@ -32,8 +33,10 @@ function MainInput(props) {
     body: null,
     outlook: null,
   });
+  const [createdPost, setCreatedPost] = useState(null);
   const [html, setHtml] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [options, setOptions] = useState([]);
   const [cursor, setCursor] = useState(0);
   const [media, setMedia] = useState(null);
@@ -150,7 +153,7 @@ function MainInput(props) {
     return chars() === 0 || chars() > allowableChars;
   };
 
-  const onUploadToS3 = (uploadedFiles) => {
+  const onUploadToS3 = async (uploadedFiles) => {
     let media = uploadedFiles.map((uploadedFile) => {
       let type = uploadedFile.Location.substring(
         uploadedFile.Location.lastIndexOf(".") + 1
@@ -159,13 +162,15 @@ function MainInput(props) {
     });
     media = JSON.stringify(media);
     let newPost = { ...post, media: media };
-    props.onSubmit(newPost);
+    const _post = await props.onSubmit(newPost);
+    setCreatedPost(_post);
     setMedia(null);
     setFiles(null);
     setHtml("");
+    setShowAlert(true);
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     if (files) {
       let promises = [];
@@ -178,10 +183,12 @@ function MainInput(props) {
     } else {
       const stringifyMedia = media ? JSON.stringify(media) : null;
       let newPost = { ...post, media: stringifyMedia };
-      props.onSubmit(newPost);
+      const _post = await props.onSubmit(newPost);
+      setCreatedPost(_post);
       setMedia(null);
       setFiles(null);
       setHtml("");
+      setShowAlert(true);
     }
   };
 
@@ -392,87 +399,101 @@ function MainInput(props) {
     );
   };
 
-  return (
-    <form
-      id="main-input-form"
-      className={
-        props.compose
-          ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}`
-          : mainInput["main-input"]
-      }
-      onSubmit={onSubmit}
-      onKeyDown={handleKeyDown}
-    >
-      <Avatar
-        roundedCircle
-        className={mainInput["main-input__image"]}
-        src={user ? user.avatar : null}
-      />
-      <div className={mainInput["main-input__text-area-container"]}>
-        <ContentEditable
-          className={`${mainInput["main-input__text-area"]} ${expanded}`}
-          innerRef={contentEditable}
-          html={html}
-          disabled={false}
-          onChange={handleChange}
-          placeholder={props.placeHolder}
-        />
-        <div className={mainInput["main-input__dropdown-wrapper"]}>
-          <TwitDropdown
-            show={showDropdown}
-            className={mainInput["main-input__dropdown-wrapper__dropdown"]}
-          >
-            {renderOptions()}
-          </TwitDropdown>
-        </div>
-      </div>
+  console.log(showAlert);
 
-      <div className={mainInput["main-input__media-grid"]}>{renderMedia()}</div>
-      <div className={mainInput["main-input__actions"]}>
-        <div className={mainInput["main-input__media-types"]}>
-          <TwitIcon
-            onClick={onUploadClick}
-            className={mainInput["main-input__media-types__icon"]}
-            icon="/sprites.svg#icon-image"
-          ></TwitIcon>
-          <input
-            multiple
-            type="file"
-            ref={hiddenFileInput}
-            onChange={handleUploadChange}
-            style={{ display: "none" }}
-          ></input>
-          <TwitIcon
-            onClick={props.toggleGifPopup}
-            className={mainInput["main-input__media-types__icon"]}
-            icon="/sprites.svg#icon-plus-circle"
-          >
-            GIF
-          </TwitIcon>
-          <TwitIcon
-            onClick={onMoneyClick}
-            className={mainInput["main-input__media-types__icon"]}
-            icon="/sprites.svg#icon-map-pin"
-          >
-            $
-          </TwitIcon>
-          <TwitIcon
-            onClick={onAtClick}
-            className={mainInput["main-input__media-types__icon"]}
-            icon="/sprites.svg#icon-bookmark"
-          >
-            @
-          </TwitIcon>
-          <TwitBadge onClick={onHotClick} active={post.outlook === true}>
-            Hot
-          </TwitBadge>
-          <TwitBadge onClick={onColdClick} active={post.outlook === false}>
-            Cold
-          </TwitBadge>
+  return (
+    <React.Fragment>
+      <form
+        id="main-input-form"
+        className={
+          props.compose
+            ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}`
+            : mainInput["main-input"]
+        }
+        onSubmit={onSubmit}
+        onKeyDown={handleKeyDown}
+      >
+        <Avatar
+          roundedCircle
+          className={mainInput["main-input__image"]}
+          src={user ? user.avatar : null}
+        />
+        <div className={mainInput["main-input__text-area-container"]}>
+          <ContentEditable
+            className={`${mainInput["main-input__text-area"]} ${expanded}`}
+            innerRef={contentEditable}
+            html={html}
+            disabled={false}
+            onChange={handleChange}
+            placeholder={props.placeHolder}
+          />
+          <div className={mainInput["main-input__dropdown-wrapper"]}>
+            <TwitDropdown
+              show={showDropdown}
+              className={mainInput["main-input__dropdown-wrapper__dropdown"]}
+            >
+              {renderOptions()}
+            </TwitDropdown>
+          </div>
         </div>
-        {renderAction()}
-      </div>
-    </form>
+
+        <div className={mainInput["main-input__media-grid"]}>
+          {renderMedia()}
+        </div>
+        <div className={mainInput["main-input__actions"]}>
+          <div className={mainInput["main-input__media-types"]}>
+            <TwitIcon
+              onClick={onUploadClick}
+              className={mainInput["main-input__media-types__icon"]}
+              icon="/sprites.svg#icon-image"
+            ></TwitIcon>
+            <input
+              multiple
+              type="file"
+              ref={hiddenFileInput}
+              onChange={handleUploadChange}
+              style={{ display: "none" }}
+            ></input>
+            <TwitIcon
+              onClick={props.toggleGifPopup}
+              className={mainInput["main-input__media-types__icon"]}
+              icon="/sprites.svg#icon-plus-circle"
+            >
+              GIF
+            </TwitIcon>
+            <TwitIcon
+              onClick={onMoneyClick}
+              className={mainInput["main-input__media-types__icon"]}
+              icon="/sprites.svg#icon-map-pin"
+            >
+              $
+            </TwitIcon>
+            <TwitIcon
+              onClick={onAtClick}
+              className={mainInput["main-input__media-types__icon"]}
+              icon="/sprites.svg#icon-bookmark"
+            >
+              @
+            </TwitIcon>
+            <TwitBadge onClick={onHotClick} active={post.outlook === true}>
+              Hot
+            </TwitBadge>
+            <TwitBadge onClick={onColdClick} active={post.outlook === false}>
+              Cold
+            </TwitBadge>
+          </div>
+          {renderAction()}
+        </div>
+      </form>
+      <TwitAlert
+        show={showAlert}
+        onHide={() => setShowAlert(false)}
+        duration={5000}
+        href={createdPost ? `/thread/${createdPost.id}` : null}
+        message="Post created."
+        actionText="View post"
+      />
+    </React.Fragment>
   );
 }
 
