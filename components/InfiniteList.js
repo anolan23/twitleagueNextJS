@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
 import List from "react-virtualized/dist/commonjs/List";
 import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
@@ -15,18 +15,14 @@ function InfiniteList({
   infiniteLoaderRef,
   list,
   updateList,
+  empty,
 }) {
   let isNextPageLoading;
   let hasNextPage = true;
-
   const cache = new CellMeasurerCache({
     defaultHeight: 100,
     fixedWidth: true,
   });
-
-  useEffect(() => {
-    console.log(list);
-  }, [list]);
 
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
@@ -62,6 +58,10 @@ function InfiniteList({
     );
   }
 
+  function noRowsRenderer() {
+    return <React.Fragment>{empty}</React.Fragment>;
+  }
+
   return (
     <InfiniteLoader
       isRowLoaded={isRowLoaded}
@@ -83,12 +83,13 @@ function InfiniteList({
                   deferredMeasurementCache={cache}
                   onRowsRendered={onRowsRendered}
                   ref={registerChild}
-                  rowCount={list.length + 1}
+                  rowCount={list.length}
                   rowHeight={cache.rowHeight}
                   rowRenderer={rowRenderer}
                   scrollTop={scrollTop}
                   width={width}
                   overscanRowCount={5}
+                  noRowsRenderer={noRowsRenderer}
                 />
               )}
             </AutoSizer>

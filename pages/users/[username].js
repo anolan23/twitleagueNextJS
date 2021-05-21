@@ -45,10 +45,6 @@ function User(props) {
   const [mediaPosts, setMediaPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
 
-  // console.log("posts", posts);
-  // console.log("mediaPosts", mediaPosts);
-  // console.log("likedPosts", likedPosts);
-
   const getUser = async (url) => {
     const response = await backend.get(url, {
       params: {
@@ -145,6 +141,10 @@ function User(props) {
     }
   };
 
+  const renderEmpty = () => {
+    return <Empty main="No posts" sub="This use hasn't posted yet" />;
+  };
+
   const renderContent = () => {
     switch (tab) {
       case "posts":
@@ -162,6 +162,7 @@ function User(props) {
               list={posts}
               updateList={(posts) => setPosts(posts)}
               infiniteLoaderRef={postsLoaderRef}
+              empty={renderEmpty()}
             >
               <Post />
             </InfiniteList>
@@ -185,6 +186,7 @@ function User(props) {
               list={mediaPosts}
               updateList={(mediaPosts) => setMediaPosts(mediaPosts)}
               infiniteLoaderRef={mediaPostsLoaderRef}
+              empty={renderEmpty()}
             >
               <Post />
             </InfiniteList>
@@ -208,6 +210,7 @@ function User(props) {
               list={likedPosts}
               updateList={(likedPosts) => setLikedPosts(likedPosts)}
               infiniteLoaderRef={likedPostsLoaderRef}
+              empty={renderEmpty()}
             >
               <Post />
             </InfiniteList>
