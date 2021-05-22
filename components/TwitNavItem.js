@@ -5,7 +5,6 @@ import twitNavItem from "../sass/components/TwitNavItem.module.scss";
 
 function TwitNavItem({ className, href, children, title }) {
   const { asPath } = useRouter();
-  console.log(asPath);
 
   const active = () => {
     if (asPath === href) {

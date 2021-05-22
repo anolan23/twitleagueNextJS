@@ -146,9 +146,9 @@ function TeamProfile(props) {
             {renderLeagueName()}
           </div>
           {team.bio ? (
-            <p className={teamProfile["team-profile__info__bio"] + " muted"}>
+            <div className={teamProfile["team-profile__info__bio"] + " muted"}>
               <Linkify string={team.bio} user={user} hasTwitLinks />
-            </p>
+            </div>
           ) : null}
           <div className={teamProfile["team-profile__info__name"]}>
             <span className={teamProfile["team-profile__info__name__league"]}>

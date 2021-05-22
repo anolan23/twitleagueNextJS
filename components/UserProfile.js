@@ -51,9 +51,9 @@ function UserProfile(props) {
             >{`@${props.user.username}`}</h3>
           </div>
           {props.user.bio ? (
-            <p className={userProfile["user-profile__info__bio"] + " muted"}>
+            <div className={userProfile["user-profile__info__bio"] + " muted"}>
               <Linkify string={props.user.bio} user={user} hasTwitLinks />
-            </p>
+            </div>
           ) : null}
           <div className={userProfile["user-profile__attributes"]}>
             <Attribute icon={"/sprites.svg#icon-map-pin"} text="Chicago, IL" />
