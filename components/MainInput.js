@@ -399,8 +399,6 @@ function MainInput(props) {
     );
   };
 
-  console.log(showAlert);
-
   return (
     <React.Fragment>
       <form

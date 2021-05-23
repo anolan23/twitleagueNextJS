@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
@@ -22,6 +22,7 @@ import {
   toggleEditEventsPopup,
   toggleEditTeamPopup,
   findSeasonsByLeagueName,
+  fetchRoster,
 } from "../../actions";
 import TopBar from "../../components/TopBar";
 import TwitItem from "../../components/TwitItem";
@@ -37,15 +38,19 @@ import Teams from "../../db/repos/Teams";
 import EditTeamPopup from "../../components/modals/EditTeamPopup";
 
 function Team(props) {
-  const router = useRouter();
+  const { query, isFallback } = useRouter();
+
   const { user } = useUser();
+
   const [tab, setTab] = useState("team");
   const [roster, setRoster] = useState(null);
   const [events, setEvents] = useState(null);
   const [seasons, setSeasons] = useState(null);
   const [season, setSeason] = useState(null);
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(null);
   const [showEditTeamPopup, setShowEditTeamPopup] = useState(false);
+
+  const postsLoaderRef = useRef(null);
 
   const getTeam = async (url) => {
     const response = await backend.get(url, {
@@ -63,40 +68,24 @@ function Team(props) {
     { initialData: props.team, revalidateOnMount: true }
   );
 
-  const infiniteLoaderRef = useCallback(
-    (ref) => {
-      if (ref !== null) {
-        ref.resetLoadMoreRowsCache();
-        setPosts([]);
+  useEffect(() => {
+    setPosts(null);
+
+    setTab("mentions");
+
+    return () => {
+      if (postsLoaderRef.current) {
+        postsLoaderRef.current.resetLoadMoreRowsCache();
       }
-    },
-    [team]
-  );
+    };
+  }, [query.abbrev]);
 
   useEffect(() => {
     if (!team) {
       return;
     }
-    props.setTeam(team);
-    setTab("mentions");
     fetchSeasons();
   }, [team]);
-
-  useEffect(() => {
-    if (!seasons) {
-      return;
-    }
-    setSeason(seasons[seasons.length - 1]);
-  }, [seasons]);
-
-  const fetchRoster = async () => {
-    const response = await backend.get("api/teams/rosters", {
-      params: {
-        teamId: team.id,
-      },
-    });
-    setRoster(response.data);
-  };
 
   const fetchEventsBySeasonId = async (seasonId) => {
     const events = await backend.get(
@@ -123,11 +112,14 @@ function Team(props) {
     setSeasons(seasons);
   };
 
-  const updateTeam = (team) => {
-    setTeam(team);
+  const renderEmptyPosts = () => {
+    return (
+      <Empty
+        main="No mentions"
+        sub={`${team.abbrev} hasn't been mentioned in a post yet`}
+      />
+    );
   };
-
-  const resetList = () => {};
 
   const renderContent = () => {
     if (tab === "mentions") {
@@ -143,7 +135,8 @@ function Team(props) {
           }
           list={posts}
           updateList={(posts) => setPosts(posts)}
-          infiniteLoaderRef={infiniteLoaderRef}
+          infiniteLoaderRef={postsLoaderRef}
+          empty={renderEmptyPosts()}
         >
           <Post />
         </InfiniteList>
@@ -260,9 +253,10 @@ function Team(props) {
     setTab(k.target.id);
   };
 
-  const onRosterSelect = (k) => {
+  const onRosterSelect = async (k) => {
     setTab(k.target.id);
-    fetchRoster();
+    const roster = await fetchRoster(query.abbrev);
+    setRoster(roster);
   };
 
   const onScheduleClick = (k) => {
@@ -289,7 +283,7 @@ function Team(props) {
     }
   };
 
-  if (router.isFallback) {
+  if (isFallback) {
     return <div>Loading...</div>;
   }
 

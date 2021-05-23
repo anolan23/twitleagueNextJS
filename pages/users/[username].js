@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import useSWR from "swr";
 
 import useUser from "../../lib/useUser";
-import MainBody from "../../components/MainBody";
 import Users from "../../db/repos/Users";
 import TwitItem from "../../components/TwitItem";
 import TwitTab from "../../components/TwitTab";
 import TwitTabs from "../../components/TwitTabs";
-import TwitButton from "../../components/TwitButton";
-import Avatar from "../../components/Avatar";
 import Post from "../../components/Post";
 import Empty from "../../components/Empty";
 import {
@@ -43,6 +40,9 @@ function User(props) {
   const [posts, setPosts] = useState(null);
   const [mediaPosts, setMediaPosts] = useState(null);
   const [likedPosts, setLikedPosts] = useState(null);
+  const postsLoaderRef = useRef(null);
+  const mediaPostsLoaderRef = useRef(null);
+  const likedPostsLoaderRef = useRef(null);
 
   const getUser = async (url) => {
     const response = await backend.get(url, {
@@ -59,43 +59,30 @@ function User(props) {
     { initialData: props.userData, revalidateOnMount: true }
   );
 
-  const postsLoaderRef = useCallback(
-    (ref) => {
-      if (ref !== null) {
-        ref.resetLoadMoreRowsCache();
-        setPosts(null);
-      }
-    },
-    [query.username]
-  );
+  useEffect(() => {
+    setPosts(null);
+    setMediaPosts(null);
+    setLikedPosts(null);
 
-  const mediaPostsLoaderRef = useCallback(
-    (ref) => {
-      if (ref !== null) {
-        ref.resetLoadMoreRowsCache();
-        setMediaPosts(null);
-      }
-    },
-    [query.username]
-  );
+    setTab("posts");
 
-  const likedPostsLoaderRef = useCallback(
-    (ref) => {
-      if (ref !== null) {
-        ref.resetLoadMoreRowsCache();
-        setLikedPosts(null);
+    return () => {
+      console.log("cleanup");
+      if (postsLoaderRef.current) {
+        postsLoaderRef.current.resetLoadMoreRowsCache();
       }
-    },
-    [query.username]
-  );
+      if (mediaPostsLoaderRef.current) {
+        mediaPostsLoaderRef.current.resetLoadMoreRowsCache();
+      }
+      if (likedPostsLoaderRef.current) {
+        likedPostsLoaderRef.current.resetLoadMoreRowsCache();
+      }
+    };
+  }, [query.username]);
 
   useEffect(() => {
     getSuggestedUsers();
   }, []);
-
-  useEffect(() => {
-    setTab("posts");
-  }, [query.username]);
 
   const getSuggestedUsers = async () => {
     const users = await backend.get("/api/users/suggested", {
@@ -143,82 +130,72 @@ function User(props) {
   };
 
   const renderEmpty = () => {
-    return <Empty main="No posts" sub="This use hasn't posted yet" />;
+    return (
+      <Empty main="No posts" sub={`@${query.username} hasn't posted yet`} />
+    );
   };
 
   const renderContent = () => {
     switch (tab) {
       case "posts":
-        if (isReady) {
-          return (
-            <InfiniteList
-              getDataFromServer={(startIndex, stopIndex) =>
-                fetchPostsByUsername({
-                  username: query.username,
-                  userId: user.id,
-                  startIndex,
-                  stopIndex,
-                })
-              }
-              list={posts}
-              updateList={(posts) => setPosts(posts)}
-              infiniteLoaderRef={postsLoaderRef}
-              empty={renderEmpty()}
-            >
-              <Post user={user} />
-            </InfiniteList>
-          );
-        } else {
-          return null;
-        }
+        return (
+          <InfiniteList
+            getDataFromServer={(startIndex, stopIndex) =>
+              fetchPostsByUsername({
+                username: query.username,
+                userId: user.id,
+                startIndex,
+                stopIndex,
+              })
+            }
+            list={posts}
+            updateList={(posts) => setPosts(posts)}
+            infiniteLoaderRef={postsLoaderRef}
+            empty={renderEmpty()}
+          >
+            <Post user={user} />
+          </InfiniteList>
+        );
 
       case "media":
-        if (isReady) {
-          return (
-            <InfiniteList
-              getDataFromServer={(startIndex, stopIndex) =>
-                fetchMediaPostsByUsername({
-                  username: query.username,
-                  userId: user.id,
-                  startIndex,
-                  stopIndex,
-                })
-              }
-              list={mediaPosts}
-              updateList={(mediaPosts) => setMediaPosts(mediaPosts)}
-              infiniteLoaderRef={mediaPostsLoaderRef}
-              empty={renderEmpty()}
-            >
-              <Post user={user} />
-            </InfiniteList>
-          );
-        } else {
-          return null;
-        }
+        return (
+          <InfiniteList
+            getDataFromServer={(startIndex, stopIndex) =>
+              fetchMediaPostsByUsername({
+                username: query.username,
+                userId: user.id,
+                startIndex,
+                stopIndex,
+              })
+            }
+            list={mediaPosts}
+            updateList={(mediaPosts) => setMediaPosts(mediaPosts)}
+            infiniteLoaderRef={mediaPostsLoaderRef}
+            empty={renderEmpty()}
+          >
+            <Post user={user} />
+          </InfiniteList>
+        );
 
       case "likes":
-        if (isReady) {
-          return (
-            <InfiniteList
-              getDataFromServer={(startIndex, stopIndex) =>
-                fetchLikedPostsByUsername({
-                  username: query.username,
-                  userId: user.id,
-                  startIndex,
-                  stopIndex,
-                })
-              }
-              list={likedPosts}
-              updateList={(likedPosts) => setLikedPosts(likedPosts)}
-              infiniteLoaderRef={likedPostsLoaderRef}
-              empty={renderEmpty()}
-            >
-              <Post user={user} />
-            </InfiniteList>
-          );
-        } else {
-          return null;
-        }
+        return (
+          <InfiniteList
+            getDataFromServer={(startIndex, stopIndex) =>
+              fetchLikedPostsByUsername({
+                username: query.username,
+                userId: user.id,
+                startIndex,
+                stopIndex,
+              })
+            }
+            list={likedPosts}
+            updateList={(likedPosts) => setLikedPosts(likedPosts)}
+            infiniteLoaderRef={likedPostsLoaderRef}
+            empty={renderEmpty()}
+          >
+            <Post user={user} />
+          </InfiniteList>
+        );
 
       default:
         return null;

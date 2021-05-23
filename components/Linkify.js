@@ -22,7 +22,7 @@ function Linkify({ string, user, hasTwitLinks }) {
       );
     } else {
       return (
-        <Link passHref href={`/teams/${match}`}>
+        <Link key={match + i} passHref href={`/teams/${match}`}>
           <a className="twit-link">{`$${match}`}</a>
         </Link>
       );
@@ -47,7 +47,7 @@ function Linkify({ string, user, hasTwitLinks }) {
         );
       } else {
         return (
-          <Link passHref href={`/users/${match}`}>
+          <Link key={match + i} passHref href={`/users/${match}`}>
             <a className="twit-link">{`@${match}`}</a>
           </Link>
         );

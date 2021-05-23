@@ -683,3 +683,8 @@ export const addPlayerToRoster = async ({ teamId, userId }) => {
     userId,
   });
 };
+
+export const fetchRoster = async (abbrev) => {
+  const roster = await backend.get(`/api/teams/${abbrev}/rosters`);
+  return roster.data;
+};

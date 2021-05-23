@@ -13,7 +13,6 @@ import {
   fetchTeam,
   fetchUserByUsername,
 } from "../actions";
-import useUser from "../lib/useUser";
 import postStyle from "../sass/components/Post.module.scss";
 import { truncate } from "../lib/twit-helpers";
 import Avatar from "./Avatar";
@@ -34,6 +33,7 @@ function Post({
   trackClickedPost,
   togglePopupReply,
   listItem: post,
+  style,
   user,
 }) {
   if (!post) {
@@ -203,6 +203,7 @@ function Post({
 
   return (
     <div
+      style={style}
       onClick={onPostClick}
       className={`${postStyle["post"]} ${
         history ? postStyle["post--history"] : null

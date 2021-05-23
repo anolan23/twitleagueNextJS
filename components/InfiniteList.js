@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
 import List from "react-virtualized/dist/commonjs/List";
 import AutoSizer from "react-virtualized/dist/commonjs/AutoSizer";
@@ -18,12 +18,26 @@ function InfiniteList({
   empty,
 }) {
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
+  // let listRef = useRef(null);
   let hasNextPage = true;
 
   const cache = new CellMeasurerCache({
-    defaultHeight: 100,
     fixedWidth: true,
   });
+
+  // useLayoutEffect(() => {
+  //   window.addEventListener("resize", updateRowHeight);
+  //   return () => window.removeEventListener("resize", updateRowHeight);
+  // }, []);
+
+  // const updateRowHeight = () => {
+  //   console.log("resize");
+  //   if (listRef) {
+  //     console.log("recompute");
+  //     console.log(listRef);
+  //     listRef.recomputeRowHeights();
+  //   }
+  // };
 
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
@@ -70,7 +84,9 @@ function InfiniteList({
           rowIndex={index}
         >
           <div style={style}>
-            {React.cloneElement(children, { listItem: list[index] })}
+            {React.cloneElement(children, {
+              listItem: list[index],
+            })}
           </div>
         </CellMeasurer>
       );
@@ -80,8 +96,6 @@ function InfiniteList({
   function noRowsRenderer() {
     return <React.Fragment>{empty}</React.Fragment>;
   }
-
-  console.log("isNextPageLoading", isNextPageLoading);
 
   return (
     <InfiniteLoader
@@ -103,7 +117,9 @@ function InfiniteList({
                   onScroll={onChildScroll}
                   deferredMeasurementCache={cache}
                   onRowsRendered={onRowsRendered}
-                  ref={registerChild}
+                  ref={(ref) => {
+                    registerChild(ref);
+                  }}
                   rowCount={rowCount()}
                   rowHeight={cache.rowHeight}
                   rowRenderer={rowRenderer}

@@ -18,7 +18,7 @@ import InfiniteList from "../components/InfiniteList";
 
 function HomePage() {
   const { user } = useUser({ redirectTo: "/" });
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(null);
 
   const onPostSubmit = async (values) => {
     const post = await createPost(values, user.id);
@@ -53,7 +53,7 @@ function HomePage() {
               list={posts}
               updateList={(posts) => setPosts(posts)}
             >
-              <Post />
+              <Post user={user} />
             </InfiniteList>
           </div>
         </main>
