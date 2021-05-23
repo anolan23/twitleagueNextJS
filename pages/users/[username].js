@@ -37,13 +37,12 @@ import RightColumn from "../../components/RightColumn";
 
 function User(props) {
   const { user } = useUser();
-  const router = useRouter();
-  const { username } = router.query;
+  const { query, isReady, isFallback } = useRouter();
   const [tab, setTab] = useState("posts");
   const [users, setUsers] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [mediaPosts, setMediaPosts] = useState([]);
-  const [likedPosts, setLikedPosts] = useState([]);
+  const [posts, setPosts] = useState(null);
+  const [mediaPosts, setMediaPosts] = useState(null);
+  const [likedPosts, setLikedPosts] = useState(null);
 
   const getUser = async (url) => {
     const response = await backend.get(url, {
@@ -54,47 +53,49 @@ function User(props) {
     return response.data;
   };
 
-  const { data: userProfile } = useSWR(
-    props.userProfile && user
-      ? `/api/users/${props.userProfile.username}`
-      : null,
+  const { data: userData } = useSWR(
+    props.userData && user ? `/api/users/${props.userData.username}` : null,
     getUser,
-    { initialData: props.userProfile, revalidateOnMount: true }
+    { initialData: props.userData, revalidateOnMount: true }
   );
 
   const postsLoaderRef = useCallback(
     (ref) => {
       if (ref !== null) {
         ref.resetLoadMoreRowsCache();
-        setPosts([]);
+        setPosts(null);
       }
     },
-    [userProfile]
+    [query.username]
   );
 
   const mediaPostsLoaderRef = useCallback(
     (ref) => {
       if (ref !== null) {
         ref.resetLoadMoreRowsCache();
-        setMediaPosts([]);
+        setMediaPosts(null);
       }
     },
-    [userProfile]
+    [query.username]
   );
 
   const likedPostsLoaderRef = useCallback(
     (ref) => {
       if (ref !== null) {
         ref.resetLoadMoreRowsCache();
-        setLikedPosts([]);
+        setLikedPosts(null);
       }
     },
-    [userProfile]
+    [query.username]
   );
 
   useEffect(() => {
     getSuggestedUsers();
   }, []);
+
+  useEffect(() => {
+    setTab("posts");
+  }, [query.username]);
 
   const getSuggestedUsers = async () => {
     const users = await backend.get("/api/users/suggested", {
@@ -148,12 +149,12 @@ function User(props) {
   const renderContent = () => {
     switch (tab) {
       case "posts":
-        if (router.isReady) {
+        if (isReady) {
           return (
             <InfiniteList
               getDataFromServer={(startIndex, stopIndex) =>
                 fetchPostsByUsername({
-                  username,
+                  username: query.username,
                   userId: user.id,
                   startIndex,
                   stopIndex,
@@ -164,7 +165,7 @@ function User(props) {
               infiniteLoaderRef={postsLoaderRef}
               empty={renderEmpty()}
             >
-              <Post />
+              <Post user={user} />
             </InfiniteList>
           );
         } else {
@@ -172,12 +173,12 @@ function User(props) {
         }
 
       case "media":
-        if (router.isReady) {
+        if (isReady) {
           return (
             <InfiniteList
               getDataFromServer={(startIndex, stopIndex) =>
                 fetchMediaPostsByUsername({
-                  username,
+                  username: query.username,
                   userId: user.id,
                   startIndex,
                   stopIndex,
@@ -188,7 +189,7 @@ function User(props) {
               infiniteLoaderRef={mediaPostsLoaderRef}
               empty={renderEmpty()}
             >
-              <Post />
+              <Post user={user} />
             </InfiniteList>
           );
         } else {
@@ -196,12 +197,12 @@ function User(props) {
         }
 
       case "likes":
-        if (router.isReady) {
+        if (isReady) {
           return (
             <InfiniteList
               getDataFromServer={(startIndex, stopIndex) =>
                 fetchLikedPostsByUsername({
-                  username,
+                  username: query.username,
                   userId: user.id,
                   startIndex,
                   stopIndex,
@@ -212,7 +213,7 @@ function User(props) {
               infiniteLoaderRef={likedPostsLoaderRef}
               empty={renderEmpty()}
             >
-              <Post />
+              <Post user={user} />
             </InfiniteList>
           );
         } else {
@@ -224,7 +225,7 @@ function User(props) {
     }
   };
 
-  if (router.isFallback) {
+  if (isFallback) {
     return <div>Loading...</div>;
   }
 
@@ -236,8 +237,8 @@ function User(props) {
         </header>
         <main className="main">
           <div className={userStyle["user"]}>
-            <TopBar main={userProfile.username} />
-            <UserProfile user={userProfile} />
+            <TopBar main={userData.username} />
+            <UserProfile user={userData} />
             <TwitTabs>
               <TwitTab
                 onClick={onPostsSelect}
@@ -282,13 +283,13 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const { username } = context.params;
-  let userProfile = await Users.findOne(username, null);
-  userProfile = JSON.parse(JSON.stringify(userProfile));
+  let userData = await Users.findOne(username, null);
+  userData = JSON.parse(JSON.stringify(userData));
 
   return {
     revalidate: 1,
     props: {
-      userProfile,
+      userData,
     },
   };
 }

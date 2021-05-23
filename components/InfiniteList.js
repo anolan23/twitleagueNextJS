@@ -17,8 +17,9 @@ function InfiniteList({
   updateList,
   empty,
 }) {
-  let isNextPageLoading;
+  const [isNextPageLoading, setIsNextPageLoading] = useState(false);
   let hasNextPage = true;
+
   const cache = new CellMeasurerCache({
     defaultHeight: 100,
     fixedWidth: true,
@@ -30,37 +31,57 @@ function InfiniteList({
 
   // // Every row is loaded except for our loading indicator row.
   const isRowLoaded = ({ index }) => {
-    return !hasNextPage || index < list.length;
+    if (!list) {
+      return false;
+    } else {
+      return !hasNextPage || index < list.length;
+    }
   };
 
   async function loadNextPage({ startIndex, stopIndex }) {
-    isNextPageLoading = true;
+    setIsNextPageLoading(true);
     const rows = await getDataFromServer(startIndex, stopIndex);
-    const newList = list.concat(rows);
-    cache.clearAll();
-    updateList(newList);
-    isNextPageLoading = false;
+    if (!list) {
+      updateList(rows);
+    } else {
+      const newList = list.concat(rows);
+      cache.clearAll();
+      updateList(newList);
+    }
+    setIsNextPageLoading(false);
   }
 
+  const rowCount = () => (!list ? 1 : list.length);
+
   function rowRenderer({ key, index, style, parent }) {
-    return (
-      <CellMeasurer
-        cache={cache}
-        columnIndex={0}
-        key={key}
-        parent={parent}
-        rowIndex={index}
-      >
-        <div style={style}>
-          {React.cloneElement(children, { listItem: list[index] })}
+    if (!list) {
+      return (
+        <div key={key} style={style}>
+          Spinner...
         </div>
-      </CellMeasurer>
-    );
+      );
+    } else {
+      return (
+        <CellMeasurer
+          cache={cache}
+          columnIndex={0}
+          key={key}
+          parent={parent}
+          rowIndex={index}
+        >
+          <div style={style}>
+            {React.cloneElement(children, { listItem: list[index] })}
+          </div>
+        </CellMeasurer>
+      );
+    }
   }
 
   function noRowsRenderer() {
     return <React.Fragment>{empty}</React.Fragment>;
   }
+
+  console.log("isNextPageLoading", isNextPageLoading);
 
   return (
     <InfiniteLoader
@@ -83,7 +104,7 @@ function InfiniteList({
                   deferredMeasurementCache={cache}
                   onRowsRendered={onRowsRendered}
                   ref={registerChild}
-                  rowCount={list.length}
+                  rowCount={rowCount()}
                   rowHeight={cache.rowHeight}
                   rowRenderer={rowRenderer}
                   scrollTop={scrollTop}

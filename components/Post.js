@@ -29,11 +29,16 @@ import TwitLink from "./TwitLink";
 import ScoutButton from "./ScoutButton";
 import Linkify from "./Linkify";
 
-function Post({ history, trackClickedPost, togglePopupReply, listItem: post }) {
+function Post({
+  history,
+  trackClickedPost,
+  togglePopupReply,
+  listItem: post,
+  user,
+}) {
   if (!post) {
     return null;
   }
-  const { user } = useUser();
   const router = useRouter();
   const ref = useRef();
   const [showPost, setShowPost] = useState(true);
