@@ -10,6 +10,7 @@ import TopBar from "../components/TopBar";
 import TwitItem from "../components/TwitItem";
 import Empty from "../components/Empty";
 import useUser from "../lib/useUser";
+import TwitSpinner from "../components/TwitSpinner";
 
 function MyTeams() {
   const { user } = useUser({ redirectTo: "/" });
@@ -53,7 +54,7 @@ function MyTeams() {
   };
 
   if (!user || !user.isSignedIn) {
-    return <div>loading...</div>;
+    return <TwitSpinner />;
   }
 
   return (

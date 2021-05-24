@@ -13,6 +13,7 @@ import {
 import updateScorePopup from "../../sass/components/UpdateScorePopup.module.scss";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
+import TwitSpinner from "../TwitSpinner";
 
 function UpdateScorePopup(props) {
   const { _event } = props;
@@ -57,7 +58,7 @@ function UpdateScorePopup(props) {
 
   const renderBody = () => {
     if (_event === null) {
-      return <div>Loading...</div>;
+      return <TwitSpinner />;
     } else {
       return (
         <form

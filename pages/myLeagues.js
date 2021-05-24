@@ -9,6 +9,7 @@ import TwitButton from "../components/TwitButton";
 import TopBar from "../components/TopBar";
 import TwitItem from "../components/TwitItem";
 import Empty from "../components/Empty";
+import TwitSpinner from "../components/TwitSpinner";
 
 function MyLeagues() {
   const { user } = useUser({ redirectTo: "/" });
@@ -53,7 +54,7 @@ function MyLeagues() {
   };
 
   if (!user || !user.isSignedIn) {
-    return <div>loading...</div>;
+    return <TwitSpinner />;
   }
 
   return (

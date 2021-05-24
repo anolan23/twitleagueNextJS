@@ -5,6 +5,7 @@ import infogram from "../sass/components/Infogram.module.scss";
 import Avatar from "./Avatar";
 import Count from "./Count";
 import Linkify from "./Linkify";
+import TwitSpinner from "./TwitSpinner";
 
 function Infogram({ action, info, href }) {
   const router = useRouter();
@@ -29,7 +30,7 @@ function Infogram({ action, info, href }) {
   if (!info) {
     return (
       <dialog className={infogram["infogram"]} open>
-        <div>Loading...</div>
+        <TwitSpinner />
       </dialog>
     );
   } else {

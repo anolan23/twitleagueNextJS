@@ -36,6 +36,7 @@ import RightColumn from "../../components/RightColumn";
 import StandingsCard from "../../components/StandingsCard";
 import Teams from "../../db/repos/Teams";
 import EditTeamPopup from "../../components/modals/EditTeamPopup";
+import TwitSpinner from "../../components/TwitSpinner";
 
 function Team(props) {
   const { query, isFallback } = useRouter();
@@ -284,7 +285,7 @@ function Team(props) {
   };
 
   if (isFallback) {
-    return <div>Loading...</div>;
+    return <TwitSpinner/>;
   }
 
   return (

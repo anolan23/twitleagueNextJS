@@ -25,6 +25,7 @@ import Empty from "../../components/Empty";
 import Post from "../../components/Post";
 import backend from "../../lib/backend";
 import Like from "../../components/Like";
+import TwitSpinner from "../../components/TwitSpinner";
 
 function EventsPage(props) {
   const { user } = useUser();
@@ -88,7 +89,7 @@ function EventsPage(props) {
 
   const renderEvent = () => {
     if (event === null) {
-      return <div>Loading...</div>;
+      return <TwitSpinner />;
     } else if (event.length === 0) {
       return null;
     } else {

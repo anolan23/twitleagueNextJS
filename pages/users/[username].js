@@ -31,6 +31,7 @@ import WhatsHappening from "../../components/WhatsHappening";
 import SuggestedTeams from "../../components/SuggestedTeams";
 import LeftColumn from "../../components/LeftColumn";
 import RightColumn from "../../components/RightColumn";
+import TwitSpinner from "../../components/TwitSpinner";
 
 function User(props) {
   const { user } = useUser();
@@ -110,7 +111,7 @@ function User(props) {
 
   const renderUsers = () => {
     if (users === null) {
-      return <div>Loading...</div>;
+      return <TwitSpinner/>;
     } else if (users.length === 0) {
       return <Empty main="No Users" sub="There are no users to scout" />;
     } else {
