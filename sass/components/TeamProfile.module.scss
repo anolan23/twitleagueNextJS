@@ -62,6 +62,7 @@
     display: grid;
     row-gap: 1.2rem;
     line-height: 1;
+    justify-items: flex-start;
 
     &__name {
       display: flex;
@@ -83,6 +84,34 @@
     &__record {
       font-size: 3rem;
       font-weight: 900;
+
+      &__title {
+        background-color: var(--color-primary);
+        padding: 5px 1.5rem;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        justify-content: center;
+      }
+
+      &__footer {
+        padding: 0 1rem 1rem 1rem;
+        color: var(--color-text-secondary);
+        font-size: 1.3rem;
+        font-weight: 400;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      &__record {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+        font-weight: 700;
+        font-size: 1.9rem;
+      }
     }
   }
 

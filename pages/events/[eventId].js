@@ -167,7 +167,7 @@ function EventsPage(props) {
 
   const renderPosts = () => {
     if (posts === null) {
-      return <div>spinner</div>;
+      return <TwitSpinner />;
     } else if (posts.length === 0) {
       return (
         <Empty main="No posts" sub="Be the first to post about this event" />

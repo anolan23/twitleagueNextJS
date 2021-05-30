@@ -9,6 +9,7 @@ import TwitItem from "./TwitItem";
 import backend from "../lib/backend";
 import Empty from "./Empty";
 import ScoutItem from "./ScoutItem";
+import TwitSpinner from "./TwitSpinner";
 
 function SuggestedUsers(props) {
   const { user } = useUser();
@@ -45,7 +46,7 @@ function SuggestedUsers(props) {
 
   const renderSuggestedUsers = () => {
     if (!users) {
-      return <div className="">spinner</div>;
+      return <TwitSpinner />;
     } else if (users.length === 0) {
       return (
         <Empty

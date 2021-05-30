@@ -23,6 +23,7 @@ function InfiniteList({
   let hasNextPage = true;
 
   const cache = new CellMeasurerCache({
+    defaultHeight: 100,
     fixedWidth: true,
   });
 
@@ -70,11 +71,7 @@ function InfiniteList({
 
   function rowRenderer({ key, index, style, parent }) {
     if (!list) {
-      return (
-        <div key={key} style={style}>
-          <TwitSpinner />
-        </div>
-      );
+      return <TwitSpinner key={key} style={style} />;
     } else {
       return (
         <CellMeasurer

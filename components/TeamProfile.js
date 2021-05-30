@@ -25,10 +25,16 @@ import TwitDropdownButton from "./TwitDropdownButton";
 import TwitDropdownItem from "./TwitDropdownItem";
 import Prompt from "./modals/Prompt";
 import Linkify from "./Linkify";
+import TwitCard from "./TwitCard";
 
-function TeamProfile(props) {
+function TeamProfile({ team, onAvatarClick }) {
   const { user } = useUser();
-  const team = props.team;
+  const current_season_wins = team.current_season_wins
+    ? team.current_season_wins
+    : 0;
+  const current_season_losses = team.current_season_losses
+    ? team.current_season_losses
+    : 0;
   const router = useRouter();
   const [showRequestToJoin, setShowRequestToJoin] = useState(false);
 
@@ -46,11 +52,7 @@ function TeamProfile(props) {
       return null;
     } else if (user.id === team.owner_id) {
       return (
-        <TwitButton
-          onClick={props.onAvatarClick}
-          color="primary"
-          outline="primary"
-        >
+        <TwitButton onClick={onAvatarClick} color="primary" outline="primary">
           Edit profile
         </TwitButton>
       );
@@ -101,20 +103,27 @@ function TeamProfile(props) {
   };
 
   const renderRecord = () => {
-    const { current_season_wins, current_season_losses } = team;
-    if (current_season_wins !== null && current_season_losses !== null)
-      return (
-        <span
-          className={teamProfile["team-profile__info__record"]}
-        >{`${team.current_season_wins} - ${team.current_season_losses}`}</span>
-      );
-    else {
-      return (
-        <span className={teamProfile["team-profile__info__record"]}>
-          {"0 - 0"}
-        </span>
-      );
-    }
+    return (
+      <div className={teamProfile["team-profile__info__record"]}>
+        <TwitCard
+          title={
+            <div className={teamProfile["team-profile__info__record__title"]}>
+              2021 Season - 14
+            </div>
+          }
+          color="clear"
+          footer={
+            <div className={teamProfile["team-profile__info__record__footer"]}>
+              3rd place in NFC North
+            </div>
+          }
+        >
+          <div
+            className={teamProfile["team-profile__info__record__record"]}
+          >{`${current_season_wins} - ${current_season_losses} - 0 (W - L - T)`}</div>
+        </TwitCard>
+      </div>
+    );
   };
 
   return (
@@ -122,7 +131,7 @@ function TeamProfile(props) {
       <Profile
         banner={team.banner}
         avatar={team.avatar}
-        onAvatarClick={props.onAvatarClick}
+        onAvatarClick={onAvatarClick}
         action={renderButton()}
       >
         <div className={teamProfile["team-profile__info"]}>
@@ -137,7 +146,6 @@ function TeamProfile(props) {
               ></i>
             ) : null}
           </div>
-          {renderRecord()}
           <div className={teamProfile["team-profile__info__name"]}>
             <h3
               className={teamProfile["team-profile__info__name__league"]}
@@ -145,6 +153,7 @@ function TeamProfile(props) {
             &nbsp;
             {renderLeagueName()}
           </div>
+          {renderRecord()}
           {team.bio ? (
             <div className={teamProfile["team-profile__info__bio"] + " muted"}>
               <Linkify string={team.bio} user={user} hasTwitLinks />

@@ -31,7 +31,7 @@ function MyTeams() {
 
   const renderTeams = () => {
     if (teams === null) {
-      return <div>Loading teams</div>;
+      return <TwitSpinner />;
     } else if (teams.length === 0) {
       return (
         <Empty main="No teams" sub="The teams that you create will go here" />

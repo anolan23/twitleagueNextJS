@@ -37,6 +37,7 @@ import StandingsCard from "../../components/StandingsCard";
 import Teams from "../../db/repos/Teams";
 import EditTeamPopup from "../../components/modals/EditTeamPopup";
 import TwitSpinner from "../../components/TwitSpinner";
+import TwitDate from "../../lib/twit-date";
 
 function Team(props) {
   const { query, isFallback } = useRouter();
@@ -103,13 +104,6 @@ function Team(props) {
 
   const fetchSeasons = async () => {
     let seasons = await findSeasonsByLeagueName(team.league_name);
-    seasons.map((season, index) => {
-      if (season.id === team.season_id) {
-        season.text = `Current season - ${season.text}`;
-      } else {
-        season.text = `Season ${index + 1} - ${season.text}`;
-      }
-    });
     setSeasons(seasons);
   };
 
@@ -175,7 +169,7 @@ function Team(props) {
       }
     } else if (tab === "schedule") {
       if (!events) {
-        return <div className="">spinner</div>;
+        return <TwitSpinner />;
       } else if (events.length === 0) {
         if (user.id === team.owner_id) {
           return (
@@ -237,14 +231,24 @@ function Team(props) {
   };
 
   const renderTwitSelect = () => {
+    const options = seasons.map((_season) => {
+      return {
+        ..._season,
+        text: `${TwitDate.getYear(season.created_at)} Season - ${
+          _season.season
+        }`,
+      };
+    });
     if (!season) {
       return null;
     } else {
       return (
         <TwitSelect
           onSelect={fetchEventsBySeasonId}
-          options={seasons}
-          defaultValue={season.text}
+          options={options}
+          defaultValue={`${TwitDate.getYear(season.created_at)} Season - ${
+            season.season
+          }`}
         />
       );
     }
@@ -285,7 +289,7 @@ function Team(props) {
   };
 
   if (isFallback) {
-    return <TwitSpinner/>;
+    return <TwitSpinner />;
   }
 
   return (

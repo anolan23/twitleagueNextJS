@@ -111,7 +111,7 @@ function User(props) {
 
   const renderUsers = () => {
     if (users === null) {
-      return <TwitSpinner/>;
+      return <TwitSpinner />;
     } else if (users.length === 0) {
       return <Empty main="No Users" sub="There are no users to scout" />;
     } else {
@@ -137,6 +137,8 @@ function User(props) {
   };
 
   const renderContent = () => {
+    console.log("rendering tab:", tab);
+
     switch (tab) {
       case "posts":
         return (
@@ -220,19 +222,19 @@ function User(props) {
             <TwitTabs>
               <TwitTab
                 onClick={onPostsSelect}
-                id={"posts"}
+                id="posts"
                 active={tab === "posts" ? true : false}
                 title="Posts"
               />
               <TwitTab
                 onClick={onMediaSelect}
-                id={"media"}
+                id="media"
                 active={tab === "media" ? true : false}
                 title="Media"
               />
               <TwitTab
                 onClick={onLikesSelect}
-                id={"likes"}
+                id="likes"
                 active={tab === "likes" ? true : false}
                 title="Likes"
               />

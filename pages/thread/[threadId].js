@@ -13,6 +13,7 @@ import ActivePost from "../../components/ActivePost";
 import Divide from "../../components/Divide";
 import useUser from "../../lib/useUser";
 import useSWR from "swr";
+import TwitSpinner from "../../components/TwitSpinner";
 
 function ThreadPage(props) {
   const { user } = useUser();
@@ -61,7 +62,7 @@ function ThreadPage(props) {
 
   const renderReplies = () => {
     if (replies === null || replies === undefined) {
-      return <div>spinner</div>;
+      return <TwitSpinner />;
     } else if (replies.length === 0) {
       return null;
     } else {

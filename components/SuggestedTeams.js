@@ -10,6 +10,7 @@ import backend from "../lib/backend";
 import { followTeam, unFollow } from "../actions";
 import Empty from "./Empty";
 import FollowItem from "./FollowItem";
+import TwitSpinner from "./TwitSpinner";
 
 function SuggestedTeams(props) {
   const { user } = useUser();
@@ -45,7 +46,7 @@ function SuggestedTeams(props) {
 
   const renderSuggestedTeams = () => {
     if (!teams) {
-      return <div className="">spinner</div>;
+      return <TwitSpinner />;
     } else if (teams.length === 0) {
       return (
         <Empty
