@@ -26,15 +26,36 @@ import TwitDropdownItem from "./TwitDropdownItem";
 import Prompt from "./modals/Prompt";
 import Linkify from "./Linkify";
 import TwitCard from "./TwitCard";
+import TwitDate from "../lib/twit-date";
+import { numberSuffix } from "../lib/twit-helpers";
 
-function TeamProfile({ team, onAvatarClick }) {
+function TeamProfile({ team, currentSeason, standings, onAvatarClick }) {
   const { user } = useUser();
-  const current_season_wins = team.current_season_wins
-    ? team.current_season_wins
+  let foundTeam;
+  let division;
+
+  standings.forEach((element) => {
+    let found = element.division.teams.find(
+      (foundTeam) => foundTeam.id === team.id
+    );
+    if (found) {
+      division = element.division;
+      foundTeam = found;
+    }
+  });
+  const total_games = foundTeam
+    ? foundTeam.total_games
+      ? foundTeam.total_games
+      : 0
     : 0;
-  const current_season_losses = team.current_season_losses
-    ? team.current_season_losses
-    : 0;
+
+  const wins = foundTeam ? (foundTeam.wins ? foundTeam.wins : 0) : 0;
+  const losses = foundTeam ? (foundTeam.losses ? foundTeam.losses : 0) : 0;
+  const ties = total_games - wins - losses;
+
+  const place = foundTeam ? foundTeam.place : null;
+  const division_name = division ? division.division_name : null;
+
   const router = useRouter();
   const [showRequestToJoin, setShowRequestToJoin] = useState(false);
 
@@ -87,43 +108,53 @@ function TeamProfile({ team, onAvatarClick }) {
   };
 
   const renderLeagueName = () => {
-    return (
-      <Link href={`/leagues/${team.league_name}`} passHref>
-        <a className="twit-link">{team.league_name}</a>
-      </Link>
-    );
-  };
-
-  const renderHeadCoach = () => {
-    return (
-      <Link href={`/users/${team.owner}`} passHref>
-        <a className="twit-link">{`@${team.owner}`}</a>
-      </Link>
-    );
+    if (team.league_name) {
+      return (
+        <React.Fragment>
+          &nbsp;·&nbsp;
+          <Link href={`/leagues/${team.league_name}`} passHref>
+            <a className="twit-link">{team.league_name}</a>
+          </Link>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          &nbsp;·&nbsp;
+          <span className={teamProfile["team-profile__info__null-league"]}>
+            No league affiliation
+          </span>
+        </React.Fragment>
+      );
+    }
   };
 
   const renderRecord = () => {
-    return (
-      <div className={teamProfile["team-profile__info__record"]}>
-        <TwitCard
-          title={
-            <div className={teamProfile["team-profile__info__record__title"]}>
-              2021 Season - 14
-            </div>
-          }
-          color="clear"
-          footer={
-            <div className={teamProfile["team-profile__info__record__footer"]}>
-              3rd place in NFC North
-            </div>
-          }
-        >
-          <div
-            className={teamProfile["team-profile__info__record__record"]}
-          >{`${current_season_wins} - ${current_season_losses} - 0 (W - L - T)`}</div>
-        </TwitCard>
-      </div>
-    );
+    if (currentSeason) {
+      return (
+        <React.Fragment>
+          <div className={teamProfile["team-profile__info__season"]}>
+            {currentSeason
+              ? `${TwitDate.getYear(currentSeason.created_at)} Season - ${
+                  currentSeason.season
+                }`
+              : null}
+          </div>
+          <div className={teamProfile["team-profile__info__record"]}>
+            {`${wins} - ${losses} - ${ties} (W - L - T)`}
+          </div>
+          <div className={teamProfile["team-profile__info__place"]}>
+            {`${numberSuffix(place)} place in ${division_name}`}
+          </div>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <div className={teamProfile["team-profile__info__season--null"]}>
+          Offseason
+        </div>
+      );
+    }
   };
 
   return (
@@ -138,19 +169,14 @@ function TeamProfile({ team, onAvatarClick }) {
           <div
             className={`${teamProfile["team-profile__teamname-box"]} u-margin-top-tiny`}
           >
-            <h1 className="heading-1">{team.team_name}</h1>
-            {team.verifiedTeam ? (
-              <i
-                style={{ color: "var(--color-primary)", marginLeft: "5px" }}
-                className="fas fa-check-circle"
-              ></i>
-            ) : null}
+            <h1
+              className={teamProfile["team-profile__info__abbrev"]}
+            >{`${team.abbrev.substring(1)}`}</h1>
           </div>
           <div className={teamProfile["team-profile__info__name"]}>
-            <h3
+            <div
               className={teamProfile["team-profile__info__name__league"]}
-            >{`${team.abbrev} · `}</h3>
-            &nbsp;
+            >{`${team.city} ${team.team_name}`}</div>
             {renderLeagueName()}
           </div>
           {renderRecord()}
@@ -159,13 +185,6 @@ function TeamProfile({ team, onAvatarClick }) {
               <Linkify string={team.bio} user={user} hasTwitLinks />
             </div>
           ) : null}
-          <div className={teamProfile["team-profile__info__name"]}>
-            <span className={teamProfile["team-profile__info__name__league"]}>
-              Team manager:{" "}
-            </span>
-            &nbsp;
-            {renderHeadCoach()}
-          </div>
           <div className={teamProfile["team-profile__attributes"]}>
             <Attribute
               icon={"/sprites.svg#icon-map-pin"}
@@ -177,8 +196,9 @@ function TeamProfile({ team, onAvatarClick }) {
             />
           </div>
           <div className={teamProfile["team-profile__counts"]}>
-            <Count href="/" value={team.followers} text="Followers" />
+            <Count href="/" value={team.players} text="Coaches" />
             <Count href="/" value={team.players} text="Players" />
+            <Count href="/" value={team.followers} text="Followers" />
           </div>
         </div>
       </Profile>

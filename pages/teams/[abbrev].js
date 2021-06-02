@@ -35,6 +35,8 @@ import LeftColumn from "../../components/LeftColumn";
 import RightColumn from "../../components/RightColumn";
 import StandingsCard from "../../components/StandingsCard";
 import Teams from "../../db/repos/Teams";
+import Leagues from "../../db/repos/Leagues";
+import Seasons from "../../db/repos/Seasons";
 import EditTeamPopup from "../../components/modals/EditTeamPopup";
 import TwitSpinner from "../../components/TwitSpinner";
 import TwitDate from "../../lib/twit-date";
@@ -47,8 +49,8 @@ function Team(props) {
   const [tab, setTab] = useState("team");
   const [roster, setRoster] = useState(null);
   const [events, setEvents] = useState(null);
-  const [seasons, setSeasons] = useState(null);
-  const [season, setSeason] = useState(null);
+  const [selectedSeason, setSelectedSeason] = useState(null);
+  const [currentSeason, setCurrentSeason] = useState(null);
   const [posts, setPosts] = useState(null);
   const [showEditTeamPopup, setShowEditTeamPopup] = useState(false);
 
@@ -64,10 +66,27 @@ function Team(props) {
     return response.data;
   };
 
+  const fetcher = async (url) => {
+    const standings = await backend.get(url);
+    return standings.data;
+  };
+
   const { data: team } = useSWR(
     props.team && user ? `/api/teams/${props.team.abbrev.substring(1)}` : null,
     getTeam,
     { initialData: props.team, revalidateOnMount: true }
+  );
+
+  const { data: standings } = useSWR(
+    props.team ? `/api/leagues/${props.team.league_name}/standings` : null,
+    fetcher,
+    { initialData: props.standings, revalidateOnMount: true }
+  );
+
+  const { data: seasons } = useSWR(
+    props.team ? `/api/leagues/${props.team.league_name}/seasons` : null,
+    fetcher,
+    { initialData: props.seasons, revalidateOnMount: true }
   );
 
   useEffect(() => {
@@ -86,8 +105,16 @@ function Team(props) {
     if (!team) {
       return;
     }
-    fetchSeasons();
-  }, [team]);
+
+    if (seasons) {
+      const season = seasons.find((season) => season.id === team.season_id);
+      if (season) {
+        setCurrentSeason(season);
+      } else {
+        setCurrentSeason(null);
+      }
+    }
+  }, [team, seasons]);
 
   const fetchEventsBySeasonId = async (seasonId) => {
     const events = await backend.get(
@@ -100,11 +127,6 @@ function Team(props) {
       }
     );
     setEvents(events.data);
-  };
-
-  const fetchSeasons = async () => {
-    let seasons = await findSeasonsByLeagueName(team.league_name);
-    setSeasons(seasons);
   };
 
   const renderEmptyPosts = () => {
@@ -234,21 +256,21 @@ function Team(props) {
     const options = seasons.map((_season) => {
       return {
         ..._season,
-        text: `${TwitDate.getYear(season.created_at)} Season - ${
+        text: `${TwitDate.getYear(selectedSeason.created_at)} Season - ${
           _season.season
         }`,
       };
     });
-    if (!season) {
+    if (!selectedSeason) {
       return null;
     } else {
       return (
         <TwitSelect
           onSelect={fetchEventsBySeasonId}
           options={options}
-          defaultValue={`${TwitDate.getYear(season.created_at)} Season - ${
-            season.season
-          }`}
+          defaultValue={`${TwitDate.getYear(
+            selectedSeason.created_at
+          )} Season - ${selectedSeason.season}`}
         />
       );
     }
@@ -266,7 +288,7 @@ function Team(props) {
 
   const onScheduleClick = (k) => {
     setTab(k.target.id);
-    setSeason(seasons[seasons.length - 1]);
+    setSelectedSeason(seasons[seasons.length - 1]);
     fetchEventsBySeasonId(team.season_id);
   };
 
@@ -304,6 +326,8 @@ function Team(props) {
           </TopBar>
           <TeamProfile
             team={team}
+            currentSeason={currentSeason}
+            standings={standings}
             onAvatarClick={() => setShowEditTeamPopup(true)}
           />
           <TwitTabs>
@@ -336,7 +360,7 @@ function Team(props) {
         </main>
         <div className="right-bar">
           <RightColumn>
-            <StandingsCard league={{ league_name: team.league_name }} />
+            <StandingsCard standings={standings} />
           </RightColumn>
         </div>
       </div>
@@ -357,11 +381,18 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   let team = await Teams.findOne(`$${context.params.abbrev}`, null);
   team = JSON.parse(JSON.stringify(team));
+  console.log(team);
+  let standings = await Leagues.currentSeasonStandings(team.league_name);
+  standings = JSON.parse(JSON.stringify(standings));
+  let seasons = await Seasons.findByLeagueName(team.league_name);
+  seasons = JSON.parse(JSON.stringify(seasons));
 
   return {
     revalidate: 1,
     props: {
       team,
+      standings,
+      seasons,
     },
   };
 }

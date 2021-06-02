@@ -1,31 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import useUser from "../lib/useUser";
 import standingsCard from "../sass/components/StandingsCard.module.scss";
 import TwitCard from "./TwitCard";
 import backend from "../lib/backend";
 import StandingsDivision from "./StandingsDivision";
 import Empty from "./Empty";
 
-function StandingsCard(props) {
-  const { user } = useUser();
+function StandingsCard({ standings }) {
   const router = useRouter();
-  const [divisions, setDivisions] = useState(null);
-
-  useEffect(() => {
-    if (user) {
-      getStandings();
-    }
-  }, [user, props.league]);
-
-  const getStandings = async () => {
-    const response = await backend.get(
-      `/api/leagues/${props.league.league_name}/standings`
-    );
-    setDivisions(response.data);
-  };
 
   const renderFooter = () => {
     return (
@@ -40,12 +24,12 @@ function StandingsCard(props) {
   };
 
   const renderDivisions = () => {
-    if (!divisions) {
-      return null;
-    } else if (divisions.length === 0) {
+    if (!standings) {
+      return <Empty main="No standings" sub="The league has no divisions" />;
+    } else if (standings.length === 0) {
       return null;
     } else {
-      return divisions.map((division, index) => {
+      return standings.map((division, index) => {
         return (
           <StandingsDivision
             key={index}

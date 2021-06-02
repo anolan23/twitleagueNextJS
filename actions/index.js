@@ -688,3 +688,8 @@ export const fetchRoster = async (abbrev) => {
   const roster = await backend.get(`/api/teams/${abbrev}/rosters`);
   return roster.data;
 };
+
+export const getStandings = async (league_name) => {
+  const standings = await backend.get(`/api/leagues/${league_name}/standings`);
+  return standings.data;
+};
