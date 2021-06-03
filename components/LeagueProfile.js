@@ -90,7 +90,7 @@ function LeagueProfile({ league, onAvatarClick }) {
           </div>
           <div className={leagueProfile["league-profile__counts"]}>
             <Count href="/" value={league.follower_count} text="Followers" />
-            <Count href="/" value={league.team_count} text="Teams" />
+            <Count href="/" value={league.teams.length} text="Teams" />
           </div>
         </div>
       </Profile>

@@ -19,21 +19,28 @@ class Leagues {
         leagues.*,
         (
         SELECT row_to_json(season) AS current_season
-        FROM (
-          SELECT *
-          FROM seasons 
-          WHERE id = leagues.season_id
-        ) AS season
+          FROM (
+            SELECT *
+            FROM seasons 
+            WHERE id = leagues.season_id
+          ) AS season
         ),
         (
         SELECT jsonb_agg(nested_season)
-        FROM (
-          SELECT *
-          FROM seasons
-          WHERE league_id = leagues.id
-        ) AS nested_season
+          FROM (
+            SELECT *
+            FROM seasons
+            WHERE league_id = leagues.id
+          ) AS nested_season
         ) AS seasons,
-        (SELECT count(*) FROM teams WHERE teams.league_id = leagues.id) AS team_count
+        (
+        SELECT jsonb_agg(nested_team)
+          FROM (
+            SELECT *
+            FROM teams
+            WHERE league_id = leagues.id
+          ) AS nested_team
+        ) AS teams
       FROM leagues
       WHERE leagues.league_name = $1`,
       [leagueName]
