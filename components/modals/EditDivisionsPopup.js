@@ -1,50 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { connect } from "react-redux";
 
 import useUser from "../../lib/useUser";
-import {
-  toggleEditDivisionsPopup,
-  updateTeamById,
-  createDivision,
-} from "../../actions";
+import { updateTeamById, createDivision } from "../../actions";
 import backend from "../../lib/backend";
 import editDivisionsPopup from "../../sass/components/EditDivisionsPopup.module.scss";
-import twitForm from "../../sass/components/TwitForm.module.scss";
 import Popup from "./Popup";
 import TwitButton from "../TwitButton";
-import TwitInputGroup from "../TwitInputGroup";
-import TwitInput from "../TwitInput";
-import Empty from "../Empty";
 import StandingsDivision from "../StandingsDivision";
 import useSWR from "swr";
+import TwitSpinner from "../TwitSpinner";
 
-function EditDivisionsPopup(props) {
+function EditDivisionsPopup({ league, show, onHide }) {
+  if (!show) {
+    return null;
+  }
   const { user } = useUser();
   const [team, setTeam] = useState(null);
   const [unassignedTeams, setUnassignedTeams] = useState(null);
-  const getDivisions = async (url) => {
-    const response = await backend.get(url);
-    return response.data;
-  };
-  const { data: divisions, mutate: mutateDivisions } = useSWR(
-    `/api/leagues/${props.league.league_name}/standings`,
-    getDivisions,
+
+  const { data: standings, mutate: mutateStandings } = useSWR(
+    league ? `/api/leagues/${league.league_name}/standings` : null,
+    fetcher,
     { revalidateOnMount: true }
   );
-  useEffect(() => {
-    setTeam(null);
-  }, [props.showEditDivisionsPopup]);
 
   useEffect(() => {
     getUnassignedTeams();
-  }, [divisions]);
+  }, [standings]);
+
+  async function fetcher(url) {
+    const response = await backend.get(url);
+    return response.data;
+  }
 
   const getUnassignedTeams = async () => {
-    const teams = await backend.get(
-      `/api/leagues/${props.league.league_name}/teams`
-    );
-    filterTeams(teams.data);
+    if (league) {
+      const teams = await backend.get(
+        `/api/leagues/${league.league_name}/teams`
+      );
+      filterTeams(teams.data);
+    }
   };
 
   const filterTeams = (teams) => {
@@ -65,8 +61,8 @@ function EditDivisionsPopup(props) {
   });
 
   const create = async () => {
-    await createDivision(props.league.id);
-    mutateDivisions();
+    await createDivision(league.id);
+    mutateStandings();
   };
 
   const onTeamClick = (clickedTeam) => {
@@ -85,13 +81,13 @@ function EditDivisionsPopup(props) {
       await updateTeamById(team.id, {
         division_id: clickedDivision.division.id,
       });
-      mutateDivisions();
+      mutateStandings();
       setTeam(null);
     }
   };
 
   const onDelete = async () => {
-    mutateDivisions();
+    mutateStandings();
   };
 
   const renderHeading = () => {
@@ -132,21 +128,21 @@ function EditDivisionsPopup(props) {
   };
 
   const renderDivisions = () => {
-    if (!divisions) {
-      return <div>loading</div>;
-    } else if (divisions.length === 0) {
+    if (!standings) {
+      return <TwitSpinner />;
+    } else if (standings.length === 0) {
       return null;
     } else {
-      return divisions.map((division, index) => {
+      return standings.map((division, index) => {
         return (
           <StandingsDivision
             key={index}
-            division={division.division}
+            division={division}
             onTeamClick={onTeamClick}
             team={team}
             onDivisionClick={() => onDivisionClick(division, index)}
             onDelete={onDelete}
-            editable={user.id === props.league.owner_id}
+            editable={user.id === league.owner_id}
           />
         );
       });
@@ -164,21 +160,12 @@ function EditDivisionsPopup(props) {
 
   return (
     <Popup
-      show={props.showEditDivisionsPopup}
+      show={show}
       heading={renderHeading()}
       body={renderBody()}
-      onHide={props.toggleEditDivisionsPopup}
+      onHide={onHide}
     />
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showEditDivisionsPopup: state.modals.showEditDivisionsPopup,
-    league: state.league,
-  };
-};
-
-export default connect(mapStateToProps, { toggleEditDivisionsPopup })(
-  EditDivisionsPopup
-);
+export default EditDivisionsPopup;

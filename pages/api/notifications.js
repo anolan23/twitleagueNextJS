@@ -18,7 +18,6 @@ export default async (req, res) => {
         const notification = await Notifications.sendUserRequestsJoinTeam(
           req.body
         );
-        console.log(type);
         res.send(notification);
         break;
       }

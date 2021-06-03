@@ -11,7 +11,6 @@ export default async (req, res) => {
     let user = await Users.findOne(username);
     user = { ...user, isSignedIn: true };
     const result = await compare(password, user.password);
-    console.log(result);
     if (result) {
       const claims = {
         sub: user.id,

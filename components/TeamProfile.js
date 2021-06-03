@@ -29,35 +29,35 @@ import TwitCard from "./TwitCard";
 import TwitDate from "../lib/twit-date";
 import { numberSuffix } from "../lib/twit-helpers";
 
-function TeamProfile({ team, currentSeason, standings, onAvatarClick }) {
+function TeamProfile({ team, standings, onAvatarClick }) {
   const { user } = useUser();
-  let foundTeam;
-  let division;
-
-  standings.forEach((element) => {
-    let found = element.division.teams.find(
-      (foundTeam) => foundTeam.id === team.id
-    );
-    if (found) {
-      division = element.division;
-      foundTeam = found;
-    }
-  });
+  const router = useRouter();
+  const { league, division, seasons } = team;
+  const [showRequestToJoin, setShowRequestToJoin] = useState(false);
+  const foundTeam = findTeamInStandings();
   const total_games = foundTeam
     ? foundTeam.total_games
       ? foundTeam.total_games
       : 0
     : 0;
-
   const wins = foundTeam ? (foundTeam.wins ? foundTeam.wins : 0) : 0;
   const losses = foundTeam ? (foundTeam.losses ? foundTeam.losses : 0) : 0;
   const ties = total_games - wins - losses;
-
   const place = foundTeam ? foundTeam.place : null;
-  const division_name = division ? division.division_name : null;
 
-  const router = useRouter();
-  const [showRequestToJoin, setShowRequestToJoin] = useState(false);
+  function findTeamInStandings() {
+    if (standings) {
+      for (let index = 0; index < standings.length; index++) {
+        const division = standings[index];
+        let result = division.teams.find(
+          (foundTeam) => foundTeam.id === team.id
+        );
+        if (result) {
+          return result;
+        }
+      }
+    }
+  }
 
   const sendUserRequestToJoinTeam = async () => {
     await sendNotification({
@@ -94,7 +94,7 @@ function TeamProfile({ team, currentSeason, standings, onAvatarClick }) {
             </TwitDropdownItem>
             <TwitDropdownItem
               icon="/sprites.svg#icon-plus"
-              onClick={() => router.push(`/leagues/${team.league_name}`)}
+              onClick={() => router.push(`/leagues/${league_name}`)}
             >
               View league
             </TwitDropdownItem>
@@ -108,12 +108,12 @@ function TeamProfile({ team, currentSeason, standings, onAvatarClick }) {
   };
 
   const renderLeagueName = () => {
-    if (team.league_name) {
+    if (league) {
       return (
         <React.Fragment>
           &nbsp;·&nbsp;
-          <Link href={`/leagues/${team.league_name}`} passHref>
-            <a className="twit-link">{team.league_name}</a>
+          <Link href={`/leagues/${league.league_name}`} passHref>
+            <a className="twit-link">{league.league_name}</a>
           </Link>
         </React.Fragment>
       );
@@ -130,22 +130,22 @@ function TeamProfile({ team, currentSeason, standings, onAvatarClick }) {
   };
 
   const renderRecord = () => {
-    if (currentSeason) {
+    if (team.current_season) {
       return (
         <React.Fragment>
           <div className={teamProfile["team-profile__info__season"]}>
-            {currentSeason
-              ? `${TwitDate.getYear(currentSeason.created_at)} Season - ${
-                  currentSeason.season
-                }`
+            {team.current_season
+              ? `${TwitDate.getYear(team.current_season.created_at)} Season - `
               : null}
           </div>
           <div className={teamProfile["team-profile__info__record"]}>
             {`${wins} - ${losses} - ${ties} (W - L - T)`}
           </div>
-          <div className={teamProfile["team-profile__info__place"]}>
-            {`${numberSuffix(place)} place in ${division_name}`}
-          </div>
+          {division ? (
+            <div className={teamProfile["team-profile__info__place"]}>
+              {`${numberSuffix(place)} place in ${division.division_name}`}
+            </div>
+          ) : null}
         </React.Fragment>
       );
     } else {

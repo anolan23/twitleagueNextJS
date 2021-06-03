@@ -17,7 +17,6 @@ function StandingsDivision({
 }) {
   const ref = useRef();
   const [show, setShow] = useState(false);
-  const [divisionName, setDivisionName] = useState(division.division_name);
   const [editingName, setEditingName] = useState(false);
 
   useEffect(() => {
@@ -137,7 +136,7 @@ function StandingsDivision({
     event.preventDefault();
     await backend.patch("/api/leagues/divisions", {
       divisionId: division.id,
-      newDivisionName: divisionName,
+      newDivisionName: division.division_name,
     });
     setEditingName(false);
   };
@@ -150,7 +149,7 @@ function StandingsDivision({
             standingsDivision["standings-division__caption__caption-box__text"]
           }
         >
-          {divisionName}
+          {division.division_name}
         </span>
       );
     } else {
@@ -161,7 +160,7 @@ function StandingsDivision({
         >
           <input
             type="text"
-            value={divisionName}
+            value={division.division_name}
             onChange={onChange}
             className={
               standingsDivision["standings-division__header__form__input"]

@@ -3,15 +3,15 @@ import { connect } from "react-redux";
 import Link from "next/link";
 
 import Profile from "./Profile";
+import TwitDate from "../lib/twit-date";
 import useUser from "../lib/useUser";
 import leagueProfile from "../sass/components/LeagueProfile.module.scss";
 import TwitButton from "./TwitButton";
 import Attribute from "./Attribute";
 import Count from "./Count";
 
-function LeagueProfile(props) {
+function LeagueProfile({ league, onAvatarClick }) {
   const { user } = useUser();
-  const league = props.league;
 
   const renderButton = () => {
     if (!user) {
@@ -19,11 +19,7 @@ function LeagueProfile(props) {
     }
     if (user.id === league.owner_id) {
       return (
-        <TwitButton
-          onClick={props.onAvatarClick}
-          color="primary"
-          outline="primary"
-        >
+        <TwitButton onClick={onAvatarClick} color="primary" outline="primary">
           Edit profile
         </TwitButton>
       );
@@ -44,12 +40,30 @@ function LeagueProfile(props) {
     );
   };
 
+  const renderSeason = () => {
+    if (league.current_season) {
+      return (
+        <div className={leagueProfile["league-profile__info__season"]}>
+          {league.current_season
+            ? `${TwitDate.getYear(league.current_season.created_at)} Season - `
+            : null}
+        </div>
+      );
+    } else {
+      return (
+        <div className={leagueProfile["league-profile__info__season--null"]}>
+          Offseason
+        </div>
+      );
+    }
+  };
+
   return (
     <React.Fragment>
       <Profile
         banner={league.banner}
         avatar={league.avatar}
-        onAvatarClick={props.onAvatarClick}
+        onAvatarClick={onAvatarClick}
         action={renderButton()}
       >
         <div className={leagueProfile["league-profile__info"]}>
@@ -58,6 +72,7 @@ function LeagueProfile(props) {
           >
             <h1 className="heading-1">{league.league_name}</h1>
           </div>
+          {renderSeason()}
           {league.bio ? (
             <p
               className={leagueProfile["league-profile__info__bio"] + " muted"}
@@ -65,15 +80,7 @@ function LeagueProfile(props) {
               {league.bio}
             </p>
           ) : null}
-          <div className={leagueProfile["league-profile__info__name"]}>
-            <span
-              className={leagueProfile["league-profile__info__name__league"]}
-            >
-              Owner:{" "}
-            </span>
-            &nbsp;
-            {renderOwner()}
-          </div>
+
           <div className={leagueProfile["league-profile__attributes"]}>
             <Attribute icon={"/sprites.svg#icon-map-pin"} text={league.sport} />
             <Attribute

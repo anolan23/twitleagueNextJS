@@ -1,11 +1,10 @@
-import pool  from "../pool";
+import pool from "../pool";
 
 class Teams {
-
-    static async create(userId, team) {
-        console.log(team);
-        const {teamName, abbrev, city, state, leagueName} = team;
-        const results = await pool.query(`
+  static async create(userId, team) {
+    const { teamName, abbrev, city, state, leagueName } = team;
+    const results = await pool.query(
+      `
         WITH created_team AS (
             INSERT INTO teams (owner_id, team_name, abbrev, city, state)
             VALUES
@@ -19,118 +18,129 @@ class Teams {
             
         INSERT INTO notifications (user_id, type, team_id, league_id)
         VALUES 
-        ((SELECT owner_id FROM league_data), 'Join League Request', (SELECT id FROM created_team), (SELECT id FROM league_data))`
-        , [userId, teamName, abbrev, city, state, leagueName]);
-        
-        return results.rows[0];
-    }
+        ((SELECT owner_id FROM league_data), 'Join League Request', (SELECT id FROM created_team), (SELECT id FROM league_data))`,
+      [userId, teamName, abbrev, city, state, leagueName]
+    );
 
-    static async findOne(abbrev, userId) {
-        const team = await pool.query(`
-        WITH record AS (
-            SELECT team_id, season_id,
-                count(*) AS current_season_total_games,
-                count(case when outcome = 'W' then 1 else null end) AS current_season_wins,
-                count(case when outcome = 'L' then 0 else null end) AS current_season_losses
-            FROM
-            (
-            SELECT team_id as team_id, 
-                CASE 
-                    WHEN points > opponent_points THEN 'W' 
-                    WHEN points < opponent_points THEN 'L'
-                    ELSE NULL 
-                    END 
-                AS outcome, 
-                season_id, points, opponent_points, league_approved FROM events 
-                UNION ALL
-            SELECT opponent_id as team_id, 
-                CASE 
-                    WHEN opponent_points > points THEN 'W' 
-                    WHEN opponent_points < points THEN 'L'
-                    ELSE NULL 
-                    END 
-                AS outcome, 
-                season_id, points, opponent_points, league_approved FROM events
-            ) AS games
-            JOIN teams ON teams.id = games.team_id
-            WHERE league_approved = true
-            GROUP BY team_id, season_id
-            )
-            
-            SELECT teams.*, username AS owner, leagues.league_name, division_name, leagues.season_id, 
-            concat_ws(' ', to_char(teams.created_at, 'Mon'), 
-                    to_char(teams.created_at, 'YYYY')) AS joined,
-                    (SELECT COUNT(*) AS num_posts
-                    FROM team_mentions
-                    WHERE team_id = teams.id),
-                    (SELECT current_season_total_games FROM record WHERE team_id = teams.id AND season_id = leagues.season_id),
-                    (SELECT current_season_wins FROM record WHERE team_id = teams.id AND season_id = leagues.season_id),
-                    (SELECT current_season_losses FROM record WHERE team_id = teams.id AND season_id = leagues.season_id),
-                    (SELECT count(*) AS followers FROM followers WHERE team_id = teams.id),
-			        (SELECT count(*) AS players FROM rosters WHERE team_id = teams.id),
-                    EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $2 AND teams.id = followers.team_id ) AS following
-            FROM teams
-            JOIN users ON teams.owner_id = users.id
-            LEFT JOIN leagues ON teams.league_id = leagues.id
-            LEFT JOIN divisions ON teams.division_id = divisions.id
-            WHERE abbrev = $1`, [abbrev, userId]);
-        
-        return team.rows[0];
-    }
+    return results.rows[0];
+  }
 
-    static async findByOwnerId(ownerId) {
-        const teams = await pool.query(`
+  static async findOne(abbrev, userId) {
+    const team = await pool.query(
+      `
+      SELECT teams.*,
+        (
+          SELECT row_to_json(league) AS league
+          FROM (
+            SELECT *
+            FROM leagues
+            WHERE id = teams.league_id
+          ) AS league
+        ),
+        (
+          SELECT row_to_json(division) AS division
+          FROM (
+            SELECT *
+            FROM divisions
+            WHERE id = teams.division_id
+          ) AS division
+        ), 
+        (
+          SELECT row_to_json(current_season) AS current_season
+          FROM (
+            SELECT *
+            FROM seasons
+            WHERE id = leagues.season_id
+          ) AS current_season
+        ), 
+        (
+          SELECT jsonb_agg(nested_season)
+          FROM (
+            SELECT *
+            FROM seasons
+            WHERE league_id = leagues.id
+          ) AS nested_season
+        ) AS seasons,
+        (SELECT COUNT(*) AS num_posts FROM team_mentions WHERE team_id = teams.id),
+        (SELECT count(*) AS followers FROM followers WHERE team_id = teams.id),
+        (SELECT count(*) AS players FROM rosters WHERE team_id = teams.id),
+        EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $2 AND teams.id = followers.team_id ) AS following
+      FROM teams
+      LEFT JOIN leagues ON teams.league_id = leagues.id
+      LEFT JOIN divisions ON teams.division_id = divisions.id
+      WHERE abbrev = $1`,
+      [abbrev, userId]
+    );
+
+    return team.rows[0];
+  }
+
+  static async findByOwnerId(ownerId) {
+    const teams = await pool.query(
+      `
         SELECT teams.abbrev, teams.team_name, teams.avatar, teams.city, leagues.league_name
         FROM teams
         FULL JOIN leagues ON teams.league_id = leagues.id
-        WHERE teams.owner_id = $1`, [ownerId]);
-        
-        return teams.rows;
-    }
+        WHERE teams.owner_id = $1`,
+      [ownerId]
+    );
 
-    static async findByUsername(username) {
-        const teams = await pool.query(`
+    return teams.rows;
+  }
+
+  static async findByUsername(username) {
+    const teams = await pool.query(
+      `
         SELECT teams.*, leagues.league_name
         FROM teams
         JOIN users ON users.id = teams.owner_id
         FULL JOIN leagues ON leagues.id = teams.league_id
         WHERE users.username = $1
         ORDER BY team_name
-        `, [username]);
-        
-        return teams.rows;
-    }
+        `,
+      [username]
+    );
 
-    static async findByLeagueId(leagueId) {
-        const teams = await pool.query(`
+    return teams.rows;
+  }
+
+  static async findByLeagueId(leagueId) {
+    const teams = await pool.query(
+      `
         SELECT *
         FROM teams
-        WHERE teams.league_id = $1`, [leagueId]);
-        
-        return teams.rows;
-    }
+        WHERE teams.league_id = $1`,
+      [leagueId]
+    );
 
-    static async findByLeagueName(leagueName) {
-        const teams = await pool.query(`
+    return teams.rows;
+  }
+
+  static async findByLeagueName(leagueName) {
+    const teams = await pool.query(
+      `
         SELECT teams.*
         FROM teams
         JOIN leagues ON leagues.id = teams.league_id
-        WHERE leagues.league_name = $1`, [leagueName]);
-        
-        return teams.rows;
-    }
+        WHERE leagues.league_name = $1`,
+      [leagueName]
+    );
 
-    static async find() {
-        const teams = await pool.query(`
+    return teams.rows;
+  }
+
+  static async find() {
+    const teams = await pool.query(`
         SELECT *
         FROM teams
         `);
-        
-        return teams.rows;
-    }
 
-    static async findSuggested(userId, num) {
-        const teams = await pool.query(`
+    return teams.rows;
+  }
+
+  static async findSuggested(userId, num) {
+    const teams = await pool.query(
+      `
         SELECT teams.id, teams.avatar, team_name, abbrev, league_name,
         EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $1 AND teams.id = followers.team_id ) AS following
         FROM teams
@@ -138,13 +148,15 @@ class Teams {
         WHERE teams.avatar IS NOT NULL
         ORDER BY RANDOM()
         LIMIT $2
-        `, [userId, num]);
-        
-        return teams.rows;
-    }
+        `,
+      [userId, num]
+    );
 
-    static async findTrending() {
-        const teams = await pool.query(`
+    return teams.rows;
+  }
+
+  static async findTrending() {
+    const teams = await pool.query(`
         SELECT teams.*, count
             FROM (
                 SELECT team_id, count(*)
@@ -157,88 +169,112 @@ class Teams {
                 ) AS popular_teams
             JOIN teams ON teams.id = popular_teams.team_id;
         `);
-        
-        return teams.rows;
-    }
 
-    static async joinLeague(leagueId, teamId) {
-        const team = await pool.query(`
+    return teams.rows;
+  }
+
+  static async joinLeague(leagueId, teamId) {
+    const team = await pool.query(
+      `
         UPDATE teams
         SET league_id = $1
-        WHERE id = $2`, [leagueId, teamId]);
-        
-        return team.rows;
-    }
+        WHERE id = $2`,
+      [leagueId, teamId]
+    );
 
-    static async update(teamId, values) {
-        if(values.avatar || values.banner || values.bio){
-            const {rows} = await pool.query(`
+    return team.rows;
+  }
+
+  static async update(teamId, values) {
+    if (values.avatar || values.banner || values.bio) {
+      const { rows } = await pool.query(
+        `
             UPDATE teams
             SET avatar = $2,
             banner = $3,
             bio = $4
             WHERE id = $1
-            RETURNING *`, [teamId, values.avatar, values.banner, values.bio]);
-            
-            return rows[0];
-        }
-        else if(values.divisionId || values.divisionId === null){
-            const {rows} = await pool.query(`
+            RETURNING *`,
+        [teamId, values.avatar, values.banner, values.bio]
+      );
+
+      return rows[0];
+    } else if (values.divisionId || values.divisionId === null) {
+      const { rows } = await pool.query(
+        `
             UPDATE teams
             SET division_id = $2
             WHERE id = $1
-            RETURNING *`, [teamId, values.divisionId]);
-            
-            return rows[0];
-        }
-        
-    }
+            RETURNING *`,
+        [teamId, values.divisionId]
+      );
 
-    static async createEvent(event) {
-        const {rows} = await pool.query(`
+      return rows[0];
+    }
+  }
+
+  static async createEvent(event) {
+    const { rows } = await pool.query(
+      `
         INSERT INTO events (team_id, type, opponent_id, date, location, notes, is_home_team)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING *`
-        , [event.teamId, event.type, event.opponent, event.eventDate, event.location, event.notes, event.isHomeTeam]);
-        
-        return rows[0];
-    }
+        RETURNING *`,
+      [
+        event.teamId,
+        event.type,
+        event.opponent,
+        event.eventDate,
+        event.location,
+        event.notes,
+        event.isHomeTeam,
+      ]
+    );
 
-    static async findEventsByTeamId(teamId) {
-        const {rows} = await pool.query(`
+    return rows[0];
+  }
+
+  static async findEventsByTeamId(teamId) {
+    const { rows } = await pool.query(
+      `
         SELECT events.*, to_char(events.date, 'Mon') AS month, to_char(events.date, 'DD') AS day, to_char(events.date, 'HH12:MIAM') AS time, t1.team_name, t1.abbrev, t1.avatar, t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar
         FROM events
         LEFT JOIN teams AS t1 ON events.team_id = t1.id
         LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
-        WHERE events.team_id = $1 OR events.opponent_id = $1`
-        , [teamId]);
-        
-        return rows;
-    }
+        WHERE events.team_id = $1 OR events.opponent_id = $1`,
+      [teamId]
+    );
 
-    static async findOneEventById(eventId) {
-        const {rows} = await pool.query(`
+    return rows;
+  }
+
+  static async findOneEventById(eventId) {
+    const { rows } = await pool.query(
+      `
         SELECT events.*, leagues.league_name, to_char(events.date, 'Mon') AS month, to_char(events.date, 'DD') AS day, to_char(events.date, 'HH12:MIAM') AS time, t1.team_name, t1.abbrev, t1.avatar, t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar
         FROM events
         LEFT JOIN teams AS t1 ON events.team_id = t1.id
         LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
         LEFT JOIN leagues ON t1.league_id = leagues.id
-        WHERE events.id = $1`
-        , [eventId]);
-        
-        return rows[0];
-    }
+        WHERE events.id = $1`,
+      [eventId]
+    );
 
-    static async search(search) {
-        const {rows} = await pool.query(`
+    return rows[0];
+  }
+
+  static async search(search) {
+    const { rows } = await pool.query(
+      `
         SELECT teams.*, leagues.league_name
         FROM teams
         JOIN leagues ON leagues.id = teams.league_id
         WHERE (LOWER(teams.abbrev) LIKE $1) OR (LOWER(teams.team_name) LIKE $1)
-        LIMIT 10;`, [`%${search}%`]);
-        
-        return rows;
-    }
+        LIMIT 10;`,
+      [`%${search}%`]
+    );
+
+    return rows;
+  }
 }
 
 export default Teams;

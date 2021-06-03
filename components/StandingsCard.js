@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 
 import standingsCard from "../sass/components/StandingsCard.module.scss";
 import TwitCard from "./TwitCard";
-import backend from "../lib/backend";
 import StandingsDivision from "./StandingsDivision";
 import Empty from "./Empty";
 
@@ -33,7 +32,7 @@ function StandingsCard({ standings }) {
         return (
           <StandingsDivision
             key={index}
-            division={division.division}
+            division={division}
             onTeamClick={(team) =>
               router.push(`/teams/${team.abbrev.substring(1)}`)
             }

@@ -68,7 +68,6 @@ function User(props) {
     setTab("posts");
 
     return () => {
-      console.log("cleanup");
       if (postsLoaderRef.current) {
         postsLoaderRef.current.resetLoadMoreRowsCache();
       }
@@ -143,6 +142,7 @@ function User(props) {
       case "posts":
         return (
           <InfiniteList
+            key={query.username}
             getDataFromServer={(startIndex, stopIndex) =>
               fetchPostsByUsername({
                 username: query.username,
@@ -163,6 +163,7 @@ function User(props) {
       case "media":
         return (
           <InfiniteList
+            key={query.username}
             getDataFromServer={(startIndex, stopIndex) =>
               fetchMediaPostsByUsername({
                 username: query.username,
@@ -183,6 +184,7 @@ function User(props) {
       case "likes":
         return (
           <InfiniteList
+            key={query.username}
             getDataFromServer={(startIndex, stopIndex) =>
               fetchLikedPostsByUsername({
                 username: query.username,

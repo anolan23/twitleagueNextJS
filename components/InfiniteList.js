@@ -17,6 +17,7 @@ function InfiniteList({
   list,
   updateList,
   empty,
+  id,
 }) {
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
   // let listRef = useRef(null);
@@ -97,6 +98,7 @@ function InfiniteList({
 
   return (
     <InfiniteLoader
+      key={id}
       isRowLoaded={isRowLoaded}
       loadMoreRows={loadMoreRows}
       rowCount={10000}

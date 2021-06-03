@@ -12,6 +12,7 @@ import {
   setLeague,
   toggleEditDivisionsPopup,
 } from "../../actions";
+import Leagues from "../../db/repos/Leagues";
 import useUser from "../../lib/useUser";
 import TopBar from "../../components/TopBar";
 import backend from "../../lib/backend";
@@ -33,56 +34,42 @@ import { groupBy } from "../../lib/twit-helpers";
 import StandingsDivision from "../../components/StandingsDivision";
 import Prompt from "../../components/modals/Prompt";
 import EditLeaguePopup from "../../components/modals/EditLeaguePopup";
+import EditDivisionsPopup from "../../components/modals/EditDivisionsPopup";
 
-function League(props) {
+function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
   const router = useRouter();
   const { user } = useUser();
-  const [activeTab, setActiveTab] = useState("mentions");
+  const [tab, setTab] = useState("mentions");
+  const [posts, setPosts] = useState(null);
   const [divisions, setDivisions] = useState([]);
-  const [division, setDivision] = useState({});
   const [showStartSeasonPrompt, setShowStartSeasonPrompt] = useState(false);
   const [showEndSeasonPrompt, setShowEndSeasonPrompt] = useState(false);
   const [showEditLeaguePopup, setShowEditLeaguePopup] = useState(false);
-  const [mode, setMode] = useState("default");
+  const [showEditDivisionsPopup, setShowEditDivisionsPopup] = useState(false);
 
-  const getLeague = async (url) => {
-    const league = await backend.get(url);
-    return league.data;
+  const fetcher = async (url) => {
+    const response = await backend.get(url);
+    return response.data;
   };
 
   const { data: league, mutate: mutateLeague } = useSWR(
-    props.league && user ? `/api/leagues/${props.league.league_name}` : null,
-    getLeague,
-    { initialData: props.league, revalidateOnMount: true }
+    leagueData && user ? `/api/leagues/${leagueData.league_name}` : null,
+    fetcher,
+    { initialData: leagueData, revalidateOnMount: true }
   );
 
-  useEffect(() => {
-    if (!props.league) {
-      return;
-    }
-    props.setLeague(props.league);
-    setActiveTab("mentions");
-    props.fetchLeaguePosts(props.league.id);
-    getStandings();
-
-    return () => {
-      props.clearPosts();
-    };
-  }, [props.league]);
+  const { data: standings } = useSWR(
+    leagueData ? `/api/leagues/${leagueData.league_name}/standings` : null,
+    fetcher,
+    { initialData: standingsData, revalidateOnMount: true }
+  );
 
   useEffect(() => {
     if (!league) {
       return;
     }
-    props.setLeague(league);
+    setTab("mentions");
   }, [league]);
-
-  const getStandings = async () => {
-    const response = await backend.get(
-      `/api/leagues/${props.league.league_name}/standings`
-    );
-    setDivisions(response.data);
-  };
 
   const newSeason = async () => {
     const season = await backend.post("/api/seasons", {
@@ -100,62 +87,36 @@ function League(props) {
     setShowEndSeasonPrompt(false);
   };
 
-  const addTeams = (division) => {
-    setDivision(division);
-    setMode("addTeams");
-  };
-
-  const removeTeams = (division) => {
-    setDivision(division);
-    setMode("removeTeams");
-  };
-
-  const editName = (division) => {
-    setDivision(division);
-    setMode("editDivisionName");
-  };
-
-  const updateDivisions = (newDivision) => {
-    const divisionIndex = divisions.findIndex(
-      (_division) => _division.id === division.id
-    );
-    let newDivisions = [...divisions];
-    newDivisions[divisionIndex] = newDivision;
-    setDivision(newDivision);
-    setDivisions(newDivisions);
-  };
-
   const onMentionsSelect = (k) => {
-    setActiveTab(k.target.id);
-    // props.fetchLeaguePosts(league.id);
+    setTab(k.target.id);
   };
 
   const onStandingSelect = (k) => {
-    setActiveTab(k.target.id);
+    setTab(k.target.id);
   };
 
   const onMediaSelect = (k) => {
-    setActiveTab(k.target.id);
+    setTab(k.target.id);
   };
 
   const renderDivisions = () => {
-    if (!divisions) {
+    if (!standings) {
       return null;
-    } else if (divisions.length === 0) {
+    } else if (standings.length === 0) {
       return null;
     } else {
-      return divisions.map((division, index) => {
-        return <StandingsDivision key={index} division={division.division} />;
+      return standings.map((division, index) => {
+        return <StandingsDivision key={index} division={division} />;
       });
     }
   };
 
   const renderContent = () => {
-    switch (activeTab) {
+    switch (tab) {
       case "mentions":
-        if (props.posts === null) {
+        if (posts === null) {
           return;
-        } else if (props.posts.length === 0) {
+        } else if (posts.length === 0) {
           return (
             <Empty
               main="No team mentions yet"
@@ -164,7 +125,7 @@ function League(props) {
             />
           );
         } else {
-          return props.posts.map((post, index) => {
+          return posts.map((post, index) => {
             return <Post key={index} post={post} />;
           });
         }
@@ -192,7 +153,7 @@ function League(props) {
           <TwitDropdownItem onClick={() => setShowEditLeaguePopup(true)}>
             Edit profile
           </TwitDropdownItem>
-          <TwitDropdownItem onClick={props.toggleEditDivisionsPopup}>
+          <TwitDropdownItem onClick={() => setShowEditDivisionsPopup(true)}>
             Edit divisions
           </TwitDropdownItem>
           <TwitDropdownItem
@@ -273,19 +234,19 @@ function League(props) {
               <TwitTab
                 onClick={onMentionsSelect}
                 id={"mentions"}
-                active={activeTab === "mentions" ? true : false}
+                active={tab === "mentions" ? true : false}
                 title="Mentions"
               />
               <TwitTab
                 onClick={onStandingSelect}
                 id={"standings"}
-                active={activeTab === "standings" ? true : false}
+                active={tab === "standings" ? true : false}
                 title="Standings"
               />
               <TwitTab
                 onClick={onMediaSelect}
                 id={"media"}
-                active={activeTab === "media" ? true : false}
+                active={tab === "media" ? true : false}
                 title="Media"
               />
             </TwitTabs>
@@ -294,7 +255,7 @@ function League(props) {
         </main>
         <div className="right-bar">
           <RightColumn>
-            <StandingsCard league={league} />
+            <StandingsCard standings={standings} />
           </RightColumn>
         </div>
       </div>
@@ -303,6 +264,12 @@ function League(props) {
         onHide={() => setShowEditLeaguePopup(false)}
         league={league}
       />
+      <EditDivisionsPopup
+        show={showEditDivisionsPopup}
+        onHide={() => setShowEditDivisionsPopup(false)}
+        league={league}
+      />
+
       {renderStartSeasonPrompt()}
       {renderEndSeasonPrompt()}
     </React.Fragment>
@@ -315,13 +282,18 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const leagueName = context.params.leagueName;
-  const league = await fetchLeague(leagueName);
+  let leagueData = await Leagues.findOne(leagueName);
+  leagueData = JSON.parse(JSON.stringify(leagueData));
+
+  let standingsData = await Leagues.currentSeasonStandings(leagueName);
+  standingsData = JSON.parse(JSON.stringify(standingsData));
 
   return {
     revalidate: 1,
     props: {
-      league,
-    }, // will be passed to the page component as props
+      leagueData,
+      standingsData,
+    },
   };
 }
 
