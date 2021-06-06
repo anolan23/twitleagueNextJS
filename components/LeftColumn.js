@@ -1,9 +1,6 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { connect } from "react-redux";
 
-import { togglePopupCompose } from "../actions";
 import TwitNav from "./TwitNav";
 import UserToggle from "./UserToggle";
 import TwitButton from "./TwitButton";
@@ -11,7 +8,7 @@ import TwitPostCircle from "./TwitPostCircle";
 import Avatar from "./Avatar";
 import useUser from "../lib/useUser";
 
-function LeftColumn(props) {
+function LeftColumn({ setShowPopupCompose }) {
   const { user } = useUser();
 
   return (
@@ -23,7 +20,7 @@ function LeftColumn(props) {
       </Link>
       <TwitNav />
       <TwitButton
-        onClick={props.togglePopupCompose}
+        onClick={() => setShowPopupCompose(true)}
         color="primary"
         size="large"
         collapse
@@ -32,11 +29,11 @@ function LeftColumn(props) {
       >
         New Post
       </TwitButton>
-      <TwitPostCircle onClick={props.togglePopupCompose} />
+      <TwitPostCircle onClick={() => setShowPopupCompose(true)} />
       <UserToggle />
       <Avatar className="header__avatar" src={user ? user.avatar : null} />
     </div>
   );
 }
 
-export default connect(null, { togglePopupCompose })(LeftColumn);
+export default LeftColumn;

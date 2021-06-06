@@ -39,6 +39,7 @@ import Leagues from "../../db/repos/Leagues";
 import EditTeamPopup from "../../components/modals/EditTeamPopup";
 import TwitSpinner from "../../components/TwitSpinner";
 import TwitDate from "../../lib/twit-date";
+import PopupCompose from "../../components/modals/PopupCompose";
 
 function Team({
   teamData,
@@ -48,16 +49,13 @@ function Team({
   standings,
 }) {
   const { query, isFallback } = useRouter();
-
   const { user } = useUser();
-
   const [tab, setTab] = useState("team");
-  const [roster, setRoster] = useState(null);
   const [events, setEvents] = useState(null);
   const [selectedSeason, setSelectedSeason] = useState(null);
   const [posts, setPosts] = useState(null);
   const [showEditTeamPopup, setShowEditTeamPopup] = useState(false);
-
+  const [showPopupCompose, setShowPopupCompose] = useState(false);
   const postsLoaderRef = useRef(null);
 
   const fetcher = async (url) => {
@@ -87,6 +85,11 @@ function Team({
       }
     };
   }, [query.abbrev]);
+
+  async function onPostSubmit(values) {
+    const post = await createPost(values, user.id);
+    return post;
+  }
 
   const fetchEventsBySeasonId = async (seasonId) => {
     const events = await backend.get(
@@ -132,25 +135,23 @@ function Team({
         </InfiniteList>
       );
     } else if (tab === "roster") {
-      if (!roster) {
+      if (!team) {
         return null;
-      } else if (roster.length === 0) {
+      } else if (!team.roster || roster.length === 0) {
         if (user.id === team.owner_id) {
           return (
             <Empty
-              main="No players"
+              main="Empty"
               sub="There are no players on this team"
-              actionText="Edit Roster"
+              actionText="Edit roster"
               onActionClick={toggleEditRosterPopup}
             />
           );
         } else {
-          return (
-            <Empty main="No players" sub="There are no players on this team" />
-          );
+          return <Empty main="Empty" sub="There are no players on this team" />;
         }
       } else {
-        return roster.map((player, index) => {
+        return team.roster.map((player, index) => {
           return (
             <TwitItem
               key={index}
@@ -226,15 +227,15 @@ function Team({
   };
 
   const renderTwitSelect = () => {
-    const options = team.seasons.map((_season) => {
-      return {
-        ..._season,
-        text: `${TwitDate.getYear(selectedSeason.created_at)} Season - `,
-      };
-    });
-    if (!selectedSeason) {
+    if (!team.seasons) {
       return null;
     } else {
+      const options = team.seasons.map((_season) => {
+        return {
+          ..._season,
+          text: `${TwitDate.getYear(selectedSeason.created_at)} Season - `,
+        };
+      });
       return (
         <TwitSelect
           onSelect={fetchEventsBySeasonId}
@@ -253,12 +254,14 @@ function Team({
 
   const onRosterSelect = async (k) => {
     setTab(k.target.id);
-    const roster = await fetchRoster(query.abbrev);
-    setRoster(roster);
   };
 
   const onScheduleClick = (k) => {
     setTab(k.target.id);
+    if (!team.seasons) {
+      setEvents([]);
+      return;
+    }
     setSelectedSeason(team.seasons[team.seasons.length - 1]);
     fetchEventsBySeasonId(team.current_season.id);
   };
@@ -289,7 +292,7 @@ function Team({
     <React.Fragment>
       <div className="twit-container">
         <header className="header">
-          <LeftColumn />
+          <LeftColumn setShowPopupCompose={setShowPopupCompose} />
         </header>
         <main className="main">
           <TopBar main={team.team_name} sub={`${team.num_posts} Posts`}>
@@ -330,7 +333,7 @@ function Team({
         </main>
         <div className="right-bar">
           <RightColumn>
-            <StandingsCard standings={standings} />
+            <StandingsCard standings={standings} league={team.league} />
           </RightColumn>
         </div>
       </div>
@@ -339,6 +342,11 @@ function Team({
         show={showEditTeamPopup}
         onHide={() => setShowEditTeamPopup(false)}
         team={team}
+      />
+      <PopupCompose
+        show={showPopupCompose}
+        onHide={() => setShowPopupCompose(false)}
+        initialValue={team.abbrev}
       />
     </React.Fragment>
   );

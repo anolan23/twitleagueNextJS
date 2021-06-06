@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import reactStringReplace from "react-string-replace";
-import Link from "next/link";
 import ContentEditable from "react-contenteditable";
 
 import mainInput from "../sass/components/MainInput.module.scss";
@@ -22,19 +21,32 @@ import backend from "../lib/backend";
 import TwitBadge from "./TwitBadge";
 import TwitIcon from "./TwitIcon";
 import { uploadToS3 } from "../lib/aws-helpers";
+import { setCaret } from "../lib/twit-helpers";
 import ReactPlayer from "react-player";
 import TwitAlert from "./TwitAlert";
 
-function MainInput(props) {
+function MainInput({
+  expanded,
+  onSubmit,
+  buttonText,
+  compose,
+  placeHolder,
+  toggleGifPopup,
+  initialValue,
+  inputRef,
+}) {
   const { user } = useUser();
-  const contentEditable = useRef(null);
+  const contentEditableRef = useRef(null);
   const hiddenFileInput = useRef(null);
+  const dropdownRef = useRef(null);
   const [post, setPost] = useState({
     body: null,
     outlook: null,
   });
   const [createdPost, setCreatedPost] = useState(null);
-  const [html, setHtml] = useState("");
+  const [html, setHtml] = useState(
+    initialValue ? `<a class="twit-link" id="link">${initialValue}</a>` : ""
+  );
   const [showDropdown, setShowDropdown] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [options, setOptions] = useState([]);
@@ -43,43 +55,82 @@ function MainInput(props) {
   const [files, setFiles] = useState(null);
   const allowableChars = 300;
   const chars = () =>
-    contentEditable.current ? contentEditable.current.innerText.length : 0;
-  const expanded = props.expanded
+    contentEditableRef.current
+      ? contentEditableRef.current.innerText.length
+      : 0;
+  const expandStyle = expanded
     ? mainInput["main-input__text-area--expanded"]
     : null;
 
   useEffect(() => {
-    contentEditable.current.addEventListener("keyup", (event) => {
-      const selection = getSelection();
-      if (selection.type === "Caret") {
-        const id = selection.anchorNode.parentElement.id;
-        const data = selection.anchorNode.data;
+    window.addEventListener("click", clickOutsideDropdown);
+    window.addEventListener("gif-click", onGifClick);
+
+    return () => {
+      window.removeEventListener("click", clickOutsideDropdown);
+      window.removeEventListener("gif-click", onGifClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("html changed");
+  }, [html]);
+
+  const clickOutsideDropdown = (event) => {
+    if (!dropdownRef.current) {
+      return;
+    }
+    if (dropdownRef.current.contains(event.target)) {
+      return;
+    }
+    setShowDropdown(false);
+  };
+
+  function onKeyDown(event) {
+    smartTyping(event);
+  }
+
+  function smartTyping(event) {
+    const selection = getSelection();
+    if (selection.type === "Caret") {
+      const parentElement = selection.anchorNode.parentElement;
+      if (parentElement) {
+        const id = parentElement.id;
+        const search = parentElement.innerText;
         if (id === "team") {
-          teamSearch(data);
+          teamSearch(search);
         } else if (id === "user") {
-          userSearch(data);
+          userSearch(search);
         } else if (event.keyCode !== 38 && event.keyCode !== 40) {
           setShowDropdown(false);
           setCursor(0);
         }
+      } else {
+        setShowDropdown(false);
+        setCursor(0);
       }
-    });
+    }
+  }
 
-    document.addEventListener("gif-click", onGifClick);
-
-    return () => {
-      document.removeEventListener("gif-click", onGifClick);
-    };
-  }, []);
+  const refHandler = (ref) => {
+    if (inputRef) {
+      inputRef.current = ref;
+    }
+    contentEditableRef.current = ref;
+  };
 
   const onGifClick = (event) => {
     setMedia([{ location: event.detail.gif.id, type: "giphy" }]);
   };
 
   const teamSearch = async (search) => {
+    const searchTerm = search.substring(1);
+    if (!searchTerm) {
+      return;
+    }
     const teams = await backend.get("/api/teams", {
       params: {
-        search: search.substring(1),
+        search: searchTerm,
       },
     });
     setOptions(teams.data);
@@ -87,17 +138,21 @@ function MainInput(props) {
   };
 
   const userSearch = async (search) => {
+    const searchTerm = search.substring(1);
+    if (!searchTerm) {
+      return;
+    }
     const users = await backend.get("/api/users", {
       params: {
-        search: search.substring(1),
+        search: searchTerm,
       },
     });
     setOptions(users.data);
     setShowDropdown(true);
   };
 
-  const handleChange = (event) => {
-    let text = contentEditable.current.innerText;
+  function handleChange(event) {
+    let text = event.currentTarget.innerText;
     let newPost = { ...post, body: text };
     setPost(newPost);
     reactStringReplace(
@@ -134,7 +189,7 @@ function MainInput(props) {
     );
     text = text.join("");
     setHtml(text);
-  };
+  }
 
   const handleKeyDown = (event) => {
     if (event.keyCode === 38 && cursor > 0) {
@@ -162,7 +217,7 @@ function MainInput(props) {
     });
     media = JSON.stringify(media);
     let newPost = { ...post, media: media };
-    const _post = await props.onSubmit(newPost);
+    const _post = await onSubmit(newPost);
     setCreatedPost(_post);
     setMedia(null);
     setFiles(null);
@@ -170,7 +225,7 @@ function MainInput(props) {
     setShowAlert(true);
   };
 
-  const onSubmit = async (event) => {
+  const onMainInputSubmit = async (event) => {
     event.preventDefault();
     if (files) {
       let promises = [];
@@ -183,7 +238,7 @@ function MainInput(props) {
     } else {
       const stringifyMedia = media ? JSON.stringify(media) : null;
       let newPost = { ...post, media: stringifyMedia };
-      const _post = await props.onSubmit(newPost);
+      const _post = await onSubmit(newPost);
       setCreatedPost(_post);
       setMedia(null);
       setFiles(null);
@@ -215,34 +270,27 @@ function MainInput(props) {
     }
   };
 
-  const setCaret = (element) => {
-    var range = document.createRange();
-    range.setStart(element.lastChild, 0);
-    var selection = window.getSelection();
-    range.collapse(true);
-    selection.removeAllRanges();
-    selection.addRange(range);
-    element.focus();
-  };
-
   const onOptionClick = (option) => {
     const selection = getSelection();
-    const id = selection.anchorNode.parentElement.id;
     if (selection.type === "Caret") {
-      if (id === "team") {
-        selection.anchorNode.parentElement.innerHTML = `${option.abbrev}&nbsp;`;
-        setCaret(contentEditable.current);
-        const html = contentEditable.current.innerHTML;
-        setHtml(html);
-        setShowDropdown(false);
-        setCursor(0);
-      } else if (id === "user") {
-        selection.anchorNode.parentElement.innerHTML = `@${option.username}&nbsp;`;
-        setCaret(contentEditable.current);
-        const html = contentEditable.current.innerHTML;
-        setHtml(html);
-        setShowDropdown(false);
-        setCursor(0);
+      const parentElement = selection.anchorNode.parentElement;
+      if (parentElement) {
+        const id = parentElement.id;
+        if (id === "team") {
+          parentElement.innerHTML = `${option.abbrev}&nbsp;`;
+          setCaret(contentEditableRef.current);
+          const html = contentEditableRef.current.innerHTML;
+          setHtml(html);
+          setShowDropdown(false);
+          setCursor(0);
+        } else if (id === "user") {
+          parentElement.innerHTML = `@${option.username}&nbsp;`;
+          setCaret(contentEditableRef.current);
+          const html = contentEditableRef.current.innerHTML;
+          setHtml(html);
+          setShowDropdown(false);
+          setCursor(0);
+        }
       }
     }
   };
@@ -251,14 +299,14 @@ function MainInput(props) {
     let _html = html;
     _html = _html.concat("$");
     setHtml(_html);
-    contentEditable.current.focus();
+    contentEditableRef.current.focus();
   };
 
   const onAtClick = () => {
     let _html = html;
     _html = _html.concat("@");
     setHtml(_html);
-    contentEditable.current.focus();
+    contentEditableRef.current.focus();
   };
 
   const onHotClick = () => {
@@ -393,7 +441,7 @@ function MainInput(props) {
           {allowableChars - chars()}
         </div>
         <TwitButton disabled={disabled()} color="primary">
-          {props.buttonText}
+          {buttonText}
         </TwitButton>
       </div>
     );
@@ -404,11 +452,11 @@ function MainInput(props) {
       <form
         id="main-input-form"
         className={
-          props.compose
+          compose
             ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}`
             : mainInput["main-input"]
         }
-        onSubmit={onSubmit}
+        onSubmit={onMainInputSubmit}
         onKeyDown={handleKeyDown}
       >
         <Avatar
@@ -418,17 +466,19 @@ function MainInput(props) {
         />
         <div className={mainInput["main-input__text-area-container"]}>
           <ContentEditable
-            className={`${mainInput["main-input__text-area"]} ${expanded}`}
-            innerRef={contentEditable}
+            className={`${mainInput["main-input__text-area"]} ${expandStyle}`}
+            innerRef={(ref) => refHandler(ref)}
             html={html}
             disabled={false}
             onChange={handleChange}
-            placeholder={props.placeHolder}
+            placeholder={placeHolder}
+            onKeyDown={onKeyDown}
           />
           <div className={mainInput["main-input__dropdown-wrapper"]}>
             <TwitDropdown
               show={showDropdown}
               className={mainInput["main-input__dropdown-wrapper__dropdown"]}
+              dropdownRef={dropdownRef}
             >
               {renderOptions()}
             </TwitDropdown>
@@ -453,7 +503,7 @@ function MainInput(props) {
               style={{ display: "none" }}
             ></input>
             <TwitIcon
-              onClick={props.toggleGifPopup}
+              onClick={toggleGifPopup}
               className={mainInput["main-input__media-types__icon"]}
               icon="/sprites.svg#icon-plus-circle"
             >

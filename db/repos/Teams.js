@@ -29,42 +29,51 @@ class Teams {
     const team = await pool.query(
       `
       SELECT teams.*,
-        (
-          SELECT row_to_json(league) AS league
-          FROM (
-            SELECT *
-            FROM leagues
-            WHERE id = teams.league_id
-          ) AS league
-        ),
-        (
-          SELECT row_to_json(division) AS division
-          FROM (
-            SELECT *
-            FROM divisions
-            WHERE id = teams.division_id
-          ) AS division
-        ), 
-        (
-          SELECT row_to_json(current_season) AS current_season
-          FROM (
-            SELECT *
-            FROM seasons
-            WHERE id = leagues.season_id
-          ) AS current_season
-        ), 
-        (
-          SELECT jsonb_agg(nested_season)
-          FROM (
-            SELECT *
-            FROM seasons
-            WHERE league_id = leagues.id
-          ) AS nested_season
-        ) AS seasons,
-        (SELECT COUNT(*) AS num_posts FROM team_mentions WHERE team_id = teams.id),
-        (SELECT count(*) AS followers FROM followers WHERE team_id = teams.id),
-        (SELECT count(*) AS players FROM rosters WHERE team_id = teams.id),
-        EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $2 AND teams.id = followers.team_id ) AS following
+      (
+        SELECT row_to_json(league) AS league
+        FROM (
+        SELECT *
+        FROM leagues
+        WHERE id = teams.league_id
+        ) AS league
+      ),
+      (
+        SELECT row_to_json(division) AS division
+        FROM (
+        SELECT *
+        FROM divisions
+        WHERE id = teams.division_id
+        ) AS division
+      ), 
+      (
+        SELECT row_to_json(current_season) AS current_season
+        FROM (
+        SELECT *
+        FROM seasons
+        WHERE id = leagues.season_id
+        ) AS current_season
+      ), 
+      (
+        SELECT jsonb_agg(nested_season)
+        FROM (
+        SELECT *
+        FROM seasons
+        WHERE league_id = leagues.id
+        ) AS nested_season
+      ) AS seasons,
+      (
+        SELECT jsonb_agg(nested_player)
+        FROM (
+        SELECT users.*
+        FROM rosters
+        JOIN users ON users.id = user_id
+        WHERE team_id = teams.id
+        ) AS nested_player
+      ) AS roster,
+      (SELECT COUNT(*) AS num_posts FROM team_mentions WHERE team_id = teams.id),
+      (SELECT count(*) AS followers FROM followers WHERE team_id = teams.id),
+      (SELECT count(*) AS players FROM rosters WHERE team_id = teams.id),
+      EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $2 AND teams.id = followers.team_id ) AS following
       FROM teams
       LEFT JOIN leagues ON teams.league_id = leagues.id
       LEFT JOIN divisions ON teams.division_id = divisions.id

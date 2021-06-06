@@ -9,7 +9,6 @@ import * as gtag from "../lib/gtag";
 import { useStore } from "../redux/store";
 import GifPopup from "../components/modals/GifPopup";
 import EditProfilePopup from "../components/modals/EditProfilePopup";
-import PopupCompose from "../components/modals/PopupCompose";
 import PopupReply from "../components/modals/PopupReply";
 import SignupPopup from "../components/modals/SignupPopup";
 import EditRoster from "../components/modals/EditRoster";
@@ -39,7 +38,6 @@ function MyApp({ Component, pageProps }) {
       <EditRoster />
       <EditEventsPopup />
       <UpdateScorePopup />
-      <PopupCompose />
       <PopupReply />
       <PopupEventReply />
       <TwitPanel />

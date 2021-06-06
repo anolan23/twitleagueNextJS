@@ -10,6 +10,7 @@ import TwitButton from "../TwitButton";
 import StandingsDivision from "../StandingsDivision";
 import useSWR from "swr";
 import TwitSpinner from "../TwitSpinner";
+import Empty from "../Empty";
 
 function EditDivisionsPopup({ league, show, onHide }) {
   if (!show) {
@@ -26,7 +27,9 @@ function EditDivisionsPopup({ league, show, onHide }) {
   );
 
   useEffect(() => {
-    getUnassignedTeams();
+    if (league.teams) {
+      filterTeams(league.teams);
+    }
   }, [standings]);
 
   async function fetcher(url) {
@@ -34,19 +37,10 @@ function EditDivisionsPopup({ league, show, onHide }) {
     return response.data;
   }
 
-  const getUnassignedTeams = async () => {
-    if (league) {
-      const teams = await backend.get(
-        `/api/leagues/${league.league_name}/teams`
-      );
-      filterTeams(teams.data);
-    }
-  };
-
-  const filterTeams = (teams) => {
+  function filterTeams(teams) {
     const filteredTeams = teams.filter((team) => team.division_id === null);
     setUnassignedTeams(filteredTeams);
-  };
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -79,7 +73,7 @@ function EditDivisionsPopup({ league, show, onHide }) {
       return;
     } else {
       await updateTeamById(team.id, {
-        division_id: clickedDivision.division.id,
+        division_id: clickedDivision.id,
       });
       mutateStandings();
       setTeam(null);
@@ -150,12 +144,22 @@ function EditDivisionsPopup({ league, show, onHide }) {
   };
 
   const renderBody = () => {
-    return (
-      <div className={editDivisionsPopup["edit-divisions-popup__body"]}>
-        {renderUnassignedTeams()}
-        {renderDivisions()}
-      </div>
-    );
+    if (!league.teams) {
+      return (
+        <Empty
+          main="No teams"
+          sub={`${league.league_name} has no teams`}
+          actionText="Post now"
+        />
+      );
+    } else {
+      return (
+        <div className={editDivisionsPopup["edit-divisions-popup__body"]}>
+          {renderUnassignedTeams()}
+          {renderDivisions()}
+        </div>
+      );
+    }
   };
 
   return (

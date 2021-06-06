@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 
 import useUser from "../lib/useUser";
@@ -15,10 +15,12 @@ import SuggestedTeams from "../components/SuggestedTeams";
 import LeftColumn from "../components/LeftColumn";
 import RightColumn from "../components/RightColumn";
 import InfiniteList from "../components/InfiniteList";
+import PopupCompose from "../components/modals/PopupCompose";
 
 function HomePage() {
   const { user } = useUser({ redirectTo: "/" });
   const [posts, setPosts] = useState(null);
+  const [showPopupCompose, setShowPopupCompose] = useState(false);
 
   const onPostSubmit = async (values) => {
     const post = await createPost(values, user.id);
@@ -34,7 +36,7 @@ function HomePage() {
     <React.Fragment>
       <div className="twit-container">
         <header className="header">
-          <LeftColumn />
+          <LeftColumn setShowPopupCompose={setShowPopupCompose} />
         </header>
         <main className="main">
           <div className={home["home"]}>
@@ -65,6 +67,10 @@ function HomePage() {
           </RightColumn>
         </div>
       </div>
+      <PopupCompose
+        show={showPopupCompose}
+        onHide={() => setShowPopupCompose(false)}
+      />
     </React.Fragment>
   );
 }

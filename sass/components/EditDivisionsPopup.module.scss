@@ -1,26 +1,25 @@
-.edit-divisions-popup{
+.edit-divisions-popup {
+  &__heading {
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1.5rem;
+    position: relative;
 
-    &__heading{
-        height: 100%;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        padding: 1.5rem;
-        position: relative;
-
-        &__title{
-            position: absolute;
-            left: 6rem;
-        }
-
-        &__actions{
-            display: grid;
-            grid-template-columns: min-content min-content;
-            column-gap: .5rem;
-        }
+    &__title {
+      position: absolute;
+      left: 6rem;
     }
 
-    &__body{
-        margin: 1rem 0;
+    &__actions {
+      display: grid;
+      grid-template-columns: min-content min-content;
+      column-gap: 0.5rem;
     }
+  }
+
+  &__body {
+    margin: 1rem 0 5rem 0;
+  }
 }

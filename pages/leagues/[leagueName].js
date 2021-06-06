@@ -103,7 +103,12 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
     if (!standings) {
       return null;
     } else if (standings.length === 0) {
-      return null;
+      return (
+        <Empty
+          main="No standings"
+          sub={`${league.league_name} must have teams assigned to divisions`}
+        />
+      );
     } else {
       return standings.map((division, index) => {
         return <StandingsDivision key={index} division={division} />;
@@ -182,8 +187,9 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
       return (
         <Prompt
           show={showStartSeasonPrompt}
+          onHide={() => setShowStartSeasonPrompt(false)}
           main="New season"
-          sub="This will start a new season for your league"
+          sub={`This will start a new season for ${league.league_name}`}
           secondaryActionText="Cancel"
           primaryActionText="Continue"
           onSecondaryActionClick={() => setShowStartSeasonPrompt(false)}
@@ -255,7 +261,7 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
         </main>
         <div className="right-bar">
           <RightColumn>
-            <StandingsCard standings={standings} />
+            <StandingsCard standings={standings} league={league} />
           </RightColumn>
         </div>
       </div>

@@ -6,8 +6,9 @@ import standingsCard from "../sass/components/StandingsCard.module.scss";
 import TwitCard from "./TwitCard";
 import StandingsDivision from "./StandingsDivision";
 import Empty from "./Empty";
+import TwitSpinner from "./TwitSpinner";
 
-function StandingsCard({ standings }) {
+function StandingsCard({ standings, league }) {
   const router = useRouter();
 
   const renderFooter = () => {
@@ -23,10 +24,18 @@ function StandingsCard({ standings }) {
   };
 
   const renderDivisions = () => {
+    if (!league) {
+      return <Empty main="Empty" sub="No league affiliation" />;
+    }
     if (!standings) {
-      return <Empty main="No standings" sub="The league has no divisions" />;
+      return <TwitSpinner />;
     } else if (standings.length === 0) {
-      return null;
+      return (
+        <Empty
+          main="Empty"
+          sub={`${league.league_name} must have teams assigned to divisions`}
+        />
+      );
     } else {
       return standings.map((division, index) => {
         return (
