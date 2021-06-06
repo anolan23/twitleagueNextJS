@@ -1,19 +1,20 @@
-function ContentEditable({ initialValue, onChange }) {
-  const value = useRef(initialValue);
-
-  const handleInput = (event) => {
-    if (onChange) {
-      onChange(event.target.innerHTML);
-    }
-  };
-
+function ContentEditable({
+  className,
+  handleInput,
+  contentEditableRef,
+  html,
+  onKeyDown,
+}) {
   return (
     <div
+      className={className}
       contentEditable
       suppressContentEditableWarning
       onInput={handleInput}
-      dangerouslySetInnerHTML={{ __html: value.current }}
-    />
+      ref={contentEditableRef}
+      dangerouslySetInnerHTML={{ __html: html }}
+      onKeyDown={onKeyDown}
+    ></div>
   );
 }
 

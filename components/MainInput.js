@@ -36,17 +36,15 @@ function MainInput({
   inputRef,
 }) {
   const { user } = useUser();
-  const contentEditableRef = useRef(null);
+  const contentEditableRef = useRef();
   const hiddenFileInput = useRef(null);
   const dropdownRef = useRef(null);
   const [post, setPost] = useState({
     body: null,
     outlook: null,
   });
+  const html = useRef(initialValue);
   const [createdPost, setCreatedPost] = useState(null);
-  const [html, setHtml] = useState(
-    initialValue ? `<a class="twit-link" id="link">${initialValue}</a>` : ""
-  );
   const [showDropdown, setShowDropdown] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [options, setOptions] = useState([]);
@@ -71,10 +69,6 @@ function MainInput({
       window.removeEventListener("gif-click", onGifClick);
     };
   }, []);
-
-  useEffect(() => {
-    console.log("html changed");
-  }, [html]);
 
   const clickOutsideDropdown = (event) => {
     if (!dropdownRef.current) {
@@ -151,12 +145,13 @@ function MainInput({
     setShowDropdown(true);
   };
 
-  function handleChange(event) {
-    let text = event.currentTarget.innerText;
-    let newPost = { ...post, body: text };
+  function onChange(event) {
+    const { innerHTML, innerText, value } = event.currentTarget;
+    let replacedText = innerText;
+    let newPost = { ...post, body: replacedText };
     setPost(newPost);
     reactStringReplace(
-      text,
+      replacedText,
       /(https?:\/\/\w?w?w?.?youtube\S+)/g,
       (match, i) => {
         if (ReactPlayer.canPlay(match)) {
@@ -172,23 +167,23 @@ function MainInput({
         }
       }
     );
-    text = reactStringReplace(
-      text,
+    replacedText = reactStringReplace(
+      replacedText,
       /\$(\w+)/g,
       (match, i) => `<a class="twit-link" id="team">$${match}</a>`
     );
-    text = reactStringReplace(
-      text,
+    replacedText = reactStringReplace(
+      replacedText,
       /\@(\w+)/g,
       (match, i) => `<a class="twit-link" id="user">@${match}</a>`
     );
-    text = reactStringReplace(
-      text,
+    replacedText = reactStringReplace(
+      replacedText,
       /(https?:\/\/\S+)/g,
       (match, i) => `<a class="twit-link" id="link">${match}</a>`
     );
-    text = text.join("");
-    setHtml(text);
+    replacedText = replacedText.join("");
+    html.current = replacedText;
   }
 
   const handleKeyDown = (event) => {
@@ -221,7 +216,7 @@ function MainInput({
     setCreatedPost(_post);
     setMedia(null);
     setFiles(null);
-    setHtml("");
+    html.current = "";
     setShowAlert(true);
   };
 
@@ -242,7 +237,7 @@ function MainInput({
       setCreatedPost(_post);
       setMedia(null);
       setFiles(null);
-      setHtml("");
+      html.current = "";
       setShowAlert(true);
     }
   };
@@ -279,15 +274,15 @@ function MainInput({
         if (id === "team") {
           parentElement.innerHTML = `${option.abbrev}&nbsp;`;
           setCaret(contentEditableRef.current);
-          const html = contentEditableRef.current.innerHTML;
-          setHtml(html);
+          const _html = contentEditableRef.current.innerHTML;
+          html.current = _html;
           setShowDropdown(false);
           setCursor(0);
         } else if (id === "user") {
           parentElement.innerHTML = `@${option.username}&nbsp;`;
           setCaret(contentEditableRef.current);
-          const html = contentEditableRef.current.innerHTML;
-          setHtml(html);
+          const _html = contentEditableRef.current.innerHTML;
+          html.current = _html;
           setShowDropdown(false);
           setCursor(0);
         }
@@ -296,16 +291,16 @@ function MainInput({
   };
 
   const onMoneyClick = () => {
-    let _html = html;
+    let _html = html.current;
     _html = _html.concat("$");
-    setHtml(_html);
+    html.current = _html;
     contentEditableRef.current.focus();
   };
 
   const onAtClick = () => {
-    let _html = html;
+    let _html = html.current;
     _html = _html.concat("@");
-    setHtml(_html);
+    html.current = _html;
     contentEditableRef.current.focus();
   };
 
@@ -467,12 +462,12 @@ function MainInput({
         <div className={mainInput["main-input__text-area-container"]}>
           <ContentEditable
             className={`${mainInput["main-input__text-area"]} ${expandStyle}`}
-            innerRef={(ref) => refHandler(ref)}
-            html={html}
-            disabled={false}
-            onChange={handleChange}
-            placeholder={placeHolder}
+            onChange={onChange}
+            html={html.current}
+            innerRef={contentEditableRef}
             onKeyDown={onKeyDown}
+            disabled={false}
+            placeholder={placeHolder}
           />
           <div className={mainInput["main-input__dropdown-wrapper"]}>
             <TwitDropdown
