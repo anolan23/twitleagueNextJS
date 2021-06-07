@@ -94,10 +94,6 @@ export const toggleRosterModal = () => {
   return { type: "TOGGLE_ROSTER_MODAL" };
 };
 
-export const togglePopupCompose = () => {
-  return { type: "TOGGLE_POPUP_COMPOSE" };
-};
-
 export const togglePopupReply = () => {
   return { type: "TOGGLE_POPUP_REPLY" };
 };

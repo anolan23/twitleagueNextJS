@@ -347,6 +347,7 @@ function Team({
         show={showPopupCompose}
         onHide={() => setShowPopupCompose(false)}
         initialValue={team.abbrev}
+        onSubmit={onPostSubmit}
       />
     </React.Fragment>
   );

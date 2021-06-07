@@ -1,18 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { connect } from "react-redux";
 import reactStringReplace from "react-string-replace";
 import ContentEditable from "react-contenteditable";
 
 import mainInput from "../sass/components/MainInput.module.scss";
 import useUser from "../lib/useUser";
 import TwitButton from "./TwitButton";
-import {
-  toggleGifPopup,
-  saveCurrentPostText,
-  saveCurrentOutlook,
-  togglePopupCompose,
-  setMedia,
-} from "../actions";
 import TwitMedia from "./TwitMedia";
 import Avatar from "./Avatar";
 import TwitDropdown from "./TwitDropdown";
@@ -34,6 +26,7 @@ function MainInput({
   toggleGifPopup,
   initialValue,
   inputRef,
+  focusOnMount,
 }) {
   const { user } = useUser();
   const contentEditableRef = useRef();
@@ -43,7 +36,7 @@ function MainInput({
     body: null,
     outlook: null,
   });
-  const html = useRef(initialValue);
+  const html = useRef(initialValue ? `${initialValue} ` : "");
   const [createdPost, setCreatedPost] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -63,6 +56,13 @@ function MainInput({
   useEffect(() => {
     window.addEventListener("click", clickOutsideDropdown);
     window.addEventListener("gif-click", onGifClick);
+    if (focusOnMount) {
+      setCaret(contentEditableRef.current);
+    }
+    if (initialValue) {
+      const { innerText } = contentEditableRef.current;
+      html.current = textToHtml(innerText);
+    }
 
     return () => {
       window.removeEventListener("click", clickOutsideDropdown);
@@ -90,11 +90,11 @@ function MainInput({
       const parentElement = selection.anchorNode.parentElement;
       if (parentElement) {
         const id = parentElement.id;
-        const search = parentElement.innerText;
+        const { innerText } = parentElement;
         if (id === "team") {
-          teamSearch(search);
+          teamSearch(innerText);
         } else if (id === "user") {
-          userSearch(search);
+          userSearch(innerText);
         } else if (event.keyCode !== 38 && event.keyCode !== 40) {
           setShowDropdown(false);
           setCursor(0);
@@ -146,44 +146,9 @@ function MainInput({
   };
 
   function onChange(event) {
-    const { innerHTML, innerText, value } = event.currentTarget;
-    let replacedText = innerText;
-    let newPost = { ...post, body: replacedText };
-    setPost(newPost);
-    reactStringReplace(
-      replacedText,
-      /(https?:\/\/\w?w?w?.?youtube\S+)/g,
-      (match, i) => {
-        if (ReactPlayer.canPlay(match)) {
-          let media = [
-            {
-              location: match,
-              type: "link",
-            },
-          ];
-          setMedia(media);
-        } else {
-          setMedia(null);
-        }
-      }
-    );
-    replacedText = reactStringReplace(
-      replacedText,
-      /\$(\w+)/g,
-      (match, i) => `<a class="twit-link" id="team">$${match}</a>`
-    );
-    replacedText = reactStringReplace(
-      replacedText,
-      /\@(\w+)/g,
-      (match, i) => `<a class="twit-link" id="user">@${match}</a>`
-    );
-    replacedText = reactStringReplace(
-      replacedText,
-      /(https?:\/\/\S+)/g,
-      (match, i) => `<a class="twit-link" id="link">${match}</a>`
-    );
-    replacedText = replacedText.join("");
-    html.current = replacedText;
+    const { innerText } = event.currentTarget;
+    let prettyHtml = textToHtml(innerText);
+    html.current = prettyHtml;
   }
 
   const handleKeyDown = (event) => {
@@ -220,7 +185,7 @@ function MainInput({
     setShowAlert(true);
   };
 
-  const onMainInputSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (files) {
       let promises = [];
@@ -268,21 +233,26 @@ function MainInput({
   const onOptionClick = (option) => {
     const selection = getSelection();
     if (selection.type === "Caret") {
-      const parentElement = selection.anchorNode.parentElement;
+      const { parentElement } = selection.anchorNode;
       if (parentElement) {
+        console.log(parentElement);
         const id = parentElement.id;
         if (id === "team") {
-          parentElement.innerHTML = `${option.abbrev}&nbsp;`;
-          setCaret(contentEditableRef.current);
+          parentElement.innerText = `${option.abbrev} `;
           const _html = contentEditableRef.current.innerHTML;
           html.current = _html;
+          setCaret(contentEditableRef.current);
+
           setShowDropdown(false);
           setCursor(0);
         } else if (id === "user") {
-          parentElement.innerHTML = `@${option.username}&nbsp;`;
-          setCaret(contentEditableRef.current);
+          parentElement.innerText = `@${option.username} `;
           const _html = contentEditableRef.current.innerHTML;
           html.current = _html;
+          setCaret(contentEditableRef.current);
+          setShowDropdown(false);
+          setCursor(0);
+        } else {
           setShowDropdown(false);
           setCursor(0);
         }
@@ -451,7 +421,7 @@ function MainInput({
             ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}`
             : mainInput["main-input"]
         }
-        onSubmit={onMainInputSubmit}
+        onSubmit={handleSubmit}
         onKeyDown={handleKeyDown}
       >
         <Avatar
@@ -538,12 +508,46 @@ function MainInput({
       />
     </React.Fragment>
   );
+
+  function textToHtml(text) {
+    let replacedText = text;
+    let newPost = { ...post, body: replacedText };
+    setPost(newPost);
+    reactStringReplace(
+      replacedText,
+      /(https?:\/\/\w?w?w?.?youtube\S+)/g,
+      (match, i) => {
+        if (ReactPlayer.canPlay(match)) {
+          let media = [
+            {
+              location: match,
+              type: "link",
+            },
+          ];
+          setMedia(media);
+        } else {
+          setMedia(null);
+        }
+      }
+    );
+    replacedText = reactStringReplace(
+      replacedText,
+      /\$(\w+)/g,
+      (match, i) => `<a class="twit-link" id="team">$${match}</a>`
+    );
+    replacedText = reactStringReplace(
+      replacedText,
+      /\@(\w+)/g,
+      (match, i) => `<a class="twit-link" id="user">@${match}</a>`
+    );
+    replacedText = reactStringReplace(
+      replacedText,
+      /(https?:\/\/\S+)/g,
+      (match, i) => `<a class="twit-link" id="link">${match}</a>`
+    );
+    replacedText = replacedText.join("");
+    return replacedText;
+  }
 }
 
-export default connect(null, {
-  toggleGifPopup,
-  saveCurrentPostText,
-  saveCurrentOutlook,
-  togglePopupCompose,
-  setMedia,
-})(MainInput);
+export default MainInput;

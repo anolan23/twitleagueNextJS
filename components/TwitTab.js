@@ -1,22 +1,24 @@
-import React from "react"
+import React from "react";
 import twitTabs from "../sass/components/TwitTabs.module.scss";
 
+function TwitTab({ active, onClick, id, title }) {
+  const handleClick = (event) => {
+    event.preventDefault();
+    onClick(event);
+  };
 
-function TwitTab(props){
-
-    const active = () => {
-        if(props.active){
-            return `${twitTabs["twit-tabs__tab"]} ${twitTabs["twit-tabs__tab--active"]}`;
-        }
-        else{
-            return twitTabs["twit-tabs__tab"];
-        }
+  const calcActive = () => {
+    if (active) {
+      return `${twitTabs["twit-tabs__tab"]} ${twitTabs["twit-tabs__tab--active"]}`;
+    } else {
+      return twitTabs["twit-tabs__tab"];
     }
-    return(
-            <div onClick={props.onClick} className={active()} id={props.id}>
-                {props.title}
-            </div>
-    )
+  };
+  return (
+    <div onClick={handleClick} className={calcActive()} id={id}>
+      {title}
+    </div>
+  );
 }
 
 export default TwitTab;

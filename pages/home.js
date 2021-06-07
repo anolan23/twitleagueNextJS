@@ -70,6 +70,7 @@ function HomePage() {
       <PopupCompose
         show={showPopupCompose}
         onHide={() => setShowPopupCompose(false)}
+        onSubmit={onPostSubmit}
       />
     </React.Fragment>
   );
