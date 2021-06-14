@@ -121,6 +121,7 @@ function User(props) {
             avatar={user.avatar}
             title={user.name}
             subtitle={`@${user.username}`}
+            onClick={() => router.push(`/users/${user.username}`)}
             actionText="Scout"
             paragraph="The most beautiful thing we can experience is the mysterious. It is the source of all true art and science"
           />

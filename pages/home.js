@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 import useUser from "../lib/useUser";
 import { fetchHomeTimeline } from "../actions";
@@ -16,9 +17,11 @@ import LeftColumn from "../components/LeftColumn";
 import RightColumn from "../components/RightColumn";
 import InfiniteList from "../components/InfiniteList";
 import PopupCompose from "../components/modals/PopupCompose";
+import Empty from "../components/Empty";
 
 function HomePage() {
   const { user } = useUser({ redirectTo: "/" });
+  const router = useRouter();
   const [posts, setPosts] = useState(null);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
 
@@ -54,6 +57,14 @@ function HomePage() {
               }
               list={posts}
               updateList={(posts) => setPosts(posts)}
+              empty={
+                <Empty
+                  main="Empty"
+                  sub="Your timeline is empty. Follow teams and scout users to fill your timeline"
+                  onActionClick={() => router.push("/suggested")}
+                  actionText="Let's go"
+                />
+              }
             >
               <Post user={user} />
             </InfiniteList>

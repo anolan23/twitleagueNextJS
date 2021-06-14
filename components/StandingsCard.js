@@ -8,7 +8,7 @@ import StandingsDivision from "./StandingsDivision";
 import Empty from "./Empty";
 import TwitSpinner from "./TwitSpinner";
 
-function StandingsCard({ standings, league }) {
+function StandingsCard({ standings, league, title }) {
   const router = useRouter();
 
   const renderFooter = () => {
@@ -52,7 +52,7 @@ function StandingsCard({ standings, league }) {
   };
 
   return (
-    <TwitCard title="Standings" footer={renderFooter()} color="clear">
+    <TwitCard title={title} footer={renderFooter()} color="clear">
       {renderDivisions()}
     </TwitCard>
   );

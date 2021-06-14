@@ -7,7 +7,11 @@ import Count from "./Count";
 import Linkify from "./Linkify";
 import TwitSpinner from "./TwitSpinner";
 
-function Infogram({ action, info, href }) {
+function Infogram({ action, info, href, show }) {
+  if (!show) {
+    return null;
+  }
+
   const router = useRouter();
 
   const onAvatarClick = (event) => {
@@ -29,7 +33,7 @@ function Infogram({ action, info, href }) {
 
   if (!info) {
     return (
-      <dialog className={infogram["infogram"]} open>
+      <dialog className={infogram["infogram"]} open={show}>
         <TwitSpinner />
       </dialog>
     );

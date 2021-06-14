@@ -1,86 +1,96 @@
 import React from "react";
 
-import autoCompleteInput from "../../sass/components/AutoCompleteInput.module.scss"
+import autoCompleteInput from "../../sass/components/AutoCompleteInput.module.scss";
 import TwitDropdown from "../TwitDropdown";
 
-function AutoCompleteInput(props) {
+function AutoCompleteInput({
+  id,
+  onChange,
+  value,
+  name,
+  type,
+  placeHolder,
+  className,
+  autoComplete,
+  show,
+  children,
+}) {
+  //   const renderTeams = () => {
+  //     if (!teamOptions) {
+  //       return null;
+  //     } else {
+  //       return (
+  //         <React.Fragment>
+  //           <div className={autoCompleteInput["auto-complete-input__header"]}>
+  //             <span
+  //               className={autoCompleteInput["auto-complete-input__header__text"]}
+  //             >
+  //               Teams
+  //             </span>
+  //           </div>
+  //           {teamOptions}
+  //         </React.Fragment>
+  //       );
+  //     }
+  //   };
 
-    const renderTeams = () => {
+  //   const renderLeagues = () => {
+  //     if (!leagueOptions) {
+  //       return null;
+  //     } else {
+  //       return (
+  //         <React.Fragment>
+  //           <div className={autoCompleteInput["auto-complete-input__header"]}>
+  //             <span
+  //               className={autoCompleteInput["auto-complete-input__header__text"]}
+  //             >
+  //               Leagues
+  //             </span>
+  //           </div>
+  //           {leagueOptions}
+  //         </React.Fragment>
+  //       );
+  //     }
+  //   };
 
-        if(!props.teamOptions){
-            return null
+  //   const renderUsers = () => {
+  //     if (!peopleOptions) {
+  //       return null;
+  //     } else {
+  //       return (
+  //         <React.Fragment>
+  //           <div className={autoCompleteInput["auto-complete-input__header"]}>
+  //             <span
+  //               className={autoCompleteInput["auto-complete-input__header__text"]}
+  //             >
+  //               Users
+  //             </span>
+  //           </div>
+  //           {peopleOptions}
+  //         </React.Fragment>
+  //       );
+  //     }
+  //   };
+
+  return (
+    <React.Fragment>
+      <input
+        id={id}
+        onChange={onChange}
+        value={value}
+        name={name}
+        type={type}
+        placeholder={placeHolder}
+        className={
+          className ? className : autoCompleteInput["auto-complete-input"]
         }
-        else {
-            return (
-                <React.Fragment>
-                    <div className={autoCompleteInput["auto-complete-input__header"]}>
-                        <span className={autoCompleteInput["auto-complete-input__header__text"]}>Teams</span>
-                    </div>
-                    {props.teamOptions}
-                </React.Fragment>
-            );
-        }
-        
-    }
-
-    const renderLeagues = () => {
-
-        if(!props.leagueOptions){
-            return null
-        }
-        else {
-            return (
-                <React.Fragment>
-                    <div className={autoCompleteInput["auto-complete-input__header"]}>
-                        <span className={autoCompleteInput["auto-complete-input__header__text"]}>Leagues</span>
-                    </div>
-                    {props.leagueOptions}
-                </React.Fragment>
-            );
-        }
-        
-    }
-
-    const renderUsers = () => {
-
-        if(!props.peopleOptions){
-            return null
-        }
-        else {
-            return (
-                <React.Fragment>
-                    <div className={autoCompleteInput["auto-complete-input__header"]}>
-                        <span className={autoCompleteInput["auto-complete-input__header__text"]}>Users</span>
-                    </div>
-                    {props.peopleOptions}
-                </React.Fragment>
-            );
-        }
-        
-    }
-
-    return (
-        <React.Fragment>
-            <input 
-                id = {props.id}
-                onChange={props.onChange}
-                value={props.value}
-                name={props.name}
-                type={props.type}
-                placeholder={props.placeholder} 
-                className={props.className?props.className:autoCompleteInput["auto-complete-input"]} 
-                autoComplete={props.autoComplete}
-            />
-            <div className={autoCompleteInput["auto-complete-input__dropdown"]}>
-                <TwitDropdown show={props.show  && (props.peopleOptions || props.teamOptions || props.leagueOptions)}>
-                    {renderTeams()}
-                    {renderUsers()}
-                    {renderLeagues()}
-                </TwitDropdown>
-            </div>
-        </React.Fragment>
-        
-    );
+        autoComplete={autoComplete}
+      />
+      <div className={autoCompleteInput["auto-complete-input__dropdown"]}>
+        <TwitDropdown show={show}>{children}</TwitDropdown>
+      </div>
+    </React.Fragment>
+  );
 }
 
 export default AutoCompleteInput;

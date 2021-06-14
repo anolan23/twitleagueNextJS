@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 import useUser from "../lib/useUser";
 import MainBody from "../components/MainBody";
@@ -13,6 +14,7 @@ import TwitSpinner from "../components/TwitSpinner";
 
 function MyLeagues() {
   const { user } = useUser({ redirectTo: "/" });
+  const router = useRouter();
   const [leagues, setLeagues] = useState(null);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ function MyLeagues() {
             key={index}
             title={league.league_name}
             subtitle={league.sport}
-            href={`/leagues/${league.league_name}`}
+            onClick={() => router.push(`/leagues/${league.league_name}`)}
             avatar={league.avatar}
           />
         );
@@ -62,7 +64,10 @@ function MyLeagues() {
       <MainBody>
         <div className={myTeams["my-teams"]}>
           <TopBar main="My Leagues">
-            <TwitButton href="/create/league" color="primary">
+            <TwitButton
+              onClick={() => router.push("/leagues/create")}
+              color="primary"
+            >
               Create league
             </TwitButton>
           </TopBar>

@@ -27,7 +27,7 @@ import Prompt from "./modals/Prompt";
 import Linkify from "./Linkify";
 import TwitCard from "./TwitCard";
 import TwitDate from "../lib/twit-date";
-import { numberSuffix } from "../lib/twit-helpers";
+import { numberSuffix, getSeasonString } from "../lib/twit-helpers";
 
 function TeamProfile({ team, standings, onAvatarClick }) {
   const { user } = useUser();
@@ -135,7 +135,7 @@ function TeamProfile({ team, standings, onAvatarClick }) {
         <React.Fragment>
           <div className={teamProfile["team-profile__info__season"]}>
             {team.current_season
-              ? `${TwitDate.getYear(team.current_season.created_at)} Season - `
+              ? getSeasonString(team.current_season, team.seasons)
               : null}
           </div>
           <div className={teamProfile["team-profile__info__record"]}>
@@ -192,7 +192,7 @@ function TeamProfile({ team, standings, onAvatarClick }) {
             />
             <Attribute
               icon={"/sprites.svg#icon-home"}
-              text={`Joined ${team.joined}`}
+              text={`Joined ${TwitDate.localeDateString(team.created_at)}`}
             />
           </div>
           <div className={teamProfile["team-profile__counts"]}>

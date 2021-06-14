@@ -1,121 +1,168 @@
-import React, {useState, useEffect, useRef} from "react";
-import {useFormik} from "formik";
+import React, { useState, useEffect, useRef } from "react";
+import { useFormik } from "formik";
 import Link from "next/link";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
 import AutoCompleteInput from "./AutoCompleteInput";
 import TwitItem from "../TwitItem";
 import backend from "../../lib/backend";
+import Divide from "../Divide";
 
-function TwitSearch(props) {
+function TwitSearch({ placeHolder }) {
+  const [options, setOptions] = useState([]);
+  const [show, setShow] = useState(false);
+  const ref = useRef();
+  const router = useRouter();
 
-    const [options, setOptions] = useState([]);
-    const [show, setShow] = useState(false);
-    const ref = useRef();
-    const router = useRouter();
+  const formik = useFormik({
+    initialValues: { query: "" },
+    onSubmit: (values) => {
+      router.push({
+        pathname: "/search",
+        query: { query: values.query },
+      });
+      setShow(false);
+    },
+  });
 
-    const formik = useFormik({
-        initialValues: {query: ""},
-        onSubmit: values => {
-            router.push({
-                pathname: '/search',
-                query: {query: values.query}
-            });
-            setShow(false);
-        }
-        
+  useEffect(() => {
+    document.body.addEventListener("click", clickOutsideInput);
+    return () => {
+      document.body.removeEventListener("click", clickOutsideInput);
+    };
+  }, []);
+
+  const clickOutsideInput = (event) => {
+    if (!ref.current) {
+      return;
+    }
+    if (ref.current.contains(event.target)) {
+      return;
+    } else {
+      setShow(false);
+    }
+  };
+
+  const onChange = (event) => {
+    const query = event.target.value;
+    formik.handleChange(event);
+    if (query) {
+      search(query);
+    } else {
+      setShow(false);
+    }
+  };
+
+  const search = async (query) => {
+    const results = await backend.get("api/search", {
+      params: { query },
     });
 
-    useEffect(() => {
-        document.body.addEventListener("click", clickOutsideInput);
-        return () => {
-            document.body.removeEventListener("click", clickOutsideInput);
-          }
-    }, [])
+    setOptions(results.data);
+    setShow(true);
+  };
 
-    const clickOutsideInput = (event) => {
-        if(!ref.current){
-            return;
-        }
-        if(ref.current.contains(event.target)){
-            return;
-        }
-        setShow(false);
+  const renderTeams = () => {
+    if (!options.teams || options.teams.length === 0) {
+      return null;
     }
-
-    const onChange = (event) => {
-        const searchTerm = event.target.value;
-        formik.handleChange(event);
-        if(searchTerm){
-            search(searchTerm);
-        }
-        else{
+    return options.teams.map((option, index) => {
+      return (
+        <TwitItem
+          onClick={() => {
             setShow(false);
-        }
-    }
+            formik.resetForm();
+            router.push(`/teams/${option.abbrev.substring(1)}`);
+          }}
+          avatar={option.avatar}
+          title={option.team_name}
+          subtitle={option.abbrev}
+          key={index}
+          small
+        />
+      );
+    });
+  };
 
-    const search = async (term) => {
-        const {data} = await backend.get("api/search", {
-            params: {searchTerm: term}
-        });
-
-        setOptions(data);
-        setShow(true);
+  const renderUsers = () => {
+    if (!options.users || options.users.length === 0) {
+      return null;
     }
+    return options.users.map((option, index) => {
+      return (
+        <TwitItem
+          onClick={() => {
+            setShow(false);
+            formik.resetForm();
+            router.push(`/users/${option.username}`);
+          }}
+          avatar={option.avatar}
+          title={option.name}
+          subtitle={option.username}
+          key={index}
+          small
+        />
+      );
+    });
+  };
 
-    const renderTeams = () => {
-        if(!options.teams || options.teams.length === 0){
-            return null;
-        }
-        return options.teams.map((option, index) => {
-            return (
-                        <TwitItem 
-                            href={`/teams/${option.abbrev.substring(1)}`}
-                            avatar={option.avatar}
-                            title={option.team_name} 
-                            subtitle={option.abbrev.substring(1)}
-                            key={index} 
-                        />
-                    );
-        });
+  const renderLeagues = () => {
+    if (!options.leagues || options.leagues.length === 0) {
+      return null;
     }
+    return options.leagues.map((option, index) => {
+      return (
+        <TwitItem
+          onClick={() => {
+            setShow(false);
+            formik.resetForm();
+            router.push(`/leagues/${option.league_name}`);
+          }}
+          avatar={option.avatar}
+          title={option.league_name}
+          subtitle={`${option.sport} league`}
+          key={index}
+          small
+        />
+      );
+    });
+  };
 
-    const renderUsers = () => {
-        if(!options.users || options.users.length === 0){
-            return null;
-        }
-        return options.users.map((option, index) => {
-            return (
-                        <TwitItem 
-                            href={`/users/${option.username}`}
-                            avatar={option.avatar}
-                            title={option.name} 
-                            subtitle={option.username} 
-                            key={index}
-                        />
-                    );
-        });
+  const renderOptions = () => {
+    if (!options.leagues && !options.teams && !options.users) {
+      return <div>Spinner</div>;
+    } else {
+      return (
+        <React.Fragment>
+          {renderLeagues()}
+          <Divide />
+          {renderTeams()}
+          <Divide />
+          {renderUsers()}
+        </React.Fragment>
+      );
     }
+  };
 
-        return (
-            <form ref={ref} onSubmit={formik.handleSubmit} style={{width:"100%", position:"relative"}}>
-                <AutoCompleteInput
-                    onChange={onChange}
-                    value={formik.values.query}
-                    name="query" 
-                    type="text" 
-                    placeholder={props.placeHolder}  
-                    autoComplete="off"
-                    show={show}
-                    teamOptions={renderTeams()}
-                    teamHeader="Team"
-                    peopleOptions={renderUsers()}
-                    peopleHeader="People"
-                /> 
-            </form>
-          
-            
-        );
-    }
+  return (
+    <form
+      ref={ref}
+      onSubmit={formik.handleSubmit}
+      style={{ width: "100%", position: "relative" }}
+    >
+      <AutoCompleteInput
+        onChange={onChange}
+        value={formik.values.query}
+        name="query"
+        type="text"
+        placeHolder={placeHolder}
+        autoComplete="off"
+        show={show}
+      >
+        {renderOptions()}
+      </AutoCompleteInput>
+    </form>
+  );
+}
 
 export default TwitSearch;

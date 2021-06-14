@@ -3,18 +3,18 @@ import React from "react";
 import empty from "../sass/components/Empty.module.scss";
 import TwitButton from "./TwitButton";
 
-function Empty(props) {
+function Empty({ onActionClick, actionText, actionHref, main, sub }) {
   const renderAction = () => {
-    if (props.onActionClick) {
+    if (onActionClick) {
       return (
-        <TwitButton onClick={props.onActionClick} color="primary">
-          {props.actionText}
+        <TwitButton onClick={onActionClick} color="primary">
+          {actionText}
         </TwitButton>
       );
-    } else if (props.actionHref) {
+    } else if (actionHref) {
       return (
-        <TwitButton href={props.actionHref} color="primary">
-          {props.actionText}
+        <TwitButton href={actionHref} color="primary">
+          {actionText}
         </TwitButton>
       );
     }
@@ -22,8 +22,8 @@ function Empty(props) {
 
   return (
     <div className={empty["empty"]}>
-      <h2 className={empty["empty__main"]}>{props.main}</h2>
-      <p className={empty["empty__sub"]}>{props.sub}</p>
+      <h2 className={empty["empty__main"]}>{main}</h2>
+      <p className={empty["empty__sub"]}>{sub}</p>
       <div className={empty["empty__action"]}>{renderAction()}</div>
     </div>
   );

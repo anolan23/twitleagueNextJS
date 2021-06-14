@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import { connect } from "react-redux";
+import { useRouter } from "next/router";
 
 import { findTeamsByUsername } from "../actions";
 import MainBody from "../components/MainBody";
@@ -14,6 +14,7 @@ import TwitSpinner from "../components/TwitSpinner";
 
 function MyTeams() {
   const { user } = useUser({ redirectTo: "/" });
+  const router = useRouter();
   const [teams, setTeams] = useState(null);
 
   useEffect(() => {
@@ -44,9 +45,9 @@ function MyTeams() {
             avatar={team.avatar}
             title={`${team.team_name}`}
             subtitle={`${team.abbrev} · ${
-              team.league_name ? team.league_name : "awaiting league approval"
+              team.league_name ? team.league_name : "No league affiliation"
             }`}
-            href={`/teams/${team.abbrev.substring(1)}`}
+            onClick={() => router.push(`/teams/${team.abbrev.substring(1)}`)}
           />
         );
       });
@@ -62,7 +63,10 @@ function MyTeams() {
       <MainBody>
         <div className={myTeams["my-teams"]}>
           <TopBar main="My Teams">
-            <TwitButton href="/create/team" color="primary">
+            <TwitButton
+              onClick={() => router.push("/teams/create")}
+              color="primary"
+            >
               Create team
             </TwitButton>
           </TopBar>

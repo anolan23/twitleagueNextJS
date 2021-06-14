@@ -24,6 +24,7 @@ import {
   findSeasonsByLeagueName,
   fetchRoster,
 } from "../../actions";
+import { getSeasonString } from "../../lib/twit-helpers";
 import TopBar from "../../components/TopBar";
 import TwitItem from "../../components/TwitItem";
 import team from "../../sass/components/Team.module.scss";
@@ -107,8 +108,10 @@ function Team({
   const renderEmptyPosts = () => {
     return (
       <Empty
-        main="No mentions"
+        main="Empty"
         sub={`${team.abbrev} hasn't been mentioned in a post yet`}
+        onActionClick={() => setShowPopupCompose(true)}
+        actionText="Be the first"
       />
     );
   };
@@ -131,7 +134,7 @@ function Team({
           infiniteLoaderRef={postsLoaderRef}
           empty={renderEmptyPosts()}
         >
-          <Post />
+          <Post user={user} />
         </InfiniteList>
       );
     } else if (tab === "roster") {
@@ -154,6 +157,7 @@ function Team({
         return team.roster.map((player, index) => {
           return (
             <TwitItem
+              onClick={() => router.push(`/users/${player.username}`)}
               key={index}
               avatar={player.avatar}
               title={player.name}
@@ -233,16 +237,14 @@ function Team({
       const options = team.seasons.map((_season) => {
         return {
           ..._season,
-          text: `${TwitDate.getYear(selectedSeason.created_at)} Season - `,
+          text: getSeasonString(_season, team.seasons),
         };
       });
       return (
         <TwitSelect
           onSelect={fetchEventsBySeasonId}
           options={options}
-          defaultValue={`${TwitDate.getYear(
-            selectedSeason.created_at
-          )} Season - `}
+          defaultValue={getSeasonString(team.current_season, team.seasons)}
         />
       );
     }
@@ -333,7 +335,15 @@ function Team({
         </main>
         <div className="right-bar">
           <RightColumn>
-            <StandingsCard standings={standings} league={team.league} />
+            <StandingsCard
+              standings={standings}
+              league={team.league}
+              title={
+                team.current_season
+                  ? getSeasonString(team.current_season, team.seasons)
+                  : "Standings"
+              }
+            />
           </RightColumn>
         </div>
       </div>

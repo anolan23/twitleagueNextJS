@@ -67,7 +67,7 @@ function TwitPanel(props){
                         <TwitPanelItem text="Profile" href={`/users/${props.username}`} onClick={props.togglePanel}>
                             <use xlinkHref="/sprites.svg#icon-user"/>
                         </TwitPanelItem>
-                        <TwitPanelItem text="Create team" href="/create/team" onClick={props.togglePanel}>
+                        <TwitPanelItem text="Create team" href="/teams/create" onClick={props.togglePanel}>
                             <use xlinkHref="/sprites.svg#icon-plus"/>
                         </TwitPanelItem>
                         <TwitPanelItem text="My teams" href="/myTeams" onClick={props.togglePanel}>

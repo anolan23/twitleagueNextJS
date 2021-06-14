@@ -15,53 +15,29 @@ import {
 import { truncate } from "../lib/twit-helpers";
 import TwitMedia from "./TwitMedia";
 import Like from "./Like";
+import Linkify from "./Linkify";
 
-function ActivePost(props) {
+function ActivePost({ post, trackClickedPost }) {
   const { user } = useUser();
-  const [liked, setLiked] = useState(props.post.liked);
-  const [likes, setLikes] = useState(props.post.likes);
+  const [liked, setLiked] = useState(post.liked);
+  const [likes, setLikes] = useState(post.likes);
 
   useEffect(() => {
-    setLiked(props.post.liked);
-  }, [props.post.liked]);
+    setLiked(post.liked);
+  }, [post.liked]);
 
   useEffect(() => {
-    setLikes(props.post.likes);
-  }, [props.post.likes]);
+    setLikes(post.likes);
+  }, [post.likes]);
 
   const renderBody = () => {
-    const text = props.post.body;
-    let replacedText;
-    replacedText = reactStringReplace(text, /\$(\w+)/g, (match, i) => (
-      <Link key={match + i} href={`/teams/${match}`}>
-        <a className="twit-link">${match}</a>
-      </Link>
-    ));
-
-    replacedText = reactStringReplace(replacedText, /@(\w+)/g, (match, i) => (
-      <Link key={match + i} href={`/users/${match}`}>
-        <a className="twit-link">@{match}</a>
-      </Link>
-    ));
-
-    replacedText = reactStringReplace(
-      replacedText,
-      /(https?:\/\/\S+)/g,
-      (match, i) => (
-        <Link key={match + i} href={match}>
-          <a onClick={(e) => e.stopPropagation()} className="twit-link">
-            {truncate(match, 35)}
-          </a>
-        </Link>
-      )
-    );
-
-    return replacedText;
+    const string = post.body;
+    return <Linkify string={string} user={user} hasTwitLinks />;
   };
 
   const renderMedia = () => {
-    if (props.post.media) {
-      return <TwitMedia media={props.post.media} />;
+    if (post.media) {
+      return <TwitMedia media={post.media} />;
     } else {
       return null;
     }
@@ -73,11 +49,11 @@ function ActivePost(props) {
       return;
     } else {
       if (!liked) {
-        await likePost(props.post.id, user.id);
+        await likePost(post.id, user.id);
         setLiked(true);
         setLikes((likes) => parseInt(likes) + 1);
       } else {
-        await unLikePost(props.post.id, user.id);
+        await unLikePost(post.id, user.id);
         setLiked(false);
         setLikes((likes) => parseInt(likes) - 1);
       }
@@ -86,8 +62,8 @@ function ActivePost(props) {
 
   const onReplyClick = (event) => {
     event.stopPropagation();
-    props.trackClickedPost(props.post);
-    props.togglePopupReply();
+    trackClickedPost(post);
+    togglePopupReply();
   };
 
   return (
@@ -95,21 +71,21 @@ function ActivePost(props) {
       <div className={activePost["active-post__user"]}>
         <Avatar
           className={activePost["active-post__avatar"]}
-          src={props.post.avatar}
+          src={post.avatar}
         />
         <div className={activePost["active-post__user-text"]}>
           <span className={activePost["active-post__name"]}>
-            {props.post.name}
+            {post.name}
           </span>
           <span
             className={activePost["active-post__username"]}
-          >{`@${props.post.username}`}</span>
+          >{`@${post.username}`}</span>
         </div>
       </div>
       <div className={activePost["active-post__body"]}>{renderBody()}</div>
       {renderMedia()}
       <div className={activePost["active-post__timestamp"]}>
-        {props.post.date} · twitleague Web App
+        {post.date} · twitleague Web App
       </div>
       <div className={activePost["active-post__stats"]}>
         <div className={activePost["active-post__stat-box"]}>

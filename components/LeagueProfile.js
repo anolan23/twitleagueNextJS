@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import Profile from "./Profile";
 import TwitDate from "../lib/twit-date";
+import { getSeasonString } from "../lib/twit-helpers";
 import useUser from "../lib/useUser";
 import leagueProfile from "../sass/components/LeagueProfile.module.scss";
 import TwitButton from "./TwitButton";
@@ -45,7 +46,7 @@ function LeagueProfile({ league, onAvatarClick }) {
       return (
         <div className={leagueProfile["league-profile__info__season"]}>
           {league.current_season
-            ? `${TwitDate.getYear(league.current_season.created_at)} Season - `
+            ? getSeasonString(league.current_season, league.seasons)
             : null}
         </div>
       );
@@ -73,6 +74,9 @@ function LeagueProfile({ league, onAvatarClick }) {
             <h1 className="heading-1">{league.league_name}</h1>
           </div>
           {renderSeason()}
+          <Link href={`/leagues/${league.league_name}/seasons`} passHref>
+            <a className="twit-link">View all seasons</a>
+          </Link>
           {league.bio ? (
             <p
               className={leagueProfile["league-profile__info__bio"] + " muted"}
@@ -85,7 +89,7 @@ function LeagueProfile({ league, onAvatarClick }) {
             <Attribute icon={"/sprites.svg#icon-map-pin"} text={league.sport} />
             <Attribute
               icon={"/sprites.svg#icon-home"}
-              text={`Joined ${league.joined}`}
+              text={`Joined ${TwitDate.localeDateString(league.created_at)}`}
             />
           </div>
           <div className={leagueProfile["league-profile__counts"]}>

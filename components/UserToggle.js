@@ -70,7 +70,7 @@ function UserToggle(props) {
               avatar={user.avatar}
               title={user.name}
               subtitle={`@${user.username}`}
-              href={`/users/${user.username}`}
+              onClick={() => router.push(`/users/${user.username}`)}
             />
             <TwitDropdownItem onClick={logOut}>Log out</TwitDropdownItem>
           </TwitDropdown>

@@ -106,7 +106,9 @@ function CreateLeague(props) {
             </div>
           ) : null}
         </div>
-        <TwitButton square>Create league</TwitButton>
+        <TwitButton expanded color="primary" size="large">
+          Create league
+        </TwitButton>
       </form>
     </div>
   );

@@ -11,13 +11,22 @@ import ScoutButton from "./ScoutButton";
 function TwitLink({ href, children, className, getInfo, type, ...props }) {
   const { user } = useUser();
   const [info, setInfo] = useState(props.info);
+  const [showInfogram, setShowInfogram] = useState(false);
+  let timer;
 
   const onMouseEnter = async (event) => {
-    
-    if (!info) {
-      const info = await getInfo();
-      setInfo(info);
-    }
+    timer = setTimeout(async () => {
+      setShowInfogram(true);
+      if (!info) {
+        const info = await getInfo();
+        setInfo(info);
+      }
+    }, 1000);
+  };
+
+  const onMouseLeave = (event) => {
+    clearTimeout(timer);
+    setShowInfogram(false);
   };
 
   const renderAction = () => {
@@ -49,6 +58,7 @@ function TwitLink({ href, children, className, getInfo, type, ...props }) {
       case "team":
         return (
           <Infogram
+            show={showInfogram}
             action={renderAction()}
             info={
               info
@@ -62,6 +72,7 @@ function TwitLink({ href, children, className, getInfo, type, ...props }) {
       case "user":
         return (
           <Infogram
+            show={showInfogram}
             action={renderAction()}
             info={
               info
@@ -78,7 +89,11 @@ function TwitLink({ href, children, className, getInfo, type, ...props }) {
   };
 
   return (
-    <div className={twitLink["twit-link"]} onMouseEnter={onMouseEnter}>
+    <div
+      className={twitLink["twit-link"]}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <Link href={href} passHref>
         <a className={className} onClick={(e) => e.stopPropagation()}>
           {children}

@@ -90,21 +90,28 @@ class Seasons {
   static async findByLeagueName(leagueName) {
     const { rows } = await pool.query(
       `
-        SELECT seasons.*,
-        RANK() OVER(ORDER BY seasons.created_at) AS season,
-        CASE 
-        WHEN end_date IS NULL 
-            THEN to_char(seasons.created_at, '(Mon DDth, YYYY)')
-        ELSE
-        to_char(seasons.created_at, '(Mon DDth, YYYY - ') || to_char(seasons.end_date, 'Mon DDth, YYYY)')
-        END AS text
+        SELECT seasons.*
         FROM seasons
         JOIN leagues ON leagues.id = seasons.league_id
-        WHERE leagues.league_name = $1`,
+        WHERE leagues.league_name = $1
+        ORDER BY created_at DESC`,
       [leagueName]
     );
 
     return rows;
+  }
+
+  static async findById(seasonId) {
+    const { rows } = await pool.query(
+      `
+      SELECT *
+      FROM seasons
+      JOIN leagues ON leagues.id = seasons.league_id
+      WHERE seasons.id = $1`,
+      [seasonId]
+    );
+
+    return rows[0];
   }
 }
 

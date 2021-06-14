@@ -5,7 +5,6 @@ import Link from "next/link";
 import useUser from "../lib/useUser";
 import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
 import TwitCard from "../components/TwitCard";
-import TwitItem from "../components/TwitItem";
 import backend from "../lib/backend";
 import { followTeam, unFollow } from "../actions";
 import Empty from "./Empty";

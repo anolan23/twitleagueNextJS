@@ -1,12 +1,40 @@
 :root {
-  --color-text: rgb(15, 20, 25);
-  --color-text-secondary: rgb(91, 112, 131);
+  // original
+  // --color-text: rgb(15, 20, 25);
+  // --color-text-secondary: rgb(91, 112, 131);
+  // --color-text-link: rgb(27, 149, 224);
+  // --color-primary: rgb(29, 161, 242);
+  // --color-secondary: var(--color-light-gray);
+  // --color-tertiary: #00adb5;
+  // --color-four: #eeeeee;
+  // --color-background: white;
+  // --color-background-secondary: white;
+  // --GREEN_TEXT: #0aba74;
+  // --RED_TEXT: #ff3e3e;
+  // --HIGHLIGHT: #f6f6f6;
+  // --BLUE_BACKGROUND: rgba(29, 161, 242, 0.1);
+  // --GREEN_BACKGROUND: #e6f8f1;
+  // --RED_BACKGROUND: #ffecec;
+  // --GRAY_BACKGROUND: rgba(0, 0, 0, 0.03);
+
+  // --color-card: rgb(247, 249, 250);
+  // --color-light-gray: rgb(235, 238, 240);
+
+  // --border: 1px solid var(--color-light-gray);
+  // --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px,
+  //   rgb(101 119 134 / 25%) 0px 1px 3px 1px;
+  // --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
+
+  //maxpreps.com
+  --color-text: white;
+  --color-text-secondary: white;
   --color-text-link: rgb(27, 149, 224);
-  --color-primary: rgb(29, 161, 242);
-  --color-secondary: var(--color-light-gray);
+  --color-primary: #a51811;
+  --color-secondary: #ff8882;
   --color-tertiary: #00adb5;
   --color-four: #eeeeee;
   --color-background: white;
+  --color-background-secondary: white;
   --GREEN_TEXT: #0aba74;
   --RED_TEXT: #ff3e3e;
   --HIGHLIGHT: #f6f6f6;
@@ -18,10 +46,38 @@
   --color-card: rgb(247, 249, 250);
   --color-light-gray: rgb(235, 238, 240);
 
-  --border: 1px solid var(--color-light-gray);
+  --border: 1px solid #a51811;
   --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px,
     rgb(101 119 134 / 25%) 0px 1px 3px 1px;
   --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
+
+  --globalBackground: #e62117;
+  --globalSecondaryBackground: a51811;
+  --globalTertiaryBackground: white;
+
+  //chess.com
+  // --globalBackground: white;
+  // --globalSecondaryBackground: white;
+  // --globalTertiaryBackground: white;
+  // --globalAccentBackground: hsla(0, 0%, 100%, 0.14);
+  // --subtleButtonBackground: hsla(0, 0%, 100%, 0.16);
+  // --globalBorder: hsla(0, 0%, 100%, 0.1);
+  // --globalGray: hsla(0, 0%, 100%, 0.08);
+  // --globalGraySoft: hsla(0, 0%, 100%, 0.08);
+  // --globalChartBackground: hsla(0, 0%, 100%, 0.05);
+  // --globalColorThemeFull: #fff;
+  // --globalColorThemeHigh: hsla(0, 0%, 100%, 0.8);
+  // --globalColorThemeMid: hsla(0, 0%, 100%, 0.65);
+  // --globalColorThemeLow: hsla(0, 0%, 100%, 0.4);
+  // --globalColorThemeLink: #52b1dc;
+  // --globalColorThemeBlueToMid: hsla(0, 0%, 100%, 0.65);
+  // --globalColorThemeBlueToMidHover: hsla(0, 0%, 100%, 0.8);
+  // --globalColorThemeBlueToHigh: hsla(0, 0%, 100%, 0.8);
+  // --globalColorThemeBlueToHighHover: #fff;
+  // --globalColorThemeHighToMid: hsla(0, 0%, 100%, 0.65);
+  // --globalColorThemeFullToMid: hsla(0, 0%, 100%, 0.65);
+  // --globalColorNeutral100: rgba(0, 0, 0, 0.2);
+  // --globalColorNeutral200: rgba(0, 0, 0, 0.4);
 }
 
 *,
@@ -48,7 +104,7 @@ a {
 .twit-container {
   min-height: 100vh;
   margin-bottom: 75px;
-  background-color: var(--color-background);
+  background-color: var(--globalBackground);
 
   display: grid;
   grid-template-columns: [container-start header-start] 1fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
@@ -69,6 +125,7 @@ a {
 .header {
   display: flex;
   justify-content: flex-end;
+  background-color: var(--globalBackground);
 
   @media only screen and (max-width: 1240px) {
     justify-content: flex-end;
@@ -149,6 +206,8 @@ a {
 .main {
   grid-column: main-start/main-end;
   width: 600px;
+  background-color: var(--globalTertiaryBackground);
+
   @media only screen and (max-width: 760px) {
     width: 100%;
   }
@@ -161,6 +220,7 @@ a {
 .right-bar {
   grid-column: right-bar-start/right-bar-end;
   border-left: var(--border);
+  background-color: var(--globalBackground);
   @media only screen and (max-width: 994px) {
     display: none;
   }
@@ -213,6 +273,7 @@ a {
   height: 50px;
   width: 100%;
   position: relative;
+
   @media only screen and (max-width: 500px) {
     grid-column: container-start/container-end;
   }
@@ -221,7 +282,7 @@ a {
     position: fixed;
     height: inherit;
     width: 600px;
-    background-color: white;
+    background-color: var(--globalBackground);
     border-bottom: var(--border);
     z-index: 2;
 

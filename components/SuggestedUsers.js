@@ -5,7 +5,6 @@ import Link from "next/link";
 import useUser from "../lib/useUser";
 import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
 import TwitCard from "./TwitCard";
-import TwitItem from "./TwitItem";
 import backend from "../lib/backend";
 import Empty from "./Empty";
 import ScoutItem from "./ScoutItem";

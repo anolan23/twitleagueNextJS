@@ -4,37 +4,34 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import useSWR from "swr";
 
-import leagueStyle from "../../sass/components/League.module.scss";
+import leagueStyle from "../../../sass/components/League.module.scss";
 import {
   fetchLeague,
   fetchLeaguePosts,
   clearPosts,
   setLeague,
   toggleEditDivisionsPopup,
-} from "../../actions";
-import Leagues from "../../db/repos/Leagues";
-import useUser from "../../lib/useUser";
-import TopBar from "../../components/TopBar";
-import backend from "../../lib/backend";
-import TwitStat from "../../components/TwitStat";
-import TwitDropdownButton from "../../components/TwitDropdownButton";
-import TwitDropdownItem from "../../components/TwitDropdownItem";
-import TwitButton from "../../components/TwitButton";
-import Division from "../../components/Division";
-import Divide from "../../components/Divide";
-import Empty from "../../components/Empty";
-import LeagueProfile from "../../components/LeagueProfile";
-import TwitTab from "../../components/TwitTab";
-import TwitTabs from "../../components/TwitTabs";
-import Post from "../../components/Post";
-import LeftColumn from "../../components/LeftColumn";
-import RightColumn from "../../components/RightColumn";
-import StandingsCard from "../../components/StandingsCard";
-import { groupBy } from "../../lib/twit-helpers";
-import StandingsDivision from "../../components/StandingsDivision";
-import Prompt from "../../components/modals/Prompt";
-import EditLeaguePopup from "../../components/modals/EditLeaguePopup";
-import EditDivisionsPopup from "../../components/modals/EditDivisionsPopup";
+} from "../../../actions";
+import Leagues from "../../../db/repos/Leagues";
+import useUser from "../../../lib/useUser";
+import TopBar from "../../../components/TopBar";
+import backend from "../../../lib/backend";
+import TwitDropdownButton from "../../../components/TwitDropdownButton";
+import TwitDropdownItem from "../../../components/TwitDropdownItem";
+import Divide from "../../../components/Divide";
+import Empty from "../../../components/Empty";
+import LeagueProfile from "../../../components/LeagueProfile";
+import TwitTab from "../../../components/TwitTab";
+import TwitTabs from "../../../components/TwitTabs";
+import Post from "../../../components/Post";
+import LeftColumn from "../../../components/LeftColumn";
+import RightColumn from "../../../components/RightColumn";
+import StandingsCard from "../../../components/StandingsCard";
+import { getSeasonString, groupBy } from "../../../lib/twit-helpers";
+import StandingsDivision from "../../../components/StandingsDivision";
+import Prompt from "../../../components/modals/Prompt";
+import EditLeaguePopup from "../../../components/modals/EditLeaguePopup";
+import EditDivisionsPopup from "../../../components/modals/EditDivisionsPopup";
 
 function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
   const router = useRouter();
@@ -111,7 +108,13 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
       );
     } else {
       return standings.map((division, index) => {
-        return <StandingsDivision key={index} division={division} />;
+        return (
+          <StandingsDivision
+            key={index}
+            division={division}
+            onTeamClick={() => {}}
+          />
+        );
       });
     }
   };
@@ -131,7 +134,7 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
           );
         } else {
           return posts.map((post, index) => {
-            return <Post key={index} post={post} />;
+            return <Post key={index} post={post} user={user} />;
           });
         }
       case "standings":
@@ -261,7 +264,15 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
         </main>
         <div className="right-bar">
           <RightColumn>
-            <StandingsCard standings={standings} league={league} />
+            <StandingsCard
+              standings={standings}
+              league={league}
+              title={
+                league.current_season
+                  ? getSeasonString(league.current_season, league.seasons)
+                  : "Standings"
+              }
+            />
           </RightColumn>
         </div>
       </div>
