@@ -10,10 +10,13 @@ import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 import Profile from "../Profile";
 
-function EditTeamPopup(props) {
-  const { team } = props;
+function EditTeamPopup({ team, show, onHide }) {
+  if (!show) {
+    return null;
+  }
   const formik = useFormik({
     initialValues: {
+      team_name: team.team_name ? team.team_name : "",
       avatar: team.avatar ? team.avatar : "",
       banner: team.banner ? team.banner : "",
       bio: team.bio ? team.bio : "",
@@ -22,6 +25,11 @@ function EditTeamPopup(props) {
       updateTeamById(team.id, values);
     },
   });
+
+  useEffect(() => {
+    formik.resetForm(formik.initialValues);
+    console.log("mount");
+  }, []);
 
   const renderHeading = () => {
     return (
@@ -42,30 +50,26 @@ function EditTeamPopup(props) {
           onSubmit={formik.handleSubmit}
           className={twitForm["twit-form"]}
         >
-          <div className={twitForm["twit-form__group"]}>
-            <label htmlFor="avatar" className={twitForm["twit-form__label"]}>
-              Avatar URL
-            </label>
-            <input
+          <TwitInputGroup id="teamName" labelText="Team name">
+            <TwitInput
+              id="team_name"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              type="text"
+              value={formik.values.team_name}
+              name="team_name"
+            />
+          </TwitInputGroup>
+          <TwitInputGroup id="avatar" labelText="Avatar URL">
+            <TwitInput
               id="avatar"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              type="text"
               value={formik.values.avatar}
               name="avatar"
-              type="text"
-              autoComplete="off"
-              className={
-                formik.errors.avatar && formik.touched.avatar
-                  ? twitForm["twit-form__input--errors"]
-                  : twitForm["twit-form__input"]
-              }
             />
-            {formik.errors.avatar && formik.touched.avatar ? (
-              <div className={twitForm["twit-form__errors"]}>
-                {formik.errors.avatar}
-              </div>
-            ) : null}
-          </div>
+          </TwitInputGroup>
           <TwitInputGroup id="banner" labelText="Banner URL">
             <TwitInput
               id="banner"
@@ -76,30 +80,16 @@ function EditTeamPopup(props) {
               name="banner"
             />
           </TwitInputGroup>
-          <div className={twitForm["twit-form__group"]}>
-            <label htmlFor="bio" className={twitForm["twit-form__label"]}>
-              Bio
-            </label>
-            <input
+          <TwitInputGroup id="bio" labelText="Bio">
+            <TwitInput
               id="bio"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              type="text"
               value={formik.values.bio}
               name="bio"
-              type="text"
-              autoComplete="off"
-              className={
-                formik.errors.bio && formik.touched.bio
-                  ? twitForm["twit-form__input--errors"]
-                  : twitForm["twit-form__input"]
-              }
             />
-            {formik.errors.bio && formik.touched.bio ? (
-              <div className={twitForm["twit-form__errors"]}>
-                {formik.errors.bio}
-              </div>
-            ) : null}
-          </div>
+          </TwitInputGroup>
         </form>
       </div>
     );
@@ -107,8 +97,8 @@ function EditTeamPopup(props) {
 
   return (
     <Popup
-      show={props.show}
-      onHide={props.onHide}
+      show={show}
+      onHide={onHide}
       heading={renderHeading()}
       body={renderForm()}
     />

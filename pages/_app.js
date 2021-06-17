@@ -12,7 +12,6 @@ import EditProfilePopup from "../components/modals/EditProfilePopup";
 import PopupReply from "../components/modals/PopupReply";
 import SignupPopup from "../components/modals/SignupPopup";
 import EditRoster from "../components/modals/EditRoster";
-import EditEventsPopup from "../components/modals/EditEventsPopup";
 import TwitPanel from "../components/TwitPanel";
 import UpdateScorePopup from "../components/modals/UpdateScorePopup";
 import PopupEventReply from "../components/modals/PopupEventReply";
@@ -36,7 +35,6 @@ function MyApp({ Component, pageProps }) {
       <GifPopup />
       <EditProfilePopup />
       <EditRoster />
-      <EditEventsPopup />
       <UpdateScorePopup />
       <PopupReply />
       <PopupEventReply />

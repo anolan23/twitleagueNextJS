@@ -174,9 +174,9 @@ function TeamProfile({ team, standings, onAvatarClick }) {
             >{`${team.abbrev.substring(1)}`}</h1>
           </div>
           <div className={teamProfile["team-profile__info__name"]}>
-            <div
-              className={teamProfile["team-profile__info__name__league"]}
-            >{`${team.city} ${team.team_name}`}</div>
+            <div className={teamProfile["team-profile__info__name__league"]}>
+              {team.team_name}
+            </div>
             {renderLeagueName()}
           </div>
           {renderRecord()}

@@ -2,76 +2,78 @@ import React, { useState } from "react";
 import twitInput from "../sass/components/TwitInput.module.scss";
 import TwitDropdown from "./TwitDropdown";
 
-function TwitInput(props){
+function TwitInput({
+  id,
+  type,
+  placeHolder,
+  onBlur,
+  value,
+  name,
+  select,
+  autoComplete,
+  onChange,
+  children,
+}) {
+  const [show, setShow] = useState(false);
 
-    const [show, setShow] = useState(false);
-
-    const onChange = (event) => {
-        props.onChange(event);
-        if(!show){
-            setShow(true);
-        }
-        if(!event.target.value){
-            setShow(false);
-        }
+  const handleChange = (event) => {
+    onChange(event);
+    if (!show) {
+      setShow(true);
     }
-
-    if(props.select){
-        return(
-            <select
-            id={props.id}
-            type={props.type}
-            autoComplete="off"
-            className={twitInput["twit-input"]}
-            placeholder={props.placeHolder}
-            onChange={props.onChange}
-            onBlur={props.onBlur}
-            value={props.value}
-            name={props.name}
-            >
-                {props.children}
-            </select>
-        );
+    if (!event.target.value) {
+      setShow(false);
     }
+  };
 
-    else if(props.autoComplete){
-        return (
-            <React.Fragment>
-                <input
-                    id={props.id}
-                    type={props.type}
-                    autoComplete="off"
-                    className={twitInput["twit-input"]}
-                    placeholder={props.placeHolder}
-                    onChange={onChange}
-                    onBlur={props.onBlur}
-                    value={props.value}
-                    name={props.name}
-                />
-                <TwitDropdown show={show}>
-                    {props.children}
-                </TwitDropdown>
-            </React.Fragment>
-            
-        );
-    }
-
-    else{
-        return (
-            <input
-                id={props.id}
-                type={props.type}
-                autoComplete="off"
-                className={twitInput["twit-input"]}
-                placeholder={props.placeHolder}
-                onChange={props.onChange}
-                onBlur={props.onBlur}
-                value={props.value}
-                name={props.name}
-            />
-        );
-    }
-
+  if (select) {
+    return (
+      <select
+        id={id}
+        type={type}
+        autoComplete="off"
+        className={twitInput["twit-input"]}
+        placeholder={placeHolder}
+        onChange={onChange}
+        onBlur={onBlur}
+        value={value}
+        name={name}
+      >
+        {children}
+      </select>
+    );
+  } else if (autoComplete) {
+    return (
+      <React.Fragment>
+        <input
+          id={id}
+          type={type}
+          autoComplete="off"
+          className={twitInput["twit-input"]}
+          placeholder={placeHolder}
+          onChange={handleChange}
+          onBlur={onBlur}
+          value={value}
+          name={name}
+        />
+        <TwitDropdown show={show}>{children}</TwitDropdown>
+      </React.Fragment>
+    );
+  } else {
+    return (
+      <input
+        id={id}
+        type={type}
+        autoComplete="off"
+        className={twitInput["twit-input"]}
+        placeholder={placeHolder}
+        onChange={onChange}
+        onBlur={onBlur}
+        value={value}
+        name={name}
+      />
+    );
+  }
 }
 
 export default TwitInput;

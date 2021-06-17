@@ -1,123 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { connect } from "react-redux";
 
-import {
-  toggleEditEventsPopup,
-  findEventsByTeamId,
-  createEvent,
-} from "../../actions";
-import backend from "../../lib/backend";
+import { createEvent } from "../../actions";
 import editEventsPopup from "../../sass/components/EditEventsPopup.module.scss";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import Popup from "./Popup";
 import TwitButton from "../TwitButton";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
-import TwitDropdownItem from "../TwitDropdownItem";
-import Empty from "../Empty";
-import Event from "../Event";
-import { monthIndexToName } from "../../lib/twit-helpers";
 
-function EditEventsPopup(props) {
-  const [events, setEvents] = useState(null);
-  const [opponents, setOpponents] = useState(null);
-  const [matchup, setMatchup] = useState(null);
-
-  useEffect(() => {
-    start();
-  }, [props.showEditEventsPopup]);
-
-  const start = async () => {
-    const opponents = await getOpponents();
-    setOpponents(opponents);
-    formik.setFieldValue("opponent", opponents[0] ? opponents[0].id : "");
-    let date = new Date();
-    const day = date.getDate();
-    let month = date.getMonth();
-    month = monthIndexToName(month);
-    let time = date.toISOString().split(11, -1);
-    setMatchup({
-      team_name: props.team.team_name,
-      avatar: props.team.avatar,
-      type: "game",
-      eventDate: "date",
-      time: "time",
-      opponent_team_name: opponents[0] ? opponents[0].team_name : "",
-      opponent_avatar: opponents[0] ? opponents[0].avatar : "",
-      day,
-      month,
-      time,
-    });
-  };
-
-  const getOpponents = async () => {
-    const opponents = await backend.get(
-      `/api/leagues/${props.team.league_name}/teams`
-    );
-
-    return opponents.data.filter((opponent) => opponent.id !== props.team.id);
-  };
-
+function EditEventsPopup({ show, team, onHide }) {
+  if (!show) {
+    return null;
+  }
+  let opponents = team.league.teams.filter((element) => element.id !== team.id);
   const formik = useFormik({
     initialValues: {
       type: "game",
-      opponent: null,
-      location: null,
-      eventDate: null,
-      notes: null,
-      isHomeTeam: null,
+      opponent: opponents.length > 0 ? opponents[0].id : "",
+      location: "",
+      eventDate: "",
+      notes: "",
+      isHomeTeam: false,
     },
     onSubmit: (values) => {
       const event = {
         ...values,
-        teamId: props.team.id,
-        seasonId: props.team.season_id,
+        teamId: team.id,
+        seasonId: team.current_season.id,
       };
       createEvent(event);
     },
   });
 
-  const fetchEvents = async () => {
-    const events = await findEventsByTeamId(props.teamId);
-    setEvents(events);
-  };
-
-  const assembleOpponent = (opponentId) => {
-    let event = formik.values;
-    const opponent = opponents.find((opponent) => opponent.id == opponentId);
-    event = {
-      ...matchup,
-      opponent_team_name: opponent.team_name,
-      opponent_avatar: opponent.avatar,
-    };
-    setMatchup(event);
-  };
-
-  const onOpponentChange = (event) => {
-    formik.setFieldValue("opponent", event.target.value);
-    assembleOpponent(event.target.value);
-  };
-
-  const onDateTimeChange = (event) => {
-    formik.handleChange(event);
-    let date = new Date(event.target.value);
-    const day = date.getDate();
-    let month = date.getMonth();
-    month = monthIndexToName(month);
-    let time = date.toISOString().split(11, -1);
-    setMatchup({ ...matchup, day, month, time });
-  };
-
-  const onCheckboxChange = (event) => {
-    formik.handleChange(event);
-    setMatchup({ ...matchup, isHomeTeam: event.target.checked });
-  };
-
-  const onChange = (event) => {
-    formik.handleChange(event);
-    setMatchup({ ...matchup, [event.target.name]: event.target.value });
-  };
+  // useEffect(() => {
+  //   formik.resetForm(formik.initialValues);
+  // }, []);
 
   const renderOpponentOptions = () => {
     if (!opponents) {
@@ -149,6 +67,8 @@ function EditEventsPopup(props) {
     );
   };
 
+  console.log(formik.values);
+
   const renderOpponentInput = () => {
     if (formik.values.type === "game") {
       return (
@@ -157,7 +77,7 @@ function EditEventsPopup(props) {
             <TwitInput
               select
               id="opponent"
-              onChange={onOpponentChange}
+              onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.opponent}
               name="opponent"
@@ -169,7 +89,7 @@ function EditEventsPopup(props) {
           <TwitInputGroup labelText="Are you the home team?">
             <TwitInput
               id="isHomeTeam"
-              onChange={onCheckboxChange}
+              onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.isHomeTeam}
               name="isHomeTeam"
@@ -194,7 +114,7 @@ function EditEventsPopup(props) {
           <TwitInput
             select
             id="type"
-            onChange={onChange}
+            onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.type}
             name="type"
@@ -211,7 +131,7 @@ function EditEventsPopup(props) {
         <TwitInputGroup labelText="Event date">
           <TwitInput
             id="eventDate"
-            onChange={onDateTimeChange}
+            onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.eventDate}
             name="eventDate"
@@ -221,7 +141,7 @@ function EditEventsPopup(props) {
         <TwitInputGroup labelText="Location">
           <TwitInput
             id="location"
-            onChange={onChange}
+            onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.location}
             name="location"
@@ -231,7 +151,7 @@ function EditEventsPopup(props) {
         <TwitInputGroup labelText="Notes">
           <TwitInput
             id="notes"
-            onChange={onChange}
+            onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.notes}
             name="notes"
@@ -252,22 +172,12 @@ function EditEventsPopup(props) {
 
   return (
     <Popup
-      show={props.showEditEventsPopup}
+      show={show}
       heading={renderHeading()}
       body={renderBody()}
-      onHide={props.toggleEditEventsPopup}
+      onHide={onHide}
     />
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showEditEventsPopup: state.modals.showEditEventsPopup,
-    teamId: state.team.id,
-    team: state.team,
-  };
-};
-
-export default connect(mapStateToProps, { toggleEditEventsPopup })(
-  EditEventsPopup
-);
+export default EditEventsPopup;

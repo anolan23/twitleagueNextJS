@@ -1,13 +1,14 @@
-import TwitInput from "./TwitInput";
 import twitForm from "../sass/components/TwitForm.module.scss";
 
-function TwitInputGroup(props){
-    return(
-        <div className={twitForm["twit-form__group"]}>
-            <label htmlFor={props.id} className={twitForm["twit-form__label"]}>{props.labelText}</label>
-            {props.children}
-        </div>
-    )
+function TwitInputGroup({ id, labelText, children }) {
+  return (
+    <div className={twitForm["twit-form__group"]}>
+      <label htmlFor={id} className={twitForm["twit-form__label"]}>
+        {labelText}
+      </label>
+      {children}
+    </div>
+  );
 }
 
 export default TwitInputGroup;

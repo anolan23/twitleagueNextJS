@@ -1,36 +1,10 @@
 :root {
   // original
-  // --color-text: rgb(15, 20, 25);
-  // --color-text-secondary: rgb(91, 112, 131);
-  // --color-text-link: rgb(27, 149, 224);
-  // --color-primary: rgb(29, 161, 242);
-  // --color-secondary: var(--color-light-gray);
-  // --color-tertiary: #00adb5;
-  // --color-four: #eeeeee;
-  // --color-background: white;
-  // --color-background-secondary: white;
-  // --GREEN_TEXT: #0aba74;
-  // --RED_TEXT: #ff3e3e;
-  // --HIGHLIGHT: #f6f6f6;
-  // --BLUE_BACKGROUND: rgba(29, 161, 242, 0.1);
-  // --GREEN_BACKGROUND: #e6f8f1;
-  // --RED_BACKGROUND: #ffecec;
-  // --GRAY_BACKGROUND: rgba(0, 0, 0, 0.03);
-
-  // --color-card: rgb(247, 249, 250);
-  // --color-light-gray: rgb(235, 238, 240);
-
-  // --border: 1px solid var(--color-light-gray);
-  // --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px,
-  //   rgb(101 119 134 / 25%) 0px 1px 3px 1px;
-  // --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
-
-  //maxpreps.com
-  --color-text: white;
-  --color-text-secondary: white;
+  --color-text: rgb(15, 20, 25);
+  --color-text-secondary: rgb(91, 112, 131);
   --color-text-link: rgb(27, 149, 224);
-  --color-primary: #a51811;
-  --color-secondary: #ff8882;
+  --color-primary: rgb(29, 161, 242);
+  --color-secondary: var(--color-light-gray);
   --color-tertiary: #00adb5;
   --color-four: #eeeeee;
   --color-background: white;
@@ -46,13 +20,13 @@
   --color-card: rgb(247, 249, 250);
   --color-light-gray: rgb(235, 238, 240);
 
-  --border: 1px solid #a51811;
+  --border: 1px solid var(--color-light-gray);
   --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px,
     rgb(101 119 134 / 25%) 0px 1px 3px 1px;
   --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
 
-  --globalBackground: #e62117;
-  --globalSecondaryBackground: a51811;
+  --globalBackground: white;
+  --globalSecondaryBackground: white;
   --globalTertiaryBackground: white;
 
   //chess.com

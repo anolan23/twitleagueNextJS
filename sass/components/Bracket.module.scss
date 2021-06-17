@@ -1,0 +1,558 @@
+.bracket-holder {
+  background-color: #1e2025;
+  height: 100%;
+}
+
+.bracket {
+  display: flex;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 200;
+  padding: 100px;
+
+  &-2 {
+    .bracket__round--4 {
+      display: none;
+    }
+    .bracket__round--8 {
+      display: none;
+    }
+    .bracket__round--16 {
+      display: none;
+    }
+    .bracket__round--32 {
+      display: none;
+    }
+    .bracket__round--64 {
+      display: none;
+    }
+  }
+
+  &-4 {
+    .bracket__round--2 {
+      margin-top: 50px;
+
+      .bracket__round__game {
+        height: 200px;
+        margin-bottom: 200px;
+      }
+    }
+    .bracket__round--8 {
+      display: none;
+    }
+    .bracket__round--16 {
+      display: none;
+    }
+    .bracket__round--32 {
+      display: none;
+    }
+    .bracket__round--64 {
+      display: none;
+    }
+
+    &.count-3 {
+      .bracket__round--4 {
+        .bracket__round__game {
+          &:nth-of-type(1) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+  }
+
+  &-8 {
+    .bracket__round--2 {
+      margin-top: 150px;
+      .bracket__round__game {
+        height: 400px;
+        margin-bottom: 400px;
+      }
+    }
+    .bracket__round--4 {
+      margin-top: 50px;
+      .bracket__round__game {
+        height: 200px;
+        margin-bottom: 200px;
+      }
+    }
+    .bracket__round--16 {
+      display: none;
+    }
+    .bracket__round--32 {
+      display: none;
+    }
+    .bracket__round--64 {
+      display: none;
+    }
+
+    &.count-5 {
+      .bracket__round--8 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(3),
+          &:nth-of-type(4) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-6 {
+      .bracket__round--8 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(4) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-7 {
+      .bracket__round--8 {
+        .bracket__round__game {
+          &:nth-of-type(1) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+  }
+
+  &-16 {
+    .bracket__round--2 {
+      margin-top: 175px;
+      .bracket__round__game {
+        height: 400px;
+        margin-bottom: 400px;
+      }
+    }
+    .bracket__round--4 {
+      margin-top: 75px;
+      .bracket__round__game {
+        height: 200px;
+        margin-bottom: 200px;
+      }
+    }
+    .bracket__round--8 {
+      margin-top: 25px;
+    }
+
+    .bracket__round--16 {
+      .bracket__round__game {
+        height: 50px;
+        margin-bottom: 50px;
+      }
+    }
+    .bracket__round--32 {
+      display: none;
+    }
+    .bracket__round--64 {
+      display: none;
+    }
+
+    &.count-9 {
+      .bracket__round--16 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-10 {
+      .bracket__round--16 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(7) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-11 {
+      .bracket__round--16 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(6),
+          &:nth-of-type(7) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-12 {
+      .bracket__round--16 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(3),
+          &:nth-of-type(6),
+          &:nth-of-type(7) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-13 {
+      .bracket__round--16 {
+        .bracket__round__game {
+          visibility: visible;
+          &:nth-of-type(1),
+          &:nth-of-type(5),
+          &:nth-of-type(8) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-14 {
+      .bracket__round--16 {
+        .bracket__round__game {
+          visibility: visible;
+          &:nth-of-type(1),
+          &:nth-of-type(8) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-15 {
+      .bracket__round--16 {
+        .bracket__round__game {
+          visibility: visible;
+          &:nth-of-type(1) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+  }
+
+  &-32 {
+    .bracket__round--2 {
+      margin-top: 375px;
+      .bracket__round__game {
+        height: 800px;
+        margin-bottom: 800px;
+      }
+    }
+    .bracket__round--4 {
+      margin-top: 175px;
+      .bracket__round__game {
+        height: 400px;
+        margin-bottom: 400px;
+      }
+    }
+    .bracket__round--8 {
+      margin-top: 75px;
+      .bracket__round__game {
+        height: 200px;
+        margin-bottom: 200px;
+      }
+    }
+    .bracket__round--16 {
+      margin-top: 25px;
+    }
+    .bracket__round--32 {
+      .bracket__round__game {
+        height: 50px;
+        margin-bottom: 50px;
+      }
+    }
+    .bracket__round--64 {
+      display: none;
+    }
+
+    &.count-17 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-18 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(15) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-19 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(10),
+          &:nth-of-type(15) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-20 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(7),
+          &:nth-of-type(10),
+          &:nth-of-type(15) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-21 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(7),
+          &:nth-of-type(10),
+          &:nth-of-type(15),
+          &:nth-of-type(6) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-22 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(7),
+          &:nth-of-type(10),
+          &:nth-of-type(15),
+          &:nth-of-type(6),
+          &:nth-of-type(11) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-23 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          visibility: hidden;
+          &:nth-of-type(2),
+          &:nth-of-type(7),
+          &:nth-of-type(10),
+          &:nth-of-type(15),
+          &:nth-of-type(6),
+          &:nth-of-type(11),
+          &:nth-of-type(14) {
+            visibility: visible;
+          }
+        }
+      }
+    }
+
+    &.count-24 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(12),
+          &:nth-of-type(13),
+          &:nth-of-type(16),
+          &:nth-of-type(4),
+          &:nth-of-type(5),
+          &:nth-of-type(8),
+          &:nth-of-type(9) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-25 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(12),
+          &:nth-of-type(13),
+          &:nth-of-type(16),
+          &:nth-of-type(5),
+          &:nth-of-type(8),
+          &:nth-of-type(9) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-26 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(12),
+          &:nth-of-type(16),
+          &:nth-of-type(5),
+          &:nth-of-type(8),
+          &:nth-of-type(9) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-27 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(16),
+          &:nth-of-type(5),
+          &:nth-of-type(8),
+          &:nth-of-type(9) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-28 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(16),
+          &:nth-of-type(8),
+          &:nth-of-type(9) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-29 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(16),
+          &:nth-of-type(9) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-30 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          &:nth-of-type(1),
+          &:nth-of-type(16) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+
+    &.count-31 {
+      .bracket__round--32 {
+        .bracket__round__game {
+          &:nth-of-type(1) {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+  }
+
+  &-64 {
+    .bracket__round--4 {
+      margin-top: 375px;
+      .bracket__round__game {
+        height: 800px;
+        margin-bottom: 800px;
+      }
+    }
+    .bracket__round--8 {
+      margin-top: 175px;
+      .bracket__round__game {
+        height: 400px;
+        margin-bottom: 400px;
+      }
+    }
+    .bracket__round--16 {
+      margin-top: 75px;
+      .bracket__round__game {
+        height: 200px;
+        margin-bottom: 200px;
+      }
+    }
+    .bracket__round--32 {
+      margin-top: 25px;
+    }
+    .bracket__round--64 {
+      .bracket__round__game {
+        height: 50px;
+        margin-bottom: 50px;
+      }
+    }
+  }
+
+  &__round {
+    &__game {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 200px;
+      height: 100px;
+      border: 2px solid #fff;
+      border-left: none;
+      margin-bottom: 100px;
+      position: relative;
+      &__slot {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        width: 100%;
+        height: 28px;
+        line-height: 28px;
+        font-size: 18px;
+
+        &--top {
+          top: -32px;
+        }
+
+        &--bottom {
+          bottom: 2px;
+        }
+
+        &__seed {
+          font-weight: 900;
+          margin: 0 1rem;
+        }
+        &__team {
+        }
+        &__score {
+          margin-left: auto;
+          margin-right: 1rem;
+        }
+      }
+    }
+  }
+}

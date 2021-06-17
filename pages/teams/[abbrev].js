@@ -19,7 +19,6 @@ import {
   getTeamPosts,
   fetchLeaguePosts,
   toggleEditRosterPopup,
-  toggleEditEventsPopup,
   toggleEditTeamPopup,
   findSeasonsByLeagueName,
   fetchRoster,
@@ -41,11 +40,11 @@ import EditTeamPopup from "../../components/modals/EditTeamPopup";
 import TwitSpinner from "../../components/TwitSpinner";
 import TwitDate from "../../lib/twit-date";
 import PopupCompose from "../../components/modals/PopupCompose";
+import EditEventsPopup from "../../components/modals/EditEventsPopup";
 
 function Team({
   teamData,
   toggleEditRosterPopup,
-  toggleEditEventsPopup,
   toggleEditTeamPopup,
   standings,
 }) {
@@ -56,6 +55,7 @@ function Team({
   const [selectedSeason, setSelectedSeason] = useState(null);
   const [posts, setPosts] = useState(null);
   const [showEditTeamPopup, setShowEditTeamPopup] = useState(false);
+  const [showEditEventsPopup, setShowEditEventsPopup] = useState(false);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
   const postsLoaderRef = useRef(null);
 
@@ -179,7 +179,7 @@ function Team({
                 main="No events"
                 sub="Nothing scheduled for the current season"
                 actionText="Create event"
-                onActionClick={toggleEditEventsPopup}
+                onActionClick={() => setShowEditEventsPopup(true)}
               />
             </React.Fragment>
           );
@@ -282,7 +282,7 @@ function Team({
 
   const editEvents = () => {
     if (user.id === team.owner_id) {
-      toggleEditEventsPopup();
+      setShowEditEventsPopup(true);
     }
   };
 
@@ -353,6 +353,11 @@ function Team({
         onHide={() => setShowEditTeamPopup(false)}
         team={team}
       />
+      <EditEventsPopup
+        show={showEditEventsPopup}
+        team={team}
+        onHide={() => setShowEditEventsPopup(false)}
+      />
       <PopupCompose
         show={showPopupCompose}
         onHide={() => setShowPopupCompose(false)}
@@ -396,5 +401,4 @@ export default connect(null, {
   fetchLeaguePosts,
   toggleEditRosterPopup,
   toggleEditTeamPopup,
-  toggleEditEventsPopup,
 })(Team);

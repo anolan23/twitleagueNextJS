@@ -32,7 +32,15 @@ class Teams {
       (
         SELECT row_to_json(league) AS league
         FROM (
-        SELECT *
+        SELECT *,
+        (
+          SELECT jsonb_agg(nested_team)
+          FROM (
+          SELECT *
+          FROM teams
+          WHERE teams.league_id = leagues.id
+          ) AS nested_team
+        ) AS teams
         FROM leagues
         WHERE id = teams.league_id
         ) AS league
