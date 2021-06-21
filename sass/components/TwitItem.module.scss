@@ -29,6 +29,7 @@
   &__title {
     font-weight: 700;
     color: var(--color-text);
+    white-space: nowrap;
   }
 
   &__subtitle {

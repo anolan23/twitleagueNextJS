@@ -1,0 +1,54 @@
+.playoffs {
+  background-color: lightgray;
+  min-height: 100vh;
+  height: 100%;
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  grid-template-rows: min-content 1fr;
+
+  &__navbar {
+    grid-column: 1/-1;
+    grid-row: 1/2;
+  }
+
+  &__sidebar {
+    position: sticky;
+    background-color: white;
+    width: 300px;
+    min-width: 300px;
+    grid-column: 1/2;
+    box-shadow: var(--box-shadow);
+
+    &__content {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      overflow-y: scroll;
+      height: 100%;
+      padding: 2rem;
+    }
+
+    &__footer {
+      display: grid;
+      width: 100%;
+      grid-template-columns: 1fr 1fr;
+      padding: 2rem 1rem;
+      gap: 1rem;
+    }
+
+    &__select-wrapper {
+      width: 100%;
+      position: relative;
+
+      &__seed {
+        position: absolute;
+      }
+    }
+  }
+
+  &__viewport {
+    position: relative;
+    width: 100%;
+    grid-column: 2/-1;
+  }
+}

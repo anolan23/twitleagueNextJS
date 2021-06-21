@@ -3,8 +3,9 @@ import twitSelect from "../sass/components/TwitSelect.module.scss";
 import TwitDropdown from "./TwitDropdown";
 import TwitDropdownItem from "./TwitDropdownItem";
 import TwitIcon from "./TwitIcon";
+import TwitItem from "./TwitItem";
 
-function TwitSelect({ options, defaultValue, onSelect }) {
+function TwitItemSelect({ options, defaultValue, onSelect }) {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(defaultValue);
   const ref = useRef();
@@ -33,29 +34,33 @@ function TwitSelect({ options, defaultValue, onSelect }) {
   const renderOptions = () => {
     return options.map((option, index) => {
       return (
-        <TwitDropdownItem
+        <TwitItem
           key={index}
-          value={option.id}
-          id={option.id}
-          onClick={onOptionClick}
-        >
-          {option.text}
-        </TwitDropdownItem>
+          avatar={option.avatar}
+          title={option.title}
+          subtitle={option.subtitle}
+          onClick={() => onOptionClick(option)}
+          small
+        />
       );
     });
   };
 
-  const onOptionClick = (event) => {
-    console.log(event.target.value);
-    const value = event.target.textContent;
-    const optionId = event.target.id;
-    onSelect(optionId);
-    setValue(value);
+  const onOptionClick = (option) => {
+    if (onSelect) {
+      onSelect(option);
+    }
+    setValue(option);
   };
 
   return (
     <div onClick={onClick} className={twitSelect["twit-select"]} ref={ref}>
-      <div className={twitSelect["twit-select__value"]}>{value}</div>
+      <TwitItem
+        small
+        avatar={value.avatar}
+        title={value.title}
+        subtitle={value.subtitle}
+      />
       <TwitIcon
         className={twitSelect["twit-select__icon"]}
         icon="/sprites.svg#icon-chevron-down"
@@ -72,4 +77,4 @@ function TwitSelect({ options, defaultValue, onSelect }) {
   );
 }
 
-export default TwitSelect;
+export default TwitItemSelect;

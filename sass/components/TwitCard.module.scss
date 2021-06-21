@@ -2,9 +2,8 @@
   background-color: var(--color-card);
   display: flex;
   flex-direction: column;
-
+  // box-shadow: var(--box-shadow);
   border-radius: 1.6rem;
-  overflow: hidden;
 
   &--clear {
     background-color: transparent;

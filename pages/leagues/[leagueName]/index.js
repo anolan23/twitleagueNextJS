@@ -170,11 +170,22 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
           >
             Start new season
           </TwitDropdownItem>
+          <TwitDropdownItem onClick={() => {}} disabled={false}>
+            Advance to playoffs
+          </TwitDropdownItem>
+          <TwitDropdownItem
+            onClick={() =>
+              router.push(`/leagues/${league.league_name}/playoffs`)
+            }
+            disabled={false}
+          >
+            Playoff bracket
+          </TwitDropdownItem>
           <TwitDropdownItem
             onClick={() => setShowEndSeasonPrompt(true)}
             disabled={league.season_id ? false : true}
           >
-            End current season
+            End season
           </TwitDropdownItem>
         </TwitDropdownButton>
       );

@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 
 import useUser from "../lib/useUser";
 import TwitButton from "../components/TwitButton";
+import NavBar from "../components/NavBar";
 import { fetchUser, toggleSignupPopup } from "../actions";
 
 function IndexPage(props) {
@@ -19,8 +20,7 @@ function IndexPage(props) {
 
   return (
     <div className={index["index"]}>
-      <nav className={index["index__navbar"]}>
-        <div className={index["index__navbar__logo"]}>twitleague</div>
+      <NavBar title="twitleague">
         <div className={index["index__navbar__actions"]}>
           <TwitButton href="/login" color="primary" outline="primary">
             Login
@@ -29,7 +29,7 @@ function IndexPage(props) {
             Sign up
           </TwitButton>
         </div>
-      </nav>
+      </NavBar>
       <div className={index["index__main"]}>
         <div className={index["index__main__content"]}>
           <div className={index["index__main__content__title"]}>

@@ -2,7 +2,7 @@
   position: absolute;
   background-color: white;
   top: 0;
-  left: 0;
+
   right: 0;
   border-radius: 4px;
   max-height: 50vh;
@@ -22,13 +22,19 @@
     padding: 1rem 1.5rem;
     white-space: nowrap;
     border-bottom: var(--border);
-    transition: color 0.2s;
+    transition: all 0.2s;
 
     &:hover {
       color: var(--color-primary);
+      background-color: rgba($color: black, $alpha: 0.05);
     }
     &--disabled {
       opacity: 0.3;
+      &:hover {
+        color: var(--color-text);
+        background-color: transparent;
+        cursor: default;
+      }
     }
 
     &__icon {
