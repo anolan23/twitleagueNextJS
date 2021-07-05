@@ -170,21 +170,21 @@ class Leagues {
         WITH results AS (
             SELECT team_id as team_id, 
                 CASE 
-                    WHEN points > opponent_points THEN 'W' 
-                    WHEN points < opponent_points THEN 'L'
+                    WHEN home_team_points > away_team_points THEN 'W' 
+                    WHEN home_team_points < away_team_points THEN 'L'
                     ELSE NULL 
                     END 
                 AS outcome, 
-                season_id, points, opponent_points, league_approved FROM events 
+                season_id, home_team_points, away_team_points, league_approved FROM events 
                 UNION ALL
             SELECT opponent_id as team_id, 
                 CASE 
-                    WHEN opponent_points > points THEN 'W' 
-                    WHEN opponent_points < points THEN 'L'
+                    WHEN away_team_points > home_team_points THEN 'W' 
+                    WHEN away_team_points < home_team_points THEN 'L'
                     ELSE NULL 
                     END 
                 AS outcome, 
-                season_id, points, opponent_points, league_approved FROM events
+                season_id, home_team_points, away_team_points, league_approved FROM events
         ), records AS (
             SELECT results.season_id, team_id, division_id,
                 count(*) AS total_games,
@@ -222,37 +222,37 @@ class Leagues {
         WHERE league_name = $1
         ), results AS (
            (
-           SELECT team_id as team_id, 
+           SELECT home_team_id as team_id, 
              CASE 
-               WHEN points > opponent_points THEN 'W' 
-               WHEN points < opponent_points THEN 'L'
-               WHEN points = opponent_points THEN 'T'
+               WHEN home_team_points > away_team_points THEN 'W' 
+               WHEN home_team_points < away_team_points THEN 'L'
+               WHEN home_team_points = away_team_points THEN 'T'
                ELSE NULL 
             END 
              AS outcome, 
-             events.season_id, points, opponent_points, league_approved,
+             events.season_id, home_team_points, away_team_points, league_approved,
              leagues.id AS league_id,
              teams.division_id
            FROM events
-           JOIN teams ON teams.id = team_id
+           JOIN teams ON teams.id = home_team_id
            JOIN leagues ON leagues.id = teams.league_id
            WHERE league_id = (SELECT id FROM league_data)
            )
            UNION ALL
            (
-           SELECT opponent_id AS team_id, 
+           SELECT away_team_id AS team_id, 
              CASE 
-               WHEN opponent_points > points THEN 'W' 
-               WHEN opponent_points < points THEN 'L'
-               WHEN points = opponent_points THEN 'T'
+               WHEN away_team_points > home_team_points THEN 'W' 
+               WHEN away_team_points < home_team_points THEN 'L'
+               WHEN away_team_points = home_team_points THEN 'T'
                ELSE NULL 
                END 
              AS outcome, 
-             events.season_id, points, opponent_points, league_approved,
+             events.season_id, home_team_points, away_team_points, league_approved,
              leagues.id AS league_id,
              teams.division_id
            FROM events
-           JOIN teams ON teams.id = team_id
+           JOIN teams ON teams.id = away_team_id
            JOIN leagues ON leagues.id = teams.league_id
            WHERE league_id = (SELECT id FROM league_data)
            )
@@ -312,6 +312,15 @@ class Leagues {
     const { rows } = await pool.query(sqlQuery(), Object.values(columns));
 
     return rows[0];
+  }
+
+  static async findPlayoffsById(seasonId) {
+    const leagues = await pool.query(`
+        SELECT *
+        FROM leagues
+        `);
+
+    return leagues.rows;
   }
 }
 

@@ -178,7 +178,7 @@ function Team({
               <Empty
                 main="No events"
                 sub="Nothing scheduled for the current season"
-                actionText="Create event"
+                actionText="Schedule event"
                 onActionClick={() => setShowEditEventsPopup(true)}
               />
             </React.Fragment>
@@ -222,7 +222,9 @@ function Team({
             Edit team page
           </TwitDropdownItem>
           <TwitDropdownItem onClick={editRoster}>Edit roster</TwitDropdownItem>
-          <TwitDropdownItem onClick={editEvents}>Create event</TwitDropdownItem>
+          <TwitDropdownItem onClick={editEvents}>
+            Schedule event
+          </TwitDropdownItem>
         </TwitDropdownButton>
       );
     } else {
@@ -355,7 +357,9 @@ function Team({
       />
       <EditEventsPopup
         show={showEditEventsPopup}
-        team={team}
+        homeTeam={team}
+        awayTeam={null}
+        league={team.league}
         onHide={() => setShowEditEventsPopup(false)}
       />
       <PopupCompose

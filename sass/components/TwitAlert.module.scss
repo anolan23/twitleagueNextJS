@@ -9,13 +9,16 @@
   text-align: center;
   border-radius: 5px;
   color: white;
+  min-width: 150px;
+  display: flex;
+  justify-content: center;
+  animation-name: moveFromBottom;
+  animation-duration: 0.3s;
+  cursor: pointer;
 
   &__message {
-    display: grid;
-    grid-template-columns: max-content max-content;
-    gap: 1rem;
     font-size: 1.5rem;
-    font-weight: 400;
+    font-weight: 700;
     color: white;
   }
 
@@ -35,5 +38,16 @@
         text-decoration: underline;
       }
     }
+  }
+}
+
+@keyframes moveFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }

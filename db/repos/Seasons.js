@@ -78,6 +78,18 @@ class Seasons {
   //       return season.rows[0]
   // }
 
+  static async findOne(seasonId) {
+    const { rows } = await pool.query(
+      `
+        SELECT *
+        FROM seasons
+        WHERE id = $1`,
+      [seasonId]
+    );
+
+    return rows[0];
+  }
+
   static async find() {
     const { rows } = await pool.query(`
         SELECT *
@@ -108,6 +120,83 @@ class Seasons {
       FROM seasons
       JOIN leagues ON leagues.id = seasons.league_id
       WHERE seasons.id = $1`,
+      [seasonId]
+    );
+
+    return rows[0];
+  }
+
+  static async addPlayoffSeed(seasonId, seed) {
+    const { rows } = await pool.query(
+      `
+        INSERT INTO playoff_teams (season_id, seed)
+        VALUES
+        ($1, $2)
+        RETURNING *`,
+      [seasonId, seed]
+    );
+
+    return rows[0];
+  }
+
+  static async deletePlayoffSeed(seasonId, seed) {
+    const { rows } = await pool.query(
+      `
+        DELETE FROM playoff_teams
+        WHERE season_id = $1 AND seed = $2
+        RETURNING *`,
+      [seasonId, seed]
+    );
+
+    return rows[0];
+  }
+
+  static async assignToPlayoffSeed(teamId, seasonId, seed) {
+    const { rows } = await pool.query(
+      `
+        UPDATE playoff_teams
+        SET team_id = $1
+        WHERE season_id = $2 AND seed = $3
+        RETURNING *`,
+      [teamId, seasonId, seed]
+    );
+
+    return rows[0];
+  }
+
+  static async findPlayoffsById(seasonId) {
+    const { rows } = await pool.query(
+      `
+      SELECT *,
+      (
+      SELECT row_to_json(league) AS league
+        FROM (
+        SELECT *,
+        (
+        SELECT jsonb_agg(nested_team)
+        FROM (
+          SELECT *
+          FROM teams
+          WHERE league_id = leagues.id
+        ) AS nested_team
+        ) AS teams
+        FROM leagues 
+        WHERE id = seasons.league_id
+        ) AS league
+      ),
+      (
+      SELECT jsonb_agg(nested_team)
+        FROM (
+        SELECT playoff_teams.seed, teams.*
+        FROM playoff_teams
+        FULL JOIN teams ON teams.id = playoff_teams.team_id
+        WHERE season_id = seasons.id
+        ORDER BY seed 
+        ) AS nested_team
+      ) AS playoff_teams
+      FROM seasons
+      WHERE id = $1
+      `,
       [seasonId]
     );
 

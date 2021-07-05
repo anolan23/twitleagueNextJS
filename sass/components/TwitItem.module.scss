@@ -29,7 +29,8 @@
   &__title {
     font-weight: 700;
     color: var(--color-text);
-    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__subtitle {
@@ -58,5 +59,7 @@
 
   &__textbox {
     margin-left: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

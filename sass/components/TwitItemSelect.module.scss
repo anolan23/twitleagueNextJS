@@ -1,0 +1,52 @@
+.twit-select {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  color: var(--color-primary);
+  align-items: center;
+  gap: 5px;
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  width: 100%;
+  max-width: 100%;
+
+  div {
+    border: none;
+  }
+
+  &:hover {
+    background-color: var(--GRAY_BACKGROUND);
+  }
+
+  &__disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  &__value {
+    font-size: 1.5rem;
+    color: inherit;
+  }
+
+  &__icon {
+    height: 20px;
+    width: 20px;
+    color: inherit;
+    fill: currentColor;
+    margin: 0 0.5rem;
+  }
+
+  &__dropdown {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+
+    &__expanded {
+      left: 0;
+    }
+  }
+}

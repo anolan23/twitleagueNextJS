@@ -137,8 +137,6 @@ function User(props) {
   };
 
   const renderContent = () => {
-    console.log("rendering tab:", tab);
-
     switch (tab) {
       case "posts":
         return (

@@ -235,7 +235,6 @@ function MainInput({
     if (selection.type === "Caret") {
       const { parentElement } = selection.anchorNode;
       if (parentElement) {
-        console.log(parentElement);
         const id = parentElement.id;
         if (id === "team") {
           parentElement.innerText = `${option.abbrev} `;
@@ -503,8 +502,7 @@ function MainInput({
         onHide={() => setShowAlert(false)}
         duration={5000}
         href={createdPost ? `/thread/${createdPost.id}` : null}
-        message="Post created."
-        actionText="View post"
+        message="Post created"
       />
     </React.Fragment>
   );

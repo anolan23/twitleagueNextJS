@@ -15,7 +15,6 @@ import Empty from "../../../../../components/Empty";
 function Season({ season, seasonId }) {
   const router = useRouter();
   const { user } = useUser();
-  console.log(season);
 
   if (router.isFallback) {
     return <TwitSpinner />;

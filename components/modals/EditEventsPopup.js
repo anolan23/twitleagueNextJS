@@ -8,55 +8,57 @@ import Popup from "./Popup";
 import TwitButton from "../TwitButton";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
+import TwitItemSelect from "../TwitItemSelect";
 
-function EditEventsPopup({ show, team, onHide }) {
+function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
   if (!show) {
     return null;
   }
-  let opponents = team.league.teams.filter((element) => element.id !== team.id);
+  // let teams = team.league.teams.filter((element) => element.id !== team.id);
+  const { teams } = league;
+
   const formik = useFormik({
     initialValues: {
       type: "game",
-      opponent: opponents.length > 0 ? opponents[0].id : "",
+      homeTeamId: homeTeam ? homeTeam.id : "",
+      awayTeamId: awayTeam ? awayTeam.id : "",
       location: "",
-      eventDate: "",
+      date: "",
       notes: "",
-      isHomeTeam: false,
     },
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const event = {
         ...values,
-        teamId: team.id,
-        seasonId: team.current_season.id,
+        seasonId: league.season_id,
       };
-      createEvent(event);
+      await createEvent(event);
+      onHide();
     },
   });
 
-  // useEffect(() => {
-  //   formik.resetForm(formik.initialValues);
-  // }, []);
-
-  const renderOpponentOptions = () => {
-    if (!opponents) {
-      return;
+  const getOptions = () => {
+    if (!teams) {
+      return [];
     } else {
-      return opponents.map((opponent, index) => {
-        return (
-          <option
-            key={index}
-            value={opponent.id}
-          >{`${opponent.abbrev} - ${opponent.team_name}`}</option>
-        );
+      return teams.map((team) => {
+        return { ...team, title: team.team_name, subtitle: team.abbrev };
       });
     }
+  };
+
+  const onHomeTeamSelect = (option) => {
+    formik.setFieldValue("homeTeamId", option.id);
+  };
+
+  const onAwayTeamSelect = (option) => {
+    formik.setFieldValue("awayTeamId", option.id);
   };
 
   const renderHeading = () => {
     return (
       <div className={editEventsPopup["edit-events-popup__heading"]}>
         <h1 className={editEventsPopup["edit-events-popup__heading__title"]}>
-          Create event
+          Schedule event
         </h1>
         <div className={editEventsPopup["edit-events-popup__heading__actions"]}>
           <TwitButton form="add-event-form" color="primary">
@@ -67,33 +69,39 @@ function EditEventsPopup({ show, team, onHide }) {
     );
   };
 
-  console.log(formik.values);
-
   const renderOpponentInput = () => {
+    const options = getOptions();
     if (formik.values.type === "game") {
       return (
         <React.Fragment>
-          <TwitInputGroup labelText="Opponent">
-            <TwitInput
-              select
-              id="opponent"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.opponent}
-              name="opponent"
-              type="text"
-            >
-              {renderOpponentOptions()}
-            </TwitInput>
+          <TwitInputGroup labelText="Home team">
+            <TwitItemSelect
+              options={options}
+              defaultValue={
+                homeTeam
+                  ? {
+                      ...homeTeam,
+                      title: homeTeam.team_name,
+                      subtitle: homeTeam.abbrev,
+                    }
+                  : null
+              }
+              onSelect={onHomeTeamSelect}
+            />
           </TwitInputGroup>
-          <TwitInputGroup labelText="Are you the home team?">
-            <TwitInput
-              id="isHomeTeam"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.isHomeTeam}
-              name="isHomeTeam"
-              type="checkbox"
+          <TwitInputGroup labelText="Away team">
+            <TwitItemSelect
+              options={options}
+              defaultValue={
+                awayTeam
+                  ? {
+                      ...awayTeam,
+                      title: awayTeam.team_name,
+                      subtitle: awayTeam.abbrev,
+                    }
+                  : null
+              }
+              onSelect={onAwayTeamSelect}
             />
           </TwitInputGroup>
         </React.Fragment>
@@ -130,11 +138,11 @@ function EditEventsPopup({ show, team, onHide }) {
         {renderOpponentInput()}
         <TwitInputGroup labelText="Event date">
           <TwitInput
-            id="eventDate"
+            id="date"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.eventDate}
-            name="eventDate"
+            value={formik.values.date}
+            name="date"
             type="datetime-local"
           />
         </TwitInputGroup>

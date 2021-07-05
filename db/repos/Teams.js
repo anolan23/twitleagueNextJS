@@ -230,26 +230,6 @@ class Teams {
     }
   }
 
-  static async createEvent(event) {
-    const { rows } = await pool.query(
-      `
-        INSERT INTO events (team_id, type, opponent_id, date, location, notes, is_home_team)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING *`,
-      [
-        event.teamId,
-        event.type,
-        event.opponent,
-        event.eventDate,
-        event.location,
-        event.notes,
-        event.isHomeTeam,
-      ]
-    );
-
-    return rows[0];
-  }
-
   static async findEventsByTeamId(teamId) {
     const { rows } = await pool.query(
       `

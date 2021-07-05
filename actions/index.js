@@ -192,6 +192,13 @@ export const findSeasonsByLeagueName = async (leagueName) => {
   return seasons.data;
 };
 
+export const updatePlayoffs = async (seasonId, columns) => {
+  const response = await backend.patch(`/api/seasons/${seasonId}/playoffs`, {
+    columns,
+  });
+  return response.data;
+};
+
 export const addTeamEventAndFetchTeam =
   (values) => async (dispatch, getState) => {
     const teamAbbrev = getState().team.teamAbbrev.substring(1);
@@ -688,4 +695,9 @@ export const fetchRoster = async (abbrev) => {
 export const getStandings = async (league_name) => {
   const standings = await backend.get(`/api/leagues/${league_name}/standings`);
   return standings.data;
+};
+
+export const createPlayoffs = async (seasonId) => {
+  const response = await backend.post(`/api/seasons/${seasonId}/playoffs`);
+  return response.data;
 };

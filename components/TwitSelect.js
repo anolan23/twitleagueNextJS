@@ -46,7 +46,6 @@ function TwitSelect({ options, defaultValue, onSelect }) {
   };
 
   const onOptionClick = (event) => {
-    console.log(event.target.value);
     const value = event.target.textContent;
     const optionId = event.target.id;
     onSelect(optionId);

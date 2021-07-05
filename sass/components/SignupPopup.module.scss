@@ -1,28 +1,25 @@
-.signup-popup{
+.signup-popup {
+  &__title {
+    font-size: 2.3rem;
+    font-weight: 700;
+  }
 
-    &__title{
-        font-size: 2.3rem;
-        font-weight: 700;
+  &__heading {
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 1.5rem;
+
+    &__text {
+      font-size: 2.3rem;
+      font-weight: 700;
+      margin: 1.5rem 0;
     }
+  }
 
-    &__heading{
-        height: 100%;
-        
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        margin-right: 1.5rem;
-
-        &__text{
-            font-size: 2.3rem;
-            font-weight: 700;
-            margin: 1.5rem 0;
-        }
-    }
-
-    &__action{
-        margin: 1.5rem 0;
-    }
-
-
+  &__action {
+    margin: 1.5rem 0;
+  }
 }

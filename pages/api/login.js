@@ -29,7 +29,6 @@ export default async (req, res) => {
           path: "/",
         })
       );
-      console.log("we made it", user);
       res.send(user);
     } else {
       res.send({ message: "something wrong with password" });

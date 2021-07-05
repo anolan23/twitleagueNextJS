@@ -39,6 +39,8 @@ function TwitButton({
       return twitButton["twit-button--primary"];
     } else if (color === "white") {
       return twitButton["twit-button--white"];
+    } else if (color === "red") {
+      return twitButton["twit-button--red"];
     }
   };
 

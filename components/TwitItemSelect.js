@@ -1,16 +1,20 @@
 import { useState, useEffect, useRef } from "react";
-import twitSelect from "../sass/components/TwitSelect.module.scss";
+import twitItemSelect from "../sass/components/TwitItemSelect.module.scss";
 import TwitDropdown from "./TwitDropdown";
 import TwitDropdownItem from "./TwitDropdownItem";
 import TwitIcon from "./TwitIcon";
 import TwitItem from "./TwitItem";
+import TwitSpinner from "./TwitSpinner";
 
-function TwitItemSelect({ options, defaultValue, onSelect }) {
+function TwitItemSelect({ id, options, defaultValue, onSelect, disabled }) {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(defaultValue);
   const ref = useRef();
 
   const onClick = () => {
+    if (disabled) {
+      return;
+    }
     setShow(!show);
   };
 
@@ -32,6 +36,9 @@ function TwitItemSelect({ options, defaultValue, onSelect }) {
   };
 
   const renderOptions = () => {
+    if (!options) {
+      return <TwitSpinner />;
+    }
     return options.map((option, index) => {
       return (
         <TwitItem
@@ -54,21 +61,28 @@ function TwitItemSelect({ options, defaultValue, onSelect }) {
   };
 
   return (
-    <div onClick={onClick} className={twitSelect["twit-select"]} ref={ref}>
+    <div
+      id={id}
+      onClick={onClick}
+      className={`${twitItemSelect["twit-select"]} ${
+        disabled ? twitItemSelect["twit-select__disabled"] : ""
+      }`}
+      ref={ref}
+    >
       <TwitItem
         small
-        avatar={value.avatar}
-        title={value.title}
-        subtitle={value.subtitle}
+        avatar={value ? value.avatar : null}
+        title={value ? value.title : null}
+        subtitle={value ? value.subtitle : null}
       />
       <TwitIcon
-        className={twitSelect["twit-select__icon"]}
+        className={twitItemSelect["twit-select__icon"]}
         icon="/sprites.svg#icon-chevron-down"
       />
-      <div className={twitSelect["twit-select__dropdown"]}>
+      <div className={twitItemSelect["twit-select__dropdown"]}>
         <TwitDropdown
           show={show}
-          className={twitSelect["twit-select__dropdown__expanded"]}
+          className={twitItemSelect["twit-select__dropdown__expanded"]}
         >
           {renderOptions()}
         </TwitDropdown>

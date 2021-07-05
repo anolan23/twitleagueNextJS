@@ -1,0 +1,31 @@
+.checkbox {
+  width: 50px;
+  height: 50px;
+  position: relative;
+
+  input {
+    display: none;
+  }
+
+  input:checked + .checkbox__label {
+    &::after {
+      color: rgb(46, 204, 113);
+    }
+  }
+  &__label {
+    cursor: pointer;
+
+    &::after {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      content: "\2713";
+      font-size: 3rem;
+      font-weight: 900;
+      color: lightgray;
+      transition: all 0.2s;
+    }
+  }
+}

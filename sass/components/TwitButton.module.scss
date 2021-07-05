@@ -1,11 +1,11 @@
-$button-brightness: 80%;
+$button-brightness: 110%;
 
 .twit-button {
   font-size: 1.6rem;
   font-weight: 700;
   padding: 0.5rem 1.5rem;
   width: max-content;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 1000px;
   cursor: pointer;
   text-decoration: none;
@@ -35,6 +35,7 @@ $button-brightness: 80%;
 
   &:disabled,
   &[disabled] {
+    pointer-events: none;
     opacity: 0.5;
     cursor: default;
   }
@@ -64,7 +65,24 @@ $button-brightness: 80%;
       transition: all 0.2s !important;
 
       &:hover {
-        background-color: var(--BLUE_BACKGROUND) !important;
+        filter: brightness($button-brightness) !important;
+      }
+    }
+  }
+
+  &--red {
+    color: white !important;
+    background-color: #ff0000;
+    transition: all 0.2s;
+
+    &--outline {
+      border: 1px solid #ff0000 !important;
+      color: #ff0000 !important;
+      background-color: transparent !important;
+      transition: all 0.2s !important;
+
+      &:hover {
+        filter: brightness($button-brightness) !important;
       }
     }
   }

@@ -28,7 +28,6 @@ function EditTeamPopup({ team, show, onHide }) {
 
   useEffect(() => {
     formik.resetForm(formik.initialValues);
-    console.log("mount");
   }, []);
 
   const renderHeading = () => {
