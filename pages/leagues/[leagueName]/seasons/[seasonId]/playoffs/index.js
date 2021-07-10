@@ -32,6 +32,7 @@ function Playoffs({ playoffs }) {
     if (!playoffs) {
       return;
     }
+    console.log("playoffs changed");
     let { seeds, bracket, in_progress } = playoffs;
     if (!bracket || !seeds) {
       return;
@@ -67,6 +68,7 @@ function Playoffs({ playoffs }) {
   }
 
   function constructBracketFromSeeds() {
+    console.log("construct bracket");
     let tempBracket = empty;
     switch (seeds.length) {
       case 0:
@@ -177,9 +179,10 @@ function Playoffs({ playoffs }) {
           tempBracket[targetGameId] ? tempBracket[targetGameId].topSlot : null,
           advancingSlot
         );
-        await save(tempBracket, seeds, inProgress);
         setBracket(tempBracket);
       } else return null;
+
+      await save(tempBracket, seeds, inProgress);
     };
 
     switch (sourceGameId) {
@@ -262,6 +265,7 @@ function Playoffs({ playoffs }) {
         </TwitButton>
         <TwitButton
           color="primary"
+          outline="primary"
           onClick={onDeleteSeedClick}
           expanded
           disabled={inProgress}
