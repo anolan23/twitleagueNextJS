@@ -49,6 +49,51 @@ class Leagues {
     return rows[0];
   }
 
+  static async getLeaguePlayoff(leagueName, seasonId) {
+    const { rows } = await pool.query(
+      `
+      SELECT
+        leagues.*,
+        (
+        SELECT row_to_json(season) AS current_season
+          FROM (
+          SELECT *
+          FROM seasons 
+          WHERE id = leagues.season_id
+          ) AS season
+        ),
+        (
+          SELECT row_to_json(playoffs) AS playoffs
+          FROM (
+            SELECT *
+            FROM playoffs 
+            WHERE playoffs.season_id = $2
+          ) AS playoffs
+        ),
+        (
+        SELECT jsonb_agg(nested_season)
+          FROM (
+          SELECT *
+          FROM seasons
+          WHERE league_id = leagues.id
+          ) AS nested_season
+        ) AS seasons,
+        (
+        SELECT jsonb_agg(nested_team)
+          FROM (
+          SELECT *
+          FROM teams
+          WHERE league_id = leagues.id
+          ) AS nested_team
+        ) AS teams
+      FROM leagues
+      WHERE leagues.league_name = $1`,
+      [leagueName, seasonId]
+    );
+
+    return rows[0];
+  }
+
   static async findByOwnerId(ownerId) {
     const leagues = await pool.query(
       `

@@ -62,7 +62,7 @@ function ThreadPage(props) {
 
   const renderReplies = () => {
     if (replies === null || replies === undefined) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={50} />;
     } else if (replies.length === 0) {
       return null;
     } else {

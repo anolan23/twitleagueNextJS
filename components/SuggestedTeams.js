@@ -45,7 +45,7 @@ function SuggestedTeams(props) {
 
   const renderSuggestedTeams = () => {
     if (!teams) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={30} />;
     } else if (teams.length === 0) {
       return (
         <Empty

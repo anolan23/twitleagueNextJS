@@ -1,9 +1,11 @@
 import React from "react";
+import Draggable from "react-draggable";
 
 import bracketStyle from "../sass/components/Bracket.module.scss";
+
 import BracketGame from "./BracketGame";
 
-function Bracket({ seeds, bracket, advanceTeam }) {
+function Bracket({ seeds, bracket, advanceTeam, offset, scale }) {
   const bracketSize = () => {
     if (seeds.length <= 2) {
       return 2;
@@ -27,6 +29,9 @@ function Bracket({ seeds, bracket, advanceTeam }) {
       className={`${bracketStyle["bracket"]} ${
         bracketStyle[`bracket-${bracketSize()}`]
       } ${bracketStyle[`count-${seeds.length}`]}`}
+      style={{
+        transform: `translate(${-offset.x}px, ${-offset.y}px) scale(${scale})`,
+      }}
     >
       <div
         className={`${bracketStyle["bracket__round"]} ${bracketStyle["bracket__round--32"]}`}

@@ -13,7 +13,19 @@
     &__content {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
+      width: 100%;
+
+      &__league {
+        display: flex;
+        align-items: center;
+        margin: 0 5rem;
+
+        &__name {
+          font-size: 1.9rem;
+          font-weight: 900;
+        }
+      }
       &__actions {
         display: grid;
         grid-template-columns: max-content max-content;
@@ -77,8 +89,50 @@
 
   &__viewport {
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     grid-column: 2/-1;
     cursor: move;
+    overflow: hidden;
+
+    &__zoom {
+      position: absolute;
+      bottom: 5rem;
+      right: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--color-primary);
+      color: white;
+      border-radius: 9999px;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      &__button {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      &__display {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: inherit;
+        font-size: 1.5rem;
+        width: 50px;
+        user-select: none;
+      }
+
+      &__icon {
+        height: 25px;
+        width: 25px;
+        color: inherit;
+        fill: currentColor;
+      }
+    }
   }
 }

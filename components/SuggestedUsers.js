@@ -45,7 +45,7 @@ function SuggestedUsers(props) {
 
   const renderSuggestedUsers = () => {
     if (!users) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={30} />;
     } else if (users.length === 0) {
       return (
         <Empty

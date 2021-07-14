@@ -1,25 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import useUser from "../../../../../../lib/useUser";
-import { updatePlayoffs } from "../../../../../../actions";
-import PlayoffRepo from "../../../../../../db/repos/Playoffs";
-import playoffStyle from "../../../../../../sass/pages/Playoffs.module.scss";
-import Bracket from "../../../../../../components/Bracket";
-import NavBar from "../../../../../../components/NavBar";
-import TwitButton from "../../../../../../components/TwitButton";
-import TwitCard from "../../../../../../components/TwitCard";
-import TwitItemSelect from "../../../../../../components/TwitItemSelect";
-import TwitAlert from "../../../../../../components/TwitAlert";
+import useUser from "../../../../lib/useUser";
+import usePan from "../../../../lib/usePan";
+import { getSeasonString } from "../../../../lib/twit-helpers";
+import {
+  updatePlayoffs,
+  getLeaguePlayoff,
+  createPlayoffs,
+  deletePlayoffs,
+} from "../../../../actions";
+import playoffStyle from "../../../../sass/pages/Playoffs.module.scss";
+import Bracket from "../../../../components/Bracket";
+import NavBar from "../../../../components/NavBar";
+import TwitButton from "../../../../components/TwitButton";
+import TwitCard from "../../../../components/TwitCard";
+import TwitItemSelect from "../../../../components/TwitItemSelect";
+import TwitAlert from "../../../../components/TwitAlert";
+import TwitSelect from "../../../../components/TwitSelect";
+import TwitSpinner from "../../../../components/TwitSpinner";
+import TwitIcon from "../../../../components/TwitIcon";
 
-function Playoffs({ playoffs }) {
-  const { user } = useUser();
-  const router = useRouter();
+function Playoffs() {
   const empty = [...Array(32)];
+
+  const { user } = useUser();
+  const [offset, startPan] = usePan();
+  const router = useRouter();
   const [seeds, setSeeds] = useState([]);
   const [bracket, setBracket] = useState(empty);
+  const [champion, setChampion] = useState(null);
   const [inProgress, setInProgress] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [league, setLeague] = useState(null);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     if (inProgress) {
@@ -28,13 +42,28 @@ function Playoffs({ playoffs }) {
     constructBracketFromSeeds();
   }, [seeds]);
 
-  useEffect(() => {
-    if (!playoffs) {
+  useEffect(async () => {
+    if (!router.query) {
       return;
     }
-    console.log("playoffs changed");
+    const { leagueName, seasonId } = router.query;
+    const league = await getLeaguePlayoff(leagueName, seasonId);
+    if (!league) {
+      return;
+    }
+    setLeague(league);
+    const { playoffs } = league;
+    if (!playoffs) {
+      setSeeds([]);
+      setBracket(empty);
+      setInProgress(null);
+      return;
+    }
     let { seeds, bracket, in_progress } = playoffs;
     if (!bracket || !seeds) {
+      setSeeds([]);
+      setBracket(empty);
+      setInProgress(null);
       return;
     }
     const mappedSeeds = seeds.map((team) => {
@@ -43,7 +72,7 @@ function Playoffs({ playoffs }) {
     setInProgress(in_progress);
     setSeeds(mappedSeeds);
     setBracket(bracket);
-  }, [playoffs]);
+  }, [router.query]);
 
   function onSeedSelect(option, index) {
     let newSeeds = [...seeds];
@@ -68,7 +97,6 @@ function Playoffs({ playoffs }) {
   }
 
   function constructBracketFromSeeds() {
-    console.log("construct bracket");
     let tempBracket = empty;
     switch (seeds.length) {
       case 0:
@@ -231,7 +259,7 @@ function Playoffs({ playoffs }) {
       seedsArray = JSON.stringify(seeds);
     }
 
-    const savedPlayoffs = await updatePlayoffs(playoffs.season_id, {
+    const savedPlayoffs = await updatePlayoffs(router.query.seasonId, {
       in_progress: inProgress,
       bracket: bracketArray,
       seeds: seedsArray,
@@ -241,15 +269,43 @@ function Playoffs({ playoffs }) {
   }
 
   async function start() {
-    await save(bracket, seeds, true);
+    let bracketArray = bracket;
+    let seedsArray = seeds;
+
+    if (bracket) {
+      bracketArray = JSON.stringify(bracket);
+    }
+    if (seeds) {
+      seedsArray = JSON.stringify(seeds);
+    }
+    const playoffs = {
+      bracket: bracketArray,
+      seeds: seedsArray,
+      in_progress: true,
+    };
+    await createPlayoffs(router.query.seasonId, playoffs);
     setInProgress(true);
   }
 
   async function reset() {
-    await save(null, [], false);
+    await deletePlayoffs(router.query.seasonId);
     setBracket(empty);
     setSeeds([]);
     setInProgress(false);
+  }
+
+  function seasonOptions() {
+    if (!league) {
+      return [];
+    }
+    const { seasons } = league;
+    if (!seasons) {
+      return [];
+    }
+    const options = seasons.map((season) => {
+      return { text: getSeasonString(season, seasons), id: season.id };
+    });
+    return options;
   }
 
   const renderFooter = () => {
@@ -286,20 +342,25 @@ function Playoffs({ playoffs }) {
     } else {
       return (
         <TwitButton color="red" onClick={reset}>
-          Reset bracket
+          Delete bracket
         </TwitButton>
       );
     }
   };
 
   const renderSeeds = () => {
+    if (!league) {
+      return <TwitSpinner size={30} />;
+    }
     const getOptions = () => {
-      if (!playoffs) {
+      if (!league) {
         return [];
-      } else if (!playoffs.league.teams) {
+      }
+      const { teams } = league;
+      if (!teams) {
         return [];
       } else {
-        return playoffs.league.teams.map((team) => {
+        return teams.map((team) => {
           return { ...team, title: team.team_name, subtitle: team.abbrev };
         });
       }
@@ -319,6 +380,34 @@ function Playoffs({ playoffs }) {
     });
   };
 
+  const renderActions = () => {
+    if (!user) {
+      return null;
+    }
+    if (!league) {
+      return null;
+    }
+    if (user.id !== league.owner_id) {
+      return null;
+    }
+    const { seasons } = league;
+    if (!seasons) {
+      return <div>A season must be started</div>;
+    }
+    const season = seasons.find((season) => season.id == router.query.seasonId);
+
+    const { end_date } = season;
+    if (end_date) {
+      return <div>Season completed</div>;
+    }
+
+    return (
+      <div className={playoffStyle["playoffs__navbar__content__actions"]}>
+        {renderStatusButton()}
+      </div>
+    );
+  };
+
   if (router.isFallback) {
     return null;
   }
@@ -330,16 +419,27 @@ function Playoffs({ playoffs }) {
           <NavBar title="twitleague">
             <div className={playoffStyle["playoffs__navbar__content"]}>
               <div
-                className={playoffStyle["playoffs__navbar__content__actions"]}
+                className={playoffStyle["playoffs__navbar__content__league"]}
               >
-                <TwitButton
-                  color="primary"
-                  onClick={() => save(bracket, seeds, inProgress)}
+                <div
+                  className={
+                    playoffStyle["playoffs__navbar__content__league__name"]
+                  }
                 >
-                  Save
-                </TwitButton>
-                {renderStatusButton()}
+                  {league ? league.league_name : null}
+                </div>
+                <TwitSelect
+                  options={seasonOptions()}
+                  defaultValue={"current season"}
+                  onSelect={(id) => {
+                    router.push({
+                      pathname: `/leagues/${league.league_name}/playoffs`,
+                      query: { seasonId: id },
+                    });
+                  }}
+                />
               </div>
+              {renderActions()}
             </div>
           </NavBar>
         </div>
@@ -360,8 +460,41 @@ function Playoffs({ playoffs }) {
             </TwitCard>
           </div>
         </div>
-        <div className={playoffStyle["playoffs__viewport"]}>
-          <Bracket seeds={seeds} bracket={bracket} advanceTeam={advanceTeam} />
+        <div
+          className={playoffStyle["playoffs__viewport"]}
+          onMouseDown={startPan}
+        >
+          <Bracket
+            seeds={seeds}
+            bracket={bracket}
+            champion={champion}
+            advanceTeam={advanceTeam}
+            offset={offset}
+            scale={scale}
+          />
+          <div className={playoffStyle["playoffs__viewport__zoom"]}>
+            <div
+              className={playoffStyle["playoffs__viewport__zoom__button"]}
+              onClick={() => setScale(scale - 0.1)}
+            >
+              <TwitIcon
+                className={playoffStyle["playoffs__viewport__zoom__icon"]}
+                icon="/sprites.svg#icon-zoom-out"
+              />
+            </div>
+            <div className={playoffStyle["playoffs__viewport__zoom__display"]}>
+              {`${Math.round(scale * 100)}%`}
+            </div>
+            <div
+              className={playoffStyle["playoffs__viewport__zoom__button"]}
+              onClick={() => setScale(scale + 0.1)}
+            >
+              <TwitIcon
+                className={playoffStyle["playoffs__viewport__zoom__icon"]}
+                icon="/sprites.svg#icon-zoom-in"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <TwitAlert
@@ -372,23 +505,6 @@ function Playoffs({ playoffs }) {
       />
     </React.Fragment>
   );
-}
-
-export async function getStaticPaths() {
-  return { paths: [], fallback: true };
-}
-
-export async function getStaticProps(context) {
-  const { leagueName, seasonId } = context.params;
-  let playoffs = await PlayoffRepo.findOne(seasonId);
-  playoffs = JSON.parse(JSON.stringify(playoffs));
-
-  return {
-    revalidate: 1,
-    props: {
-      playoffs,
-    },
-  };
 }
 
 export default Playoffs;

@@ -34,7 +34,7 @@ function Infogram({ action, info, href, show }) {
   if (!info) {
     return (
       <dialog className={infogram["infogram"]} open={show}>
-        <TwitSpinner />
+        <TwitSpinner size={30} />
       </dialog>
     );
   } else {

@@ -110,7 +110,7 @@ function User(props) {
 
   const renderUsers = () => {
     if (users === null) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={30} />;
     } else if (users.length === 0) {
       return <Empty main="No Users" sub="There are no users to scout" />;
     } else {

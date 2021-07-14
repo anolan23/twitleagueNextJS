@@ -169,7 +169,7 @@ function Team({
       }
     } else if (tab === "schedule") {
       if (!events) {
-        return <TwitSpinner />;
+        return <TwitSpinner size={50} />;
       } else if (events.length === 0) {
         if (user.id === team.owner_id) {
           return (
@@ -289,7 +289,7 @@ function Team({
   };
 
   if (isFallback) {
-    return <TwitSpinner />;
+    return <TwitSpinner size={50} />;
   }
 
   return (

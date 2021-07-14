@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import bracketStyle from "../sass/components/Bracket.module.scss";
 import BracketGamePopup from "./modals/BracketGamePopup";
+import BracketSlot from "./BracketSlot";
 
 function BracketGame({ id, bracket, advanceTeam }) {
   const game = bracket[id];
@@ -9,51 +10,39 @@ function BracketGame({ id, bracket, advanceTeam }) {
 
   const [showBracketGamePopup, setShowBracketGamePopup] = useState(false);
 
-  function onClick() {
+  function onGameClick() {
     setShowBracketGamePopup(true);
+  }
+
+  function renderChampion() {
+    if (id !== 0) {
+      return null;
+    }
+    return (
+      <div className={bracketStyle["bracket__champion"]}>
+        <BracketSlot slot={topSlot} />
+      </div>
+    );
   }
 
   return (
     <React.Fragment>
       <div
-        onClick={onClick}
+        onClick={onGameClick}
         className={bracketStyle["bracket__round__game"]}
         id={id}
       >
         <div
           className={`${bracketStyle["bracket__round__game__slot"]} ${bracketStyle["bracket__round__game__slot--top"]}`}
         >
-          <div className={bracketStyle["bracket__round__game__slot__seed"]}>
-            {topSlot ? (topSlot.seed >= 0 ? topSlot.seed + 1 : null) : null}
-          </div>
-          <div className={bracketStyle["bracket__round__game__slot__team"]}>
-            {topSlot ? (topSlot.team ? topSlot.team.team_name : null) : null}
-          </div>
-          <div className={bracketStyle["bracket__round__game__slot__score"]}>
-            {topSlot ? (topSlot.score ? topSlot.score : null) : null}
-          </div>
+          <BracketSlot slot={topSlot} />
         </div>
         <div
           className={`${bracketStyle["bracket__round__game__slot"]} ${bracketStyle["bracket__round__game__slot--bottom"]}`}
         >
-          <div className={bracketStyle["bracket__round__game__slot__seed"]}>
-            {bottomSlot
-              ? bottomSlot.seed >= 0
-                ? bottomSlot.seed + 1
-                : null
-              : null}
-          </div>
-          <div className={bracketStyle["bracket__round__game__slot__team"]}>
-            {bottomSlot
-              ? bottomSlot.team
-                ? bottomSlot.team.team_name
-                : null
-              : null}
-          </div>
-          <div className={bracketStyle["bracket__round__game__slot__score"]}>
-            {bottomSlot ? (bottomSlot.score ? bottomSlot.score : null) : null}
-          </div>
+          <BracketSlot slot={bottomSlot} />
         </div>
+        {renderChampion()}
       </div>
       <BracketGamePopup
         show={showBracketGamePopup}

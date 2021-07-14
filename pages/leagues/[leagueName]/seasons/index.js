@@ -19,7 +19,7 @@ function Seasons({ league }) {
   const { user } = useUser();
 
   if (router.isFallback) {
-    return <TwitSpinner />;
+    return <TwitSpinner size={50} />;
   }
 
   function renderSeasons() {

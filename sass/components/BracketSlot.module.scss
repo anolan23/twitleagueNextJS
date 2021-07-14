@@ -1,0 +1,40 @@
+.bracket-slot {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 28px;
+  line-height: 28px;
+  font-size: 1.5rem;
+  padding-left: 2px;
+
+  &__seed {
+    font-weight: 700;
+    margin: 0 1rem;
+  }
+  &__team {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    gap: 5px;
+    font-weight: 700;
+    &__avatar {
+      height: 30px;
+      width: 30px;
+      object-fit: cover;
+    }
+
+    &__name {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  &__empty {
+    font-style: italic;
+  }
+  &__score {
+    margin-left: auto;
+    margin-right: 1rem;
+  }
+}

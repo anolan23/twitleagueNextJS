@@ -89,7 +89,7 @@ function EventsPage(props) {
 
   const renderEvent = () => {
     if (event === null) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={50} />;
     } else if (event.length === 0) {
       return null;
     } else {
@@ -167,7 +167,7 @@ function EventsPage(props) {
 
   const renderPosts = () => {
     if (posts === null) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={50} />;
     } else if (posts.length === 0) {
       return (
         <Empty main="No posts" sub="Be the first to post about this event" />

@@ -72,7 +72,7 @@ function InfiniteList({
 
   function rowRenderer({ key, index, style, parent }) {
     if (!list) {
-      return <TwitSpinner key={key} style={style} />;
+      return <TwitSpinner key={key} style={style} size={50} />;
     } else {
       return (
         <CellMeasurer

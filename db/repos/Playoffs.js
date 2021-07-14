@@ -1,11 +1,25 @@
 import pool from "../pool";
 
 class Playoffs {
-  static async create(seasonId) {
+  static async create(seasonId, playoffs) {
+    const { bracket, seeds, in_progress } = playoffs;
     const { rows } = await pool.query(
       `
-      INSERT INTO playoffs (season_id)
-      VALUES ($1)
+      INSERT INTO playoffs (season_id, bracket, seeds, in_progress)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+        `,
+      [seasonId, bracket, seeds, in_progress]
+    );
+
+    return rows[0];
+  }
+
+  static async delete(seasonId) {
+    const { rows } = await pool.query(
+      `
+      DELETE FROM  playoffs
+      WHERE season_id = $1
       RETURNING *
         `,
       [seasonId]
@@ -41,7 +55,15 @@ class Playoffs {
           FROM teams
           WHERE league_id = leagues.id
         ) AS nested_team
-        ) AS teams
+        ) AS teams,
+		    (
+        SELECT jsonb_agg(nested_season)
+        FROM (
+          SELECT *
+          FROM seasons
+          WHERE league_id = leagues.id
+        ) AS nested_season
+        ) AS seasons
         FROM leagues 
         WHERE id = seasons.league_id
         ) AS league

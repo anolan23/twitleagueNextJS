@@ -123,7 +123,7 @@ function EditDivisionsPopup({ league, show, onHide }) {
 
   const renderDivisions = () => {
     if (!standings) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={50} />;
     } else if (standings.length === 0) {
       return null;
     } else {

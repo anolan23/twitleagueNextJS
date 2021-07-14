@@ -1,4 +1,4 @@
-import Playoffs from "../../../../../db/repos/Playoffs";
+import Playoffs from "../../../db/repos/Playoffs";
 
 export default async (req, res) => {
   const { method } = req;
@@ -7,16 +7,19 @@ export default async (req, res) => {
     const playoffs = await Playoffs.findOne(seasonId);
     res.send(playoffs);
   } else if (method === "POST") {
-    const playoffs = await Playoffs.create(seasonId);
-    res.send(playoffs);
+    const { playoffs } = req.body;
+    const results = await Playoffs.create(seasonId, playoffs);
+    res.send(results);
   } else if (method === "PATCH") {
     const { columns } = req.body;
     const playoffs = await Playoffs.update(seasonId, columns);
     res.send(playoffs);
   } else if (method === "DELETE") {
+    const playoffs = await Playoffs.delete(seasonId);
+    res.send(playoffs);
   } else {
     res.status(405).json({
-      message: "api/seasons/[seasonId]/playoffs only supports GET, POST, PATCH",
+      message: "api/playoffs only supports GET, POST, PATCH, DELETE",
     });
   }
 };

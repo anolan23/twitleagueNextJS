@@ -37,7 +37,7 @@ function WhatsHappening(props) {
 
   const renderItems = () => {
     if (!trends) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={30} />;
     } else if (trends.length === 0) {
       return <Empty main="Nothing here" sub="Try again later" />;
     } else {

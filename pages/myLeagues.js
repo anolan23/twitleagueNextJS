@@ -56,7 +56,7 @@ function MyLeagues() {
   };
 
   if (!user || !user.isSignedIn) {
-    return <TwitSpinner />;
+    return <TwitSpinner size={50} />;
   }
 
   return (

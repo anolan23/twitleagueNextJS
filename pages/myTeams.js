@@ -32,7 +32,7 @@ function MyTeams() {
 
   const renderTeams = () => {
     if (teams === null) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={50} />;
     } else if (teams.length === 0) {
       return (
         <Empty main="No teams" sub="The teams that you create will go here" />
@@ -55,7 +55,7 @@ function MyTeams() {
   };
 
   if (!user || !user.isSignedIn) {
-    return <TwitSpinner />;
+    return <TwitSpinner size={50} />;
   }
 
   return (

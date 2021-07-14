@@ -28,7 +28,7 @@ function StandingsCard({ standings, league, title }) {
       return <Empty main="Empty" sub="No league affiliation" />;
     }
     if (!standings) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={30} />;
     } else if (standings.length === 0) {
       return (
         <Empty

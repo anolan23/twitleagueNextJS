@@ -17,7 +17,7 @@ function Season({ season, seasonId }) {
   const { user } = useUser();
 
   if (router.isFallback) {
-    return <TwitSpinner />;
+    return <TwitSpinner size={50} />;
   }
 
   return (

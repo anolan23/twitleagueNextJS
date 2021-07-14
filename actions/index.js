@@ -193,9 +193,17 @@ export const findSeasonsByLeagueName = async (leagueName) => {
 };
 
 export const updatePlayoffs = async (seasonId, columns) => {
-  const response = await backend.patch(`/api/seasons/${seasonId}/playoffs`, {
-    columns,
-  });
+  const response = await backend.patch(
+    `/api/playoffs`,
+    {
+      columns,
+    },
+    {
+      params: {
+        seasonId,
+      },
+    }
+  );
   return response.data;
 };
 
@@ -697,7 +705,35 @@ export const getStandings = async (league_name) => {
   return standings.data;
 };
 
-export const createPlayoffs = async (seasonId) => {
-  const response = await backend.post(`/api/seasons/${seasonId}/playoffs`);
+export const getLeaguePlayoff = async (leagueName, seasonId) => {
+  const response = await backend.get(`/api/leagues/${leagueName}/playoffs`, {
+    params: {
+      seasonId,
+    },
+  });
+  return response.data;
+};
+
+export const createPlayoffs = async (seasonId, playoffs) => {
+  const response = await backend.post(
+    `/api/playoffs`,
+    {
+      playoffs,
+    },
+    {
+      params: {
+        seasonId,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const deletePlayoffs = async (seasonId) => {
+  const response = await backend.delete(`/api/playoffs`, {
+    params: {
+      seasonId,
+    },
+  });
   return response.data;
 };

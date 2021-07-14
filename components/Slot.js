@@ -3,15 +3,19 @@ import Avatar from "./Avatar";
 import Checkbox from "./Checkbox";
 
 function Slot({ slot, checked, onClick, value }) {
-  const { team, seed } = slot;
-
   const onSlotClick = (event) => {
     const { id } = event.currentTarget;
     onClick(id, slot.team);
   };
 
-  return (
-    <div className={slotStyle["slot"]} onClick={onSlotClick} id={value}>
+  function renderTeam() {
+    if (!slot) {
+      return <div className={slotStyle["slot__empty"]}>Empty slot</div>;
+    }
+
+    const { team, seed } = slot;
+
+    return (
       <div className={slotStyle["slot__team"]}>
         <div className={slotStyle["slot__team__seed"]}>{seed + 1}</div>
         <Avatar src={team.avatar} className={slotStyle["slot__team__avatar"]} />
@@ -19,6 +23,12 @@ function Slot({ slot, checked, onClick, value }) {
           {team.team_name}
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div className={slotStyle["slot"]} onClick={onSlotClick} id={value}>
+      {renderTeam()}
       <Checkbox checked={checked} type="radio" onChange={onSlotClick} />
     </div>
   );

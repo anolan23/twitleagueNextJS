@@ -37,7 +37,7 @@ function TwitItemSelect({ id, options, defaultValue, onSelect, disabled }) {
 
   const renderOptions = () => {
     if (!options) {
-      return <TwitSpinner />;
+      return <TwitSpinner size={30} />;
     }
     return options.map((option, index) => {
       return (

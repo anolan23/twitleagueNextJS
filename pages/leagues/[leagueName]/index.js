@@ -97,13 +97,6 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
     setTab(k.target.id);
   };
 
-  async function onAdvanceToPlayoffsClick() {
-    await createPlayoffs(league.current_season.id);
-    router.push(
-      `/leagues/${league.league_name}/seasons/${league.current_season.id}/playoffs`
-    );
-  }
-
   const renderDivisions = () => {
     if (!standings) {
       return null;
@@ -178,18 +171,18 @@ function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
           >
             Start new season
           </TwitDropdownItem>
-          <TwitDropdownItem onClick={onAdvanceToPlayoffsClick} disabled={false}>
-            Advance to playoffs
-          </TwitDropdownItem>
           <TwitDropdownItem
             onClick={() =>
-              router.push(
-                `/leagues/${league.league_name}/seasons/${league.current_season.id}/playoffs`
-              )
+              router.push({
+                pathname: `/leagues/${league.league_name}/playoffs`,
+                query: {
+                  seasonId: league.current_season.id,
+                },
+              })
             }
             disabled={false}
           >
-            View bracket
+            Playoff bracket
           </TwitDropdownItem>
           <TwitDropdownItem
             onClick={() => setShowEndSeasonPrompt(true)}
