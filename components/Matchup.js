@@ -18,7 +18,7 @@ function Matchup({ event }) {
   };
 
   const renderScore = () => {
-    if (!event.points) {
+    if (!event.home_team_points) {
       return (
         <div className={matchup["matchup__matchup__symbol-holder"]}>
           <span className={matchup["matchup__matchup__symbol__symbol"]}>
@@ -30,11 +30,11 @@ function Matchup({ event }) {
       return (
         <div className={matchup["matchup__matchup__score"]}>
           <span className={matchup["matchup__matchup__score__points"]}>
-            {event.points}
+            {event.home_team_points}
           </span>
           <span className={matchup["matchup__matchup__score__dash"]}>-</span>
           <span className={matchup["matchup__matchup__score__points"]}>
-            {event.opponent_points}
+            {event.away_team_points}
           </span>
         </div>
       );

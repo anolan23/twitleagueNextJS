@@ -1,71 +1,65 @@
-import React from "react"
-import {connect} from "react-redux"
+import React from "react";
 
+import useUser from "../lib/useUser";
 import Avatar from "../components/Avatar";
-import {togglePanel} from "../actions";
+import { togglePanel } from "../actions";
 
-function TopBar(props){
+function TopBar({ main, sub, children }) {
+  const { user } = useUser();
 
   const goBack = () => {
-    if(typeof window !== "undefined"){
+    if (typeof window !== "undefined") {
       window.history.back();
     }
-  }
+  };
 
   const renderBackArrow = () => {
-    if(props.main === "Home"){
+    if (main === "Home") {
       return null;
-    }
-    else{
+    } else {
       return (
         <svg className="top-bar__icon" onClick={goBack}>
-          <use xlinkHref="/sprites.svg#icon-arrow-left"/>
+          <use xlinkHref="/sprites.svg#icon-arrow-left" />
         </svg>
-      )
+      );
     }
-  }
+  };
 
   const renderAvatar = () => {
-    if(props.main !== "Home"){
+    if (main !== "Home") {
       return null;
-    }
-    else{
+    } else {
       return (
-          <Avatar onClick={props.togglePanel} className="top-bar__avatar" src={props.avatar}/>
-      )
+        <Avatar
+          onClick={togglePanel}
+          className="top-bar__avatar"
+          src={user.avatar}
+        />
+      );
     }
-  }
+  };
 
   const renderAction = () => {
-    if(!props.children){
+    if (!children) {
       return null;
+    } else {
+      return <div className="top-bar__box__action">{children}</div>;
     }
-    else{
-      return(
-        <div className="top-bar__box__action">
-          {props.children}
-        </div>
-      )
-    }
-  }
+  };
 
-    return(
-        <div className="top-bar">
-          <div className="top-bar__box">
-            {renderAvatar()}
-            {renderBackArrow()}
-            <div className="top-bar__text">
-              <div className="top-bar__text--main">{props.main}</div>
-              <div className="top-bar__text--sub muted">{props.sub}</div>
-            </div>
-            {renderAction()}
-          </div>
+  return (
+    <div className="top-bar">
+      <div className="top-bar__box">
+        {renderAvatar()}
+        {renderBackArrow()}
+        <div className="top-bar__text">
+          <div className="top-bar__text--main">{main}</div>
+          <div className="top-bar__text--sub muted">{sub}</div>
         </div>
-    )
+        {renderAction()}
+      </div>
+    </div>
+  );
 }
 
-const mapStateToProps = (state) => {
-  return {avatar: state.user.avatar}
-}
-
-export default connect(mapStateToProps, {togglePanel})(TopBar);
+export default TopBar;

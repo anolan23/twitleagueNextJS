@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import { toggleUpdateScorePopup, approveEvent } from "../../actions";
-import { connect } from "react-redux";
 import useSWR, { mutate } from "swr";
 
 import MainBody from "../../components/MainBody";
@@ -13,10 +10,10 @@ import events from "../../sass/components/Events.module.scss";
 import activePost from "../../sass/components/ActivePost.module.scss";
 import {
   fetchEvent,
-  setEvent,
   fetchEventPosts,
   likeEvent,
   unLikeEvent,
+  approveEvent,
 } from "../../actions";
 import TwitButton from "../../components/TwitButton";
 import SmallInput from "../../components/SmallInput";
@@ -26,11 +23,15 @@ import Post from "../../components/Post";
 import backend from "../../lib/backend";
 import Like from "../../components/Like";
 import TwitSpinner from "../../components/TwitSpinner";
+import UpdateScorePopup from "../../components/modals/UpdateScorePopup";
+import PopupEventReply from "../../components/modals/PopupEventReply";
 
-function EventsPage(props) {
+function EventsPage({ eventData }) {
   const { user } = useUser();
   const router = useRouter();
   const [posts, setPosts] = useState(null);
+  const [showUpdateScorePopup, setShowUpdateScorePopup] = useState(false);
+  const [showPopupEventReply, setShowPopupEventReply] = useState(false);
 
   const fetcher = async (url) => {
     const event = await backend.get(url, {
@@ -41,14 +42,10 @@ function EventsPage(props) {
     return event.data;
   };
   const { data: event, mutate } = useSWR(
-    props.event && user ? `/api/events/${props.event.id}` : null,
+    eventData && user ? `/api/events/${eventData.id}` : null,
     fetcher,
-    { initialData: props.event, revalidateOnMount: true }
+    { initialData: eventData, revalidateOnMount: true }
   );
-
-  useEffect(() => {
-    props.setEvent(event);
-  }, [event]);
 
   useEffect(() => {
     getPosts();
@@ -65,11 +62,11 @@ function EventsPage(props) {
   };
 
   const onUpdateScoreClick = () => {
-    props.toggleUpdateScorePopup();
+    setShowUpdateScorePopup(true);
   };
 
   const onApproveClick = () => {
-    props.approveEvent(event.id);
+    approveEvent(event.id);
   };
 
   const onLikeClick = async (e) => {
@@ -121,14 +118,14 @@ function EventsPage(props) {
             <div
               onClick={onLikeClick}
               className={`${activePost["active-post__icons__holder"]} ${
-                props.e.liked
+                event.liked
                   ? activePost["active-post__icons__holder__active"]
                   : null
               }`}
             >
               <Like
                 className={activePost["active-post__icon"]}
-                liked={props.e.liked}
+                liked={event.liked}
               />
             </div>
             <div
@@ -228,9 +225,19 @@ function EventsPage(props) {
           </div>
         </TopBar>
         <div className={events["events"]}>{renderEvent()}</div>
-        <SmallInput />
+        <SmallInput onClick={() => setShowPopupEventReply(true)} />
         {renderPosts()}
       </MainBody>
+      <UpdateScorePopup
+        show={showUpdateScorePopup}
+        onHide={() => setShowUpdateScorePopup(false)}
+        event={event}
+      />
+      <PopupEventReply
+        show={showPopupEventReply}
+        onHide={() => setShowPopupEventReply(false)}
+        event={event}
+      />
     </React.Fragment>
   );
 }
@@ -241,24 +248,14 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const eventId = context.params.eventId;
-  const event = await fetchEvent(eventId);
+  const eventData = await fetchEvent(eventId);
 
   return {
     revalidate: 1,
     props: {
-      event,
+      eventData,
     }, // will be passed to the page component as props
   };
 }
 
-const mapStateToProps = (state) => {
-  return {
-    e: state.event,
-  };
-};
-
-export default connect(mapStateToProps, {
-  toggleUpdateScorePopup,
-  setEvent,
-  approveEvent,
-})(EventsPage);
+export default EventsPage;

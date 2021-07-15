@@ -1,20 +1,18 @@
 import React from "react";
-import { connect } from "react-redux";
 
 import useUser from "../lib/useUser";
-import { scout, unScout, toggleEditProfilePopup } from "../actions";
 import Profile from "./Profile";
-import userProfile from "../sass/components/UserProfile.module.scss";
+import userProfileStyle from "../sass/components/UserProfile.module.scss";
 import Attribute from "./Attribute";
 import Count from "./Count";
 import ScoutButton from "./ScoutButton";
 import Linkify from "./Linkify";
 
-function UserProfile(props) {
+function UserProfile({ userProfile, onAvatarClick }) {
   const { user } = useUser();
   const editUser = () => {
-    if (user.id === props.user.id) {
-      props.toggleEditProfilePopup();
+    if (user.id === userProfile.id) {
+      onAvatarClick();
     }
   };
 
@@ -22,40 +20,42 @@ function UserProfile(props) {
     if (!user) {
       return null;
     }
-    if (user.id === props.user.id) {
+    if (user.id === userProfile.id) {
       return null;
     } else {
-      return <ScoutButton user={props.user} />;
+      return <ScoutButton user={userProfile} />;
     }
   };
 
   return (
     <React.Fragment>
       <Profile
-        banner={props.user.banner}
-        avatar={props.user.avatar}
+        banner={userProfile.banner}
+        avatar={userProfile.avatar}
         onAvatarClick={editUser}
         action={renderButton()}
       >
-        <div className={userProfile["user-profile__info"]}>
+        <div className={userProfileStyle["user-profile__info"]}>
           <div
-            className={`${userProfile["user-profile__name"]} u-margin-top-tiny`}
+            className={`${userProfileStyle["user-profile__name"]} u-margin-top-tiny`}
           >
-            <h1 className="heading-1">{props.user.name}</h1>
+            <h1 className="heading-1">{userProfile.name}</h1>
           </div>
-          <div className={userProfile["user-profile__info__username-box"]}>
+          <div className={userProfileStyle["user-profile__info__username-box"]}>
             <h3
               className={
-                userProfile["user-profile__info__username-box__username"]
+                userProfileStyle["user-profile__info__username-box__username"]
               }
-            >{`@${props.user.username}`}</h3>
+            >{`@${userProfile.username}`}</h3>
           </div>
-          {props.user.bio ? (
-            <div className={userProfile["user-profile__info__bio"] + " muted"}>
-              <Linkify string={props.user.bio} user={user} hasTwitLinks />
+          {userProfile.bio ? (
+            <div
+              className={userProfileStyle["user-profile__info__bio"] + " muted"}
+            >
+              <Linkify string={userProfile.bio} user={user} hasTwitLinks />
             </div>
           ) : null}
-          <div className={userProfile["user-profile__attributes"]}>
+          <div className={userProfileStyle["user-profile__attributes"]}>
             <Attribute icon={"/sprites.svg#icon-map-pin"} text="Chicago, IL" />
             <Attribute
               icon={"/sprites.svg#icon-trending-up"}
@@ -66,14 +66,14 @@ function UserProfile(props) {
               text="Joined December 2010"
             />
           </div>
-          <div className={userProfile["user-profile__counts"]}>
+          <div className={userProfileStyle["user-profile__counts"]}>
             <Count
               href="/"
-              value={props.user.scouts}
-              text={props.user.scouts == 1 ? "Scout" : "Scouts"}
+              value={userProfile.scouts}
+              text={userProfile.scouts == 1 ? "Scout" : "Scouts"}
             />
-            <Count href="/" value={props.user.scouting} text="Scouting" />
-            <Count href="/" value={props.user.following} text="Following" />
+            <Count href="/" value={userProfile.scouting} text="Scouting" />
+            <Count href="/" value={userProfile.following} text="Following" />
           </div>
         </div>
       </Profile>
@@ -81,8 +81,4 @@ function UserProfile(props) {
   );
 }
 
-export default connect(null, {
-  scout,
-  unScout,
-  toggleEditProfilePopup,
-})(UserProfile);
+export default UserProfile;

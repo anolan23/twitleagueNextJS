@@ -4,31 +4,42 @@ import popupCompose from "../../sass/components/PopupCompose.module.scss";
 import Popup from "./Popup";
 import MainInput from "../MainInput";
 import TwitButton from "../TwitButton";
+import Post from "../Post";
 
-function PopupCompose({ show, onHide, initialValue, onSubmit }) {
+function PopupCompose({ show, onHide, initialValue, onSubmit, reply }) {
   if (!show) {
     return null;
   }
   const inputRef = useRef(null);
-
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, [inputRef]);
 
+  const renderReply = () => {
+    if (!reply) {
+      return null;
+    } else {
+      return <Post listItem={reply} history />;
+    }
+  };
+
   const renderBody = () => {
     return (
-      <MainInput
-        expanded
-        compose
-        placeHolder="$Team or @Username"
-        initialValue={initialValue}
-        buttonText="Post"
-        onSubmit={onSubmit}
-        inputRef={inputRef}
-        focusOnMount
-      />
+      <React.Fragment>
+        {renderReply()}
+        <MainInput
+          expanded
+          compose
+          placeHolder="$Team or @Username"
+          initialValue={initialValue}
+          buttonText={!reply ? "Post" : "Reply"}
+          onSubmit={onSubmit}
+          inputRef={inputRef}
+          focusOnMount
+        />
+      </React.Fragment>
     );
   };
 
@@ -36,7 +47,7 @@ function PopupCompose({ show, onHide, initialValue, onSubmit }) {
     return (
       <div className={popupCompose["popup-compose"]}>
         <TwitButton form="main-input-form" color="primary">
-          Post
+          {!reply ? "Post" : "Reply"}
         </TwitButton>
       </div>
     );

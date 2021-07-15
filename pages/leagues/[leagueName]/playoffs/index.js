@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useGlobalState } from "../../../../context/TwitProvider";
 import { useRouter } from "next/router";
 
 import useUser from "../../../../lib/useUser";
@@ -22,12 +23,12 @@ import TwitSpinner from "../../../../components/TwitSpinner";
 import TwitIcon from "../../../../components/TwitIcon";
 
 function Playoffs() {
-  const empty = [...Array(32)];
-
+  const { globalState, setGlobalState } = useGlobalState();
   const { user } = useUser();
   const [offset, startPan] = usePan();
   const router = useRouter();
   const [seeds, setSeeds] = useState([]);
+  const empty = [...Array(32)];
   const [bracket, setBracket] = useState(empty);
   const [champion, setChampion] = useState(null);
   const [inProgress, setInProgress] = useState(null);

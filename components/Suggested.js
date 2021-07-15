@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 
 import useUser from "../lib/useUser";
 import suggested from "../sass/components/Suggested.module.scss";
@@ -11,7 +10,7 @@ import backend from "../lib/backend";
 import FollowItem from "./FollowItem";
 import ScoutItem from "./ScoutItem";
 
-function Suggested(props) {
+function Suggested() {
   const { user } = useUser();
   const [tab, setTab] = useState("teams");
   const [suggestions, setSuggestions] = useState(null);
@@ -95,10 +94,4 @@ function Suggested(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userId: state.user.id,
-  };
-};
-
-export default connect(mapStateToProps)(Suggested);
+export default Suggested;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { connect } from "react-redux";
+
 import useSWR from "swr";
 
 import useUser from "../../lib/useUser";
@@ -12,13 +12,9 @@ import TwitTabs from "../../components/TwitTabs";
 import Post from "../../components/Post";
 import Empty from "../../components/Empty";
 import {
-  clearPosts,
-  toggleEditProfilePopup,
   fetchPostsByUsername,
   fetchMediaPostsByUsername,
   fetchLikedPostsByUsername,
-  fetchUser,
-  togglePopupCompose,
 } from "../../actions";
 import TopBar from "../../components/TopBar";
 import FeedCard from "../../components/FeedCard";
@@ -32,10 +28,12 @@ import SuggestedTeams from "../../components/SuggestedTeams";
 import LeftColumn from "../../components/LeftColumn";
 import RightColumn from "../../components/RightColumn";
 import TwitSpinner from "../../components/TwitSpinner";
+import EditProfilePopup from "../../components/modals/EditProfilePopup";
 
-function User(props) {
+function User({ userData }) {
   const { user } = useUser();
   const { query, isReady, isFallback } = useRouter();
+  const [showEditProfilePopup, setShowEditProfilePopup] = useState(false);
   const [tab, setTab] = useState("posts");
   const [users, setUsers] = useState(null);
   const [posts, setPosts] = useState(null);
@@ -54,10 +52,10 @@ function User(props) {
     return response.data;
   };
 
-  const { data: userData } = useSWR(
-    props.userData && user ? `/api/users/${props.userData.username}` : null,
+  const { data: userProfile } = useSWR(
+    userData && user ? `/api/users/${userData.username}` : null,
     getUser,
-    { initialData: props.userData, revalidateOnMount: true }
+    { initialData: userData, revalidateOnMount: true }
   );
 
   useEffect(() => {
@@ -218,8 +216,11 @@ function User(props) {
         </header>
         <main className="main">
           <div className={userStyle["user"]}>
-            <TopBar main={userData.username} />
-            <UserProfile user={userData} />
+            <TopBar main={userProfile.username} />
+            <UserProfile
+              userProfile={userProfile}
+              onAvatarClick={() => setShowEditProfilePopup(true)}
+            />
             <TwitTabs>
               <TwitTab
                 onClick={onPostsSelect}
@@ -254,6 +255,10 @@ function User(props) {
           </RightColumn>
         </div>
       </div>
+      <EditProfilePopup
+        show={showEditProfilePopup}
+        onHide={() => setShowEditProfilePopup(false)}
+      />
     </React.Fragment>
   );
 }
@@ -275,17 +280,4 @@ export async function getStaticProps(context) {
   };
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userId: state.user.id ? state.user.id : null,
-    isSignedIn: state.user.isSignedIn,
-    posts: state.posts ? state.posts : null,
-  };
-};
-
-export default connect(mapStateToProps, {
-  clearPosts,
-  toggleEditProfilePopup,
-  fetchUser,
-  togglePopupCompose,
-})(User);
+export default User;

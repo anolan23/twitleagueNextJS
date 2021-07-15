@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import Link from "next/link";
 
 import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
@@ -10,7 +9,7 @@ import Empty from "./Empty";
 import Trend from "./Trend";
 import TwitSpinner from "./TwitSpinner";
 
-function WhatsHappening(props) {
+function WhatsHappening() {
   const [items, setItems] = useState(null);
   const [trends, setTrends] = useState(null);
 
@@ -61,8 +60,4 @@ function WhatsHappening(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return { userId: state.user.id };
-};
-
-export default connect(mapStateToProps)(WhatsHappening);
+export default WhatsHappening;

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { connect } from "react-redux";
 
 import { fetchThreadReplies, clearReplies } from "../../actions";
 import MainBody from "../../components/MainBody";
@@ -15,18 +14,20 @@ import useUser from "../../lib/useUser";
 import useSWR from "swr";
 import TwitSpinner from "../../components/TwitSpinner";
 
-function ThreadPage(props) {
+function ThreadPage({ threadData, threadId }) {
   const { user } = useUser();
-  const { threadId, replies } = props;
   const router = useRouter();
+  const [replies, setReplies] = useState(null);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (threadId && user) {
-      props.fetchThreadReplies(threadId, user.id);
+      const results = await fetchThreadReplies(threadId, user.id);
+      console.log(results);
+      setReplies(results);
     }
 
     return () => {
-      props.clearReplies();
+      clearReplies();
     };
   }, [threadId, user]);
 
@@ -40,16 +41,16 @@ function ThreadPage(props) {
   };
 
   const { data: thread } = useSWR(
-    props.threadId && user ? `/api/thread/${props.threadId}` : null,
+    threadId && user ? `/api/thread/${threadId}` : null,
     getThread,
-    { initialData: props.thread, revalidateOnMount: true }
+    { initialData: threadData, revalidateOnMount: true }
   );
 
   const renderThread = () => {
     return thread.map((post, index) => {
-      if (post.id != props.threadId) {
+      if (post.id != threadId) {
         return <Post key={index} post={post} history />;
-      } else if (post.id == props.threadId) {
+      } else if (post.id == threadId) {
         return (
           <React.Fragment key={index}>
             <ActivePost post={post} />
@@ -61,13 +62,13 @@ function ThreadPage(props) {
   };
 
   const renderReplies = () => {
-    if (replies === null || replies === undefined) {
+    if (!replies) {
       return <TwitSpinner size={50} />;
     } else if (replies.length === 0) {
       return null;
     } else {
       return replies.map((reply, index) => {
-        return <Post key={index} post={reply} />;
+        return <Post key={index} listItem={reply} />;
       });
     }
   };
@@ -96,25 +97,17 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  const threadId = context.params.threadId;
+  const { threadId } = context.params;
   let result = await backend.get(`/api/thread/${threadId}`);
-  const thread = result.data;
+  const threadData = result.data;
 
   return {
     revalidate: 1,
     props: {
-      thread,
+      threadData,
       threadId,
     }, // will be passed to the page component as props
   };
 }
 
-const mapStateToProps = (state) => {
-  return {
-    replies: state.threadReplies,
-  };
-};
-
-export default connect(mapStateToProps, { fetchThreadReplies, clearReplies })(
-  ThreadPage
-);
+export default ThreadPage;

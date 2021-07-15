@@ -1,12 +1,12 @@
 import React from "react";
-import { connect } from "react-redux";
+
 import { toggleSignUpModal } from "../actions";
 
 import TwitButton from "./TwitButton";
 import authBanner from "../sass/components/AuthBanner.module.scss";
 import useUser from "../lib/useUser";
 
-function AuthBanner({ toggleSignUpModal }) {
+function AuthBanner() {
   const { user } = useUser();
   if (!user) {
     return null;
@@ -36,4 +36,4 @@ function AuthBanner({ toggleSignUpModal }) {
   }
 }
 
-export default connect(null, { toggleSignUpModal })(AuthBanner);
+export default AuthBanner;

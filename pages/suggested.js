@@ -1,24 +1,19 @@
-import React, {useEffect} from "react";
-import Head from 'next/head'
-import {connect} from "react-redux";
+import React, { useEffect } from "react";
+import Head from "next/head";
 
-import MainBody from "../components/MainBody"
+import MainBody from "../components/MainBody";
 import Suggested from "../components/Suggested";
-import {fetchNotifications} from "../actions"
 
-function SuggestedPage(props){
+function SuggestedPage() {
+  useEffect(() => {}, []);
 
-  useEffect(() => {
-    
-  }, []);
-
-  return(
+  return (
     <React.Fragment>
       <MainBody>
-        <Suggested/>
+        <Suggested />
       </MainBody>
     </React.Fragment>
-  )
+  );
 }
 
-export default connect(null, {fetchNotifications})(SuggestedPage);
+export default SuggestedPage;

@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { connect } from "react-redux";
+
 import useSWR from "swr";
 
 import leagueStyle from "../../../sass/components/League.module.scss";
-import {
-  fetchLeague,
-  fetchLeaguePosts,
-  clearPosts,
-  setLeague,
-  toggleEditDivisionsPopup,
-  createPlayoffs,
-} from "../../../actions";
 import Leagues from "../../../db/repos/Leagues";
 import useUser from "../../../lib/useUser";
 import TopBar from "../../../components/TopBar";
@@ -34,7 +26,7 @@ import Prompt from "../../../components/modals/Prompt";
 import EditLeaguePopup from "../../../components/modals/EditLeaguePopup";
 import EditDivisionsPopup from "../../../components/modals/EditDivisionsPopup";
 
-function League({ leagueData, standingsData, toggleEditDivisionsPopup }) {
+function League({ leagueData, standingsData }) {
   const router = useRouter();
   const { user } = useUser();
   const [tab, setTab] = useState("mentions");
@@ -328,15 +320,4 @@ export async function getStaticProps(context) {
   };
 }
 
-const mapStateToProps = (state) => {
-  return {
-    posts: state.posts,
-  };
-};
-
-export default connect(mapStateToProps, {
-  setLeague,
-  fetchLeaguePosts,
-  clearPosts,
-  toggleEditDivisionsPopup,
-})(League);
+export default League;

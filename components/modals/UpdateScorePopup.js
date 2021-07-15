@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+
 import { useFormik } from "formik";
 
 import Popup from "./Popup";
 import Avatar from "../Avatar";
 import TwitButton from "../TwitButton";
 import {
-  toggleUpdateScorePopup,
   updateEvent,
   sendAwaitingEventApprovalNotification,
 } from "../../actions";
@@ -15,33 +14,34 @@ import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 import TwitSpinner from "../TwitSpinner";
 
-function UpdateScorePopup(props) {
-  const { _event } = props;
-
+function UpdateScorePopup({ show, onHide, event }) {
   useEffect(() => {
-    formik.setFieldValue("points", _event.points ? _event.points : 0);
     formik.setFieldValue(
-      "opponent_points",
-      _event.opponent_points ? _event.opponent_points : 0
+      "home_team_points",
+      event.home_team_points ? event.home_team_points : 0
+    );
+    formik.setFieldValue(
+      "away_team_points",
+      event.away_team_points ? event.away_team_points : 0
     );
     formik.setFieldValue(
       "play_period",
-      _event.play_period ? _event.play_period : ""
+      event.play_period ? event.play_period : ""
     );
-  }, [props._event.id]);
+  }, [event.id]);
 
   const formik = useFormik({
     initialValues: {
-      points: _event.points,
-      opponent_points: _event.opponent_points,
-      play_period: _event.play_period,
+      home_team_points: event.home_team_points,
+      away_team_points: event.away_team_points,
+      play_period: event.play_period,
     },
     onSubmit: (values) => {
       if (values.play_period === "Final") {
-        props.updateEvent(_event.id, values);
-        props.sendAwaitingEventApprovalNotification(_event.owner_id, _event.id);
+        updateEvent(event.id, values);
+        sendAwaitingEventApprovalNotification(event.owner_id, event.id);
       } else {
-        props.updateEvent(_event.id, values);
+        updateEvent(event.id, values);
       }
     },
   });
@@ -57,7 +57,7 @@ function UpdateScorePopup(props) {
   };
 
   const renderBody = () => {
-    if (_event === null) {
+    if (event === null) {
       return <TwitSpinner size={50} />;
     } else {
       return (
@@ -74,14 +74,14 @@ function UpdateScorePopup(props) {
                 className={
                   updateScorePopup["update-score-popup__teams__team__avatar"]
                 }
-                src={_event.avatar}
+                src={event.avatar}
               />
               <span
                 className={
                   updateScorePopup["update-score-popup__teams__team__name"]
                 }
               >
-                {_event.team_name}
+                {event.team_name}
               </span>
             </div>
             <div
@@ -96,9 +96,9 @@ function UpdateScorePopup(props) {
                 max={999}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                name="points"
-                id="points"
-                value={formik.values.points}
+                name="home_team_points"
+                id="home_team_points"
+                value={formik.values.home_team_points}
               />
               <span
                 className={
@@ -116,9 +116,9 @@ function UpdateScorePopup(props) {
                 max={999}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                name="opponent_points"
-                id="opponent_points"
-                value={formik.values.opponent_points}
+                name="away_team_points"
+                id="away_team_points"
+                value={formik.values.away_team_points}
               />
             </div>
             <div
@@ -128,14 +128,14 @@ function UpdateScorePopup(props) {
                 className={
                   updateScorePopup["update-score-popup__teams__team__avatar"]
                 }
-                src={_event.opponent_avatar}
+                src={event.opponent_avatar}
               />
               <span
                 className={
                   updateScorePopup["update-score-popup__teams__team__name"]
                 }
               >
-                {_event.opponent_team_name}
+                {event.opponent_team_name}
               </span>
             </div>
           </div>
@@ -182,23 +182,12 @@ function UpdateScorePopup(props) {
 
   return (
     <Popup
-      show={props.showUpdateScorePopup}
-      onHide={props.toggleUpdateScorePopup}
+      show={show}
+      onHide={onHide}
       heading={renderHeading()}
       body={renderBody()}
     />
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showUpdateScorePopup: state.modals.showUpdateScorePopup,
-    _event: state.event,
-  };
-};
-
-export default connect(mapStateToProps, {
-  toggleUpdateScorePopup,
-  updateEvent,
-  sendAwaitingEventApprovalNotification,
-})(UpdateScorePopup);
+export default UpdateScorePopup;

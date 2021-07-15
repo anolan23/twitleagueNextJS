@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 
 import useUser from "../lib/useUser";
 import TwitNavItem from "./TwitNavItem";
@@ -7,7 +6,7 @@ import TwitIcon from "./TwitIcon";
 import twitNav from "../sass/components/TwitNav.module.scss";
 import twitNavItem from "../sass/components/TwitNavItem.module.scss";
 
-function TwitNav(props) {
+function TwitNav() {
   const { user } = useUser();
 
   const renderUnseenNotifcations = () => {
@@ -89,10 +88,4 @@ function TwitNav(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    notifications: state.user.notifications ? state.user.notifications : [],
-  };
-};
-
-export default connect(mapStateToProps)(TwitNav);
+export default TwitNav;

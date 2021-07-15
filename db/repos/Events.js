@@ -38,9 +38,9 @@ class Events {
         EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
         (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
         FROM events
-        LEFT JOIN teams AS t1 ON events.team_id = t1.id
-        LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
-        WHERE events.team_id = $1 OR events.opponent_id = $1
+        LEFT JOIN teams AS t1 ON events.home_team_id = t1.id
+        LEFT JOIN teams AS t2 ON events.away_team_id = t2.id
+        WHERE events.home_team_id = $1 OR events.away_team_id = $1
         ORDER BY date DESC`,
       [teamId]
     );
@@ -81,8 +81,8 @@ class Events {
             EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
             (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
         FROM events
-        LEFT JOIN teams AS t1 ON events.team_id = t1.id
-        LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
+        LEFT JOIN teams AS t1 ON events.home_team_id = t1.id
+        LEFT JOIN teams AS t2 ON events.away_team_id = t2.id
         LEFT JOIN leagues ON t1.league_id = leagues.id
         WHERE events.id = $1`,
       [eventId, userId]
@@ -105,8 +105,8 @@ class Events {
         t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar, 
         t2.owner_id AS opponent_owner_id
         FROM updated_event
-        LEFT JOIN teams AS t1 ON updated_event.team_id = t1.id
-        LEFT JOIN teams AS t2 ON updated_event.opponent_id = t2.id
+        LEFT JOIN teams AS t1 ON updated_event.home_team_id = t1.id
+        LEFT JOIN teams AS t2 ON updated_event.away_team_id = t2.id
         LEFT JOIN leagues ON t1.league_id = leagues.id`,
       Object.values(values)
     );

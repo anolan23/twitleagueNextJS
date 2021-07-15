@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+
 import { useFormik } from "formik";
 
 import Popup from "./Popup";

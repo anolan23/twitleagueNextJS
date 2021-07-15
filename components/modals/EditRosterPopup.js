@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { connect } from "react-redux";
 
 import { toggleEditRosterPopup, sendJoinTeamInvite } from "../../actions";
 import backend from "../../lib/backend";
@@ -12,12 +11,7 @@ import TwitItem from "../TwitItem";
 import Input from "../Input";
 import Empty from "../Empty";
 
-function EditRoster({
-  teamId,
-  sendJoinTeamInvite,
-  showEditRosterPopup,
-  toggleEditRosterPopup,
-}) {
+function EditRosterPopup({ team, show, onHide }) {
   const [activeLink, setActiveLink] = useState("roster");
   const [roster, setRoster] = useState(null);
   const [users, setUsers] = useState(null);
@@ -26,13 +20,13 @@ function EditRoster({
     const getRoster = async () => {
       const response = await backend.get("api/teams/rosters", {
         params: {
-          teamId: teamId,
+          teamId: team.id,
         },
       });
       setRoster(response.data);
     };
     getRoster();
-  }, [teamId]);
+  }, [team]);
 
   const onRosterSelect = (k) => {
     setActiveLink(k.target.id);
@@ -151,7 +145,7 @@ function EditRoster({
             title={user.name}
             subtitle={`@${user.username}`}
             actionText="Invite"
-            onClick={() => sendJoinTeamInvite(user.id, teamId)}
+            onClick={() => sendJoinTeamInvite(user.id, team.id)}
           />
         );
       });
@@ -160,22 +154,12 @@ function EditRoster({
 
   return (
     <Popup
-      show={showEditRosterPopup}
+      show={show}
       heading={renderHeading()}
       body={renderBody()}
-      onHide={toggleEditRosterPopup}
+      onHide={onHide}
     />
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showEditRosterPopup: state.modals.showEditRosterPopup,
-    teamId: state.team.id,
-  };
-};
-
-export default connect(mapStateToProps, {
-  toggleEditRosterPopup,
-  sendJoinTeamInvite,
-})(EditRoster);
+export default EditRosterPopup;

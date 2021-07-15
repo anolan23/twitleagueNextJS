@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Avatar from "./Avatar";
-import { connect } from "react-redux";
+
 import { logOutUser } from "../actions";
 import userToggle from "../sass/components/UserToggle.module.scss";
 import TwitDropdown from "../components/TwitDropdown";
@@ -10,7 +10,7 @@ import TwitItem from "../components/TwitItem";
 import TwitIcon from "./TwitIcon";
 import useUser from "../lib/useUser";
 
-function UserToggle(props) {
+function UserToggle() {
   const { user, mutateUser } = useUser();
   const router = useRouter();
   const ref = useRef();
@@ -18,7 +18,7 @@ function UserToggle(props) {
   const [show, setShow] = useState(false);
 
   const logOut = async () => {
-    await props.logOutUser();
+    await logOutUser();
     mutateUser();
     // router.push("/");
   };
@@ -80,4 +80,4 @@ function UserToggle(props) {
   }
 }
 
-export default connect(null, { logOutUser })(UserToggle);
+export default UserToggle;

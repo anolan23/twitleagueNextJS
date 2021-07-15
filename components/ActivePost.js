@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import reactStringReplace from "react-string-replace";
-import Link from "next/link";
 
 import activePost from "../sass/components/ActivePost.module.scss";
 import useUser from "../lib/useUser";
@@ -12,12 +9,11 @@ import {
   likePost,
   unLikePost,
 } from "../actions";
-import { truncate } from "../lib/twit-helpers";
 import TwitMedia from "./TwitMedia";
 import Like from "./Like";
 import Linkify from "./Linkify";
 
-function ActivePost({ post, trackClickedPost }) {
+function ActivePost({ post }) {
   const { user } = useUser();
   const [liked, setLiked] = useState(post.liked);
   const [likes, setLikes] = useState(post.likes);
@@ -74,9 +70,7 @@ function ActivePost({ post, trackClickedPost }) {
           src={post.avatar}
         />
         <div className={activePost["active-post__user-text"]}>
-          <span className={activePost["active-post__name"]}>
-            {post.name}
-          </span>
+          <span className={activePost["active-post__name"]}>{post.name}</span>
           <span
             className={activePost["active-post__username"]}
           >{`@${post.username}`}</span>
@@ -125,9 +119,4 @@ function ActivePost({ post, trackClickedPost }) {
   );
 }
 
-export default connect(null, {
-  trackClickedPost,
-  togglePopupReply,
-  likePost,
-  unLikePost,
-})(ActivePost);
+export default ActivePost;

@@ -1,13 +1,11 @@
 import React from "react";
-import { connect } from "react-redux";
 
-import { toggleRosterModal } from "../../actions";
 import TwitModal from "./TwitModal";
 import TwitItem from "../TwitItem";
 
-function RosterModal(props) {
+function RosterModal({ show, onHide, roster }) {
   const renderBody = () => {
-    return props.roster.map((player, index) => {
+    return roster.map((player, index) => {
       return (
         <TwitItem
           key={index}
@@ -21,8 +19,8 @@ function RosterModal(props) {
 
   return (
     <TwitModal
-      show={props.showRosterModal}
-      onHide={props.toggleRosterModal}
+      show={show}
+      onHide={onHide}
       title="Roster"
       body={renderBody()}
       footer={null}
@@ -30,11 +28,4 @@ function RosterModal(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showRosterModal: state.modals.showRosterModal,
-    roster: state.team.roster ? state.team.roster : [],
-  };
-};
-
-export default connect(mapStateToProps, { toggleRosterModal })(RosterModal);
+export default RosterModal;

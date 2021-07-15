@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import Head from "next/head";
-import { connect } from "react-redux";
 
 import useUser from "../lib/useUser";
 import { loginUser } from "../actions";
@@ -8,7 +7,7 @@ import login from "../sass/pages/Login.module.scss";
 import twitForm from "../sass/components/TwitForm.module.scss";
 import TwitButton from "../components/TwitButton";
 
-function LoginPage(props) {
+function LoginPage() {
   const { user, mutateUser } = useUser({
     redirectIfFound: true,
     redirectTo: "/home",
@@ -21,7 +20,7 @@ function LoginPage(props) {
       username: elements.username.value,
       password: elements.password.value,
     };
-    await props.loginUser(formData);
+    await loginUser(formData);
     mutateUser();
   };
 
@@ -68,8 +67,4 @@ function LoginPage(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return { isSignedIn: state.user.isSignedIn };
-};
-
-export default connect(mapStateToProps, { loginUser })(LoginPage);
+export default LoginPage;

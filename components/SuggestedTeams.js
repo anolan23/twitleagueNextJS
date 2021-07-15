@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+
 import Link from "next/link";
 
 import useUser from "../lib/useUser";
@@ -11,7 +11,7 @@ import Empty from "./Empty";
 import FollowItem from "./FollowItem";
 import TwitSpinner from "./TwitSpinner";
 
-function SuggestedTeams(props) {
+function SuggestedTeams() {
   const { user } = useUser();
   const [teams, setTeams] = useState(null);
 
@@ -67,8 +67,4 @@ function SuggestedTeams(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return { userId: state.user.id };
-};
-
-export default connect(mapStateToProps)(SuggestedTeams);
+export default SuggestedTeams;

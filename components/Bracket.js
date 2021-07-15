@@ -1,8 +1,6 @@
 import React from "react";
-import Draggable from "react-draggable";
 
 import bracketStyle from "../sass/components/Bracket.module.scss";
-
 import BracketGame from "./BracketGame";
 
 function Bracket({ seeds, bracket, advanceTeam, offset, scale }) {

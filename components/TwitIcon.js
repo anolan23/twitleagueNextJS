@@ -1,8 +1,8 @@
-function TwitIcon(props){
-    return(
-        <svg className={props.className} onClick={props.onClick}>
-            <use xlinkHref={props.icon}/>
-        </svg>
-    )
+function TwitIcon({ className, onClick, icon }) {
+  return (
+    <svg className={className} onClick={onClick}>
+      <use xlinkHref={icon} />
+    </svg>
+  );
 }
 export default TwitIcon;

@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import index from "../sass/pages/Index.module.scss";
 import Link from "next/link";
-import { connect } from "react-redux";
 
 import useUser from "../lib/useUser";
+import SignupPopup from "../components/modals/SignupPopup";
 import TwitButton from "../components/TwitButton";
 import NavBar from "../components/NavBar";
-import { fetchUser, toggleSignupPopup } from "../actions";
 
-function IndexPage(props) {
+function IndexPage() {
   const { user } = useUser({ redirectIfFound: true, redirectTo: "/home" });
+  const [showSignupPopup, setShowSignupPopup] = useState(false);
 
   if (!user) {
     return <div>...Loading user</div>;
@@ -25,7 +25,7 @@ function IndexPage(props) {
           <TwitButton href="/login" color="primary" outline="primary">
             Login
           </TwitButton>
-          <TwitButton onClick={props.toggleSignupPopup} color="primary">
+          <TwitButton onClick={() => setShowSignupPopup(true)} color="primary">
             Sign up
           </TwitButton>
         </div>
@@ -40,7 +40,7 @@ function IndexPage(props) {
             the latest homerun, touchdown, and goal for free.
           </div>
           <TwitButton
-            onClick={props.toggleSignupPopup}
+            onClick={() => setShowSignupPopup(true)}
             color="primary"
             size="large"
           >
@@ -76,8 +76,12 @@ function IndexPage(props) {
           </div>
         </div>
       </div>
+      <SignupPopup
+        show={showSignupPopup}
+        onHide={() => setShowSignupPopup(false)}
+      />
     </div>
   );
 }
 
-export default connect(null, { fetchUser, toggleSignupPopup })(IndexPage);
+export default IndexPage;

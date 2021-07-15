@@ -1,21 +1,21 @@
 import React from "react";
-import { connect } from "react-redux";
+
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 
-import { toggleSignupPopup, createUser } from "../../actions";
+import { createUser } from "../../actions";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import signupPopup from "../../sass/components/SignupPopup.module.scss";
 import Popup from "./Popup";
 import TwitButton from "../TwitButton";
 
-function SignupPopup(props) {
+function SignupPopup({ show, onHide }) {
   const router = useRouter();
 
   const signUp = async (values) => {
-    await props.createUser(values);
-    props.toggleSignupPopup();
+    await createUser(values);
+    onHide();
     router.push("/home");
   };
 
@@ -171,20 +171,12 @@ function SignupPopup(props) {
 
   return (
     <Popup
-      show={props.showSignupPopup}
-      onHide={props.toggleSignupPopup}
+      show={show}
+      onHide={onHide}
       heading={renderHeading()}
       body={renderBody()}
     />
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showSignupPopup: state.modals.showSignupPopup,
-  };
-};
-
-export default connect(mapStateToProps, { toggleSignupPopup, createUser })(
-  SignupPopup
-);
+export default SignupPopup;

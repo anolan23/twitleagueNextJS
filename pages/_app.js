@@ -1,23 +1,13 @@
 import "@fortawesome/fontawesome-free/css/all.css";
-import "../styles/globals.css";
 import "../sass/_main.scss";
-import { Provider } from "react-redux";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as gtag from "../lib/gtag";
 
-import { useStore } from "../redux/store";
-import GifPopup from "../components/modals/GifPopup";
-import EditProfilePopup from "../components/modals/EditProfilePopup";
-import PopupReply from "../components/modals/PopupReply";
-import SignupPopup from "../components/modals/SignupPopup";
-import EditRoster from "../components/modals/EditRoster";
+import { TwitProvider } from "../context/TwitProvider";
 import TwitPanel from "../components/TwitPanel";
-import UpdateScorePopup from "../components/modals/UpdateScorePopup";
-import PopupEventReply from "../components/modals/PopupEventReply";
 
 function MyApp({ Component, pageProps }) {
-  const store = useStore(pageProps.initialReduxState);
   const router = useRouter();
   useEffect(() => {
     const handleRouteChange = (url) => {
@@ -30,17 +20,9 @@ function MyApp({ Component, pageProps }) {
   }, [router.events]);
 
   return (
-    <Provider store={store}>
-      <SignupPopup />
-      <GifPopup />
-      <EditProfilePopup />
-      <EditRoster />
-      <UpdateScorePopup />
-      <PopupReply />
-      <PopupEventReply />
-      <TwitPanel />
+    <TwitProvider>
       <Component {...pageProps} />
-    </Provider>
+    </TwitProvider>
   );
 }
 

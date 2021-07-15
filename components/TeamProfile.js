@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
+
 import Link from "next/link";
 
 import useUser from "../lib/useUser";
@@ -216,19 +216,4 @@ function TeamProfile({ team, standings, onAvatarClick }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    following: state.user.following ? state.user.following : [],
-    userId: state.user.id,
-    username: state.user.username,
-  };
-};
-
-export default connect(mapStateToProps, {
-  follow,
-  toggleEditTeamPopup,
-  toggleScheduleModal,
-  toggleEditRosterPopup,
-  toggleEditEventsPopup,
-  sendJoinTeamInvite,
-})(TeamProfile);
+export default TeamProfile;

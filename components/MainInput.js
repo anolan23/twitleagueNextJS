@@ -16,6 +16,7 @@ import { uploadToS3 } from "../lib/aws-helpers";
 import { setCaret } from "../lib/twit-helpers";
 import ReactPlayer from "react-player";
 import TwitAlert from "./TwitAlert";
+import GifPopup from "./modals/GifPopup";
 
 function MainInput({
   expanded,
@@ -23,7 +24,6 @@ function MainInput({
   buttonText,
   compose,
   placeHolder,
-  toggleGifPopup,
   initialValue,
   inputRef,
   focusOnMount,
@@ -39,6 +39,7 @@ function MainInput({
   const html = useRef(initialValue ? `${initialValue} ` : "");
   const [createdPost, setCreatedPost] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showGifPopup, setShowGifPopup] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [options, setOptions] = useState([]);
   const [cursor, setCursor] = useState(0);
@@ -467,7 +468,7 @@ function MainInput({
               style={{ display: "none" }}
             ></input>
             <TwitIcon
-              onClick={toggleGifPopup}
+              onClick={() => setShowGifPopup(true)}
               className={mainInput["main-input__media-types__icon"]}
               icon="/sprites.svg#icon-plus-circle"
             >
@@ -504,6 +505,7 @@ function MainInput({
         href={createdPost ? `/thread/${createdPost.id}` : null}
         message="Post created"
       />
+      <GifPopup show={showGifPopup} onHide={() => setShowGifPopup(false)} />
     </React.Fragment>
   );
 

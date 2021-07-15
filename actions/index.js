@@ -22,16 +22,14 @@ export const fetchUserByUsername = async (username, userId) => {
   return user.data;
 };
 
-export const loginUser = (values) => async (dispatch) => {
+export const loginUser = async (values) => {
   const response = await backend.post("/api/login", values);
-
-  dispatch({ type: "LOGIN_USER", payload: response.data });
+  return response.data;
 };
 
-export const logOutUser = () => async (dispatch) => {
+export const logOutUser = async () => {
   const response = await backend.get("/api/logout");
-
-  dispatch({ type: "LOGOUT_USER", payload: response.data });
+  return response.data;
 };
 
 export const deleteNotification =
@@ -362,26 +360,24 @@ export const deletePost = async (postId) => {
   return post.data;
 };
 
-export const createReply = (reply, userId) => async (dispatch) => {
+export const createReply = async (reply, userId) => {
+  const { conversation_id } = reply;
   const response = await backend.post(
-    `/api/thread/${reply.conversation_id}/replies`,
+    `/api/thread/${conversation_id}/replies`,
     {
       reply: { ...reply, userId },
     }
   );
-
-  dispatch({ type: "CREATE_REPLY", payload: response.data });
-  dispatch(togglePopupReply());
-  dispatch(emptyPostData());
+  return response.data;
 };
 
-export const fetchThreadReplies = (threadId, userId) => async (dispatch) => {
+export const fetchThreadReplies = async (threadId, userId) => {
   const response = await backend.get(`/api/thread/${threadId}/replies`, {
     params: {
       userId,
     },
   });
-  dispatch({ type: "FETCH_REPLIES", payload: response.data });
+  return response.data;
 };
 
 export const sendEventReply = (reply) => async (dispatch, getState) => {
@@ -656,13 +652,11 @@ export const setEvent = (event) => (dispatch) => {
   }
 };
 
-export const updateEvent = (eventId, values) => async (dispatch) => {
-  await backend.patch(`/api/events/${eventId}`, {
+export const updateEvent = async (eventId, values) => {
+  const response = await backend.patch(`/api/events/${eventId}`, {
     values,
   });
-  //check for success before dispatching event
-  dispatch({ type: "UPDATE_EVENT", payload: values });
-  dispatch(toggleUpdateScorePopup());
+  return response.data;
 };
 
 export const approveEvent = (eventId) => async (dispatch) => {

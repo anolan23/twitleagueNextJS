@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { connect } from "react-redux";
+
 import useSWR from "swr";
 
 import backend from "../../lib/backend";
@@ -13,16 +13,7 @@ import Post from "../../components/Post";
 import TwitTab from "../../components/TwitTab";
 import TwitTabs from "../../components/TwitTabs";
 import Empty from "../../components/Empty";
-import {
-  setTeam,
-  createPost,
-  getTeamPosts,
-  fetchLeaguePosts,
-  toggleEditRosterPopup,
-  toggleEditTeamPopup,
-  findSeasonsByLeagueName,
-  fetchRoster,
-} from "../../actions";
+import { createPost, getTeamPosts } from "../../actions";
 import { getSeasonString } from "../../lib/twit-helpers";
 import TopBar from "../../components/TopBar";
 import TwitItem from "../../components/TwitItem";
@@ -38,16 +29,11 @@ import Teams from "../../db/repos/Teams";
 import Leagues from "../../db/repos/Leagues";
 import EditTeamPopup from "../../components/modals/EditTeamPopup";
 import TwitSpinner from "../../components/TwitSpinner";
-import TwitDate from "../../lib/twit-date";
 import PopupCompose from "../../components/modals/PopupCompose";
 import EditEventsPopup from "../../components/modals/EditEventsPopup";
+import EditRosterPopup from "../../components/modals/EditRosterPopup";
 
-function Team({
-  teamData,
-  toggleEditRosterPopup,
-  toggleEditTeamPopup,
-  standings,
-}) {
+function Team({ teamData, standings }) {
   const { query, isFallback } = useRouter();
   const { user } = useUser();
   const [tab, setTab] = useState("team");
@@ -55,6 +41,7 @@ function Team({
   const [selectedSeason, setSelectedSeason] = useState(null);
   const [posts, setPosts] = useState(null);
   const [showEditTeamPopup, setShowEditTeamPopup] = useState(false);
+  const [showEditRosterPopup, setShowEditRosterPopup] = useState(false);
   const [showEditEventsPopup, setShowEditEventsPopup] = useState(false);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
   const postsLoaderRef = useRef(null);
@@ -147,7 +134,7 @@ function Team({
               main="Empty"
               sub="There are no players on this team"
               actionText="Edit roster"
-              onActionClick={toggleEditRosterPopup}
+              onActionClick={() => setShowEditRosterPopup(true)}
             />
           );
         } else {
@@ -270,15 +257,9 @@ function Team({
     fetchEventsBySeasonId(team.current_season.id);
   };
 
-  const editTeam = () => {
-    if (user.id === team.owner_id) {
-      toggleEditTeamPopup();
-    }
-  };
-
   const editRoster = () => {
     if (user.id === team.owner_id) {
-      toggleEditRosterPopup();
+      setShowEditRosterPopup(true);
     }
   };
 
@@ -355,6 +336,11 @@ function Team({
         onHide={() => setShowEditTeamPopup(false)}
         team={team}
       />
+      <EditRosterPopup
+        show={showEditRosterPopup}
+        team={team}
+        onHide={() => setShowEditRosterPopup(false)}
+      />
       <EditEventsPopup
         show={showEditEventsPopup}
         homeTeam={team}
@@ -399,10 +385,4 @@ export async function getStaticProps(context) {
   };
 }
 
-export default connect(null, {
-  setTeam,
-  createPost,
-  fetchLeaguePosts,
-  toggleEditRosterPopup,
-  toggleEditTeamPopup,
-})(Team);
+export default Team;

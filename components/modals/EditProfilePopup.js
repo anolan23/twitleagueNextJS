@@ -1,16 +1,15 @@
 import React from "react";
-import { connect } from "react-redux";
+
 import { useFormik } from "formik";
 
 import Popup from "./Popup";
 import TwitButton from "../TwitButton";
-import { toggleEditProfilePopup, updateUserProfile } from "../../actions";
+import { updateUserProfile } from "../../actions";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss";
-import Avatar from "../Avatar";
 import Profile from "../Profile";
 
-function EditProfilePopup(props) {
+function EditProfilePopup({ show, onHide }) {
   const formik = useFormik({
     initialValues: {
       avatar: "",
@@ -20,7 +19,7 @@ function EditProfilePopup(props) {
       dob: "",
     },
     onSubmit: (values) => {
-      props.updateUserProfile(values);
+      updateUserProfile(values);
     },
   });
 
@@ -168,19 +167,12 @@ function EditProfilePopup(props) {
 
   return (
     <Popup
-      show={props.showEditProfilePopup}
-      onHide={props.toggleEditProfilePopup}
+      show={show}
+      onHide={onHide}
       heading={renderHeading()}
       body={renderForm()}
     />
   );
 }
 
-const mapStateToProps = (state) => {
-  return { showEditProfilePopup: state.modals.showEditProfilePopup };
-};
-
-export default connect(mapStateToProps, {
-  toggleEditProfilePopup,
-  updateUserProfile,
-})(EditProfilePopup);
+export default EditProfilePopup;

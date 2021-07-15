@@ -1,20 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { connect } from "react-redux";
-import reactStringReplace from "react-string-replace";
 
-import {
-  likePost,
-  unLikePost,
-  togglePopupReply,
-  trackClickedPost,
-  deletePost,
-  fetchTeam,
-  fetchUserByUsername,
-} from "../actions";
+import { likePost, unLikePost, createReply, deletePost } from "../actions";
 import postStyle from "../sass/components/Post.module.scss";
-import { truncate } from "../lib/twit-helpers";
 import Avatar from "./Avatar";
 import TwitBadge from "./TwitBadge";
 import TwitMedia from "./TwitMedia";
@@ -27,15 +15,9 @@ import Prompt from "./modals/Prompt";
 import TwitLink from "./TwitLink";
 import ScoutButton from "./ScoutButton";
 import Linkify from "./Linkify";
+import PopupCompose from "./modals/PopupCompose";
 
-function Post({
-  history,
-  trackClickedPost,
-  togglePopupReply,
-  listItem: post,
-  style,
-  user,
-}) {
+function Post({ history, listItem: post, style, user }) {
   if (!post) {
     return null;
   }
@@ -46,6 +28,7 @@ function Post({
   const [likes, setLikes] = useState(post.likes);
   const [show, setShow] = useState(false);
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
+  const [showPopupCompose, setShowPopupCompose] = useState(false);
 
   useEffect(() => {
     setLiked(post.liked);
@@ -117,8 +100,7 @@ function Post({
 
   const onReplyClick = (event) => {
     event.stopPropagation();
-    trackClickedPost(post);
-    togglePopupReply();
+    setShowPopupCompose(true);
   };
 
   const onLikeClick = async (event) => {
@@ -153,6 +135,14 @@ function Post({
   const onEditIconClick = (event) => {
     event.stopPropagation();
     setShow(!show);
+  };
+
+  const onReplySubmit = async (values) => {
+    const { conversation_id } = post;
+    const in_reply_to_post_id = post.id;
+    const reply = { ...values, conversation_id, in_reply_to_post_id };
+    const result = await createReply(reply, user.id);
+    console.log("result", result);
   };
 
   const renderDropDownItems = () => {
@@ -191,10 +181,6 @@ function Post({
         </div>
       </div>
     );
-  };
-
-  const renderScoutButton = () => {
-    return <ScoutButton user={{ scouted: post.scouted, id: post.author_id }} />;
   };
 
   if (!showPost) {
@@ -296,8 +282,14 @@ function Post({
         onSecondaryActionClick={() => setShowDeletePrompt(false)}
         onPrimaryActionClick={onDeleteClick}
       />
+      <PopupCompose
+        show={showPopupCompose}
+        onHide={() => setShowPopupCompose(false)}
+        reply={post}
+        onSubmit={onReplySubmit}
+      />
     </div>
   );
 }
 
-export default connect(null, { togglePopupReply, trackClickedPost })(Post);
+export default Post;

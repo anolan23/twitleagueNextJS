@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
+
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
@@ -12,7 +12,7 @@ import { createLeague } from "../actions";
 import backend from "../lib/backend";
 import TwitInput from "./TwitInput";
 
-function CreateLeague(props) {
+function CreateLeague() {
   const router = useRouter();
 
   const validationSchema = Yup.object({
@@ -38,7 +38,7 @@ function CreateLeague(props) {
       sport: "",
     },
     onSubmit: (values) => {
-      props.createLeague(values);
+      createLeague(values);
       router.push(`/leagues/${values.leagueName}`);
     },
     validate,
@@ -114,4 +114,4 @@ function CreateLeague(props) {
   );
 }
 
-export default connect(null, { createLeague })(CreateLeague);
+export default CreateLeague;

@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+
 import Link from "next/link";
 
 import Profile from "./Profile";
@@ -106,4 +106,4 @@ function LeagueProfile({ league, onAvatarClick }) {
   );
 }
 
-export default connect(null)(LeagueProfile);
+export default LeagueProfile;
