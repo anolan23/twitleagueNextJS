@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useGlobalState } from "../../../../context/TwitProvider";
+import { useStore } from "../../../../context/Store";
 import { useRouter } from "next/router";
 
 import useUser from "../../../../lib/useUser";
@@ -23,7 +23,7 @@ import TwitSpinner from "../../../../components/TwitSpinner";
 import TwitIcon from "../../../../components/TwitIcon";
 
 function Playoffs() {
-  const { globalState, setGlobalState } = useGlobalState();
+  const [state, dispatch] = useStore();
   const { user } = useUser();
   const [offset, startPan] = usePan();
   const router = useRouter();
@@ -35,6 +35,8 @@ function Playoffs() {
   const [showAlert, setShowAlert] = useState(false);
   const [league, setLeague] = useState(null);
   const [scale, setScale] = useState(1);
+
+  console.log(state);
 
   useEffect(() => {
     if (inProgress) {
@@ -53,6 +55,7 @@ function Playoffs() {
       return;
     }
     setLeague(league);
+    dispatch({ type: "SET_PLAYOFFS", payload: league.playoffs });
     const { playoffs } = league;
     if (!playoffs) {
       setSeeds([]);

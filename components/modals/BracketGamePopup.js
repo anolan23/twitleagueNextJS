@@ -5,7 +5,7 @@ import Popup from "./Popup";
 import Slot from "../Slot";
 import TwitButton from "../TwitButton";
 
-function BracketGamePopup({ show, onHide, game, events, advanceTeam }) {
+function BracketGamePopup({ show, onHide, game, gameId, events, advanceTeam }) {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [team, setTeam] = useState(null);
 
@@ -20,7 +20,7 @@ function BracketGamePopup({ show, onHide, game, events, advanceTeam }) {
     );
   };
 
-  function onAdvanceTeamClick(event) {
+  function onSubmit(event) {
     event.preventDefault();
     advanceTeam(
       selectedSlot === "topSlot"
@@ -37,10 +37,10 @@ function BracketGamePopup({ show, onHide, game, events, advanceTeam }) {
       <div className={bracketGamePopup["bracket-game-popup__body"]}>
         <form
           className={bracketGamePopup["bracket-game-popup__body__form"]}
-          onSubmit={onAdvanceTeamClick}
+          onSubmit={onSubmit}
         >
           <div className={bracketGamePopup["bracket-game-popup__body__title"]}>
-            Advance a team
+            {gameId === 0 ? "Select champion" : "Advance a team"}
           </div>
           <div className={bracketGamePopup["bracket-game-popup__body__slots"]}>
             <Slot
@@ -58,7 +58,7 @@ function BracketGamePopup({ show, onHide, game, events, advanceTeam }) {
           </div>
           <div className={bracketGamePopup["bracket-game-popup__body__action"]}>
             <TwitButton size="large" color="primary" type="submit">
-              Advance
+              {gameId === 0 ? "Select" : "Advance"}
             </TwitButton>
           </div>
         </form>

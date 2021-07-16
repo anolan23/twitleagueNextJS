@@ -20,7 +20,7 @@ function BracketGame({ id, bracket, advanceTeam }) {
     }
     return (
       <div className={bracketStyle["bracket__champion"]}>
-        <BracketSlot slot={topSlot} />
+        <BracketSlot slot={null} />
       </div>
     );
   }
@@ -48,6 +48,7 @@ function BracketGame({ id, bracket, advanceTeam }) {
         show={showBracketGamePopup}
         onHide={() => setShowBracketGamePopup(false)}
         game={game}
+        gameId={id}
         advanceTeam={(advancingSlot) => advanceTeam(id, advancingSlot)}
       />
     </React.Fragment>
