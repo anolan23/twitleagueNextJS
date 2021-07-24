@@ -36,11 +36,19 @@ class Teams {
         (
           SELECT jsonb_agg(nested_team)
           FROM (
-          SELECT *
-          FROM teams
-          WHERE teams.league_id = leagues.id
+			  SELECT *
+			  FROM teams
+			  WHERE teams.league_id = leagues.id
           ) AS nested_team
-        ) AS teams
+        ) AS teams,
+		(
+          SELECT jsonb_agg(nested_seasons_team)
+          FROM (
+			  SELECT *
+			  FROM season_teams
+			  WHERE season_id = leagues.season_id
+          ) AS nested_seasons_team
+        ) AS current_season_teams
         FROM leagues
         WHERE id = teams.league_id
         ) AS league

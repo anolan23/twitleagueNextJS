@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { useStore } from "../context/Store";
 
 import bracketStyle from "../sass/components/Bracket.module.scss";
 import BracketGamePopup from "./modals/BracketGamePopup";
 import BracketSlot from "./BracketSlot";
 
-function BracketGame({ id, bracket, advanceTeam }) {
-  const game = bracket[id];
-  const { topSlot, bottomSlot } = { ...game };
+function BracketGame({ id, advanceTeam }) {
+  const [state, dispatch] = useStore();
+  const game = state.playoffs ? state.playoffs.bracket[id] : null;
+  const champion = state.playoffs ? state.playoffs.champion : null;
+  const inProgress = state.playoffs ? state.playoffs.in_progress : null;
 
+  const { topSlot, bottomSlot } = { ...game };
   const [showBracketGamePopup, setShowBracketGamePopup] = useState(false);
 
   function onGameClick() {
+    if (!inProgress) {
+      return;
+    }
     setShowBracketGamePopup(true);
   }
 
@@ -20,7 +27,7 @@ function BracketGame({ id, bracket, advanceTeam }) {
     }
     return (
       <div className={bracketStyle["bracket__champion"]}>
-        <BracketSlot slot={null} />
+        <BracketSlot slot={champion} />
       </div>
     );
   }

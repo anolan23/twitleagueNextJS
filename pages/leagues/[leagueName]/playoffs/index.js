@@ -27,16 +27,18 @@ function Playoffs() {
   const { user } = useUser();
   const [offset, startPan] = usePan();
   const router = useRouter();
-  const [seeds, setSeeds] = useState([]);
   const empty = [...Array(32)];
-  const [bracket, setBracket] = useState(empty);
-  const [champion, setChampion] = useState(null);
-  const [inProgress, setInProgress] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [league, setLeague] = useState(null);
-  const [scale, setScale] = useState(1);
+  const seeds = state.playoffs
+    ? state.playoffs.seeds
+      ? state.playoffs.seeds
+      : []
+    : [];
+  const bracket = state.playoffs ? state.playoffs.bracket : empty;
+  const inProgress = state.playoffs ? state.playoffs.in_progress : true;
 
-  console.log(state);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     if (inProgress) {
@@ -55,28 +57,55 @@ function Playoffs() {
       return;
     }
     setLeague(league);
-    dispatch({ type: "SET_PLAYOFFS", payload: league.playoffs });
     const { playoffs } = league;
     if (!playoffs) {
-      setSeeds([]);
-      setBracket(empty);
-      setInProgress(null);
+      setPlayoffs({
+        seeds: [],
+        bracket: empty,
+        in_progress: null,
+        champion: null,
+        seasonId: seasonId,
+      });
       return;
     }
-    let { seeds, bracket, in_progress } = playoffs;
+    let { seeds, bracket, in_progress, champion } = playoffs;
     if (!bracket || !seeds) {
-      setSeeds([]);
-      setBracket(empty);
-      setInProgress(null);
+      setPlayoffs({
+        seeds: [],
+        bracket: empty,
+        in_progress: null,
+        champion: null,
+        seasonId: seasonId,
+      });
       return;
     }
     const mappedSeeds = seeds.map((team) => {
       return { ...team, title: team.team_name, subtitle: team.abbrev };
     });
-    setInProgress(in_progress);
-    setSeeds(mappedSeeds);
-    setBracket(bracket);
+    setPlayoffs({
+      seeds: mappedSeeds,
+      bracket,
+      champion,
+      in_progress,
+      seasonId: seasonId,
+    });
   }, [router.query]);
+
+  function setPlayoffs(playoffs) {
+    dispatch({ type: "SET_PLAYOFFS", payload: playoffs });
+  }
+
+  function setSeeds(seeds) {
+    dispatch({ type: "SET_SEEDS", payload: seeds });
+  }
+
+  function setBracket(bracket) {
+    dispatch({ type: "SET_BRACKET", payload: bracket });
+  }
+
+  function setInProgress(in_progress) {
+    dispatch({ type: "SET_STATUS", payload: in_progress });
+  }
 
   function onSeedSelect(option, index) {
     let newSeeds = [...seeds];
@@ -101,6 +130,7 @@ function Playoffs() {
   }
 
   function constructBracketFromSeeds() {
+    console.log("construct bracket");
     let tempBracket = empty;
     switch (seeds.length) {
       case 0:
@@ -213,8 +243,13 @@ function Playoffs() {
         );
         setBracket(tempBracket);
       } else return null;
-
-      await save(tempBracket, seeds, inProgress);
+      const playoffs = {
+        seeds: seeds,
+        bracket: tempBracket,
+        champion: null,
+        in_progress: true,
+      };
+      await save(playoffs);
     };
 
     switch (sourceGameId) {
@@ -252,24 +287,29 @@ function Playoffs() {
     }
   }
 
-  async function save(bracket, seeds, inProgress) {
-    let bracketArray = bracket;
-    let seedsArray = seeds;
+  async function save(playoffs) {
+    const { seasonId } = router.query;
+    let { bracket, seeds, champion, in_progress } = playoffs;
 
     if (bracket) {
-      bracketArray = JSON.stringify(bracket);
+      bracket = JSON.stringify(bracket);
     }
     if (seeds) {
-      seedsArray = JSON.stringify(seeds);
+      seeds = JSON.stringify(seeds);
+    }
+    if (champion) {
+      champion = JSON.stringify(champion);
     }
 
-    const savedPlayoffs = await updatePlayoffs(router.query.seasonId, {
-      in_progress: inProgress,
-      bracket: bracketArray,
-      seeds: seedsArray,
+    const saved = await updatePlayoffs(seasonId, {
+      bracket,
+      seeds,
+      champion,
+      in_progress,
     });
-
-    setShowAlert(true);
+    if (saved) {
+      setShowAlert(true);
+    }
   }
 
   async function start() {
@@ -289,13 +329,21 @@ function Playoffs() {
     };
     await createPlayoffs(router.query.seasonId, playoffs);
     setInProgress(true);
+    setShowAlert(true);
   }
 
   async function reset() {
-    await deletePlayoffs(router.query.seasonId);
-    setBracket(empty);
-    setSeeds([]);
-    setInProgress(false);
+    const { seasonId } = router.query;
+    const deleted = await deletePlayoffs(seasonId);
+    if (deleted) {
+      setPlayoffs({
+        seeds: [],
+        bracket: empty,
+        in_progress: false,
+        champion: null,
+        seasonId: seasonId,
+      });
+    }
   }
 
   function seasonOptions() {
@@ -319,7 +367,7 @@ function Playoffs() {
           color="primary"
           onClick={onAddSeedClick}
           expanded
-          disabled={inProgress}
+          disabled={state.playoffs ? state.playoffs.in_progress : null}
         >
           Add
         </TwitButton>
@@ -328,7 +376,7 @@ function Playoffs() {
           outline="primary"
           onClick={onDeleteSeedClick}
           expanded
-          disabled={inProgress}
+          disabled={state.playoffs ? state.playoffs.in_progress : null}
         >
           Remove
         </TwitButton>
@@ -399,7 +447,9 @@ function Playoffs() {
       return <div>A season must be started</div>;
     }
     const season = seasons.find((season) => season.id == router.query.seasonId);
-
+    if (!season) {
+      return;
+    }
     const { end_date } = season;
     if (end_date) {
       return <div>Season completed</div>;
@@ -468,14 +518,7 @@ function Playoffs() {
           className={playoffStyle["playoffs__viewport"]}
           onMouseDown={startPan}
         >
-          <Bracket
-            seeds={seeds}
-            bracket={bracket}
-            champion={champion}
-            advanceTeam={advanceTeam}
-            offset={offset}
-            scale={scale}
-          />
+          <Bracket advanceTeam={advanceTeam} offset={offset} scale={scale} />
           <div className={playoffStyle["playoffs__viewport__zoom"]}>
             <div
               className={playoffStyle["playoffs__viewport__zoom__button"]}

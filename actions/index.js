@@ -652,25 +652,27 @@ export const setEvent = (event) => (dispatch) => {
   }
 };
 
-export const updateEvent = async (eventId, values) => {
+export const updateEvent = async (eventId, columns) => {
   const response = await backend.patch(`/api/events/${eventId}`, {
-    values,
+    columns,
   });
   return response.data;
 };
 
-export const approveEvent = (eventId) => async (dispatch) => {
-  backend.patch(`/api/events/${eventId}`, {
-    values: {
+export const approveEvent = async (eventId) => {
+  const event = backend.patch(`/api/events/${eventId}`, {
+    columns: {
       league_approved: true,
     },
   });
-  dispatch({ type: "APPROVE_EVENT" });
+
+  return event.data;
 };
 
-export const createDivision = async (leagueId) => {
+export const createDivision = async (leagueId, seasonId) => {
   const division = await backend.post("/api/leagues/divisions", {
     leagueId,
+    seasonId,
   });
   return division.data;
 };
@@ -729,5 +731,18 @@ export const deletePlayoffs = async (seasonId) => {
       seasonId,
     },
   });
+  return response.data;
+};
+
+export const startSeason = async (leagueId) => {
+  const response = await backend.post(
+    `/api/seasons/start`,
+    {},
+    {
+      params: {
+        leagueId,
+      },
+    }
+  );
   return response.data;
 };

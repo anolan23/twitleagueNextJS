@@ -15,7 +15,9 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
     return null;
   }
   // let teams = team.league.teams.filter((element) => element.id !== team.id);
-  const { teams } = league;
+  const { current_season_teams } = league;
+
+  console.log(league);
 
   const formik = useFormik({
     initialValues: {
@@ -37,10 +39,10 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
   });
 
   const getOptions = () => {
-    if (!teams) {
+    if (!current_season_teams) {
       return [];
     } else {
-      return teams.map((team) => {
+      return current_season_teams.map((team) => {
         return { ...team, title: team.team_name, subtitle: team.abbrev };
       });
     }

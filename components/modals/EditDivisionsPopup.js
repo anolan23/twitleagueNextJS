@@ -55,7 +55,7 @@ function EditDivisionsPopup({ league, show, onHide }) {
   });
 
   const create = async () => {
-    await createDivision(league.id);
+    await createDivision(league.id, league.current_season_id);
     mutateStandings();
   };
 

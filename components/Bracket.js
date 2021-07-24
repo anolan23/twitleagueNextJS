@@ -1,9 +1,17 @@
 import React from "react";
+import { useStore } from "../context/Store";
 
 import bracketStyle from "../sass/components/Bracket.module.scss";
 import BracketGame from "./BracketGame";
 
-function Bracket({ seeds, bracket, advanceTeam, offset, scale }) {
+function Bracket({ advanceTeam, offset, scale }) {
+  const [state, dispatch] = useStore();
+  const empty = [...Array(32)];
+  const seeds = state.playoffs
+    ? state.playoffs.seeds
+      ? state.playoffs.seeds
+      : []
+    : [];
   const bracketSize = () => {
     if (seeds.length <= 2) {
       return 2;
@@ -34,53 +42,53 @@ function Bracket({ seeds, bracket, advanceTeam, offset, scale }) {
       <div
         className={`${bracketStyle["bracket__round"]} ${bracketStyle["bracket__round--32"]}`}
       >
-        <BracketGame id={15} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={16} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={17} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={18} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={19} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={20} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={21} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={22} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={23} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={24} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={25} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={26} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={27} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={28} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={29} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={30} bracket={bracket} advanceTeam={advanceTeam} />
+        <BracketGame id={15} advanceTeam={advanceTeam} />
+        <BracketGame id={16} advanceTeam={advanceTeam} />
+        <BracketGame id={17} advanceTeam={advanceTeam} />
+        <BracketGame id={18} advanceTeam={advanceTeam} />
+        <BracketGame id={19} advanceTeam={advanceTeam} />
+        <BracketGame id={20} advanceTeam={advanceTeam} />
+        <BracketGame id={21} advanceTeam={advanceTeam} />
+        <BracketGame id={22} advanceTeam={advanceTeam} />
+        <BracketGame id={23} advanceTeam={advanceTeam} />
+        <BracketGame id={24} advanceTeam={advanceTeam} />
+        <BracketGame id={25} advanceTeam={advanceTeam} />
+        <BracketGame id={26} advanceTeam={advanceTeam} />
+        <BracketGame id={27} advanceTeam={advanceTeam} />
+        <BracketGame id={28} advanceTeam={advanceTeam} />
+        <BracketGame id={29} advanceTeam={advanceTeam} />
+        <BracketGame id={30} advanceTeam={advanceTeam} />
       </div>
       <div
         className={`${bracketStyle["bracket__round"]} ${bracketStyle["bracket__round--16"]}`}
       >
-        <BracketGame id={7} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={8} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={9} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={10} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={11} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={12} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={13} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={14} bracket={bracket} advanceTeam={advanceTeam} />
+        <BracketGame id={7} advanceTeam={advanceTeam} />
+        <BracketGame id={8} advanceTeam={advanceTeam} />
+        <BracketGame id={9} advanceTeam={advanceTeam} />
+        <BracketGame id={10} advanceTeam={advanceTeam} />
+        <BracketGame id={11} advanceTeam={advanceTeam} />
+        <BracketGame id={12} advanceTeam={advanceTeam} />
+        <BracketGame id={13} advanceTeam={advanceTeam} />
+        <BracketGame id={14} advanceTeam={advanceTeam} />
       </div>
       <div
         className={`${bracketStyle["bracket__round"]} ${bracketStyle["bracket__round--8"]}`}
       >
-        <BracketGame id={3} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={4} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={5} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={6} bracket={bracket} advanceTeam={advanceTeam} />
+        <BracketGame id={3} advanceTeam={advanceTeam} />
+        <BracketGame id={4} advanceTeam={advanceTeam} />
+        <BracketGame id={5} advanceTeam={advanceTeam} />
+        <BracketGame id={6} advanceTeam={advanceTeam} />
       </div>
       <div
         className={`${bracketStyle["bracket__round"]} ${bracketStyle["bracket__round--4"]}`}
       >
-        <BracketGame id={1} bracket={bracket} advanceTeam={advanceTeam} />
-        <BracketGame id={2} bracket={bracket} advanceTeam={advanceTeam} />
+        <BracketGame id={1} advanceTeam={advanceTeam} />
+        <BracketGame id={2} advanceTeam={advanceTeam} />
       </div>
       <div
         className={`${bracketStyle["bracket__round"]} ${bracketStyle["bracket__round--2"]}`}
       >
-        <BracketGame id={0} bracket={bracket} advanceTeam={advanceTeam} />
+        <BracketGame id={0} advanceTeam={advanceTeam} />
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ class Events {
       event;
     const { rows } = await pool.query(
       `
-            INSERT INTO events (home_team_id, type, away_team_id, date, location, notes, season_id )
+            INSERT INTO events (home_season_team_id, type, away_season_team_id, date, location, notes, season_id )
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *`,
       [homeTeamId, type, awayTeamId, date, location, notes, seasonId]
@@ -38,9 +38,9 @@ class Events {
         EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
         (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
         FROM events
-        LEFT JOIN teams AS t1 ON events.home_team_id = t1.id
-        LEFT JOIN teams AS t2 ON events.away_team_id = t2.id
-        WHERE events.home_team_id = $1 OR events.away_team_id = $1
+        LEFT JOIN season_teams AS t1 ON events.home_season_team_id = t1.id
+        LEFT JOIN season_teams AS t2 ON events.away_season_team_id = t2.id
+        WHERE events.home_season_team_id = $1 OR events.away_season_team_id = $1
         ORDER BY date DESC`,
       [teamId]
     );
@@ -60,8 +60,8 @@ class Events {
             EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
             (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
         FROM events
-        LEFT JOIN teams AS t1 ON events.home_team_id = t1.id
-        LEFT JOIN teams AS t2 ON events.away_team_id = t2.id
+        LEFT JOIN season_teams AS t1 ON events.home_season_team_id = t1.id
+        LEFT JOIN season_teams AS t2 ON events.away_season_team_id = t2.id
         WHERE t1.abbrev = $1 OR t2.abbrev = $1
         ORDER BY date DESC`,
       [teamAbbrev, userId]
@@ -81,8 +81,8 @@ class Events {
             EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
             (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
         FROM events
-        LEFT JOIN teams AS t1 ON events.home_team_id = t1.id
-        LEFT JOIN teams AS t2 ON events.away_team_id = t2.id
+        LEFT JOIN season_teams AS t1 ON events.home_season_team_id = t1.id
+        LEFT JOIN season_teams AS t2 ON events.away_season_team_id = t2.id
         LEFT JOIN leagues ON t1.league_id = leagues.id
         WHERE events.id = $1`,
       [eventId, userId]
@@ -105,8 +105,8 @@ class Events {
         t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar, 
         t2.owner_id AS opponent_owner_id
         FROM updated_event
-        LEFT JOIN teams AS t1 ON updated_event.home_team_id = t1.id
-        LEFT JOIN teams AS t2 ON updated_event.away_team_id = t2.id
+        LEFT JOIN season_teams AS t1 ON updated_event.home_season_team_id = t1.id
+        LEFT JOIN season_teams AS t2 ON updated_event.away_season_team_id = t2.id
         LEFT JOIN leagues ON t1.league_id = leagues.id`,
       Object.values(values)
     );

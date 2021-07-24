@@ -21,6 +21,7 @@ function TwitDropdownButton({ icon, actionText, children, color, outline }) {
       return;
     }
     if (ref.current.contains(event.target)) {
+      setShow(false);
       return;
     }
     setShow(false);

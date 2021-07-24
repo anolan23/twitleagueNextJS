@@ -21,6 +21,33 @@ class Seasons {
     return rows[0];
   }
 
+  static async start(leagueId) {
+    const { rows } = await pool.query(
+      `
+      WITH insert_season AS(
+        INSERT INTO seasons (league_id)
+        VALUES ($1)
+        RETURNING id
+      ), update_league AS (
+        UPDATE leagues
+        SET season_id = (SELECT id FROM insert_season)
+        WHERE id = $1
+      ), league_teams AS(
+        SELECT *
+        FROM teams
+        WHERE league_id = $1
+      )
+      
+      INSERT INTO season_teams(season_id, team_id, owner_id, league_id, division_id, team_name, abbrev, avatar, banner, city, state, bio)
+      SELECT (SELECT id FROM insert_season), league_teams.id, owner_id, league_id, division_id, team_name, abbrev, avatar, banner, city, state, bio
+      FROM league_teams
+      RETURNING *`,
+      [leagueId]
+    );
+
+    return rows[0];
+  }
+
   static async end(leagueId) {
     const { rows } = await pool.query(
       `

@@ -343,7 +343,7 @@ function Team({ teamData, standings }) {
       />
       <EditEventsPopup
         show={showEditEventsPopup}
-        homeTeam={team}
+        homeTeam={null}
         awayTeam={null}
         league={team.league}
         onHide={() => setShowEditEventsPopup(false)}

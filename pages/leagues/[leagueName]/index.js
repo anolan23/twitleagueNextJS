@@ -7,6 +7,7 @@ import useSWR from "swr";
 import leagueStyle from "../../../sass/components/League.module.scss";
 import Leagues from "../../../db/repos/Leagues";
 import useUser from "../../../lib/useUser";
+import { startSeason } from "../../../actions";
 import TopBar from "../../../components/TopBar";
 import backend from "../../../lib/backend";
 import TwitDropdownButton from "../../../components/TwitDropdownButton";
@@ -62,9 +63,7 @@ function League({ leagueData, standingsData }) {
   }, [league]);
 
   const newSeason = async () => {
-    const season = await backend.post("/api/seasons", {
-      leagueId: league.id,
-    });
+    const season = await startSeason(league.id);
     mutateLeague();
     setShowStartSeasonPrompt(false);
   };

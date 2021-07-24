@@ -143,14 +143,14 @@ class Leagues {
     return rows;
   }
 
-  static async createDivision(leagueId) {
+  static async createDivision(leagueId, seasonId) {
     const division = await pool.query(
       `
-        INSERT INTO divisions (league_id)
-        VALUES ($1)
+        INSERT INTO divisions (league_id, season_id)
+        VALUES ($1, $2)
         RETURNING *
         `,
-      [leagueId]
+      [leagueId, seasonId]
     );
 
     return division.rows[0];
@@ -212,45 +212,73 @@ class Leagues {
   static async standings(leagueName, seasonId) {
     const { rows } = await pool.query(
       `
-        WITH results AS (
-            SELECT team_id as team_id, 
-                CASE 
-                    WHEN home_team_points > away_team_points THEN 'W' 
-                    WHEN home_team_points < away_team_points THEN 'L'
-                    ELSE NULL 
-                    END 
-                AS outcome, 
-                season_id, home_team_points, away_team_points, league_approved FROM events 
-                UNION ALL
-            SELECT opponent_id as team_id, 
-                CASE 
-                    WHEN away_team_points > home_team_points THEN 'W' 
-                    WHEN away_team_points < home_team_points THEN 'L'
-                    ELSE NULL 
-                    END 
-                AS outcome, 
-                season_id, home_team_points, away_team_points, league_approved FROM events
+      WITH league_data AS (
+        SELECT id
+        FROM leagues
+        WHERE league_name = $1
+        ), results AS (
+           (
+           SELECT home_season_team_id as team_id, 
+             CASE 
+               WHEN home_team_points > away_team_points THEN 'W' 
+               WHEN home_team_points < away_team_points THEN 'L'
+               WHEN home_team_points = away_team_points THEN 'T'
+               ELSE NULL 
+            END 
+             AS outcome, 
+             events.season_id, home_team_points, away_team_points, league_approved,
+             leagues.id AS league_id,
+             season_teams.division_id
+           FROM events
+           JOIN season_teams ON season_teams.id = home_season_team_id
+           JOIN leagues ON leagues.id = season_teams.league_id
+           WHERE league_id = (SELECT id FROM league_data)
+           )
+           UNION ALL
+           (
+           SELECT away_season_team_id AS team_id, 
+             CASE 
+               WHEN away_team_points > home_team_points THEN 'W' 
+               WHEN away_team_points < home_team_points THEN 'L'
+               WHEN away_team_points = home_team_points THEN 'T'
+               ELSE NULL 
+               END 
+             AS outcome, 
+             events.season_id, home_team_points, away_team_points, league_approved,
+             leagues.id AS league_id,
+             season_teams.division_id
+           FROM events
+           JOIN season_teams ON season_teams.id = away_season_team_id
+           JOIN leagues ON leagues.id = season_teams.league_id
+           WHERE league_id = (SELECT id FROM league_data)
+           )
+      
         ), records AS (
-            SELECT results.season_id, team_id, division_id,
-                count(*) AS total_games,
-                count(case when outcome = 'W' then 1 else null end) AS wins,
-                count(case when outcome = 'L' then 0 else null end) AS losses
-            FROM results
-            JOIN teams ON teams.id = results.team_id
-            JOIN leagues ON leagues.id = teams.league_id
-            WHERE league_approved = true AND leagues.league_name = $1 AND results.season_id = $2
-            GROUP BY results.season_id, team_id, division_id
+           SELECT results.season_id, team_id, division_id,
+             count(*) AS total_games,
+             count(case when outcome = 'W' then 1 else null end) AS wins,
+             count(case when outcome = 'L' then 0 else null end) AS losses
+           FROM results
+           WHERE league_approved = true AND results.season_id = $2
+           GROUP BY results.season_id, team_id, division_id
         )
-        SELECT teams.*,
-            divisions.division_name,
-            total_games, wins, losses,
-            to_char(wins/total_games::float, '0.999') AS win_percentage,
-            RANK() OVER(PARTITION BY teams.division_id ORDER BY wins/total_games::float DESC NULLS LAST) AS place
-        FROM teams
-        FULL JOIN records ON records.team_id = teams.id
-        FULL JOIN divisions ON divisions.id = teams.division_id
-        FULL JOIN leagues ON leagues.id = teams.league_id
-        WHERE leagues.league_name = $1
+      
+      SELECT
+        divisions.*,
+        (
+           SELECT jsonb_agg(nested_team)
+           FROM (
+             SELECT
+                season_teams.*, 
+               total_games, wins, losses,
+               RANK() OVER(PARTITION BY season_teams.division_id ORDER BY wins/total_games::float DESC NULLS LAST) AS place
+             FROM season_teams
+             FULL JOIN records ON records.team_id = season_teams.id
+             WHERE season_teams.season_id = divisions.season_id AND season_teams.division_id = divisions.id
+           ) AS nested_team
+        ) AS teams
+        FROM divisions
+        WHERE divisions.league_id = (SELECT id FROM league_data) AND divisions.season_id = $2
         `,
       [leagueName, seasonId]
     );
@@ -267,7 +295,7 @@ class Leagues {
         WHERE league_name = $1
         ), results AS (
            (
-           SELECT home_team_id as team_id, 
+           SELECT home_season_team_id as team_id, 
              CASE 
                WHEN home_team_points > away_team_points THEN 'W' 
                WHEN home_team_points < away_team_points THEN 'L'
@@ -277,15 +305,15 @@ class Leagues {
              AS outcome, 
              events.season_id, home_team_points, away_team_points, league_approved,
              leagues.id AS league_id,
-             teams.division_id
+             season_teams.division_id
            FROM events
-           JOIN teams ON teams.id = home_team_id
-           JOIN leagues ON leagues.id = teams.league_id
+           JOIN season_teams ON season_teams.id = home_season_team_id
+           JOIN leagues ON leagues.id = season_teams.league_id
            WHERE league_id = (SELECT id FROM league_data)
            )
            UNION ALL
            (
-           SELECT away_team_id AS team_id, 
+           SELECT away_season_team_id AS team_id, 
              CASE 
                WHEN away_team_points > home_team_points THEN 'W' 
                WHEN away_team_points < home_team_points THEN 'L'
@@ -295,10 +323,10 @@ class Leagues {
              AS outcome, 
              events.season_id, home_team_points, away_team_points, league_approved,
              leagues.id AS league_id,
-             teams.division_id
+             season_teams.division_id
            FROM events
-           JOIN teams ON teams.id = away_team_id
-           JOIN leagues ON leagues.id = teams.league_id
+           JOIN season_teams ON season_teams.id = away_season_team_id
+           JOIN leagues ON leagues.id = season_teams.league_id
            WHERE league_id = (SELECT id FROM league_data)
            )
       
@@ -318,16 +346,16 @@ class Leagues {
            SELECT jsonb_agg(nested_team)
            FROM (
              SELECT
-               teams.*, 
+                season_teams.*, 
                total_games, wins, losses,
-               RANK() OVER(PARTITION BY teams.division_id ORDER BY wins/total_games::float DESC NULLS LAST) AS place
-             FROM teams
-             FULL JOIN records ON records.team_id = teams.id
-             WHERE teams.division_id = divisions.id
+               RANK() OVER(PARTITION BY season_teams.division_id ORDER BY wins/total_games::float DESC NULLS LAST) AS place
+             FROM season_teams
+             FULL JOIN records ON records.team_id = season_teams.id
+             WHERE season_teams.season_id = divisions.season_id AND season_teams.division_id = divisions.id
            ) AS nested_team
         ) AS teams
         FROM divisions
-        WHERE divisions.league_id = (SELECT id FROM league_data)
+        WHERE divisions.league_id = (SELECT id FROM league_data) AND divisions.season_id = (SELECT season_id FROM league_data)
         `,
       [leagueName]
     );

@@ -85,9 +85,13 @@ function Event({ event, teamId }) {
 
   const renderResult = () => {
     if (event.league_approved) {
-      const { home_team_points, away_team_points, home_team_id, away_team_id } =
-        event;
-      if (teamId === home_team_id) {
+      const {
+        home_team_points,
+        away_team_points,
+        home_season_team_id,
+        away_season_team_id,
+      } = event;
+      if (teamId === home_season_team_id) {
         if (home_team_points > away_team_points) {
           return (
             <span className={eventStyle["event__status__result--win"]}>W</span>
@@ -101,7 +105,7 @@ function Event({ event, teamId }) {
         } else {
           return null;
         }
-      } else if (teamId === away_team_id) {
+      } else if (teamId === away_season_team_id) {
         if (home_team_points > away_team_points) {
           return (
             <span className={eventStyle["event__status__result--loss"]}>L</span>

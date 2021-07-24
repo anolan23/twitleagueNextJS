@@ -4,6 +4,10 @@ import twitDropdown from "../sass/components/TwitDropdown.module.scss";
 import TwitIcon from "./TwitIcon";
 
 function TwitDropdownItem({ disabled, onClick, children, value, id, icon }) {
+  function onItemClick() {
+    onClick();
+  }
+
   const renderIcon = () => {
     if (icon) {
       return (
@@ -29,7 +33,7 @@ function TwitDropdownItem({ disabled, onClick, children, value, id, icon }) {
   } else {
     return (
       <div
-        onClick={onClick}
+        onClick={onItemClick}
         className={twitDropdown["twit-dropdown__item"]}
         value={value}
         id={id}
