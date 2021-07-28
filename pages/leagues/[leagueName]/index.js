@@ -7,7 +7,7 @@ import useSWR from "swr";
 import leagueStyle from "../../../sass/components/League.module.scss";
 import Leagues from "../../../db/repos/Leagues";
 import useUser from "../../../lib/useUser";
-import { startSeason } from "../../../actions";
+import { startSeason, endSeason } from "../../../actions";
 import TopBar from "../../../components/TopBar";
 import backend from "../../../lib/backend";
 import TwitDropdownButton from "../../../components/TwitDropdownButton";
@@ -26,6 +26,9 @@ import StandingsDivision from "../../../components/StandingsDivision";
 import Prompt from "../../../components/modals/Prompt";
 import EditLeaguePopup from "../../../components/modals/EditLeaguePopup";
 import EditDivisionsPopup from "../../../components/modals/EditDivisionsPopup";
+import ScoresCard from "../../../components/ScoresCard";
+import Menu from "../../../components/Menu";
+import MenuItem from "../../../components/MenuItem";
 
 function League({ leagueData, standingsData }) {
   const router = useRouter();
@@ -39,7 +42,11 @@ function League({ leagueData, standingsData }) {
   const [showEditDivisionsPopup, setShowEditDivisionsPopup] = useState(false);
 
   const fetcher = async (url) => {
-    const response = await backend.get(url);
+    const response = await backend.get(url, {
+      params: {
+        seasonId: leagueData.season_id,
+      },
+    });
     return response.data;
   };
 
@@ -68,10 +75,8 @@ function League({ leagueData, standingsData }) {
     setShowStartSeasonPrompt(false);
   };
 
-  const endSeason = async () => {
-    const season = await backend.patch("/api/seasons", {
-      leagueId: league.id,
-    });
+  const endCurrentSeason = async () => {
+    const season = await endSeason(league.id);
     mutateLeague();
     setShowEndSeasonPrompt(false);
   };
@@ -143,26 +148,29 @@ function League({ leagueData, standingsData }) {
     }
   };
 
-  const renderManageLeagueButon = () => {
+  const renderMenu = () => {
     if (!user) {
       return null;
     }
     if (user.id === league.owner_id) {
       return (
-        <TwitDropdownButton actionText="Manage league" color="primary">
-          <TwitDropdownItem onClick={() => setShowEditLeaguePopup(true)}>
-            Edit profile
-          </TwitDropdownItem>
-          <TwitDropdownItem onClick={() => setShowEditDivisionsPopup(true)}>
-            Edit divisions
-          </TwitDropdownItem>
-          <TwitDropdownItem
+        <Menu>
+          <MenuItem onClick={() => setShowEditLeaguePopup(true)}>
+            Profile
+          </MenuItem>
+          <MenuItem
+            onClick={() => setShowEditDivisionsPopup(true)}
+            disabled={league.season_id}
+          >
+            Divisions
+          </MenuItem>
+          <MenuItem
             onClick={() => setShowStartSeasonPrompt(true)}
             disabled={league.season_id ? true : false}
           >
-            Start new season
-          </TwitDropdownItem>
-          <TwitDropdownItem
+            Start season
+          </MenuItem>
+          <MenuItem
             onClick={() =>
               router.push({
                 pathname: `/leagues/${league.league_name}/playoffs`,
@@ -171,17 +179,16 @@ function League({ leagueData, standingsData }) {
                 },
               })
             }
-            disabled={false}
           >
-            Playoff bracket
-          </TwitDropdownItem>
-          <TwitDropdownItem
+            Bracket
+          </MenuItem>
+          <MenuItem
             onClick={() => setShowEndSeasonPrompt(true)}
             disabled={league.season_id ? false : true}
           >
             End season
-          </TwitDropdownItem>
-        </TwitDropdownButton>
+          </MenuItem>
+        </Menu>
       );
     } else {
       return null;
@@ -219,7 +226,7 @@ function League({ leagueData, standingsData }) {
           secondaryActionText="Cancel"
           primaryActionText="Continue"
           onSecondaryActionClick={() => setShowEndSeasonPrompt(false)}
-          onPrimaryActionClick={endSeason}
+          onPrimaryActionClick={endCurrentSeason}
         />
       );
     }
@@ -237,9 +244,7 @@ function League({ leagueData, standingsData }) {
         </header>
         <main className="main">
           <div className={leagueStyle["league"]}>
-            <TopBar main={league.league_name}>
-              {renderManageLeagueButon()}
-            </TopBar>
+            <TopBar main={league.league_name} menu={renderMenu()}></TopBar>
             <LeagueProfile
               league={league}
               onAvatarClick={() => setShowEditLeaguePopup(!showEditLeaguePopup)}
@@ -269,14 +274,11 @@ function League({ leagueData, standingsData }) {
         </main>
         <div className="right-bar">
           <RightColumn>
+            <ScoresCard seasonId={league.season_id} />
             <StandingsCard
               standings={standings}
               league={league}
-              title={
-                league.current_season
-                  ? getSeasonString(league.current_season, league.seasons)
-                  : "Standings"
-              }
+              title="Standings"
             />
           </RightColumn>
         </div>
@@ -303,11 +305,11 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  const leagueName = context.params.leagueName;
+  const { leagueName } = context.params;
   let leagueData = await Leagues.findOne(leagueName);
-  leagueData = JSON.parse(JSON.stringify(leagueData));
+  let standingsData = await Leagues.standings(leagueName, leagueData.season_id);
 
-  let standingsData = await Leagues.currentSeasonStandings(leagueName);
+  leagueData = JSON.parse(JSON.stringify(leagueData));
   standingsData = JSON.parse(JSON.stringify(standingsData));
 
   return {

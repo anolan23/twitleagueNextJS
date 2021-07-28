@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import standingsCard from "../sass/components/StandingsCard.module.scss";
@@ -11,15 +10,23 @@ import TwitSpinner from "./TwitSpinner";
 function StandingsCard({ standings, league, title }) {
   const router = useRouter();
 
+  function onFooterClick() {
+    router.push({
+      pathname: `/leagues/${league.league_name}/standings`,
+      query: { seasonId: league.season_id },
+    });
+  }
+
   const renderFooter = () => {
     return (
-      <Link href="/standings">
-        <div className={standingsCard["standings-card__footer"]}>
-          <span className={standingsCard["standings-card__footer__text"]}>
-            Show more
-          </span>
-        </div>
-      </Link>
+      <div
+        className={standingsCard["standings-card__footer"]}
+        onClick={onFooterClick}
+      >
+        <span className={standingsCard["standings-card__footer__text"]}>
+          Show more
+        </span>
+      </div>
     );
   };
 
@@ -52,7 +59,7 @@ function StandingsCard({ standings, league, title }) {
   };
 
   return (
-    <TwitCard title={title} footer={renderFooter()} color="clear">
+    <TwitCard title={title} footer={renderFooter()}>
       {renderDivisions()}
     </TwitCard>
   );

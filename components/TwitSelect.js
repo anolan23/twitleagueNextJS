@@ -30,7 +30,16 @@ function TwitSelect({ options, defaultValue, onSelect }) {
     setShow(false);
   };
 
+  function onOptionClick(event) {
+    console.log(event);
+    const value = event.target.textContent;
+    const optionId = event.target.id;
+    onSelect(optionId);
+    setValue(value);
+  }
+
   const renderOptions = () => {
+    console.log(options);
     return options.map((option, index) => {
       return (
         <TwitDropdownItem
@@ -43,13 +52,6 @@ function TwitSelect({ options, defaultValue, onSelect }) {
         </TwitDropdownItem>
       );
     });
-  };
-
-  const onOptionClick = (event) => {
-    const value = event.target.textContent;
-    const optionId = event.target.id;
-    onSelect(optionId);
-    setValue(value);
   };
 
   return (

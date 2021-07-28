@@ -32,6 +32,9 @@ import TwitSpinner from "../../components/TwitSpinner";
 import PopupCompose from "../../components/modals/PopupCompose";
 import EditEventsPopup from "../../components/modals/EditEventsPopup";
 import EditRosterPopup from "../../components/modals/EditRosterPopup";
+import ScoresCard from "../../components/ScoresCard";
+import Menu from "../../components/Menu";
+import MenuItem from "../../components/MenuItem";
 
 function Team({ teamData, standings }) {
   const { query, isFallback } = useRouter();
@@ -198,21 +201,20 @@ function Team({ teamData, standings }) {
     });
   };
 
-  const renderButton = () => {
+  const renderMenu = () => {
     if (!user) {
       return null;
     }
     if (user.id === team.owner_id) {
       return (
-        <TwitDropdownButton actionText="Manage team" color="primary">
-          <TwitDropdownItem onClick={() => setShowEditTeamPopup(true)}>
-            Edit team page
-          </TwitDropdownItem>
-          <TwitDropdownItem onClick={editRoster}>Edit roster</TwitDropdownItem>
-          <TwitDropdownItem onClick={editEvents}>
-            Schedule event
-          </TwitDropdownItem>
-        </TwitDropdownButton>
+        <Menu>
+          <MenuItem onClick={() => setShowEditTeamPopup(true)}>
+            Profile
+          </MenuItem>
+          <MenuItem onClick={editRoster}>Roster</MenuItem>
+          <MenuItem onClick={() => {}}>Coaches</MenuItem>
+          <MenuItem onClick={editEvents}>Schedule event</MenuItem>
+        </Menu>
       );
     } else {
       return null;
@@ -280,9 +282,11 @@ function Team({ teamData, standings }) {
           <LeftColumn setShowPopupCompose={setShowPopupCompose} />
         </header>
         <main className="main">
-          <TopBar main={team.team_name} sub={`${team.num_posts} Posts`}>
-            {renderButton()}
-          </TopBar>
+          <TopBar
+            main={team.team_name}
+            sub={`${team.num_posts} Posts`}
+            menu={renderMenu()}
+          ></TopBar>
           <TeamProfile
             team={team}
             onAvatarClick={() => setShowEditTeamPopup(true)}
@@ -318,14 +322,13 @@ function Team({ teamData, standings }) {
         </main>
         <div className="right-bar">
           <RightColumn>
+            <ScoresCard
+              seasonId={team.current_season ? team.current_season.id : null}
+            />
             <StandingsCard
               standings={standings}
               league={team.league}
-              title={
-                team.current_season
-                  ? getSeasonString(team.current_season, team.seasons)
-                  : "Standings"
-              }
+              title="Standings"
             />
           </RightColumn>
         </div>

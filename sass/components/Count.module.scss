@@ -1,26 +1,27 @@
-.count{
-    margin-right: 2rem;
-    display: flex;
-    &__box{
-        color: var(--color-text);
-        &:link,
-        &:visited,
-        &:active {
-            text-decoration: none;
-        }
-
-        &:hover {
-            text-decoration: underline;
-        }
-
-        &__value{
-            font-weight: 700;
-            overflow-wrap: break-word;
-        }
-
-        &__text{
-            overflow-wrap: break-word;
-            color: var(--color-text-secondary);
-        }
+.count {
+  margin-right: 2rem;
+  display: flex;
+  cursor: pointer;
+  &__box {
+    color: var(--color-text);
+    &:link,
+    &:visited,
+    &:active {
+      text-decoration: none;
     }
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &__value {
+      font-weight: 700;
+      overflow-wrap: break-word;
+    }
+
+    &__text {
+      overflow-wrap: break-word;
+      color: var(--color-text-secondary);
+    }
+  }
 }

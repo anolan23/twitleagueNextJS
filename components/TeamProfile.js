@@ -28,12 +28,14 @@ import Linkify from "./Linkify";
 import TwitCard from "./TwitCard";
 import TwitDate from "../lib/twit-date";
 import { numberSuffix, getSeasonString } from "../lib/twit-helpers";
+import RosterPopup from "./modals/RosterPopup";
 
 function TeamProfile({ team, standings, onAvatarClick }) {
   const { user } = useUser();
   const router = useRouter();
   const { league, division, seasons } = team;
   const [showRequestToJoin, setShowRequestToJoin] = useState(false);
+  const [showRosterPopup, setShowRosterPopup] = useState(false);
   const foundTeam = findTeamInStandings();
   const total_games = foundTeam
     ? foundTeam.total_games
@@ -197,7 +199,11 @@ function TeamProfile({ team, standings, onAvatarClick }) {
           </div>
           <div className={teamProfile["team-profile__counts"]}>
             <Count href="/" value={team.players} text="Coaches" />
-            <Count href="/" value={team.players} text="Players" />
+            <Count
+              onClick={() => setShowRosterPopup(true)}
+              value={team.players}
+              text="Players"
+            />
             <Count href="/" value={team.followers} text="Followers" />
           </div>
         </div>
@@ -211,6 +217,12 @@ function TeamProfile({ team, standings, onAvatarClick }) {
         secondaryActionText="Cancel"
         onSecondaryActionClick={() => setShowRequestToJoin(false)}
         onPrimaryActionClick={sendUserRequestToJoinTeam}
+      />
+      <RosterPopup
+        show={showRosterPopup}
+        onHide={() => setShowRosterPopup(false)}
+        roster={team.roster}
+        title="Roster"
       />
     </React.Fragment>
   );

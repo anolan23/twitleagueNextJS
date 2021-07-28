@@ -161,6 +161,12 @@ export const fetchTeam = async (abbrev, userId) => {
   return team.data;
 };
 
+export const fetchTeamsByLeagueName = async (leagueName) => {
+  const team = await backend.get(`/api/leagues/${leagueName}/teams`);
+
+  return team.data;
+};
+
 export const findTeamsByUsername = async (username) => {
   if (!username) {
     return;
@@ -321,7 +327,6 @@ export const updateTeamByAbbrev = async (abbrev, columns) => {
   return team.data;
 };
 
-//League Action Creators
 export const createLeague = (values) => async (dispatch, getState) => {
   const ownerId = getState().user.id;
   backend.post("/api/leagues", { ...values, ownerId });
@@ -696,9 +701,13 @@ export const fetchRoster = async (abbrev) => {
   return roster.data;
 };
 
-export const getStandings = async (league_name) => {
-  const standings = await backend.get(`/api/leagues/${league_name}/standings`);
-  return standings.data;
+export const getStandings = async (league_name, seasonId) => {
+  const response = await backend.get(`/api/leagues/${league_name}/standings`, {
+    params: {
+      seasonId,
+    },
+  });
+  return response.data;
 };
 
 export const getLeaguePlayoff = async (leagueName, seasonId) => {
@@ -745,4 +754,26 @@ export const startSeason = async (leagueId) => {
     }
   );
   return response.data;
+};
+
+export const endSeason = async (leagueId) => {
+  const response = await backend.post(
+    `/api/seasons/end`,
+    {},
+    {
+      params: {
+        leagueId,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const fetchScores = async (seasonId) => {
+  const scores = await backend.get(`/api/scores`, {
+    params: {
+      seasonId,
+    },
+  });
+  return scores.data;
 };

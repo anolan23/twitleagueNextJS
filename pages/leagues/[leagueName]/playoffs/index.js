@@ -38,7 +38,7 @@ function Playoffs() {
   const bracket = state.playoffs ? state.playoffs.bracket : empty;
   const inProgress = state.playoffs ? state.playoffs.in_progress : true;
 
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(1.5);
 
   useEffect(() => {
     if (inProgress) {

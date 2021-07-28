@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Link from "next/link";
 
@@ -10,9 +10,11 @@ import leagueProfile from "../sass/components/LeagueProfile.module.scss";
 import TwitButton from "./TwitButton";
 import Attribute from "./Attribute";
 import Count from "./Count";
+import TeamsPopup from "./modals/TeamsPopup";
 
 function LeagueProfile({ league, onAvatarClick }) {
   const { user } = useUser();
+  const [showTeamsPopup, setShowTeamsPopup] = useState(false);
 
   const renderButton = () => {
     if (!user) {
@@ -95,13 +97,19 @@ function LeagueProfile({ league, onAvatarClick }) {
           <div className={leagueProfile["league-profile__counts"]}>
             <Count href="/" value={league.follower_count} text="Followers" />
             <Count
-              href="/"
+              onClick={() => setShowTeamsPopup(true)}
               value={league.teams ? league.teams.length : 0}
               text="Teams"
             />
           </div>
         </div>
       </Profile>
+      <TeamsPopup
+        show={showTeamsPopup}
+        onHide={() => setShowTeamsPopup(false)}
+        teams={league.teams}
+        title="Teams"
+      />
     </React.Fragment>
   );
 }

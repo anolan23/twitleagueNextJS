@@ -27,6 +27,37 @@ class Events {
     return rows;
   }
 
+  static async scores(seasonId) {
+    const { rows } = await pool.query(
+      `
+      SELECT *,
+      (
+        SELECT row_to_json(home_team) AS home_team
+        FROM (
+          SELECT *
+          FROM season_teams 
+          WHERE id = events.home_season_team_id
+        ) AS home_team
+      ),
+      (
+        SELECT row_to_json(away_team) AS away_team
+        FROM (
+          SELECT *
+          FROM season_teams 
+          WHERE id = events.away_season_team_id
+        ) AS away_team
+      ),
+        ABS(EXTRACT(EPOCH FROM (current_timestamp - date))) AS seconds_from_now
+      FROM events
+      WHERE season_id = $1 AND events.type = 'game'
+      ORDER BY seconds_from_now
+      LIMIT 2`,
+      [seasonId]
+    );
+
+    return rows;
+  }
+
   static async findEventsByTeamId(teamId) {
     const { rows } = await pool.query(
       `

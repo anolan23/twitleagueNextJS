@@ -209,6 +209,33 @@ class Leagues {
     return division.rows;
   }
 
+  static async getFormat(leagueName, seasonId) {
+    const format = await pool.query(
+      `
+      WITH league_data AS (
+        SELECT id
+        FROM leagues
+        WHERE league_name = $1
+        )
+      SELECT
+        divisions.*,
+        (
+           SELECT jsonb_agg(nested_team)
+           FROM (
+             SELECT *
+             FROM teams
+             WHERE teams.division_id = divisions.id
+           ) AS nested_team
+        ) AS teams
+        FROM divisions
+        WHERE divisions.league_id = (SELECT id FROM league_data) AND divisions.season_id IS NOT DISTINCT FROM $2
+        `,
+      [leagueName, seasonId]
+    );
+
+    return format.rows;
+  }
+
   static async standings(leagueName, seasonId) {
     const { rows } = await pool.query(
       `
@@ -278,7 +305,7 @@ class Leagues {
            ) AS nested_team
         ) AS teams
         FROM divisions
-        WHERE divisions.league_id = (SELECT id FROM league_data) AND divisions.season_id = $2
+        WHERE divisions.league_id = (SELECT id FROM league_data) AND divisions.season_id IS NOT DISTINCT FROM $2
         `,
       [leagueName, seasonId]
     );

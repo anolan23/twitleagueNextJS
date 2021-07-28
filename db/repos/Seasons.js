@@ -32,6 +32,10 @@ class Seasons {
         UPDATE leagues
         SET season_id = (SELECT id FROM insert_season)
         WHERE id = $1
+      ), update_divisions AS (
+        UPDATE divisions
+        SET season_id = (SELECT id FROM insert_season)
+        WHERE league_id = $1 AND season_id IS NULL
       ), league_teams AS(
         SELECT *
         FROM teams
@@ -60,6 +64,11 @@ class Seasons {
                 UPDATE leagues
                 SET season_id = NULL
                 WHERE id = $1
+            ),
+            teams_update AS (
+              UPDATE teams
+              SET division_id = NULL
+              WHERE league_id = $1
             )
         
         UPDATE seasons

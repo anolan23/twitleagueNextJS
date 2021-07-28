@@ -29,12 +29,16 @@
   &__title {
     font-weight: 700;
     color: var(--color-text);
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   &__subtitle {
     color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__paragraph {
@@ -60,6 +64,6 @@
   &__textbox {
     margin-left: 1rem;
     overflow: hidden;
-    text-overflow: ellipsis;
+    margin-right: 1rem;
   }
 }

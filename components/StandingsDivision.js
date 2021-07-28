@@ -27,6 +27,13 @@ function StandingsDivision({
     };
   }, []);
 
+  useEffect(() => {
+    if (!division) {
+      return;
+    }
+    setDivisionName(division.division_name);
+  }, [division]);
+
   const clickOutsideDropdownButton = (event) => {
     if (!ref.current) {
       return;

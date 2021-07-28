@@ -4,8 +4,8 @@ import twitDropdown from "../sass/components/TwitDropdown.module.scss";
 import TwitIcon from "./TwitIcon";
 
 function TwitDropdownItem({ disabled, onClick, children, value, id, icon }) {
-  function onItemClick() {
-    onClick();
+  function onItemClick(event) {
+    onClick(event);
   }
 
   const renderIcon = () => {

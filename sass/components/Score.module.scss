@@ -1,0 +1,55 @@
+.score {
+  display: flex;
+  padding: 0.5rem 0;
+  border-bottom: var(--border);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--GRAY_BACKGROUND);
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+  }
+  &__row {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: 1.3rem;
+    line-height: 1;
+
+    &__avatar {
+      height: 20px;
+      width: 20px;
+      object-fit: cover;
+      margin-right: 1rem;
+    }
+
+    &__teamname {
+      flex-grow: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-right: 0.5rem;
+    }
+
+    &__points {
+      font-size: 1.9rem;
+      font-weight: 700;
+    }
+  }
+  &__play-period {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: var(--border);
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    width: 25%;
+  }
+}

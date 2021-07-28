@@ -1,0 +1,14 @@
+.scores-card {
+  &__footer {
+    padding: 1.5rem;
+    cursor: pointer;
+
+    &__text {
+      color: var(--color-primary);
+    }
+
+    &:hover {
+      background-color: var(--GRAY_BACKGROUND);
+    }
+  }
+}

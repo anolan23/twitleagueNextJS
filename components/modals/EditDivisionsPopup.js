@@ -20,20 +20,24 @@ function EditDivisionsPopup({ league, show, onHide }) {
   const [team, setTeam] = useState(null);
   const [unassignedTeams, setUnassignedTeams] = useState(null);
 
-  const { data: standings, mutate: mutateStandings } = useSWR(
-    league ? `/api/leagues/${league.league_name}/standings` : null,
+  const { data: format, mutate: mutateStandings } = useSWR(
+    league ? `/api/leagues/${league.league_name}/format` : null,
     fetcher,
     { revalidateOnMount: true }
   );
+
+  console.log(league.teams);
 
   useEffect(() => {
     if (league.teams) {
       filterTeams(league.teams);
     }
-  }, [standings]);
+  }, [format]);
 
   async function fetcher(url) {
-    const response = await backend.get(url);
+    const response = await backend.get(url, {
+      params: { seasonId: league.season_id },
+    });
     return response.data;
   }
 
@@ -55,7 +59,7 @@ function EditDivisionsPopup({ league, show, onHide }) {
   });
 
   const create = async () => {
-    await createDivision(league.id, league.current_season_id);
+    await createDivision(league.id, league.season_id);
     mutateStandings();
   };
 
@@ -97,7 +101,11 @@ function EditDivisionsPopup({ league, show, onHide }) {
             editDivisionsPopup["edit-divisions-popup__heading__actions"]
           }
         >
-          <TwitButton onClick={create} color="primary">
+          <TwitButton
+            onClick={create}
+            color="primary"
+            disabled={league.season_id}
+          >
             Create
           </TwitButton>
         </div>
@@ -122,12 +130,12 @@ function EditDivisionsPopup({ league, show, onHide }) {
   };
 
   const renderDivisions = () => {
-    if (!standings) {
+    if (!format) {
       return <TwitSpinner size={50} />;
-    } else if (standings.length === 0) {
+    } else if (format.length === 0) {
       return null;
     } else {
-      return standings.map((division, index) => {
+      return format.map((division, index) => {
         return (
           <StandingsDivision
             key={index}

@@ -1,10 +1,10 @@
 import React from "react";
 
 import useUser from "../lib/useUser";
-import Avatar from "../components/Avatar";
+import Avatar from "./Avatar";
 import { togglePanel } from "../actions";
 
-function TopBar({ main, sub, children }) {
+function TopBar({ main, sub, menu, children }) {
   const { user } = useUser();
 
   const goBack = () => {
@@ -47,6 +47,13 @@ function TopBar({ main, sub, children }) {
     }
   };
 
+  const renderMenu = () => {
+    if (!menu) {
+      return null;
+    }
+    return menu;
+  };
+
   return (
     <div className="top-bar">
       <div className="top-bar__box">
@@ -58,6 +65,7 @@ function TopBar({ main, sub, children }) {
         </div>
         {renderAction()}
       </div>
+      {menu}
     </div>
   );
 }

@@ -1,17 +1,22 @@
-import Link from "next/link";
-
+import { useRouter } from "next/router";
 import count from "../sass/components/Count.module.scss";
 
-function Count({ href, value, text }) {
+function Count({ href, value, text, onClick }) {
+  const router = useRouter();
+  function onCountClick() {
+    if (href) {
+      router.push(href);
+    } else {
+      onClick();
+    }
+  }
   return (
-    <div className={count["count"]}>
-      <Link passHref href={href}>
-        <a className={count["count__box"]}>
-          <span className={count["count__box__value"]}>{value}</span>
-          &nbsp;
-          <span className={count["count__box__text"]}>{text}</span>
-        </a>
-      </Link>
+    <div className={count["count"]} onClick={onCountClick}>
+      <div className={count["count__box"]}>
+        <span className={count["count__box__value"]}>{value}</span>
+        &nbsp;
+        <span className={count["count__box__text"]}>{text}</span>
+      </div>
     </div>
   );
 }

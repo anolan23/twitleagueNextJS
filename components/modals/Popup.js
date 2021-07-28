@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import popup from "../../sass/components/Popup.module.scss";
 
-function Popup({ show, onHide, heading, body }) {
+function Popup({ show, onHide, heading, title, body }) {
   if (!show) {
     return null;
   }
@@ -21,6 +21,16 @@ function Popup({ show, onHide, heading, body }) {
     onHide();
   }
 
+  function renderTitle() {
+    if (!title) {
+      return null;
+    } else {
+      return (
+        <div className={popup["popup__window__heading__title"]}>{title}</div>
+      );
+    }
+  }
+
   return ReactDOM.createPortal(
     <div
       className={`${popup["popup"]} ${popup["popup__show"]}`}
@@ -31,6 +41,7 @@ function Popup({ show, onHide, heading, body }) {
           <svg onClick={onHide} className={popup["popup__window__icon"]}>
             <use xlinkHref="/sprites.svg#icon-x" />
           </svg>
+          {renderTitle()}
           {heading}
         </div>
         <div className={popup["popup__window__body"]}>{body}</div>
