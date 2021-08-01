@@ -36,9 +36,10 @@ class Leagues {
         (
         SELECT jsonb_agg(nested_team)
           FROM (
-            SELECT *
+            SELECT teams.*, divisions.division_name
             FROM teams
-            WHERE league_id = leagues.id
+            FULL JOIN divisions ON divisions.id = teams.division_id
+            WHERE teams.league_id = leagues.id
           ) AS nested_team
         ) AS teams
       FROM leagues

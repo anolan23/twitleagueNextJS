@@ -20,6 +20,12 @@
   --color-card: rgba(0, 0, 0, 0.05);
   --color-light-gray: rgb(200, 204, 206);
 
+  --gradient-primary: linear-gradient(
+    to bottom,
+    rgb(29, 161, 242),
+    rgb(24, 148, 224)
+  );
+
   --border: 1px solid var(--color-light-gray);
   --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px,
     rgb(101 119 134 / 25%) 0px 1px 3px 1px;

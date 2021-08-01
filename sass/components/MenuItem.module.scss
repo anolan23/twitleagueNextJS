@@ -1,3 +1,5 @@
+$button-brightness: 110%;
+
 .menu-item {
   flex-grow: 1;
   display: flex;
@@ -9,17 +11,20 @@
   cursor: pointer;
   user-select: none;
   transition: all 0.2s;
-  &:hover {
-    background-color: var(--BLUE_BACKGROUND);
-    color: var(--color-primary);
+  border: none;
+  background-color: transparent;
+  &:not(:disabled),
+  &:not([disabled]) {
+    &:hover {
+      background-color: var(--BLUE_BACKGROUND);
+      color: var(--color-primary);
+    }
   }
 
-  &--disabled {
-    opacity: 0.3;
-    &:hover {
-      color: var(--color-text);
-      background-color: transparent;
-      cursor: default;
-    }
+  &:disabled,
+  &[disabled] {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: default;
   }
 }

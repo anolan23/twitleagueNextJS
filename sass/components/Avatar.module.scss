@@ -3,6 +3,7 @@
   border-radius: 50%;
   transition: all 0.2s;
   background-color: lightgray;
+  user-select: none;
   &:hover {
     filter: brightness(85%);
   }

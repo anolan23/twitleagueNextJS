@@ -13,33 +13,39 @@ import TwitSpinner from "../TwitSpinner";
 import Empty from "../Empty";
 
 function EditDivisionsPopup({ league, show, onHide }) {
-  if (!show) {
-    return null;
-  }
   const { user } = useUser();
   const [team, setTeam] = useState(null);
   const [unassignedTeams, setUnassignedTeams] = useState(null);
-
-  const { data: format, mutate: mutateStandings } = useSWR(
-    league ? `/api/leagues/${league.league_name}/format` : null,
-    fetcher,
-    { revalidateOnMount: true }
-  );
-
-  console.log(league.teams);
-
-  useEffect(() => {
-    if (league.teams) {
-      filterTeams(league.teams);
-    }
-  }, [format]);
 
   async function fetcher(url) {
     const response = await backend.get(url, {
       params: { seasonId: league.season_id },
     });
+    if (response.statusText !== "OK") {
+      const error = new Error("An error occurred while fetching the data.");
+      // Attach extra info to the error object.
+      error.info = await response.data;
+      error.status = response.status;
+      throw error;
+    }
     return response.data;
   }
+
+  const {
+    data: format,
+    mutate: mutateFormat,
+    error: swrError,
+  } = useSWR(
+    league ? `/api/leagues/${league.league_name}/format` : null,
+    fetcher,
+    { revalidateOnMount: true, revalidateOnFocus: false }
+  );
+
+  useEffect(() => {
+    if (league.teams) {
+      filterTeams(league.teams);
+    }
+  }, []);
 
   function filterTeams(teams) {
     const filteredTeams = teams.filter((team) => team.division_id === null);
@@ -60,7 +66,7 @@ function EditDivisionsPopup({ league, show, onHide }) {
 
   const create = async () => {
     await createDivision(league.id, league.season_id);
-    mutateStandings();
+    mutateFormat();
   };
 
   const onTeamClick = (clickedTeam) => {
@@ -76,26 +82,28 @@ function EditDivisionsPopup({ league, show, onHide }) {
       setTeam(null);
       return;
     } else {
-      await updateTeamById(team.id, {
+      const teamUpdated = await updateTeamById(team.id, {
         division_id: clickedDivision.id,
       });
-      mutateStandings();
+      await mutateFormat();
+      if (teamUpdated && !swrError) {
+        let newUnassignedTeams = [...unassignedTeams];
+        newUnassignedTeams = newUnassignedTeams.filter(
+          (_team) => _team.id !== team.id
+        );
+        setUnassignedTeams(newUnassignedTeams);
+      }
       setTeam(null);
     }
   };
 
   const onDelete = async () => {
-    mutateStandings();
+    mutateFormat();
   };
 
   const renderHeading = () => {
     return (
       <div className={editDivisionsPopup["edit-divisions-popup__heading"]}>
-        <h1
-          className={editDivisionsPopup["edit-divisions-popup__heading__title"]}
-        >
-          Divisions
-        </h1>
         <div
           className={
             editDivisionsPopup["edit-divisions-popup__heading__actions"]
@@ -176,6 +184,7 @@ function EditDivisionsPopup({ league, show, onHide }) {
       heading={renderHeading()}
       body={renderBody()}
       onHide={onHide}
+      title="Divisions"
     />
   );
 }

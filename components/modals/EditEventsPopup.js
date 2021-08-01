@@ -59,9 +59,6 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
   const renderHeading = () => {
     return (
       <div className={editEventsPopup["edit-events-popup__heading"]}>
-        <h1 className={editEventsPopup["edit-events-popup__heading__title"]}>
-          Schedule event
-        </h1>
         <div className={editEventsPopup["edit-events-popup__heading__actions"]}>
           <TwitButton form="add-event-form" color="primary">
             Save
@@ -186,6 +183,7 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
       heading={renderHeading()}
       body={renderBody()}
       onHide={onHide}
+      title="Schedule event"
     />
   );
 }

@@ -53,14 +53,24 @@ function League({ leagueData, standingsData }) {
   const { data: league, mutate: mutateLeague } = useSWR(
     leagueData && user ? `/api/leagues/${leagueData.league_name}` : null,
     fetcher,
-    { initialData: leagueData, revalidateOnMount: true }
+    {
+      initialData: leagueData,
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    }
   );
 
   const { data: standings } = useSWR(
     leagueData ? `/api/leagues/${leagueData.league_name}/standings` : null,
     fetcher,
-    { initialData: standingsData, revalidateOnMount: true }
+    {
+      initialData: standingsData,
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    }
   );
+
+  console.log(league);
 
   useEffect(() => {
     if (!league) {
@@ -69,7 +79,15 @@ function League({ leagueData, standingsData }) {
     setTab("mentions");
   }, [league]);
 
-  const newSeason = async () => {
+  const isReadyToStartSeason = () => {
+    const assignedToDivisions = league.teams.every(
+      (team) => team.division_id !== null
+    );
+    console.log(assignedToDivisions);
+    return !league.season_id && assignedToDivisions;
+  };
+
+  const startNewSeason = async () => {
     const season = await startSeason(league.id);
     mutateLeague();
     setShowStartSeasonPrompt(false);
@@ -166,7 +184,7 @@ function League({ leagueData, standingsData }) {
           </MenuItem>
           <MenuItem
             onClick={() => setShowStartSeasonPrompt(true)}
-            disabled={league.season_id ? true : false}
+            disabled={!isReadyToStartSeason()}
           >
             Start season
           </MenuItem>
@@ -208,7 +226,7 @@ function League({ leagueData, standingsData }) {
           secondaryActionText="Cancel"
           primaryActionText="Continue"
           onSecondaryActionClick={() => setShowStartSeasonPrompt(false)}
-          onPrimaryActionClick={newSeason}
+          onPrimaryActionClick={startNewSeason}
         />
       );
     }

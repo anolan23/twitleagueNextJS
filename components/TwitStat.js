@@ -45,7 +45,7 @@ function TwitStat(props) {
     const differenceInWins = Math.abs(leaderWins - wins);
     const differenceInLosses = Math.abs(leaderLosses - losses);
     const gamesBehind = (differenceInWins + differenceInLosses) / 2;
-    if (gamesBehind == 0) {
+    if (gamesBehind == 0 || isNaN(gamesBehind)) {
       return "-";
     }
     return gamesBehind;

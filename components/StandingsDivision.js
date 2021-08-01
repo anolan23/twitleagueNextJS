@@ -34,15 +34,12 @@ function StandingsDivision({
     setDivisionName(division.division_name);
   }, [division]);
 
-  const clickOutsideDropdownButton = (event) => {
+  function clickOutsideDropdownButton() {
     if (!ref.current) {
       return;
     }
-    if (ref.current.contains(event.target)) {
-      return;
-    }
     setShow(false);
-  };
+  }
 
   const disabled = (_team) => {
     if (team) {

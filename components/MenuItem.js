@@ -11,14 +11,13 @@ function MenuItem({ disabled, children, onClick }) {
   }
 
   return (
-    <div
-      className={`${menuItemStyle["menu-item"]} ${
-        disabled ? menuItemStyle["menu-item--disabled"] : ""
-      }`}
+    <button
+      className={menuItemStyle["menu-item"]}
       onClick={onMenuItemClick}
+      disabled={disabled}
     >
       {children}
-    </div>
+    </button>
   );
 }
 

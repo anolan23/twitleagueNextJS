@@ -1,8 +1,11 @@
+import { useRouter } from "next/router";
+
 import Popup from "./Popup";
 import TwitItem from "../TwitItem";
 import Empty from "../Empty";
 
 function RosterPopup({ roster, show, onHide, title }) {
+  const router = useRouter();
   const renderBody = () => {
     if (!roster) {
       return (
@@ -16,6 +19,7 @@ function RosterPopup({ roster, show, onHide, title }) {
             avatar={user.avatar}
             title={user.name}
             subtitle={`@${user.username}`}
+            onClick={() => router.push(`/users/${user.username}`)}
           />
         );
       });

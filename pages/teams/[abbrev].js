@@ -127,36 +127,6 @@ function Team({ teamData, standings }) {
           <Post user={user} />
         </InfiniteList>
       );
-    } else if (tab === "roster") {
-      if (!team) {
-        return null;
-      } else if (!team.roster || roster.length === 0) {
-        if (user.id === team.owner_id) {
-          return (
-            <Empty
-              main="Empty"
-              sub="There are no players on this team"
-              actionText="Edit roster"
-              onActionClick={() => setShowEditRosterPopup(true)}
-            />
-          );
-        } else {
-          return <Empty main="Empty" sub="There are no players on this team" />;
-        }
-      } else {
-        return team.roster.map((player, index) => {
-          return (
-            <TwitItem
-              onClick={() => router.push(`/users/${player.username}`)}
-              key={index}
-              avatar={player.avatar}
-              title={player.name}
-              subtitle={`@${player.username}`}
-              actionText="Scout"
-            />
-          );
-        });
-      }
     } else if (tab === "schedule") {
       if (!events) {
         return <TwitSpinner size={50} />;
@@ -245,10 +215,6 @@ function Team({ teamData, standings }) {
     setTab(k.target.id);
   };
 
-  const onRosterSelect = async (k) => {
-    setTab(k.target.id);
-  };
-
   const onScheduleClick = (k) => {
     setTab(k.target.id);
     if (!team.seasons) {
@@ -304,12 +270,6 @@ function Team({ teamData, standings }) {
               id={"schedule"}
               active={tab === "schedule" ? true : false}
               title="Schedule"
-            />
-            <TwitTab
-              onClick={onRosterSelect}
-              id={"roster"}
-              active={tab === "roster" ? true : false}
-              title="Roster"
             />
             <TwitTab
               onClick={(k) => setTab(k.target.id)}
