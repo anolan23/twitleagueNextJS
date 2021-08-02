@@ -1,7 +1,9 @@
 import Leagues from "../../../../db/repos/Leagues";
+import Database from "../../../../db/repos/Database";
 
 export default async (req, res) => {
   const method = req.method;
+  const { divisionId } = req.query;
   if (method === "GET") {
     const { leagueId } = req.query;
     const divisions = await Leagues.findDivisions(leagueId);
@@ -11,14 +13,14 @@ export default async (req, res) => {
     const division = await Leagues.createDivision(leagueId, seasonId);
     res.send(division);
   } else if (method === "PATCH") {
-    const { divisionId, newDivisionName } = req.body;
-    const division = await Leagues.updateDivisionName(
+    const columns = req.body;
+    const division = await Database.updateById(
       divisionId,
-      newDivisionName
+      "divisions",
+      columns
     );
     res.send(division);
   } else if (method === "DELETE") {
-    const { divisionId } = req.query;
     const division = await Leagues.deleteDivision(divisionId);
     res.send(division);
   } else {

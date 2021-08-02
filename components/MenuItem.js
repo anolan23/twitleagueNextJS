@@ -2,7 +2,11 @@ import React from "react";
 
 import menuItemStyle from "../sass/components/MenuItem.module.scss";
 
-function MenuItem({ disabled, children, onClick }) {
+function MenuItem({ disabled, hide, children, onClick }) {
+  if (hide) {
+    return null;
+  }
+
   function onMenuItemClick() {
     if (disabled) {
       return;

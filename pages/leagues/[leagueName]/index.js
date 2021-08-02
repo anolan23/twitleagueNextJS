@@ -25,12 +25,11 @@ import { getSeasonString, groupBy } from "../../../lib/twit-helpers";
 import StandingsDivision from "../../../components/StandingsDivision";
 import Prompt from "../../../components/modals/Prompt";
 import EditLeaguePopup from "../../../components/modals/EditLeaguePopup";
-import EditDivisionsPopup from "../../../components/modals/EditDivisionsPopup";
 import ScoresCard from "../../../components/ScoresCard";
 import Menu from "../../../components/Menu";
 import MenuItem from "../../../components/MenuItem";
 
-function League({ leagueData, standingsData }) {
+function League({ leagueData }) {
   const router = useRouter();
   const { user } = useUser();
   const [tab, setTab] = useState("mentions");
@@ -55,17 +54,7 @@ function League({ leagueData, standingsData }) {
     fetcher,
     {
       initialData: leagueData,
-      revalidateOnMount: false,
-      revalidateOnFocus: false,
-    }
-  );
-
-  const { data: standings } = useSWR(
-    leagueData ? `/api/leagues/${leagueData.league_name}/standings` : null,
-    fetcher,
-    {
-      initialData: standingsData,
-      revalidateOnMount: false,
+      revalidateOnMount: true,
       revalidateOnFocus: false,
     }
   );
@@ -83,8 +72,7 @@ function League({ leagueData, standingsData }) {
     const assignedToDivisions = league.teams.every(
       (team) => team.division_id !== null
     );
-    console.log(assignedToDivisions);
-    return !league.season_id && assignedToDivisions;
+    return assignedToDivisions;
   };
 
   const startNewSeason = async () => {
@@ -103,35 +91,8 @@ function League({ leagueData, standingsData }) {
     setTab(k.target.id);
   };
 
-  const onStandingSelect = (k) => {
-    setTab(k.target.id);
-  };
-
   const onMediaSelect = (k) => {
     setTab(k.target.id);
-  };
-
-  const renderDivisions = () => {
-    if (!standings) {
-      return null;
-    } else if (standings.length === 0) {
-      return (
-        <Empty
-          main="No standings"
-          sub={`${league.league_name} must have teams assigned to divisions`}
-        />
-      );
-    } else {
-      return standings.map((division, index) => {
-        return (
-          <StandingsDivision
-            key={index}
-            division={division}
-            onTeamClick={() => {}}
-          />
-        );
-      });
-    }
   };
 
   const renderContent = () => {
@@ -152,13 +113,6 @@ function League({ leagueData, standingsData }) {
             return <Post key={index} post={post} user={user} />;
           });
         }
-      case "standings":
-        return (
-          <React.Fragment>
-            <Divide />
-            {renderDivisions()}
-          </React.Fragment>
-        );
       case "media":
         return null;
       default:
@@ -177,7 +131,9 @@ function League({ leagueData, standingsData }) {
             Profile
           </MenuItem>
           <MenuItem
-            onClick={() => setShowEditDivisionsPopup(true)}
+            onClick={() =>
+              router.push(`/leagues/${league.league_name}/divisions`)
+            }
             disabled={league.season_id}
           >
             Divisions
@@ -185,6 +141,7 @@ function League({ leagueData, standingsData }) {
           <MenuItem
             onClick={() => setShowStartSeasonPrompt(true)}
             disabled={!isReadyToStartSeason()}
+            hide={league.season_id}
           >
             Start season
           </MenuItem>
@@ -193,16 +150,18 @@ function League({ leagueData, standingsData }) {
               router.push({
                 pathname: `/leagues/${league.league_name}/playoffs`,
                 query: {
-                  seasonId: league.current_season.id,
+                  seasonId: league.season_id,
                 },
               })
             }
+            hide={!league.season_id}
           >
             Bracket
           </MenuItem>
           <MenuItem
             onClick={() => setShowEndSeasonPrompt(true)}
             disabled={league.season_id ? false : true}
+            hide={league.season_id ? false : true}
           >
             End season
           </MenuItem>
@@ -221,7 +180,7 @@ function League({ leagueData, standingsData }) {
         <Prompt
           show={showStartSeasonPrompt}
           onHide={() => setShowStartSeasonPrompt(false)}
-          main="New season"
+          main="Start season"
           sub={`This will start a new season for ${league.league_name}`}
           secondaryActionText="Cancel"
           primaryActionText="Continue"
@@ -275,12 +234,6 @@ function League({ leagueData, standingsData }) {
                 title="Mentions"
               />
               <TwitTab
-                onClick={onStandingSelect}
-                id={"standings"}
-                active={tab === "standings" ? true : false}
-                title="Standings"
-              />
-              <TwitTab
                 onClick={onMediaSelect}
                 id={"media"}
                 active={tab === "media" ? true : false}
@@ -293,11 +246,7 @@ function League({ leagueData, standingsData }) {
         <div className="right-bar">
           <RightColumn>
             <ScoresCard seasonId={league.season_id} />
-            <StandingsCard
-              standings={standings}
-              league={league}
-              title="Standings"
-            />
+            <StandingsCard league={league} title="Standings" />
           </RightColumn>
         </div>
       </div>
@@ -306,12 +255,6 @@ function League({ leagueData, standingsData }) {
         onHide={() => setShowEditLeaguePopup(false)}
         league={league}
       />
-      <EditDivisionsPopup
-        show={showEditDivisionsPopup}
-        onHide={() => setShowEditDivisionsPopup(false)}
-        league={league}
-      />
-
       {renderStartSeasonPrompt()}
       {renderEndSeasonPrompt()}
     </React.Fragment>
@@ -325,16 +268,13 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   const { leagueName } = context.params;
   let leagueData = await Leagues.findOne(leagueName);
-  let standingsData = await Leagues.standings(leagueName, leagueData.season_id);
 
   leagueData = JSON.parse(JSON.stringify(leagueData));
-  standingsData = JSON.parse(JSON.stringify(standingsData));
 
   return {
     revalidate: 1,
     props: {
       leagueData,
-      standingsData,
     },
   };
 }

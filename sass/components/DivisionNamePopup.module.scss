@@ -1,0 +1,17 @@
+.division-name-popup {
+  &__heading {
+    height: 100%;
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1.5rem;
+    position: relative;
+
+    &__actions {
+      display: grid;
+      grid-template-columns: min-content min-content;
+      column-gap: 0.5rem;
+    }
+  }
+}

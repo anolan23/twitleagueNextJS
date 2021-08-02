@@ -1,63 +1,94 @@
-.division{
-        
-    &__header{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 1rem;
+.division {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  position: relative;
+  user-select: none;
+
+  &__caption {
+    width: 100%;
+
+    &__caption-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1px 1rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      border-bottom: var(--border);
+      background-color: rgba(0, 0, 0, 0.486);
+      color: white;
+      cursor: pointer;
+      &__text {
         font-size: 1.5rem;
         font-weight: 700;
-        border-bottom: var(--border);
-        background-color: var(--color-primary);
-        color: white;
-        
+        color: inherit;
+      }
+    }
+  }
 
-        &__text{
-            
-        }
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-bottom: var(--border);
+    background-color: var(--color-primary);
+    color: inherit;
 
-        &__form{
-
-            &__input{
-                color: var(--color-text-secondary);
-                border: none;
-                
-                font-size: inherit;
-                font-weight: inherit;
-
-                &:focus{
-                    outline: none;
-                }
-            }
-        }
+    &__text {
     }
 
-    &__actions{
-        
-    }
+    &__form {
+      &__input {
+        color: var(--color-text-secondary);
+        border: none;
 
-    &__icon-holder{
-        position: relative;
-        display: flex;
-        align-items: center;
-        &__icon{
-            cursor: pointer;
-            height: 20px;
-            width: 20px;
-            fill: white;
+        font-size: inherit;
+        font-weight: inherit;
+
+        &:focus {
+          outline: none;
         }
+      }
+    }
+  }
 
-        &__dropdown{
-            position: absolute;
-            min-width: 250px;
-            right: 0;
-            
-        }
+  &__head {
+    cursor: default;
+    &__row {
+      border-bottom: var(--border);
+      &__item {
+        padding: 5px 0;
+        font-size: 1rem;
+        font-weight: 400;
+      }
+    }
+  }
+
+  &__body {
+  }
+
+  &__icon-holder {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    &__icon {
+      cursor: pointer;
+      height: 2rem;
+      width: 2rem;
+      color: white;
+      fill: currentColor;
     }
 
-    &__body{
-        
-        
+    &__dropdown {
+      position: absolute;
+      min-width: 250px;
+      right: 0;
+      bottom: 0;
     }
-
+  }
 }

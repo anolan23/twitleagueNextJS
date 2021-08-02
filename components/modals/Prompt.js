@@ -3,38 +3,47 @@ import React from "react";
 import prompt from "../../sass/components/Prompt.module.scss";
 import TwitButton from "../../components/TwitButton";
 
-function Prompt(props) {
+function Prompt({
+  main,
+  sub,
+  show,
+  onSecondaryActionClick,
+  onPrimaryActionClick,
+  primaryActionText,
+  secondaryActionText,
+  onHide,
+}) {
   const onPromptClick = (event) => {
     event.stopPropagation();
-    props.onHide();
+    onHide();
   };
 
-  if (props.show) {
+  if (show) {
     return (
       <div
         className={`${prompt["prompt"]} ${prompt["prompt__show"]}`}
         onClick={onPromptClick}
       >
         <div className={prompt["prompt__window"]}>
-          <span className={prompt["prompt__window__main"]}>{props.main}</span>
-          <p className={prompt["prompt__window__sub"]}>{props.sub}</p>
+          <span className={prompt["prompt__window__main"]}>{main}</span>
+          <p className={prompt["prompt__window__sub"]}>{sub}</p>
           <div className={prompt["prompt__window__actions"]}>
             <TwitButton
-              onClick={props.onSecondaryActionClick}
+              onClick={onSecondaryActionClick}
               color={"primary"}
               size="large"
               outline="primary"
               expanded
             >
-              {props.secondaryActionText}
+              {secondaryActionText}
             </TwitButton>
             <TwitButton
-              onClick={props.onPrimaryActionClick}
+              onClick={onPrimaryActionClick}
               color={"primary"}
               size="large"
               expanded
             >
-              {props.primaryActionText}
+              {primaryActionText}
             </TwitButton>
           </div>
         </div>

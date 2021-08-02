@@ -23,6 +23,7 @@
     white-space: nowrap;
     border-bottom: var(--border);
     transition: all 0.2s;
+    user-select: none;
 
     &:hover {
       color: var(--color-primary);

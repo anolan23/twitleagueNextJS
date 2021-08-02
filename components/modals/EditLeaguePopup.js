@@ -10,6 +10,7 @@ import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 import Profile from "../Profile";
+import TwitForm from "../TwitForm";
 
 function EditLeaguePopup(props) {
   const { league } = props;
@@ -45,11 +46,7 @@ function EditLeaguePopup(props) {
     return (
       <div className={editProfilePopup["edit-profile-popup"]}>
         <Profile avatar={formik.values.avatar} banner={formik.values.banner} />
-        <form
-          id="edit-team-form"
-          onSubmit={formik.handleSubmit}
-          className={twitForm["twit-form"]}
-        >
+        <TwitForm id="edit-team-form" onSubmit={formik.handleSubmit}>
           <div className={twitForm["twit-form__group"]}>
             <label htmlFor="avatar" className={twitForm["twit-form__label"]}>
               Avatar URL
@@ -108,7 +105,7 @@ function EditLeaguePopup(props) {
               </div>
             ) : null}
           </div>
-        </form>
+        </TwitForm>
       </div>
     );
   };

@@ -1,199 +1,162 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import divisionStyle from "../sass/components/Division.module.scss";
-import Divide from "../components/Divide";
-import Empty from "../components/Empty";
-
-import TwitDropdownItem from "../components/TwitDropdownItem";
-import TwitIcon from "../components/TwitIcon";
-import TwitDropdown from "../components/TwitDropdown";
 import TwitStat from "./TwitStat";
-import TwitButton from "./TwitButton";
+import Empty from "./Empty";
+import TwitIcon from "./TwitIcon";
+import TwitDropdown from "./TwitDropdown";
+import TwitDropdownItem from "./TwitDropdownItem";
 import backend from "../lib/backend";
+import TwitSpinner from "./TwitSpinner";
+import DivisionNamePopup from "./modals/DivisionNamePopup";
 
-function Division(props) {
+function Division({
+  division,
+  team,
+  teams,
+  onDelete,
+  onTeamClick,
+  editable,
+  onDivisionClick,
+  league,
+}) {
   const ref = useRef();
-
   const [show, setShow] = useState(false);
-  const [mode, setMode] = useState("default");
-  const [division, setDivision] = useState(props.division);
+  const [showDivisionNamePopup, setShowDivisionNamePopup] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const { division_name } = division;
 
   useEffect(() => {
-    setDivision(props.division);
-  }, [props.division]);
-
-  useEffect(() => {
-    document.body.addEventListener("click", clickOutsideDropdownButton);
+    document.body.addEventListener("click", clickOutsideDropdown);
     return () => {
-      document.body.removeEventListener("click", clickOutsideDropdownButton);
+      document.body.removeEventListener("click", clickOutsideDropdown);
     };
   }, []);
 
-  const clickOutsideDropdownButton = (event) => {
+  function clickOutsideDropdown(event) {
     if (!ref.current) {
       return;
     }
-    if (ref.current.contains(event.target)) {
-      return;
-    }
+
     setShow(false);
-  };
+  }
 
-  const addTeamsClick = () => {
-    setMode("addTeams");
-    props.addTeams(division);
-    setShow(false);
-  };
-
-  const removeTeamsClick = () => {
-    setMode("removeTeams");
-    props.removeTeams(division);
-    setShow(false);
-  };
-
-  const editDivisionNameClick = () => {
-    setMode("editDivisionName");
-    props.editName(division);
-    setShow(false);
-  };
-
-  const onEditDivisionNameBlur = (event) => {
-    onEditDivisionNameSubmit(event);
-  };
-
-  const onEditDivisionNameSubmit = (event) => {
-    const newDivisionName = event.target.value;
-    let newDivision = { ...division, division_name: newDivisionName };
-    setDivision(newDivision);
-    props.updateDivisions(newDivision);
-    setMode("default");
-    backend.patch("/api/leagues/divisions", {
-      divisionId: division.id,
-      newDivisionName,
-    });
-  };
-
-  const onRemoveButtonClick = (team) => {
-    let teams = division.teams.filter((_team) => _team.id !== team.id);
-    let newDivision = { ...division, teams };
-    setDivision(newDivision);
-    props.updateDivisions(newDivision);
-    backend.patch("/api/teams", {
-      teamId: team.id,
-      values: { divisionId: null },
-    });
-  };
-
-  const renderDivisionName = () => {
-    if (mode !== "editDivisionName") {
-      return (
-        <span className={divisionStyle["division__header__text"]}>
-          {division.division_name}
-        </span>
-      );
-    } else if (mode === "editDivisionName") {
-      return (
-        <form
-          onSubmit={onEditDivisionNameSubmit}
-          className={divisionStyle["division__header__form"]}
-        >
-          <input
-            type="text"
-            defaultValue={division.division_name}
-            className={divisionStyle["division__header__form__input"]}
-            placeholder="Enter division name"
-            onBlur={onEditDivisionNameBlur}
-          />
-        </form>
-      );
-    }
-  };
-
-  const renderTeamButton = (team) => {
-    if (mode === "removeTeams") {
-      return (
-        <TwitButton
-          size="small"
-          onClick={() => onRemoveButtonClick(team)}
-          color="primary"
-        >
-          Remove
-        </TwitButton>
-      );
+  const disabled = (_team) => {
+    if (team) {
+      return team.id !== _team.id;
     } else {
+      return false;
+    }
+  };
+
+  const renderTeams = () => {
+    if (!teams) {
+      return <TwitSpinner size={30} />;
+    } else if (teams.length === 0) {
       return null;
-    }
-  };
-
-  const renderBody = () => {
-    if (!division.teams || division.teams.length === 0) {
-      return (
-        <Empty
-          main="No teams"
-          sub={
-            props.editable
-              ? "Add teams to this division"
-              : "No teams currently in this division"
-          }
-        />
-      );
     } else {
-      return division.teams.map((team, index) => {
+      return teams.map((team, index) => {
         return (
           <TwitStat
             key={index}
-            avatar={team.avatar}
-            text={team.team_name}
-            href={`/teams/${team.abbrev.substring(1)}`}
-          >
-            {renderTeamButton(team)}
-          </TwitStat>
+            team={team}
+            leader={null}
+            onClick={() => onTeamClick(team)}
+            disabled={disabled(team)}
+          />
         );
       });
     }
   };
 
   const renderEditIcon = () => {
-    if (props.editable) {
+    if (editable) {
       return (
-        <TwitIcon
-          onClick={() => setShow(true)}
-          className={divisionStyle["division__icon-holder__icon"]}
-          icon="/sprites.svg#icon-more-horizontal"
-        />
+        <div className={divisionStyle["division__icon-holder"]} ref={ref}>
+          <TwitIcon
+            onClick={(e) => {
+              e.stopPropagation();
+              setShow(!show);
+            }}
+            className={divisionStyle["division__icon-holder__icon"]}
+            icon="/sprites.svg#icon-more-horizontal"
+          />
+          <div className={divisionStyle["division__icon-holder__dropdown"]}>
+            <TwitDropdown show={show}>
+              <TwitDropdownItem onClick={() => setShowDivisionNamePopup(true)}>
+                Edit division
+              </TwitDropdownItem>
+              <TwitDropdownItem onClick={onDelete}>
+                Delete division
+              </TwitDropdownItem>
+            </TwitDropdown>
+          </div>
+        </div>
       );
     } else {
       return null;
     }
   };
 
-  return (
-    <div className={divisionStyle["division"]}>
-      <div className={divisionStyle["division__header"]}>
-        {renderDivisionName()}
-        <div className={divisionStyle["division__actions"]}>
-          <div className={divisionStyle["division__icon-holder"]} ref={ref}>
-            {renderEditIcon()}
-            <div className={divisionStyle["division__icon-holder__dropdown"]}>
-              <TwitDropdown show={show}>
-                <TwitDropdownItem onClick={addTeamsClick}>
-                  Add teams
-                </TwitDropdownItem>
-                <TwitDropdownItem onClick={removeTeamsClick}>
-                  Remove teams
-                </TwitDropdownItem>
-                <TwitDropdownItem onClick={editDivisionNameClick}>
-                  Edit division name
-                </TwitDropdownItem>
-                <TwitDropdownItem>Delete division</TwitDropdownItem>
-              </TwitDropdown>
-            </div>
-          </div>
+  const renderCaption = () => {
+    if (!division_name) {
+      return null;
+    }
+    return (
+      <caption
+        onClick={onDivisionClick}
+        className={divisionStyle["division__caption"]}
+      >
+        <div className={divisionStyle["division__caption__caption-box"]}>
+          <span
+            className={divisionStyle["division__caption__caption-box__text"]}
+          >
+            {division_name}
+          </span>
+          {renderEditIcon()}
         </div>
-      </div>
-      <div className={divisionStyle["division__body"]}>{renderBody()}</div>
-      <Divide />
-    </div>
+      </caption>
+    );
+  };
+
+  const renderHead = () => {
+    if (!division_name && teams.length === 0) {
+      return null;
+    }
+    return (
+      <thead className={divisionStyle["division__head"]}>
+        <tr className={divisionStyle["division__head__row"]}>
+          <th
+            className={divisionStyle["division__head__row__item"]}
+            colSpan={2}
+          >
+            Team
+          </th>
+          <th className={divisionStyle["division__head__row__item"]}>W</th>
+          <th className={divisionStyle["division__head__row__item"]}>L</th>
+          <th className={divisionStyle["division__head__row__item"]}>T</th>
+          <th className={divisionStyle["division__head__row__item"]}>PCT</th>
+          <th className={divisionStyle["division__head__row__item"]}>GB</th>
+        </tr>
+      </thead>
+    );
+  };
+
+  return (
+    <React.Fragment>
+      <table className={divisionStyle["division"]}>
+        {renderCaption()}
+        {renderHead()}
+        <tbody className={divisionStyle["division__table__body"]}>
+          {renderTeams()}
+        </tbody>
+      </table>
+      <DivisionNamePopup
+        show={showDivisionNamePopup}
+        onHide={() => setShowDivisionNamePopup(false)}
+        division={division}
+        league={league}
+      />
+    </React.Fragment>
   );
 }
-
 export default Division;

@@ -13,13 +13,14 @@ import LeftColumn from "../../../../components/LeftColumn";
 import RightColumn from "../../../../components/RightColumn";
 import TwitSpinner from "../../../../components/TwitSpinner";
 import Empty from "../../../../components/Empty";
-import StandingsDivision from "../../../../components/StandingsDivision";
+import Division from "../../../../components/Division";
 import TwitSelect from "../../../../components/TwitSelect";
+import backend from "../../../../lib/backend";
 
 function Standings({ leagueData }) {
   const router = useRouter();
   const { user } = useUser();
-  const [standings, setStandings] = useState(null);
+  const [standings, setStandings] = useState({});
 
   const fetcher = async (url) => {
     const response = await backend.get(url);
@@ -41,6 +42,12 @@ function Standings({ leagueData }) {
     setStandings(standings);
   }, [router.query]);
 
+  if (router.isFallback) {
+    return <TwitSpinner size={50} />;
+  }
+
+  const { divisions, teams } = standings;
+
   const options = () => {
     if (!league) {
       return [];
@@ -52,18 +59,23 @@ function Standings({ leagueData }) {
     });
   };
 
-  function renderStandings() {
-    if (!standings) {
-      return <TwitSpinner size={50} />;
-    } else if (standings.length === 0) {
-      return <Empty main="Empty" sub="No standings to show for this season" />;
+  function renderDivisions() {
+    if (!divisions) {
+      return null;
     } else {
-      return standings.map((division, index) => {
-        return <StandingsDivision key={index} division={division} />;
+      return divisions.map((division, index) => {
+        let divisionTeams = teams.filter(
+          (team) => team.division_id === division.id
+        );
+        divisionTeams = divisionTeams.sort((a, b) =>
+          a.place > b.place ? 1 : b.place > a.place ? -1 : 0
+        );
+        return (
+          <Division key={index} division={division} teams={divisionTeams} />
+        );
       });
     }
   }
-
   return (
     <React.Fragment>
       <div className="twit-container">
@@ -78,7 +90,7 @@ function Standings({ leagueData }) {
               defaultValue="2019"
               onSelect={(seasonId) => router.push({ query: { seasonId } })}
             />
-            {renderStandings()}
+            {renderDivisions()}
           </div>
         </main>
         <div className="right-bar">

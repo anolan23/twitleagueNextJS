@@ -682,6 +682,24 @@ export const createDivision = async (leagueId, seasonId) => {
   return division.data;
 };
 
+export const updateDivision = async (divisionId, columns) => {
+  const response = await backend.patch("/api/leagues/divisions", columns, {
+    params: {
+      divisionId,
+    },
+  });
+  return response.data;
+};
+
+export const divisionDelete = async (divisionId) => {
+  const reponse = await backend.delete("/api/leagues/divisions", {
+    params: {
+      divisionId,
+    },
+  });
+  return reponse.data;
+};
+
 export const assignDivision = async (leagueId) => {
   const division = await backend.post("/api/leagues/divisions", {
     leagueId,

@@ -17,7 +17,7 @@
   --RED_BACKGROUND: #ffecec;
   --GRAY_BACKGROUND: rgba(0, 0, 0, 0.03);
 
-  --color-card: rgba(0, 0, 0, 0.05);
+  --color-card: whitesmoke;
   --color-light-gray: rgb(200, 204, 206);
 
   --gradient-primary: linear-gradient(
@@ -256,6 +256,7 @@ a {
   display: flex;
   flex-direction: column;
   z-index: 2;
+  user-select: none;
 
   @media only screen and (max-width: 500px) {
     grid-column: container-start/container-end;
