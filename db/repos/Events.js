@@ -104,18 +104,46 @@ class Events {
   static async findOneEventById(eventId, userId) {
     const { rows } = await pool.query(
       `
-        SELECT events.*, leagues.league_name, leagues.owner_id,
-            to_char(events.date, 'HH12:MIAM') AS time, 
-            t1.team_name, t1.abbrev, t1.avatar, t1.owner_id AS team_owner_id,
-            t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar, 
-            t2.owner_id AS opponent_owner_id,
-            EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
-            (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
-        FROM events
-        LEFT JOIN season_teams AS t1 ON events.home_season_team_id = t1.id
-        LEFT JOIN season_teams AS t2 ON events.away_season_team_id = t2.id
-        LEFT JOIN leagues ON t1.league_id = leagues.id
-        WHERE events.id = $1`,
+      SELECT events.*, 
+        (
+          SELECT row_to_json(season) AS season
+          FROM (
+          SELECT seasons.*,
+          (
+            SELECT row_to_json(league) AS league
+            FROM (
+              SELECT leagues.*
+              FROM leagues
+              WHERE leagues.id = seasons.league_id
+            ) AS league
+          )
+          FROM seasons
+          WHERE id = events.season_id
+          ) AS season
+        ),
+        (
+          SELECT row_to_json(home_season_team) AS home_season_team
+          FROM (
+          SELECT *
+          FROM season_teams
+          WHERE id = events.home_season_team_id
+          ) AS home_season_team
+        ),
+        (
+          SELECT row_to_json(away_season_team) AS away_season_team
+          FROM (
+          SELECT *
+          FROM season_teams
+          WHERE id = events.away_season_team_id
+          ) AS away_season_team
+        ),
+        (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes,
+        EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked
+      FROM events
+      LEFT JOIN season_teams AS t1 ON events.home_season_team_id = t1.id
+      LEFT JOIN season_teams AS t2 ON events.away_season_team_id = t2.id
+      LEFT JOIN leagues ON t1.league_id = leagues.id
+      WHERE events.id = $1`,
       [eventId, userId]
     );
 

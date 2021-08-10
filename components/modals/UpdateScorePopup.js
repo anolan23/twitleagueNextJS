@@ -5,43 +5,56 @@ import { useFormik } from "formik";
 import Popup from "./Popup";
 import Avatar from "../Avatar";
 import TwitButton from "../TwitButton";
-import {
-  updateEvent,
-  sendAwaitingEventApprovalNotification,
-} from "../../actions";
+import { updateEvent, sendNotification } from "../../actions";
 import updateScorePopup from "../../sass/components/UpdateScorePopup.module.scss";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 import TwitSpinner from "../TwitSpinner";
 
 function UpdateScorePopup({ show, onHide, event }) {
+  const {
+    id,
+    home_team_points,
+    away_team_points,
+    play_period,
+    season,
+    home_season_team,
+    away_season_team,
+  } = event;
+  const { league } = season;
   useEffect(() => {
     formik.setFieldValue(
       "home_team_points",
-      event.home_team_points ? event.home_team_points : 0
+      home_team_points ? home_team_points : 0
     );
     formik.setFieldValue(
       "away_team_points",
-      event.away_team_points ? event.away_team_points : 0
+      away_team_points ? away_team_points : 0
     );
-    formik.setFieldValue(
-      "play_period",
-      event.play_period ? event.play_period : ""
-    );
-  }, [event.id]);
+    formik.setFieldValue("play_period", play_period ? play_period : "");
+  }, [id]);
 
   const formik = useFormik({
     initialValues: {
-      home_team_points: event.home_team_points,
-      away_team_points: event.away_team_points,
-      play_period: event.play_period,
+      home_team_points,
+      away_team_points,
+      play_period,
     },
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       if (values.play_period === "Final") {
-        updateEvent(event.id, values);
-        sendAwaitingEventApprovalNotification(event.owner_id, event.id);
+        updateEvent(id, values);
+
+        const notification = {
+          type: "Awaiting Event Approval",
+          user_id: league.owner_id,
+          sender_id: null,
+          team_id: null,
+          league_id: league.id,
+          event_id: id,
+        };
+        await sendNotification(notification);
       } else {
-        updateEvent(event.id, values);
+        updateEvent(id, values);
       }
     },
   });
@@ -57,7 +70,7 @@ function UpdateScorePopup({ show, onHide, event }) {
   };
 
   const renderBody = () => {
-    if (event === null) {
+    if (!event) {
       return <TwitSpinner size={50} />;
     } else {
       return (
@@ -74,14 +87,14 @@ function UpdateScorePopup({ show, onHide, event }) {
                 className={
                   updateScorePopup["update-score-popup__teams__team__avatar"]
                 }
-                src={event.avatar}
+                src={home_season_team.avatar}
               />
               <span
                 className={
                   updateScorePopup["update-score-popup__teams__team__name"]
                 }
               >
-                {event.team_name}
+                {home_season_team.team_name}
               </span>
             </div>
             <div
@@ -128,14 +141,14 @@ function UpdateScorePopup({ show, onHide, event }) {
                 className={
                   updateScorePopup["update-score-popup__teams__team__avatar"]
                 }
-                src={event.opponent_avatar}
+                src={away_season_team.avatar}
               />
               <span
                 className={
                   updateScorePopup["update-score-popup__teams__team__name"]
                 }
               >
-                {event.opponent_team_name}
+                {away_season_team.team_name}
               </span>
             </div>
           </div>

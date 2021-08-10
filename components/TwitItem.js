@@ -13,9 +13,30 @@ function TwitItem({
   small,
   onClick,
 }) {
-  const renderAction = () => {
+  function renderTitle() {
+    if (!title) {
+      return null;
+    }
+    return <span className={twitItem["twit-item__title"]}>{title}</span>;
+  }
+
+  function renderSubtitle() {
+    if (!subtitle) {
+      return null;
+    }
+    return <span className={twitItem["twit-item__subtitle"]}>{subtitle}</span>;
+  }
+
+  function renderParagraph() {
+    if (!paragraph) {
+      return null;
+    }
+    return <div className={twitItem["twit-item__paragraph"]}>{paragraph}</div>;
+  }
+
+  function renderAction() {
     return <div className={twitItem["twit-item__action"]}>{children}</div>;
-  };
+  }
 
   return (
     <div
@@ -33,11 +54,9 @@ function TwitItem({
         src={avatar}
       />
       <div className={twitItem["twit-item__textbox"]}>
-        <span className={twitItem["twit-item__title"]}>{title}</span>
-        <span className={twitItem["twit-item__subtitle"]}>{subtitle}</span>
-        {paragraph ? (
-          <p className={twitItem["twit-item__paragraph"]}>{paragraph}</p>
-        ) : null}
+        {renderTitle()}
+        {renderSubtitle()}
+        {renderParagraph()}
       </div>
       {renderAction()}
     </div>

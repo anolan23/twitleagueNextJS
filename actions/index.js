@@ -32,19 +32,14 @@ export const logOutUser = async () => {
   return response.data;
 };
 
-export const deleteNotification =
-  (notificationId) => async (dispatch, getState) => {
-    let notifications = getState().user.notifications;
-    notifications = notifications.filter((notification) => {
-      return notification.id !== notificationId;
-    });
-    dispatch({ type: "DELETE_NOTIFICATION", payload: notifications });
-    backend.delete("/api/notifications", {
-      params: {
-        notificationId,
-      },
-    });
-  };
+export const deleteNotification = async (notificationId) => {
+  const notification = await backend.delete("/api/notifications", {
+    params: {
+      notificationId,
+    },
+  });
+  return notification.data;
+};
 
 export const updateUserProfile = (values) => async (dispatch, getState) => {
   const userId = getState().user.id;
@@ -288,23 +283,11 @@ export const unwatchTeamAndFetchUser = () => async (dispatch) => {
   dispatch(fetchUser());
 };
 
-export const sendJoinTeamInvite = (userId, teamId) => async () => {
-  backend.post("/api/notifications", {
-    userId,
-    type: "Join Team Invite",
-    payload: {
-      teamId,
-    },
+export const sendNotification = async (notification) => {
+  const response = await backend.post("/api/notifications", {
+    notification,
   });
-};
-
-export const sendNotification = async ({ userId, type, payload }) => {
-  const notification = await backend.post("/api/notifications", {
-    userId,
-    type,
-    payload,
-  });
-  return notification.data;
+  return response.data;
 };
 
 export const updateLeagueByName = async (leagueName, columns) => {
@@ -625,20 +608,6 @@ export const fetchNotifications = async (userId) => {
   return response.data;
 };
 
-export const sendAwaitingEventApprovalNotification = async (
-  userId,
-  eventId
-) => {
-  const notification = await backend.post("/api/notifications", {
-    userId,
-    type: "Awaiting Event Approval",
-    payload: {
-      eventId,
-    },
-  });
-  return notification.data;
-};
-
 export const fetchEvent = async (eventId) => {
   const event = await backend.get(`/api/events/${eventId}`);
   return event.data;
@@ -708,10 +677,13 @@ export const assignDivision = async (leagueId) => {
 };
 
 export const addPlayerToRoster = async ({ teamId, userId }) => {
-  await backend.post("/api/teams/rosters", {
-    teamId,
-    userId,
-  });
+  try {
+    const player = await backend.post("/api/teams/rosters", {
+      teamId,
+      userId,
+    });
+    return player.data;
+  } catch (error) {}
 };
 
 export const fetchRoster = async (abbrev) => {

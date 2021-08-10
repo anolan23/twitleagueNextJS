@@ -5,6 +5,7 @@
   // box-shadow: var(--box-shadow);
   border-radius: 1.6rem;
   min-width: 0;
+  overflow: hidden;
   &--clear {
     background-color: transparent;
     border: var(--border);

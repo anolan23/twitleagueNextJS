@@ -59,8 +59,6 @@ function League({ leagueData }) {
     }
   );
 
-  console.log(league);
-
   useEffect(() => {
     if (!league) {
       return;
@@ -68,11 +66,19 @@ function League({ leagueData }) {
     setTab("mentions");
   }, [league]);
 
+  if (router.isFallback) {
+    return <div>Loading League...</div>;
+  }
+
   const isReadyToStartSeason = () => {
-    const assignedToDivisions = league.teams.every(
-      (team) => team.division_id !== null
-    );
-    return assignedToDivisions;
+    if (league.teams) {
+      const assignedToDivisions = league.teams.every(
+        (team) => team.division_id !== null
+      );
+      return assignedToDivisions;
+    } else {
+      return false;
+    }
   };
 
   const startNewSeason = async () => {
@@ -208,10 +214,6 @@ function League({ leagueData }) {
       );
     }
   };
-
-  if (router.isFallback) {
-    return <div>Loading League...</div>;
-  }
 
   return (
     <React.Fragment>

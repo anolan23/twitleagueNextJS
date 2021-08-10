@@ -3,10 +3,7 @@ import Posts from "../../../db/repos/Posts";
 export default async (req, res) => {
   const method = req.method;
   if (method === "GET") {
-    const num = req.query.num;
-    const offset = req.query.offset;
-    const userId = req.query.userId;
-    const query = req.query.query;
+    const { query, num, offset, userId } = req.query;
     if (query) {
       const posts = await Posts.search(query, userId, num, offset);
       res.send(posts);

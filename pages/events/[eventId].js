@@ -6,7 +6,7 @@ import useSWR, { mutate } from "swr";
 import MainBody from "../../components/MainBody";
 import useUser from "../../lib/useUser";
 import TopBar from "../../components/TopBar";
-import events from "../../sass/components/Events.module.scss";
+import eventsStyle from "../../sass/components/Events.module.scss";
 import activePost from "../../sass/components/ActivePost.module.scss";
 import {
   fetchEvent,
@@ -51,7 +51,18 @@ function EventsPage({ eventData }) {
     getPosts();
   }, [event, user]);
 
-  const getPosts = async () => {
+  if (router.isFallback) {
+    return <TwitSpinner size={50} />;
+  }
+
+  const { season, home_season_team, away_season_team } = event;
+  const authorizedUsers = [
+    event.owner_id,
+    home_season_team.owner_id,
+    away_season_team.owner_id,
+  ];
+
+  async function getPosts() {
     if (!event) {
       return;
     }
@@ -59,7 +70,7 @@ function EventsPage({ eventData }) {
       const posts = await fetchEventPosts(event.id, user.id);
       setPosts(posts);
     }
-  };
+  }
 
   const onUpdateScoreClick = () => {
     setShowUpdateScorePopup(true);
@@ -91,7 +102,7 @@ function EventsPage({ eventData }) {
       return null;
     } else {
       return (
-        <div className={events["events__event"]}>
+        <div className={eventsStyle["events__event"]}>
           <Matchup event={event} />
           <div className={activePost["active-post__timestamp"]}>
             {event.created_at} · twitleague Web App
@@ -146,12 +157,8 @@ function EventsPage({ eventData }) {
     if (!user) {
       return null;
     }
-    const approvedUsers = [
-      event.owner_id,
-      event.team_owner_id,
-      event.opponent_owner_id,
-    ];
-    if (approvedUsers.includes(user.id) && !event.league_approved) {
+
+    if (authorizedUsers.includes(user.id) && !event.league_approved) {
       return (
         <TwitButton onClick={onUpdateScoreClick} color="primary">
           Update score
@@ -180,13 +187,8 @@ function EventsPage({ eventData }) {
     if (!user) {
       return null;
     }
-    const approvedUsers = [
-      event.owner_id,
-      event.team_owner_id,
-      event.opponent_owner_id,
-    ];
 
-    if (!approvedUsers.includes(user.id)) {
+    if (!authorizedUsers.includes(user.id)) {
       return null;
     } else if (event.play_period === "Final") {
       if (!event.league_approved) {
@@ -211,20 +213,16 @@ function EventsPage({ eventData }) {
     }
   };
 
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <React.Fragment>
       <MainBody>
         <TopBar main="Event">
-          <div className={events["events__event__more-info__actions"]}>
+          <div className={eventsStyle["events__event__more-info__actions"]}>
             {renderUpdateScoreAction()}
             {renderApproveAction()}
           </div>
         </TopBar>
-        <div className={events["events"]}>{renderEvent()}</div>
+        <div className={eventsStyle["events"]}>{renderEvent()}</div>
         <SmallInput onClick={() => setShowPopupEventReply(true)} />
         {renderPosts()}
       </MainBody>

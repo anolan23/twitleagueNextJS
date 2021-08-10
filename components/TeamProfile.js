@@ -11,7 +11,6 @@ import {
   toggleScheduleModal,
   toggleEditRosterPopup,
   toggleEditEventsPopup,
-  sendJoinTeamInvite,
   sendNotification,
 } from "../actions";
 import Profile from "./Profile";
@@ -62,11 +61,15 @@ function TeamProfile({ team, standings, onAvatarClick }) {
   }
 
   const sendUserRequestToJoinTeam = async () => {
-    await sendNotification({
-      userId: team.owner_id,
+    const notification = {
       type: "User Requests Join Team",
-      payload: { teamId: team.id, senderId: user.id },
-    });
+      user_id: team.owner_id,
+      sender_id: user.id,
+      team_id: team.id,
+      league_id: null,
+      event_id: null,
+    };
+    await sendNotification(notification);
     setShowRequestToJoin(false);
   };
 

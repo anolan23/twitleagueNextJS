@@ -5,12 +5,24 @@ import { dateString } from "../lib/twit-helpers";
 import Avatar from "./Avatar";
 
 function Matchup({ event }) {
+  const {
+    season,
+    home_season_team,
+    away_season_team,
+    type,
+    location,
+    play_period,
+    notes,
+    home_team_points,
+    away_team_points,
+  } = event;
+
+  const { league } = season;
+
   const renderPlayPeriod = () => {
-    if (event.play_period) {
+    if (play_period) {
       return (
-        <span className={matchup["matchup__info__status"]}>
-          {event.play_period}
-        </span>
+        <span className={matchup["matchup__info__status"]}>{play_period}</span>
       );
     } else {
       return <span className={matchup["matchup__info__status"]}>Upcoming</span>;
@@ -18,7 +30,7 @@ function Matchup({ event }) {
   };
 
   const renderScore = () => {
-    if (!event.home_team_points) {
+    if (!home_team_points) {
       return (
         <div className={matchup["matchup__matchup__symbol-holder"]}>
           <span className={matchup["matchup__matchup__symbol__symbol"]}>
@@ -30,11 +42,11 @@ function Matchup({ event }) {
       return (
         <div className={matchup["matchup__matchup__score"]}>
           <span className={matchup["matchup__matchup__score__points"]}>
-            {event.home_team_points}
+            {home_team_points}
           </span>
           <span className={matchup["matchup__matchup__score__dash"]}>-</span>
           <span className={matchup["matchup__matchup__score__points"]}>
-            {event.away_team_points}
+            {away_team_points}
           </span>
         </div>
       );
@@ -43,8 +55,8 @@ function Matchup({ event }) {
   return (
     <div className={matchup["matchup"]}>
       <div className={matchup["matchup__info"]}>
-        <Link href={`/leagues/${event.league_name}`} passHref>
-          <a className="twit-link">{event.league_name}</a>
+        <Link href={`/leagues/${league.league_name}`} passHref>
+          <a className="twit-link">{league.league_name}</a>
         </Link>
         &nbsp; · &nbsp;
         <span className={matchup["matchup__info__date"]}>
@@ -56,31 +68,29 @@ function Matchup({ event }) {
         <div className={matchup["matchup__matchup__team"]}>
           <Avatar
             className={matchup["matchup__matchup__team__avatar"]}
-            src={event.avatar}
+            src={home_season_team.avatar}
           />
           <span className={matchup["matchup__matchup__team__name"]}>
-            {event.team_name}
+            {home_season_team.team_name}
           </span>
         </div>
         {renderScore()}
         <div className={matchup["matchup__matchup__team"]}>
           <Avatar
             className={matchup["matchup__matchup__team__avatar"]}
-            src={event.opponent_avatar}
+            src={away_season_team.avatar}
           />
           <span className={matchup["matchup__matchup__team__name"]}>
-            {event.opponent_team_name}
+            {away_season_team.team_name}
           </span>
         </div>
       </div>
       <div className={matchup["matchup__more-info"]}>
+        <span className={matchup["matchup__more-info__info"]}>{type}</span>
         <span className={matchup["matchup__more-info__info"]}>
-          {event.type}
+          {location ? location : "Unknown location"}
         </span>
-        <span className={matchup["matchup__more-info__info"]}>
-          {event.location ? event.location : "Unknown location"}
-        </span>
-        <p className={matchup["matchup__more-info__notes"]}>{event.notes}</p>
+        <p className={matchup["matchup__more-info__notes"]}>{notes}</p>
       </div>
     </div>
   );

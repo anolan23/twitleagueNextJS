@@ -25,7 +25,7 @@ class Database {
     return rows[0];
   }
 
-  static async searchAllLike(query) {
+  static async search(query) {
     const { rows } = await pool.query(
       `
       SELECT 

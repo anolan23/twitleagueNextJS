@@ -31,7 +31,7 @@ import EditTeamPopup from "../../components/modals/EditTeamPopup";
 import TwitSpinner from "../../components/TwitSpinner";
 import PopupCompose from "../../components/modals/PopupCompose";
 import EditEventsPopup from "../../components/modals/EditEventsPopup";
-import EditRosterPopup from "../../components/modals/EditRosterPopup";
+import ScoutPopup from "../../components/modals/ScoutPopup";
 import ScoresCard from "../../components/ScoresCard";
 import Menu from "../../components/Menu";
 import MenuItem from "../../components/MenuItem";
@@ -44,7 +44,7 @@ function Team({ teamData, standings }) {
   const [selectedSeason, setSelectedSeason] = useState(null);
   const [posts, setPosts] = useState(null);
   const [showEditTeamPopup, setShowEditTeamPopup] = useState(false);
-  const [showEditRosterPopup, setShowEditRosterPopup] = useState(false);
+  const [showScoutPopup, setShowScoutPopup] = useState(false);
   const [showEditEventsPopup, setShowEditEventsPopup] = useState(false);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
   const postsLoaderRef = useRef(null);
@@ -181,7 +181,7 @@ function Team({ teamData, standings }) {
           <MenuItem onClick={() => setShowEditTeamPopup(true)}>
             Profile
           </MenuItem>
-          <MenuItem onClick={editRoster}>Roster</MenuItem>
+          <MenuItem onClick={editRoster}>Add players</MenuItem>
           <MenuItem onClick={() => {}}>Coaches</MenuItem>
           <MenuItem onClick={editEvents}>Schedule event</MenuItem>
         </Menu>
@@ -227,7 +227,7 @@ function Team({ teamData, standings }) {
 
   const editRoster = () => {
     if (user.id === team.owner_id) {
-      setShowEditRosterPopup(true);
+      setShowScoutPopup(true);
     }
   };
 
@@ -299,10 +299,10 @@ function Team({ teamData, standings }) {
         onHide={() => setShowEditTeamPopup(false)}
         team={team}
       />
-      <EditRosterPopup
-        show={showEditRosterPopup}
+      <ScoutPopup
+        show={showScoutPopup}
         team={team}
-        onHide={() => setShowEditRosterPopup(false)}
+        onHide={() => setShowScoutPopup(false)}
       />
       <EditEventsPopup
         show={showEditEventsPopup}

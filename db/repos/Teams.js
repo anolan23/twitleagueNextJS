@@ -252,21 +252,6 @@ class Teams {
     return rows;
   }
 
-  static async findOneEventById(eventId) {
-    const { rows } = await pool.query(
-      `
-        SELECT events.*, leagues.league_name, to_char(events.date, 'Mon') AS month, to_char(events.date, 'DD') AS day, to_char(events.date, 'HH12:MIAM') AS time, t1.team_name, t1.abbrev, t1.avatar, t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar
-        FROM events
-        LEFT JOIN teams AS t1 ON events.team_id = t1.id
-        LEFT JOIN teams AS t2 ON events.opponent_id = t2.id
-        LEFT JOIN leagues ON t1.league_id = leagues.id
-        WHERE events.id = $1`,
-      [eventId]
-    );
-
-    return rows[0];
-  }
-
   static async search(search) {
     const { rows } = await pool.query(
       `

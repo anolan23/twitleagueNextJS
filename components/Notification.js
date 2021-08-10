@@ -5,31 +5,42 @@ import reactStringReplace from "react-string-replace";
 
 import notificationStyle from "../sass/components/Notification.module.scss";
 import TwitButton from "./TwitButton";
-import Avatar from "./Avatar";
 import backend from "../lib/backend";
 import { addPlayerToRoster } from "../actions";
+import TwitItem from "./TwitItem";
 
-function Notification({ notification }) {
+function Notification({ notification, onDelete }) {
   const router = useRouter();
- 
-  const onAcceptJoinLeagueRequestClick = () => {
-    const leagueId = notification.league_id;
-    const teamId = notification.team_id;
-    backend.patch("/api/join/league", { leagueId, teamId });
-  };
+  const { type, recipient, sender, team, league, event } = notification;
 
-  const renderSymbol = () => {
-    if (notification.is_home_team) {
-      return "vs";
-    } else {
-      return "@";
-    }
-  };
+  async function onAcceptJoinLeagueRequestClick() {
+    const response = await backend.patch("/api/teams", {
+      teamId: team.id,
+      columns: { league_id: league.id },
+    });
+    onDelete();
+  }
+
+  async function onAcceptJoinTeamInvite() {
+    const player = await addPlayerToRoster({
+      teamId: team.id,
+      userId: recipient.id,
+    });
+    onDelete();
+  }
+
+  async function onAcceptUserRequestsJoinTeam() {
+    const player = await addPlayerToRoster({
+      teamId: team.id,
+      userId: sender.id,
+    });
+    onDelete();
+  }
 
   const renderNotification = () => {
-    switch (notification.type) {
+    switch (type) {
       case "Join League Request": {
-        const text = `${notification.abbrev}  wants to join ${notification.league_name}`;
+        const text = `${team.abbrev}  wants to join ${league.league_name}`;
         const replacedText = reactStringReplace(
           text,
           /\$(\w+)/g,
@@ -37,26 +48,18 @@ function Notification({ notification }) {
             <Link
               key={match + i}
               passHref
-              href={`/teams/${notification.abbrev.substring(1)}`}
+              href={`/teams/${team.abbrev.substring(1)}`}
             >
               <a className="twit-link">${match}</a>
             </Link>
           )
         );
         return (
-          <div
-            className={notificationStyle["notification"]}
-            onClick={() =>
-              router.push(`/teams/${notification.abbrev.substring(1)}`)
-            }
+          <TwitItem
+            paragraph={replacedText}
+            avatar={team.avatar}
+            onClick={() => router.push(`/teams/${team.abbrev.substring(1)}`)}
           >
-            <Avatar
-              className={notificationStyle["notification__image"]}
-              src={notification.team_avatar}
-            />
-            <span className={notificationStyle["notification__text"]}>
-              {replacedText}
-            </span>
             <div className={notificationStyle["notification__actions"]}>
               <TwitButton
                 onClick={onAcceptJoinLeagueRequestClick}
@@ -64,15 +67,15 @@ function Notification({ notification }) {
               >
                 Accept
               </TwitButton>
-              <TwitButton color="primary" outline="primary">
+              <TwitButton color="primary" outline="primary" onClick={onDelete}>
                 Decline
               </TwitButton>
             </div>
-          </div>
+          </TwitItem>
         );
       }
       case "Join Team Invite": {
-        const text = `${notification.abbrev} wants you to play for their team`;
+        const text = `${team.abbrev} wants you to play for their team`;
         const replacedText = reactStringReplace(
           text,
           /\$(\w+)/g,
@@ -80,50 +83,34 @@ function Notification({ notification }) {
             <Link
               key={match + i}
               passHref
-              href={"/teams/" + notification.abbrev}
+              href={`/teams/${team.abbrev.substring(1)}`}
             >
-              <a>${match}</a>
+              <a className="twit-link">${match}</a>
             </Link>
           )
         );
 
         return (
-          <div
-            className={notificationStyle["notification"]}
-            onClick={() =>
-              router.push(`/teams/${notification.abbrev.substring(1)}`)
-            }
+          <TwitItem
+            avatar={team.avatar}
+            paragraph={replacedText}
+            onClick={() => router.push(`/teams/${team.abbrev.substring(1)}`)}
           >
-            <span className={notificationStyle["notification__text"]}>
-              {replacedText}
-            </span>
             <div className={notificationStyle["notification__actions"]}>
-              <TwitButton
-                onClick={() =>
-                  addPlayerToRoster({
-                    teamId: notification.team_id,
-                    userId: notification.user_id,
-                  })
-                }
-                color="primary"
-              >
+              <TwitButton onClick={onAcceptJoinTeamInvite} color="primary">
                 Accept
               </TwitButton>
-              <TwitButton color="primary" outline="primary">
+              <TwitButton color="primary" outline="primary" onClick={onDelete}>
                 Decline
               </TwitButton>
             </div>
-          </div>
+          </TwitItem>
         );
       }
       case "User Requests Join Team": {
-        const text = `@${notification.sender_username} wants to play for ${notification.abbrev}`;
+        const text = `@${sender.username} wants to play for ${team.abbrev}`;
         let replacedText = reactStringReplace(text, /\@(\w+)/g, (match, i) => (
-          <Link
-            key={match + i}
-            passHref
-            href={`/users/${notification.sender_username}`}
-          >
+          <Link key={match + i} passHref href={`/users/${sender.username}`}>
             <a className="twit-link">@{match}</a>
           </Link>
         ));
@@ -135,7 +122,7 @@ function Notification({ notification }) {
             <Link
               key={match + i}
               passHref
-              href={`/teams/${notification.abbrev.substring(1)}`}
+              href={`/teams/${team.abbrev.substring(1)}`}
             >
               <a className="twit-link">${match}</a>
             </Link>
@@ -143,57 +130,51 @@ function Notification({ notification }) {
         );
 
         return (
-          <div
-            className={notificationStyle["notification"]}
-            onClick={() =>
-              router.push(`/users/${notification.sender_username}`)
-            }
+          <TwitItem
+            avatar={sender.avatar}
+            paragraph={replacedText}
+            onClick={() => router.push(`/users/${sender.username}`)}
           >
-            <Avatar
-              className={notificationStyle["notification__image"]}
-              src={notification.team_avatar}
-            />
-            <span className={notificationStyle["notification__text"]}>
-              {replacedText}
-            </span>
             <div className={notificationStyle["notification__actions"]}>
               <TwitButton
-                onClick={() =>
-                  addPlayerToRoster({
-                    teamId: notification.team_id,
-                    userId: notification.sender_id,
-                  })
-                }
+                onClick={onAcceptUserRequestsJoinTeam}
                 color="primary"
               >
                 Accept
               </TwitButton>
-              <TwitButton color="primary" outline="primary">
+              <TwitButton color="primary" outline="primary" onClick={onDelete}>
                 Decline
               </TwitButton>
             </div>
-          </div>
+          </TwitItem>
         );
       }
       case "Awaiting Event Approval": {
-        const event = `${notification.team_name} ${renderSymbol()} ${
-          notification.opponent_team_name
-        } `;
-        const text = `game has ended and is waiting for ${notification.events_league_name} approval`;
-
-        return (
-          <div
-            className={notificationStyle["notification"]}
-            onClick={() => router.push("/events/" + notification.event_id)}
-          >
-            <Link passHref href={"/events/" + notification.event_id}>
-              <a className={notificationStyle["notification__text"]}>{event}</a>
-            </Link>
-            &nbsp;
-            <span className={notificationStyle["notification__text"]}>
+        const { home_season_team, away_season_team } = event;
+        const e = `${home_season_team.team_name} vs ${away_season_team.team_name} `;
+        const text = `game has ended and is waiting for ${league.league_name} approval`;
+        function renderText() {
+          return (
+            <div className={notificationStyle["notification__text"]}>
+              <Link passHref href={"/events/" + event.id}>
+                <a className="twit-link">{e}</a>
+              </Link>
               {text}
-            </span>
-          </div>
+            </div>
+          );
+        }
+        return (
+          <TwitItem
+            avatar={league.avatar}
+            paragraph={renderText()}
+            onClick={() => router.push(`/events/${event.id}`)}
+          >
+            <div className={notificationStyle["notification__actions"]}>
+              <TwitButton color="primary" outline="primary" onClick={onDelete}>
+                Dismiss
+              </TwitButton>
+            </div>
+          </TwitItem>
         );
       }
 

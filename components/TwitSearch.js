@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
-import AutoCompleteInput from "./AutoCompleteInput";
-import TwitItem from "../TwitItem";
-import backend from "../../lib/backend";
-import Divide from "../Divide";
+import AutoCompleteInput from "./modals/AutoCompleteInput";
+import TwitItem from "./TwitItem";
+import backend from "../lib/backend";
+import Divide from "./Divide";
 
 function TwitSearch({ placeHolder }) {
   const [options, setOptions] = useState([]);

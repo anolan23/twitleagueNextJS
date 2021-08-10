@@ -8,7 +8,7 @@ export default async (req, res) => {
   const search = req.query.search ? req.query.search.toLowerCase() : null;
   if (method === "GET")
     if (search) {
-      const users = await Users.search(search);
+      const users = await Users.findLike(search);
       res.send(users);
     } else {
       verify(
