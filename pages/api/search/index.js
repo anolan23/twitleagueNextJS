@@ -4,7 +4,10 @@ export default async (req, res) => {
   const method = req.method;
 
   if (method === "GET") {
-    const { query } = req.query;
+    const { query, userId, startIndex, stopIndex } = req.query;
+    const offset = startIndex;
+    const limit = stopIndex - startIndex;
+
     try {
       const results = await Database.search(query);
       res.send(results);

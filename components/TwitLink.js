@@ -3,13 +3,19 @@ import twitLink from "../sass/components/TwitLink.module.scss";
 import Link from "next/link";
 
 import Infogram from "./Infogram";
-import useUser from "../lib/useUser";
 
 import FollowButton from "./FollowButton";
 import ScoutButton from "./ScoutButton";
 
-function TwitLink({ href, children, className, getInfo, type, ...props }) {
-  const { user } = useUser();
+function TwitLink({
+  href,
+  children,
+  className,
+  getInfo,
+  type,
+  user,
+  ...props
+}) {
   const [info, setInfo] = useState(props.info);
   const [showInfogram, setShowInfogram] = useState(false);
   let timer;
@@ -38,7 +44,7 @@ function TwitLink({ href, children, className, getInfo, type, ...props }) {
           return <FollowButton team={info} />;
         }
       case "user":
-        if (!info) {
+        if (!info || !user) {
           return null;
         } else {
           if (user.username === info.username) {

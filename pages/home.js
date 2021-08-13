@@ -18,12 +18,14 @@ import RightColumn from "../components/RightColumn";
 import InfiniteList from "../components/InfiniteList";
 import PopupCompose from "../components/modals/PopupCompose";
 import Empty from "../components/Empty";
+import TwitSpinner from "../components/TwitSpinner";
 
 function HomePage() {
   const { user } = useUser({ redirectTo: "/" });
   const router = useRouter();
   const [posts, setPosts] = useState(null);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
+  console.log(posts);
 
   const onPostSubmit = async (values) => {
     const post = await createPost(values, user.id);
@@ -31,8 +33,19 @@ function HomePage() {
     return post;
   };
 
+  function updatePost(post) {
+    let newPosts = [...posts];
+    let index = newPosts.findIndex((newPost) => newPost.id === post.id);
+    newPosts[index] = post;
+    setPosts(newPosts);
+  }
+
   if (!user || !user.isSignedIn) {
-    return <div style={{ fontSize: "30px" }}>loading homepage</div>;
+    return (
+      <div style={{ fontSize: "30px" }}>
+        <TwitSpinner size={50} />
+      </div>
+    );
   }
 
   return (
@@ -66,7 +79,7 @@ function HomePage() {
                 />
               }
             >
-              <Post user={user} />
+              <Post user={user} update={updatePost} />
             </InfiniteList>
           </div>
         </main>

@@ -83,15 +83,16 @@ a {
 
 .twit-container {
   min-height: 100vh;
-  margin-bottom: 75px;
   background-color: var(--globalBackground);
 
   display: grid;
   grid-template-columns: [container-start header-start] 1fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
 
   @media only screen and (max-width: 1240px) {
+    grid-template-columns: [container-start header-start] 0.25fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
   }
   @media only screen and (max-width: 1048px) {
+    grid-template-columns: [container-start header-start] 1fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
   }
   @media only screen and (max-width: 760px) {
     grid-template-columns: [container-start header-start] 7.5rem [header-end main-start] 1fr [main-end container-end];
@@ -118,8 +119,6 @@ a {
     grid-column: container-start/container-end;
     position: relative;
   }
-
-  border-right: var(--border);
 
   &__left-column {
     display: flex;
@@ -187,6 +186,8 @@ a {
   grid-column: main-start/main-end;
   width: 600px;
   background-color: var(--globalTertiaryBackground);
+  border-right: var(--border);
+  border-left: var(--border);
 
   @media only screen and (max-width: 760px) {
     width: 100%;
@@ -199,7 +200,6 @@ a {
 
 .right-bar {
   grid-column: right-bar-start/right-bar-end;
-  border-left: var(--border);
   background-color: var(--globalBackground);
   @media only screen and (max-width: 994px) {
     display: none;
@@ -209,7 +209,7 @@ a {
     display: grid;
     row-gap: 1.5rem;
     height: auto; //will remove
-    max-width: 38rem;
+    width: 38rem;
     align-items: center;
     padding: 0 1.5rem;
 

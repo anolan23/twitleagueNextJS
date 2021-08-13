@@ -15,6 +15,12 @@ function ScoresCard({ seasonId }) {
     setScores(scores);
   }, [seasonId]);
 
+  if (!scores) {
+    return null;
+  } else if (scores.length === 0) {
+    return null;
+  }
+
   const renderFooter = () => {
     return (
       <div className={scoresCard["scores-card__footer"]} onClick={null}>
@@ -26,15 +32,9 @@ function ScoresCard({ seasonId }) {
   };
 
   const renderBody = () => {
-    if (!scores) {
-      return <TwitSpinner size={30} />;
-    } else if (scores.length === 0) {
-      return <Empty main="No scores" sub="No scores to display" />;
-    } else {
-      return scores.map((score, index) => {
-        return <Score key={index} event={score} />;
-      });
-    }
+    return scores.map((score, index) => {
+      return <Score key={index} event={score} />;
+    });
   };
 
   return (

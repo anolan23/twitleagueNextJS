@@ -1,25 +1,25 @@
-.auth-banner{
+.auth-banner {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--color-primary);
+  color: white;
+  z-index: 5;
+
+  &__text {
     display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+    flex-direction: column;
+  }
 
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 1rem;
-    background-color: var(--color-primary);
-    color: white;
-    z-index: 5;
-
-    &__text{
-        display: flex;
-        flex-direction: column;
-    }
-
-    &__actions{
-        display: grid;
-        grid-template-columns: max-content max-content;
-        column-gap: 1rem;
-    }
+  &__actions {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    column-gap: 1rem;
+  }
 }

@@ -17,7 +17,7 @@ export default async (req, res) => {
         username: user.username,
       };
       const jwt = sign(claims, process.env.AUTH_TOKEN_SECRET, {
-        expiresIn: "24h",
+        expiresIn: "144h",
       });
       res.setHeader(
         "Set-Cookie",
@@ -25,7 +25,7 @@ export default async (req, res) => {
           httpOnly: true,
           secure: process.env.NODE_ENV !== "development",
           sameSite: "strict",
-          maxAge: 36000,
+          maxAge: 360000,
           path: "/",
         })
       );
