@@ -137,17 +137,16 @@ class Leagues {
     return leagues.rows;
   }
 
-  static async findAllLike(leagueName) {
-    if (!leagueName) {
-      return [];
-    }
-    const search = leagueName.toLowerCase();
+  static async findAllLike(query, offset, limit) {
     const { rows } = await pool.query(
       `
         SELECT *
         FROM leagues
-        WHERE (LOWER(league_name) LIKE $1);`,
-      [`%${search}%`]
+        WHERE (LOWER(league_name) LIKE $1)
+        ORDER BY league_name
+        OFFSET $2
+        LIMIT $3;`,
+      [`%${query}%`, offset, limit]
     );
 
     return rows;

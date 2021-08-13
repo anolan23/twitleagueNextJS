@@ -17,26 +17,18 @@ import ScoutButton from "./ScoutButton";
 import Linkify from "./Linkify";
 import PopupCompose from "./modals/PopupCompose";
 
-function Post({ history, listItem: post, style, user }) {
+function Post({ history, listItem: post, style, update, user }) {
   if (!post) {
     return null;
   }
   const router = useRouter();
-  const ref = useRef();
+  const iconRef = useRef();
   const [showPost, setShowPost] = useState(true);
-  const [liked, setLiked] = useState(post.liked);
-  const [likes, setLikes] = useState(post.likes);
   const [show, setShow] = useState(false);
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
 
-  useEffect(() => {
-    setLiked(post.liked);
-  }, [post.liked]);
-
-  useEffect(() => {
-    setLikes(post.likes);
-  }, [post.likes]);
+  const { likes, liked } = post;
 
   useEffect(() => {
     document.body.addEventListener("click", clickOutsideDropdownButton);
@@ -46,10 +38,10 @@ function Post({ history, listItem: post, style, user }) {
   }, []);
 
   const clickOutsideDropdownButton = (event) => {
-    if (!ref.current) {
+    if (!iconRef.current) {
       return;
     }
-    if (ref.current.contains(event.target)) {
+    if (iconRef.current.contains(event.target)) {
       return;
     }
     setShow(false);
@@ -103,22 +95,28 @@ function Post({ history, listItem: post, style, user }) {
     setShowPopupCompose(true);
   };
 
-  const onLikeClick = async (event) => {
+  async function onLikeClick(event) {
     event.stopPropagation();
     if (!user || !user.isSignedIn) {
       return;
     } else {
       if (!liked) {
-        await likePost(post.id, user.id);
-        setLiked(true);
-        setLikes((likes) => parseInt(likes) + 1);
+        try {
+          await likePost(post.id, user.id);
+          update({ ...post, liked: true, likes: parseInt(likes) + 1 });
+        } catch (error) {
+          console.log(error);
+        }
       } else {
-        await unLikePost(post.id, user.id);
-        setLiked(false);
-        setLikes((likes) => parseInt(likes) - 1);
+        try {
+          await unLikePost(post.id, user.id);
+          update({ ...post, liked: false, likes: parseInt(likes) - 1 });
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
-  };
+  }
 
   const onDeleteOptionClick = (event) => {
     event.stopPropagation();
@@ -170,7 +168,7 @@ function Post({ history, listItem: post, style, user }) {
 
   const renderEditIcon = () => {
     return (
-      <div className={postStyle["post__heading__icon-holder"]} ref={ref}>
+      <div className={postStyle["post__heading__icon-holder"]} ref={iconRef}>
         <TwitIcon
           onClick={onEditIconClick}
           className={postStyle["post__heading__icon-holder__icon"]}

@@ -502,17 +502,24 @@ export const fetchLeaguePosts = (leagueId) => async (dispatch) => {
   dispatch({ type: "FETCH_LEAGUE_POSTS", payload: response.data });
 };
 
-export const fetchSearchedPosts = async (query, userId, num, offset) => {
-  const posts = await backend.get("/api/posts", {
+export const search = async ({
+  query = null,
+  filter = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
+  const results = await backend.get("/api/search", {
     params: {
       query,
+      filter,
       userId,
-      num,
-      offset,
+      startIndex,
+      stopIndex,
     },
   });
 
-  return posts.data;
+  return results.data;
 };
 
 export const fetchThreadPosts = (postId) => async (dispatch, getState) => {

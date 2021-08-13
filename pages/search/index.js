@@ -7,11 +7,12 @@ import LeftColumn from "../../components/LeftColumn";
 import RightColumn from "../../components/RightColumn";
 import Empty from "../../components/Empty";
 import Post from "../../components/Post";
-import { fetchSearchedPosts } from "../../actions";
+import { search } from "../../actions";
 import TopBarSearch from "../../components/TopBarSearch";
 import TwitTabs from "../../components/TwitTabs";
 import TwitTab from "../../components/TwitTab";
 import TwitSpinner from "../../components/TwitSpinner";
+import InfiniteList from "../../components/InfiniteList";
 
 function Search() {
   const { user } = useUser();
@@ -31,7 +32,13 @@ function Search() {
     if (!router.isReady) {
       return;
     }
-    const posts = await fetchSearchedPosts(query, user.id, 10, 0);
+    const posts = await search({
+      query,
+      filter: "posts",
+      userId: user.id,
+      startIndex: 0,
+      stopIndex: 10,
+    });
     setPosts(posts);
   }
 

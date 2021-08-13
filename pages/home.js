@@ -33,7 +33,7 @@ function HomePage() {
     return post;
   };
 
-  function updatePost(post) {
+  function updatePosts(post) {
     let newPosts = [...posts];
     let index = newPosts.findIndex((newPost) => newPost.id === post.id);
     newPosts[index] = post;
@@ -79,7 +79,7 @@ function HomePage() {
                 />
               }
             >
-              <Post user={user} update={updatePost} />
+              <Post user={user} update={updatePosts} />
             </InfiniteList>
           </div>
         </main>

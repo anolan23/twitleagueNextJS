@@ -25,7 +25,7 @@ class Database {
     return rows[0];
   }
 
-  static async search(query) {
+  static async search(query, offset, limit, userId) {
     const { rows } = await pool.query(
       `
       SELECT 
@@ -34,7 +34,7 @@ class Database {
       FROM (
           SELECT *
           FROM leagues
-          WHERE (LOWER(league_name) LIKE $1)
+          WHERE (LOWER(league_name) LIKE '%a%')
       ) AS nested_league
       ) AS leagues,
       (
@@ -42,7 +42,7 @@ class Database {
       FROM (
           SELECT *
           FROM teams
-          WHERE (LOWER(team_name) LIKE $1)
+          WHERE (LOWER(team_name) LIKE '%a%')
       ) AS nested_team
       ) AS teams,
       (
@@ -50,11 +50,26 @@ class Database {
       FROM (
           SELECT *
           FROM users
-          WHERE (LOWER(username) LIKE $1)
+          WHERE (LOWER(username) LIKE '%a%')
       ) AS nested_user
-      ) AS users
+      ) AS users,
+	   (
+      SELECT jsonb_agg(nested_post)
+      FROM (
+        SELECT posts.*, users.name, users.username, users.avatar, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $4 AND posts.id = likes.post_id ) AS liked
+        FROM posts
+        JOIN users ON users.id = posts.author_id
+        WHERE to_tsvector('simple', body) @@ to_tsquery('simple', $1)
+        ORDER BY created_at DESC
+        OFFSET $2
+        LIMIT $3
+      ) AS nested_post
+      ) AS posts
         `,
-      [`%${query}%`]
+      [`%${query}%`, offset, limit, userId]
     );
 
     return rows[0];

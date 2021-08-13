@@ -52,15 +52,16 @@ class Users {
     return rows[0];
   }
 
-  static async findLike(username) {
+  static async findAllLike(query, offset, limit) {
     const { rows } = await pool.query(
       `
         SELECT *
         FROM users
         WHERE (LOWER(username) LIKE $1) OR (LOWER(name) LIKE $1)
         ORDER BY username
-        LIMIT 10;`,
-      [`%${username}%`]
+        OFFSET $2
+        LIMIT $3;`,
+      [`%${query}%`, offset, limit]
     );
 
     return rows;

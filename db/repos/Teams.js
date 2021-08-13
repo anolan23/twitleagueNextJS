@@ -252,15 +252,17 @@ class Teams {
     return rows;
   }
 
-  static async search(search) {
+  static async findAllLike(query, offset, limit) {
     const { rows } = await pool.query(
       `
         SELECT teams.*, leagues.league_name
         FROM teams
-        JOIN leagues ON leagues.id = teams.league_id
+        FULL JOIN leagues ON leagues.id = teams.league_id
         WHERE (LOWER(teams.abbrev) LIKE $1) OR (LOWER(teams.team_name) LIKE $1)
-        LIMIT 10;`,
-      [`%${search}%`]
+        ORDER BY team_name
+        OFFSET $2
+        LIMIT $3;`,
+      [`%${query}%`, offset, limit]
     );
 
     return rows;

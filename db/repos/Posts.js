@@ -641,24 +641,21 @@ class Posts {
     return rows[0];
   }
 
-  static async search(query, userId, num, offset) {
+  static async search(query, offset, limit, userId) {
     const { rows } = await pool.query(
       `
-      SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
-        CASE 
-        WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
-        WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
-        ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-        END AS date,
-        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
-      FROM posts AS p1
-      JOIN users ON p1.author_id = users.id
+      SELECT posts.*, users.name, users.username, users.avatar, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $4 AND posts.id = likes.post_id ) AS liked
+      FROM posts
+      JOIN users ON users.id = posts.author_id
       WHERE to_tsvector('simple', body) @@ to_tsquery('simple', $1)
       ORDER BY created_at DESC
+      OFFSET $2
       LIMIT $3
-      OFFSET $4
       `,
-      [query, userId, num, offset]
+      [query, offset, limit, userId]
     );
 
     return rows;
