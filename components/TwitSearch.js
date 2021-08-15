@@ -3,11 +3,12 @@ import { useFormik } from "formik";
 import { useRouter } from "next/router";
 
 import AutoCompleteInput from "./modals/AutoCompleteInput";
+import { search } from "../actions";
 import TwitItem from "./TwitItem";
-import backend from "../lib/backend";
 import Divide from "./Divide";
+import TwitSpinner from "./TwitSpinner";
 
-function TwitSearch({ placeHolder }) {
+function TwitSearch({ placeHolder, onSearch }) {
   const [options, setOptions] = useState([]);
   const [show, setShow] = useState(false);
   const ref = useRef();
@@ -16,50 +17,33 @@ function TwitSearch({ placeHolder }) {
   const formik = useFormik({
     initialValues: { query: "" },
     onSubmit: (values) => {
-      router.push({
-        pathname: "/search",
-        query: { query: values.query },
-      });
+      const { query } = values;
+      onSearch(query);
       setShow(false);
     },
   });
 
-  useEffect(() => {
-    document.body.addEventListener("click", clickOutsideInput);
-    return () => {
-      document.body.removeEventListener("click", clickOutsideInput);
-    };
-  }, []);
+  function onBlur(event) {
+    formik.handleBlur(event);
+    setShow(false);
+  }
 
-  const clickOutsideInput = (event) => {
-    if (!ref.current) {
-      return;
-    }
-    if (ref.current.contains(event.target)) {
-      return;
-    } else {
-      setShow(false);
-    }
-  };
-
-  const onChange = (event) => {
-    const query = event.target.value;
+  function onChange(event) {
     formik.handleChange(event);
+    const query = event.target.value;
     if (query) {
-      search(query);
+      twitSearch(query);
     } else {
       setShow(false);
     }
-  };
+  }
 
-  const search = async (query) => {
-    const results = await backend.get("api/search", {
-      params: { query },
-    });
+  async function twitSearch(query) {
+    const results = await search({ query });
 
-    setOptions(results.data);
+    setOptions(results);
     setShow(true);
-  };
+  }
 
   const renderTeams = () => {
     if (!options.teams || options.teams.length === 0) {
@@ -129,7 +113,7 @@ function TwitSearch({ placeHolder }) {
 
   const renderOptions = () => {
     if (!options.leagues && !options.teams && !options.users) {
-      return <div>Spinner</div>;
+      return <TwitSpinner size={30} />;
     } else {
       return (
         <React.Fragment>
@@ -151,6 +135,7 @@ function TwitSearch({ placeHolder }) {
     >
       <AutoCompleteInput
         onChange={onChange}
+        onBlur={onBlur}
         value={formik.values.query}
         name="query"
         type="text"

@@ -111,7 +111,7 @@ function Team({ teamData, standings }) {
       return (
         <InfiniteList
           id={query.abbrev}
-          getDataFromServer={(startIndex, stopIndex) =>
+          getData={(startIndex, stopIndex) =>
             getTeamPosts({
               userId: user.id,
               teamId: team.id,

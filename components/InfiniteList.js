@@ -11,12 +11,11 @@ import "react-virtualized/styles.css";
 import TwitSpinner from "./TwitSpinner";
 
 function InfiniteList({
-  getDataFromServer,
-  children,
+  getData,
   infiniteLoaderRef,
   list,
+  item,
   updateList,
-  empty,
   id,
 }) {
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
@@ -57,7 +56,7 @@ function InfiniteList({
 
   async function loadNextPage({ startIndex, stopIndex }) {
     setIsNextPageLoading(true);
-    const rows = await getDataFromServer(startIndex, stopIndex);
+    const rows = await getData(startIndex, stopIndex);
     if (!list) {
       updateList(rows);
     } else {
@@ -67,7 +66,7 @@ function InfiniteList({
     setIsNextPageLoading(false);
   }
 
-  const rowCount = () => (!list ? 1 : list.length);
+  const rowCount = () => (!list ? 1 : list.length + 1);
 
   function rowRenderer({ key, index, style, parent }) {
     if (!list) {
@@ -81,18 +80,10 @@ function InfiniteList({
           parent={parent}
           rowIndex={index}
         >
-          <div style={style}>
-            {React.cloneElement(children, {
-              listItem: list[index],
-            })}
-          </div>
+          <div style={style}>{item(list[index])}</div>
         </CellMeasurer>
       );
     }
-  }
-
-  function noRowsRenderer() {
-    return <React.Fragment>{empty}</React.Fragment>;
   }
 
   return (
@@ -126,7 +117,6 @@ function InfiniteList({
                   scrollTop={scrollTop}
                   width={width}
                   overscanRowCount={5}
-                  noRowsRenderer={noRowsRenderer}
                 />
               )}
             </AutoSizer>

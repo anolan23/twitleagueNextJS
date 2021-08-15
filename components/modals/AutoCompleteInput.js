@@ -6,6 +6,7 @@ import TwitDropdown from "../TwitDropdown";
 function AutoCompleteInput({
   id,
   onChange,
+  onBlur,
   value,
   name,
   type,
@@ -77,6 +78,7 @@ function AutoCompleteInput({
       <input
         id={id}
         onChange={onChange}
+        onBlur={onBlur}
         value={value}
         name={name}
         type={type}

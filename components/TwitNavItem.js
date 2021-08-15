@@ -4,10 +4,11 @@ import { useRouter } from "next/router";
 import twitNavItem from "../sass/components/TwitNavItem.module.scss";
 
 function TwitNavItem({ className, href, children, title }) {
-  const { asPath } = useRouter();
+  const router = useRouter();
+  const { asPath } = router;
 
   const active = () => {
-    if (asPath === href) {
+    if (asPath.includes(href)) {
       return twitNavItem["twit-nav-item__holder--active"];
     } else {
       return null;

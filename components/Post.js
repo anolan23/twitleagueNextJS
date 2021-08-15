@@ -17,7 +17,7 @@ import ScoutButton from "./ScoutButton";
 import Linkify from "./Linkify";
 import PopupCompose from "./modals/PopupCompose";
 
-function Post({ history, listItem: post, style, update, user }) {
+function Post({ history, post, style, update, user }) {
   if (!post) {
     return null;
   }
@@ -140,7 +140,6 @@ function Post({ history, listItem: post, style, update, user }) {
     const in_reply_to_post_id = post.id;
     const reply = { ...values, conversation_id, in_reply_to_post_id };
     const result = await createReply(reply, user.id);
-    console.log("result", result);
   };
 
   const renderDropDownItems = () => {

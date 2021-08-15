@@ -1,10 +1,21 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import TwitSearch from "./TwitSearch";
 import TwitIcon from "./TwitIcon";
 
 function RightColumn({ children }) {
+  const router = useRouter();
+  function onSearch(query) {
+    router.push({
+      pathname: "/search",
+      query: {
+        query,
+        filter: "top",
+      },
+    });
+  }
   return (
     <div className="right-bar__right-column">
       <div className="right-bar__right-column__input-box">
@@ -13,7 +24,11 @@ function RightColumn({ children }) {
             className="right-bar__right-column__icon"
             icon="/sprites.svg#icon-search"
           />
-          <TwitSearch inline placeHolder="Search twitleague" />
+          <TwitSearch
+            inline
+            placeHolder="Search twitleague"
+            onSearch={onSearch}
+          />
         </div>
       </div>
       {children}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Head from "next/head";
 
 import useUser from "../../lib/useUser";
@@ -13,53 +13,172 @@ import TwitTabs from "../../components/TwitTabs";
 import TwitTab from "../../components/TwitTab";
 import TwitSpinner from "../../components/TwitSpinner";
 import InfiniteList from "../../components/InfiniteList";
+import TwitItem from "../../components/TwitItem";
 
 function Search() {
   const { user } = useUser();
   const router = useRouter();
-  const { query } = router.query;
-  const [posts, setPosts] = useState(null);
-  const [activeTab, setActiveTab] = useState("top");
+  const { query, filter } = router.query;
+  const [list, setList] = useState(null);
+  const [tab, setTab] = useState(null);
+
+  const infiniteLoaderRef = useCallback(
+    (ref) => {
+      if (!ref) {
+        return;
+      }
+
+      setList(null);
+      ref.resetLoadMoreRowsCache();
+    },
+    [query, filter]
+  );
 
   useEffect(() => {
-    start();
-  }, [query, user]);
+    setTab(filter);
+  }, [filter]);
 
-  async function start() {
-    if (!user) {
-      return;
-    }
-    if (!router.isReady) {
-      return;
-    }
-    const posts = await search({
-      query,
-      filter: "posts",
-      userId: user.id,
-      startIndex: 0,
-      stopIndex: 10,
-    });
-    setPosts(posts);
+  function updatePosts(post) {
+    let newPosts = [...list];
+    let index = newPosts.findIndex((newPost) => newPost.id === post.id);
+    newPosts[index] = post;
+    setList(newPosts);
   }
 
-  const onTabClick = (event) => {
-    setActiveTab(event.target.id);
-  };
+  function onTabClick(event) {
+    router.push({ query: { query: query, filter: event.target.id } });
+  }
 
-  function renderPosts() {
-    if (!posts) {
-      return <TwitSpinner size={50} />;
-    } else if (posts.length === 0) {
+  function renderEmpty() {
+    if (!list) {
+      return null;
+    } else if (list.length > 0) {
+      return null;
+    } else {
+      const main = () => {
+        switch (filter) {
+          case "top":
+            return "Top posts";
+          case "latest":
+            return "Latest posts";
+          case "media":
+            return "Media posts";
+          case "users":
+            return "Users";
+          case "teams":
+            return "Teams";
+          case "leagues":
+            return "Leagues";
+          default:
+            return "Invalid filter";
+        }
+      };
       return (
         <Empty
-          main="No posts"
-          sub={`your search '${query}' resulted in no posts returned`}
+          main={main()}
+          sub={`Your search '${query}' came back with no results`}
         />
       );
-    } else {
-      return posts.map((post, index) => {
-        return <Post key={index} post={post} listItem={post} />;
-      });
+    }
+  }
+
+  const type = () => {
+    switch (filter) {
+      case "top":
+      case "latest":
+      case "media":
+        return "post";
+      case "users":
+      case "teams":
+      case "leagues":
+        return "item";
+      default:
+        return null;
+    }
+  };
+
+  function getData(startIndex, stopIndex) {
+    return search({
+      query,
+      filter,
+      userId: user.id,
+      startIndex,
+      stopIndex,
+    });
+  }
+
+  function onSearch(query) {
+    console.log(router.query);
+    router.push({ query: { ...router.query, query: query } });
+  }
+
+  function renderList() {
+    if (!user || !router.isReady) {
+      return null;
+    }
+    return (
+      <InfiniteList
+        getData={getData}
+        list={list}
+        item={itemRenderer}
+        updateList={(list) => setList(list)}
+        infiniteLoaderRef={infiniteLoaderRef}
+      />
+    );
+  }
+
+  function itemRenderer(item) {
+    if (!item) {
+      return null;
+    }
+    switch (filter) {
+      case "top":
+      case "latest":
+      case "media":
+        const { id } = item;
+        return (
+          <Post
+            post={item}
+            update={updatePosts}
+            user={user}
+            onClick={() => router.push(`/thread/${id}`)}
+          />
+        );
+      case "users": {
+        const { name, username, avatar } = item;
+        return (
+          <TwitItem
+            title={name}
+            subtitle={`@${username}`}
+            avatar={avatar}
+            onClick={() => router.push(`/users/${username}`)}
+          />
+        );
+      }
+      case "teams": {
+        const { team_name, abbrev, avatar } = item;
+        return (
+          <TwitItem
+            title={team_name}
+            subtitle={abbrev}
+            avatar={avatar}
+            onClick={() => router.push(`/teams/${abbrev.substring(1)}`)}
+          />
+        );
+      }
+      case "leagues": {
+        const { league_name, sport, avatar } = item;
+        return (
+          <TwitItem
+            title={league_name}
+            subtitle={sport}
+            avatar={avatar}
+            onClick={() => router.push(`/leagues/${league_name}`)}
+          />
+        );
+      }
+      default:
+        return null;
     }
   }
 
@@ -70,35 +189,48 @@ function Search() {
           <LeftColumn />
         </header>
         <main className="main">
-          <TopBarSearch>
+          <TopBarSearch onSearch={onSearch}>
             <TwitTabs>
               <TwitTab
                 onClick={onTabClick}
-                active={activeTab === "top" ? true : false}
+                active={tab === "top" ? true : false}
                 title="Top"
                 id="top"
               />
               <TwitTab
                 onClick={onTabClick}
-                active={activeTab === "latest" ? true : false}
+                active={tab === "latest" ? true : false}
                 title="Latest"
                 id="latest"
               />
               <TwitTab
                 onClick={onTabClick}
-                active={activeTab === "images" ? true : false}
-                title="Images"
-                id="images"
+                active={tab === "media" ? true : false}
+                title="Media"
+                id="media"
               />
               <TwitTab
                 onClick={onTabClick}
-                active={activeTab === "video" ? true : false}
-                title="Video"
-                id="video"
+                active={tab === "users" ? true : false}
+                title="Users"
+                id="users"
+              />
+              <TwitTab
+                onClick={onTabClick}
+                active={tab === "teams" ? true : false}
+                title="Teams"
+                id="teams"
+              />
+              <TwitTab
+                onClick={onTabClick}
+                active={tab === "leagues" ? true : false}
+                title="Leagues"
+                id="leagues"
               />
             </TwitTabs>
           </TopBarSearch>
-          <div>{renderPosts()}</div>
+          {renderEmpty()}
+          {renderList()}
         </main>
         <div className="right-bar">
           <RightColumn></RightColumn>

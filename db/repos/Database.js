@@ -34,7 +34,7 @@ class Database {
       FROM (
           SELECT *
           FROM leagues
-          WHERE (LOWER(league_name) LIKE '%a%')
+          WHERE (LOWER(league_name) LIKE $1)
       ) AS nested_league
       ) AS leagues,
       (
@@ -42,7 +42,7 @@ class Database {
       FROM (
           SELECT *
           FROM teams
-          WHERE (LOWER(team_name) LIKE '%a%')
+          WHERE (LOWER(team_name) LIKE $1)
       ) AS nested_team
       ) AS teams,
       (
@@ -50,7 +50,7 @@ class Database {
       FROM (
           SELECT *
           FROM users
-          WHERE (LOWER(username) LIKE '%a%')
+          WHERE (LOWER(username) LIKE $1)
       ) AS nested_user
       ) AS users,
 	   (

@@ -40,12 +40,20 @@ function HomePage() {
     setPosts(newPosts);
   }
 
+  function getData(startIndex, stopIndex) {
+    return fetchHomeTimeline(user.id, startIndex, stopIndex);
+  }
+
   if (!user || !user.isSignedIn) {
     return (
       <div style={{ fontSize: "30px" }}>
         <TwitSpinner size={50} />
       </div>
     );
+  }
+
+  function itemRenderer(item) {
+    return <Post post={item} update={updatePosts} user={user} />;
   }
 
   return (
@@ -65,22 +73,11 @@ function HomePage() {
             />
             <Divide first />
             <InfiniteList
-              getDataFromServer={(startIndex, stopIndex) =>
-                fetchHomeTimeline(user.id, startIndex, stopIndex)
-              }
+              getData={getData}
               list={posts}
+              item={itemRenderer}
               updateList={(posts) => setPosts(posts)}
-              empty={
-                <Empty
-                  main="Empty"
-                  sub="Your timeline is empty. Follow teams and scout users to fill your timeline"
-                  onActionClick={() => router.push("/suggested")}
-                  actionText="Let's go"
-                />
-              }
-            >
-              <Post user={user} update={updatePosts} />
-            </InfiniteList>
+            />
           </div>
         </main>
         <div className="right-bar">

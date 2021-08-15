@@ -441,21 +441,23 @@ export const fetchHomeTimeline = async (userId, startIndex, stopIndex) => {
   return homeTimeLine.data;
 };
 
-export const fetchPostsByUsername = async ({
-  username,
-  userId,
-  startIndex,
-  stopIndex,
+export const getUsersPosts = async ({
+  username = null,
+  filter = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
 }) => {
-  const posts = await backend.get(`/api/users/${username}/posts`, {
+  const response = await backend.get(`/api/users/${username}/posts`, {
     params: {
+      filter,
       userId,
       startIndex,
       stopIndex,
     },
   });
 
-  return posts.data;
+  return response.data;
 };
 
 export const fetchMediaPostsByUsername = async ({

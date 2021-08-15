@@ -661,6 +661,66 @@ class Posts {
     return rows;
   }
 
+  static async searchTop(query, offset, limit, userId) {
+    const { rows } = await pool.query(
+      `
+      SELECT posts.*, users.name, users.username, users.avatar, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $4 AND posts.id = likes.post_id ) AS liked
+      FROM posts
+      JOIN users ON users.id = posts.author_id
+      WHERE to_tsvector('simple', body) @@ to_tsquery('simple', $1)
+      ORDER BY likes DESC
+      OFFSET $2
+      LIMIT $3
+      `,
+      [query, offset, limit, userId]
+    );
+
+    return rows;
+  }
+
+  static async searchLatest(query, offset, limit, userId) {
+    const { rows } = await pool.query(
+      `
+      SELECT posts.*, users.name, users.username, users.avatar, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $4 AND posts.id = likes.post_id ) AS liked
+      FROM posts
+      JOIN users ON users.id = posts.author_id
+      WHERE to_tsvector('simple', body) @@ to_tsquery('simple', $1)
+      ORDER BY created_at DESC
+      OFFSET $2
+      LIMIT $3
+      `,
+      [query, offset, limit, userId]
+    );
+
+    return rows;
+  }
+
+  static async searchMedia(query, offset, limit, userId) {
+    const { rows } = await pool.query(
+      `
+      SELECT posts.*, users.name, users.username, users.avatar, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $4 AND posts.id = likes.post_id ) AS liked
+      FROM posts
+      JOIN users ON users.id = posts.author_id
+      WHERE to_tsvector('simple', body) @@ to_tsquery('simple', $1) AND media IS NOT NULL
+      ORDER BY likes DESC
+      OFFSET $2
+      LIMIT $3
+      `,
+      [query, offset, limit, userId]
+    );
+
+    return rows;
+  }
+
   static async findUsersWhoLiked(postId) {
     const { rows } = await pool.query(
       `
