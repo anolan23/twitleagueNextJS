@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -7,12 +7,9 @@ import useSWR from "swr";
 import leagueStyle from "../../../sass/components/League.module.scss";
 import Leagues from "../../../db/repos/Leagues";
 import useUser from "../../../lib/useUser";
-import { startSeason, endSeason } from "../../../actions";
+import { startSeason, endSeason, getLeaguePosts } from "../../../actions";
 import TopBar from "../../../components/TopBar";
 import backend from "../../../lib/backend";
-import TwitDropdownButton from "../../../components/TwitDropdownButton";
-import TwitDropdownItem from "../../../components/TwitDropdownItem";
-import Divide from "../../../components/Divide";
 import Empty from "../../../components/Empty";
 import LeagueProfile from "../../../components/LeagueProfile";
 import TwitTab from "../../../components/TwitTab";
@@ -22,23 +19,35 @@ import LeftColumn from "../../../components/LeftColumn";
 import RightColumn from "../../../components/RightColumn";
 import StandingsCard from "../../../components/StandingsCard";
 import { getSeasonString, groupBy } from "../../../lib/twit-helpers";
-import StandingsDivision from "../../../components/StandingsDivision";
 import Prompt from "../../../components/modals/Prompt";
 import EditLeaguePopup from "../../../components/modals/EditLeaguePopup";
 import ScoresCard from "../../../components/ScoresCard";
 import Menu from "../../../components/Menu";
 import MenuItem from "../../../components/MenuItem";
+import InfiniteList from "../../../components/InfiniteList";
+import TwitSpinner from "../../../components/TwitSpinner";
 
 function League({ leagueData }) {
   const router = useRouter();
+  const { isFallback, isReady } = router;
+
   const { user } = useUser();
   const [tab, setTab] = useState("mentions");
   const [posts, setPosts] = useState(null);
-  const [divisions, setDivisions] = useState([]);
   const [showStartSeasonPrompt, setShowStartSeasonPrompt] = useState(false);
   const [showEndSeasonPrompt, setShowEndSeasonPrompt] = useState(false);
   const [showEditLeaguePopup, setShowEditLeaguePopup] = useState(false);
-  const [showEditDivisionsPopup, setShowEditDivisionsPopup] = useState(false);
+  const infiniteLoaderRef = useCallback(
+    (ref) => {
+      if (!ref) {
+        return;
+      }
+
+      setPosts(null);
+      ref.resetLoadMoreRowsCache();
+    },
+    [tab]
+  );
 
   const fetcher = async (url) => {
     const response = await backend.get(url, {
@@ -66,13 +75,15 @@ function League({ leagueData }) {
     setTab("mentions");
   }, [league]);
 
-  if (router.isFallback) {
-    return <div>Loading League...</div>;
+  if (isFallback) {
+    return <TwitSpinner size={50} />;
   }
 
+  const { id, league_name, teams, owner_id, season_id, sport } = league;
+
   const isReadyToStartSeason = () => {
-    if (league.teams) {
-      const assignedToDivisions = league.teams.every(
+    if (teams) {
+      const assignedToDivisions = teams.every(
         (team) => team.division_id !== null
       );
       return assignedToDivisions;
@@ -82,13 +93,13 @@ function League({ leagueData }) {
   };
 
   const startNewSeason = async () => {
-    const season = await startSeason(league.id);
+    const season = await startSeason(id);
     mutateLeague();
     setShowStartSeasonPrompt(false);
   };
 
   const endCurrentSeason = async () => {
-    const season = await endSeason(league.id);
+    const season = await endSeason(id);
     mutateLeague();
     setShowEndSeasonPrompt(false);
   };
@@ -126,48 +137,109 @@ function League({ leagueData }) {
     }
   };
 
+  function updatePosts(post) {
+    let newPosts = [...posts];
+    let index = newPosts.findIndex((newPost) => newPost.id === post.id);
+    newPosts[index] = post;
+    setPosts(newPosts);
+  }
+
+  function getData(startIndex, stopIndex) {
+    return getLeaguePosts({
+      leagueName: league_name,
+      filter: tab,
+      userId: user.id,
+      startIndex,
+      stopIndex,
+    });
+  }
+
+  function renderPosts() {
+    if (!user || !isReady) {
+      return null;
+    }
+    return (
+      <InfiniteList
+        getData={getData}
+        list={posts}
+        item={itemRenderer}
+        updateList={(posts) => setPosts(posts)}
+        infiniteLoaderRef={infiniteLoaderRef}
+        empty={renderEmpty()}
+      />
+    );
+  }
+
+  function itemRenderer(item) {
+    return <Post post={item} update={updatePosts} user={user} />;
+  }
+
+  function renderEmpty() {
+    switch (tab) {
+      case "mentions":
+        return (
+          <Empty
+            main="No mentions"
+            sub="Nothing from around the league"
+            onActionClick={() => setShowPopupCompose(true)}
+            actionText="Be the first"
+          />
+        );
+      case "media":
+        return (
+          <Empty
+            main="No media"
+            sub="Nothing from around the league"
+            onActionClick={() => setShowPopupCompose(true)}
+            actionText="Be the first"
+          />
+        );
+
+      default:
+        return null;
+    }
+  }
+
   const renderMenu = () => {
     if (!user) {
       return null;
     }
-    if (user.id === league.owner_id) {
+    if (user.id === owner_id) {
       return (
         <Menu>
           <MenuItem onClick={() => setShowEditLeaguePopup(true)}>
             Profile
           </MenuItem>
           <MenuItem
-            onClick={() =>
-              router.push(`/leagues/${league.league_name}/divisions`)
-            }
-            disabled={league.season_id}
+            onClick={() => router.push(`/leagues/${league_name}/divisions`)}
+            disabled={season_id}
           >
             Divisions
           </MenuItem>
           <MenuItem
             onClick={() => setShowStartSeasonPrompt(true)}
             disabled={!isReadyToStartSeason()}
-            hide={league.season_id}
+            hide={season_id}
           >
             Start season
           </MenuItem>
           <MenuItem
             onClick={() =>
               router.push({
-                pathname: `/leagues/${league.league_name}/playoffs`,
+                pathname: `/leagues/${league_name}/playoffs`,
                 query: {
-                  seasonId: league.season_id,
+                  seasonId: season_id,
                 },
               })
             }
-            hide={!league.season_id}
+            hide={!season_id}
           >
             Bracket
           </MenuItem>
           <MenuItem
             onClick={() => setShowEndSeasonPrompt(true)}
-            disabled={league.season_id ? false : true}
-            hide={league.season_id ? false : true}
+            disabled={season_id ? false : true}
+            hide={season_id ? false : true}
           >
             End season
           </MenuItem>
@@ -187,7 +259,7 @@ function League({ leagueData }) {
           show={showStartSeasonPrompt}
           onHide={() => setShowStartSeasonPrompt(false)}
           main="Start season"
-          sub={`This will start a new season for ${league.league_name}`}
+          sub={`This will start a new season for ${league_name}`}
           secondaryActionText="Cancel"
           primaryActionText="Continue"
           onSecondaryActionClick={() => setShowStartSeasonPrompt(false)}
@@ -223,7 +295,7 @@ function League({ leagueData }) {
         </header>
         <main className="main">
           <div className={leagueStyle["league"]}>
-            <TopBar main={league.league_name} menu={renderMenu()}></TopBar>
+            <TopBar main={league_name} sub={sport} menu={renderMenu()}></TopBar>
             <LeagueProfile
               league={league}
               onAvatarClick={() => setShowEditLeaguePopup(!showEditLeaguePopup)}
@@ -242,12 +314,12 @@ function League({ leagueData }) {
                 title="Media"
               />
             </TwitTabs>
-            {renderContent()}
+            {renderPosts()}
           </div>
         </main>
         <div className="right-bar">
           <RightColumn>
-            <ScoresCard seasonId={league.season_id} />
+            <ScoresCard seasonId={season_id} />
             <StandingsCard league={league} title="Standings" />
           </RightColumn>
         </div>

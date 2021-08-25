@@ -1,33 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import useUser from "../lib/useUser";
 import { follow, unFollow } from "../actions";
-import TwitButton from "../components/TwitButton";
+import TwitButton from "./TwitButton";
 
-function FollowButton(props) {
+function FollowButton({ team, update }) {
   const { user } = useUser();
-  const [following, setFollowing] = useState(props.team.following);
+  const { id: teamId, followed } = team;
 
-  useEffect(() => {
-    setFollowing(props.team.following);
-  }, [props.team.following]);
-
-  const onFollowClick = async () => {
+  async function onFollowClick() {
     if (!user || !user.isSignedIn) {
       return;
     } else {
-      if (!following) {
-        await follow(props.team.id, user.id);
-        setFollowing(true);
+      if (!followed) {
+        try {
+          await follow(teamId, user.id);
+          update({ ...team, followed: true });
+        } catch (error) {
+          console.log(error);
+        }
       } else {
-        await unFollow(props.team.id, user.id);
-        setFollowing(false);
+        try {
+          await unFollow(teamId, user.id);
+          update({ ...team, followed: false });
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
-  };
+  }
 
   const renderButton = () => {
-    if (!following) {
+    if (!followed) {
       return (
         <TwitButton onClick={onFollowClick} color="primary">
           Follow

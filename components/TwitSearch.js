@@ -8,14 +8,15 @@ import TwitItem from "./TwitItem";
 import Divide from "./Divide";
 import TwitSpinner from "./TwitSpinner";
 
-function TwitSearch({ placeHolder, onSearch }) {
+function TwitSearch({ placeHolder, initialValue, onSearch }) {
   const [options, setOptions] = useState([]);
   const [show, setShow] = useState(false);
   const ref = useRef();
   const router = useRouter();
+  const dropdownRef = useRef(null);
 
   const formik = useFormik({
-    initialValues: { query: "" },
+    initialValues: { query: initialValue ? initialValue : "" },
     onSubmit: (values) => {
       const { query } = values;
       onSearch(query);
@@ -23,9 +24,24 @@ function TwitSearch({ placeHolder, onSearch }) {
     },
   });
 
+  useEffect(() => {
+    window.addEventListener("click", clickOutsideDropdown);
+    return () => {
+      window.removeEventListener("click", clickOutsideDropdown);
+    };
+  }, []);
+
+  function clickOutsideDropdown(event) {
+    if (!dropdownRef.current) {
+      return;
+    }
+    if (!dropdownRef.current.contains(event.target)) {
+      setShow(false);
+    }
+  }
+
   function onBlur(event) {
     formik.handleBlur(event);
-    setShow(false);
   }
 
   function onChange(event) {
@@ -142,6 +158,7 @@ function TwitSearch({ placeHolder, onSearch }) {
         placeHolder={placeHolder}
         autoComplete="off"
         show={show}
+        dropdownRef={dropdownRef}
       >
         {renderOptions()}
       </AutoCompleteInput>

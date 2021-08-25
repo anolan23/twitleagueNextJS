@@ -1,45 +1,44 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
 import useSWR from "swr";
 
-import backend from "../../lib/backend";
-import InfiniteList from "../../components/InfiniteList";
-import AuthBanner from "../../components/AuthBanner";
-import useUser from "../../lib/useUser";
-import TeamProfile from "../../components/TeamProfile";
-import Post from "../../components/Post";
-import TwitTab from "../../components/TwitTab";
-import TwitTabs from "../../components/TwitTabs";
-import Empty from "../../components/Empty";
-import { createPost, getTeamPosts } from "../../actions";
-import { getSeasonString } from "../../lib/twit-helpers";
-import TopBar from "../../components/TopBar";
-import TwitItem from "../../components/TwitItem";
-import team from "../../sass/components/Team.module.scss";
-import Event from "../../components/Event";
-import TwitDropdownButton from "../../components/TwitDropdownButton";
-import TwitDropdownItem from "../../components/TwitDropdownItem";
-import TwitSelect from "../../components/TwitSelect";
-import LeftColumn from "../../components/LeftColumn";
-import RightColumn from "../../components/RightColumn";
-import StandingsCard from "../../components/StandingsCard";
-import Teams from "../../db/repos/Teams";
-import Leagues from "../../db/repos/Leagues";
-import EditTeamPopup from "../../components/modals/EditTeamPopup";
-import TwitSpinner from "../../components/TwitSpinner";
-import PopupCompose from "../../components/modals/PopupCompose";
-import EditEventsPopup from "../../components/modals/EditEventsPopup";
-import ScoutPopup from "../../components/modals/ScoutPopup";
-import ScoresCard from "../../components/ScoresCard";
-import Menu from "../../components/Menu";
-import MenuItem from "../../components/MenuItem";
+import backend from "../../../lib/backend";
+import InfiniteList from "../../../components/InfiniteList";
+import AuthBanner from "../../../components/AuthBanner";
+import useUser from "../../../lib/useUser";
+import TeamProfile from "../../../components/TeamProfile";
+import Post from "../../../components/Post";
+import TwitTab from "../../../components/TwitTab";
+import TwitTabs from "../../../components/TwitTabs";
+import Empty from "../../../components/Empty";
+import { createPost, getTeamPosts } from "../../../actions";
+import { getSeasonString } from "../../../lib/twit-helpers";
+import TopBar from "../../../components/TopBar";
+import teamStyle from "../../../sass/pages/Team.module.scss";
+import Event from "../../../components/Event";
+import TwitSelect from "../../../components/TwitSelect";
+import LeftColumn from "../../../components/LeftColumn";
+import RightColumn from "../../../components/RightColumn";
+import StandingsCard from "../../../components/StandingsCard";
+import Teams from "../../../db/repos/Teams";
+import Leagues from "../../../db/repos/Leagues";
+import EditTeamPopup from "../../../components/modals/EditTeamPopup";
+import TwitSpinner from "../../../components/TwitSpinner";
+import PopupCompose from "../../../components/modals/PopupCompose";
+import EditEventsPopup from "../../../components/modals/EditEventsPopup";
+import ScoutPopup from "../../../components/modals/ScoutPopup";
+import ScoresCard from "../../../components/ScoresCard";
+import Menu from "../../../components/Menu";
+import MenuItem from "../../../components/MenuItem";
 
 function Team({ teamData, standings }) {
-  const { query, isFallback } = useRouter();
+  const router = useRouter();
+  const { isFallback, isReady } = router;
+
   const { user } = useUser();
-  const [tab, setTab] = useState("team");
+  const [tab, setTab] = useState("mentions");
   const [events, setEvents] = useState(null);
   const [selectedSeason, setSelectedSeason] = useState(null);
   const [posts, setPosts] = useState(null);
@@ -47,7 +46,17 @@ function Team({ teamData, standings }) {
   const [showScoutPopup, setShowScoutPopup] = useState(false);
   const [showEditEventsPopup, setShowEditEventsPopup] = useState(false);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
-  const postsLoaderRef = useRef(null);
+  const infiniteLoaderRef = useCallback(
+    (ref) => {
+      if (!ref) {
+        return;
+      }
+
+      setPosts(null);
+      ref.resetLoadMoreRowsCache();
+    },
+    [tab]
+  );
 
   const fetcher = async (url) => {
     const response = await backend.get(url, {
@@ -62,27 +71,32 @@ function Team({ teamData, standings }) {
   const { data: team } = useSWR(
     teamData && user ? `/api/teams/${teamData.abbrev.substring(1)}` : null,
     fetcher,
-    { initialData: teamData, revalidateOnMount: true }
+    { initialData: teamData, revalidateOnMount: true, revalidateOnFocus: false }
   );
 
-  useEffect(() => {
-    setPosts(null);
+  function getData(startIndex, stopIndex) {
+    return getTeamPosts({
+      abbrev: team.abbrev.substring(1),
+      filter: tab,
+      userId: user.id,
+      startIndex,
+      stopIndex,
+    });
+  }
 
-    setTab("mentions");
-
-    return () => {
-      if (postsLoaderRef.current) {
-        postsLoaderRef.current.resetLoadMoreRowsCache();
-      }
-    };
-  }, [query.abbrev]);
+  function updatePosts(post) {
+    let newPosts = [...posts];
+    let index = newPosts.findIndex((newPost) => newPost.id === post.id);
+    newPosts[index] = post;
+    setPosts(newPosts);
+  }
 
   async function onPostSubmit(values) {
     const post = await createPost(values, user.id);
     return post;
   }
 
-  const fetchEventsBySeasonId = async (seasonId) => {
+  async function fetchEventsBySeasonId(seasonId) {
     const events = await backend.get(
       `api/teams/${team.abbrev.substring(1)}/events`,
       {
@@ -93,40 +107,49 @@ function Team({ teamData, standings }) {
       }
     );
     setEvents(events.data);
-  };
+  }
 
-  const renderEmptyPosts = () => {
+  function renderEmpty() {
+    switch (tab) {
+      case "mentions":
+      case "media":
+        return (
+          <Empty
+            main="Empty"
+            sub={`${team.abbrev} hasn't been mentioned in a post yet`}
+            onActionClick={() => setShowPopupCompose(true)}
+            actionText="Be the first"
+          />
+        );
+
+      default:
+        return null;
+    }
+  }
+
+  function renderPosts() {
+    if (!user || !isReady) {
+      return null;
+    }
     return (
-      <Empty
-        main="Empty"
-        sub={`${team.abbrev} hasn't been mentioned in a post yet`}
-        onActionClick={() => setShowPopupCompose(true)}
-        actionText="Be the first"
+      <InfiniteList
+        getData={getData}
+        list={posts}
+        item={itemRenderer}
+        updateList={(posts) => setPosts(posts)}
+        infiniteLoaderRef={infiniteLoaderRef}
+        empty={renderEmpty()}
       />
     );
-  };
+  }
 
-  const renderContent = () => {
+  function itemRenderer(item) {
+    return <Post post={item} update={updatePosts} user={user} />;
+  }
+
+  function renderContent() {
     if (tab === "mentions") {
-      return (
-        <InfiniteList
-          id={query.abbrev}
-          getData={(startIndex, stopIndex) =>
-            getTeamPosts({
-              userId: user.id,
-              teamId: team.id,
-              startIndex,
-              stopIndex,
-            })
-          }
-          list={posts}
-          updateList={(posts) => setPosts(posts)}
-          infiniteLoaderRef={postsLoaderRef}
-          empty={renderEmptyPosts()}
-        >
-          <Post user={user} />
-        </InfiniteList>
-      );
+      return null;
     } else if (tab === "schedule") {
       if (!events) {
         return <TwitSpinner size={50} />;
@@ -163,15 +186,15 @@ function Team({ teamData, standings }) {
         );
       }
     }
-  };
+  }
 
-  const renderEvents = () => {
+  function renderEvents() {
     return events.map((event, index) => {
       return <Event key={index} event={event} teamId={team.id} />;
     });
-  };
+  }
 
-  const renderMenu = () => {
+  function renderMenu() {
     if (!user) {
       return null;
     }
@@ -189,9 +212,9 @@ function Team({ teamData, standings }) {
     } else {
       return null;
     }
-  };
+  }
 
-  const renderTwitSelect = () => {
+  function renderTwitSelect() {
     if (!team.seasons) {
       return null;
     } else {
@@ -209,33 +232,24 @@ function Team({ teamData, standings }) {
         />
       );
     }
-  };
+  }
 
-  const onTeamSelect = (k) => {
-    setTab(k.target.id);
-  };
+  function onTabSelect(event) {
+    const { id } = event.target;
+    setTab(id);
+  }
 
-  const onScheduleClick = (k) => {
-    setTab(k.target.id);
-    if (!team.seasons) {
-      setEvents([]);
-      return;
-    }
-    setSelectedSeason(team.seasons[team.seasons.length - 1]);
-    fetchEventsBySeasonId(team.current_season.id);
-  };
-
-  const editRoster = () => {
+  function editRoster() {
     if (user.id === team.owner_id) {
       setShowScoutPopup(true);
     }
-  };
+  }
 
-  const editEvents = () => {
+  function editEvents() {
     if (user.id === team.owner_id) {
       setShowEditEventsPopup(true);
     }
-  };
+  }
 
   if (isFallback) {
     return <TwitSpinner size={50} />;
@@ -260,25 +274,25 @@ function Team({ teamData, standings }) {
           />
           <TwitTabs>
             <TwitTab
-              onClick={onTeamSelect}
+              onClick={onTabSelect}
               id={"mentions"}
-              active={tab === "mentions" ? true : false}
+              active={tab === "mentions"}
               title="Mentions"
             />
             <TwitTab
-              onClick={onScheduleClick}
+              onClick={onTabSelect}
               id={"schedule"}
-              active={tab === "schedule" ? true : false}
+              active={tab === "schedule"}
               title="Schedule"
             />
             <TwitTab
-              onClick={(k) => setTab(k.target.id)}
+              onClick={onTabSelect}
               id={"media"}
-              active={tab === "media" ? true : false}
+              active={tab === "media"}
               title="Media"
             />
           </TwitTabs>
-          {renderContent()}
+          {renderPosts()}
         </main>
         <div className="right-bar">
           <RightColumn>
@@ -326,10 +340,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
+  const { abbrev } = context.params;
+
   let teamData;
   let standings = null;
 
-  teamData = await Teams.findOne(`$${context.params.abbrev}`, null);
+  teamData = await Teams.findOne(`$${abbrev}`, null);
   teamData = JSON.parse(JSON.stringify(teamData));
 
   if (teamData.league) {

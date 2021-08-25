@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import activePost from "../sass/components/ActivePost.module.scss";
-import useUser from "../lib/useUser";
 import Avatar from "../components/Avatar";
 import {
   trackClickedPost,
@@ -13,8 +12,7 @@ import TwitMedia from "./TwitMedia";
 import Like from "./Like";
 import Linkify from "./Linkify";
 
-function ActivePost({ post }) {
-  const { user } = useUser();
+function ActivePost({ post, user }) {
   const [liked, setLiked] = useState(post.liked);
   const [likes, setLikes] = useState(post.likes);
 

@@ -27,7 +27,6 @@ import Linkify from "./Linkify";
 import TwitCard from "./TwitCard";
 import TwitDate from "../lib/twit-date";
 import { numberSuffix, getSeasonString } from "../lib/twit-helpers";
-import RosterPopup from "./modals/RosterPopup";
 
 function TeamProfile({ team, standings, onAvatarClick }) {
   const { user } = useUser();
@@ -201,13 +200,21 @@ function TeamProfile({ team, standings, onAvatarClick }) {
             />
           </div>
           <div className={teamProfile["team-profile__counts"]}>
-            <Count href="/" value={team.players} text="Coaches" />
             <Count
-              onClick={() => setShowRosterPopup(true)}
+              href={`/teams/${team.abbrev.substring(1)}/players`}
               value={team.players}
               text="Players"
             />
-            <Count href="/" value={team.followers} text="Followers" />
+            <Count
+              href={`/teams/${team.abbrev.substring(1)}/coaches`}
+              value={team.players}
+              text="Coaches"
+            />
+            <Count
+              href={`/teams/${team.abbrev.substring(1)}/followers`}
+              value={team.followers}
+              text="Followers"
+            />
           </div>
         </div>
       </Profile>
@@ -220,12 +227,6 @@ function TeamProfile({ team, standings, onAvatarClick }) {
         secondaryActionText="Cancel"
         onSecondaryActionClick={() => setShowRequestToJoin(false)}
         onPrimaryActionClick={sendUserRequestToJoinTeam}
-      />
-      <RosterPopup
-        show={showRosterPopup}
-        onHide={() => setShowRosterPopup(false)}
-        roster={team.roster}
-        title="Roster"
       />
     </React.Fragment>
   );

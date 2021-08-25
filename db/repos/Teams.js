@@ -141,14 +141,22 @@ class Teams {
     return teams.rows;
   }
 
-  static async findByLeagueName(leagueName) {
+  static async findByLeagueName(leagueName, userId, offset, limit) {
     const teams = await pool.query(
       `
-        SELECT teams.*
-        FROM teams
-        JOIN leagues ON leagues.id = teams.league_id
-        WHERE leagues.league_name = $1`,
-      [leagueName]
+      SELECT teams.*,
+        EXISTS (
+        SELECT 1 
+        FROM followers 
+        WHERE team_id = teams.id AND user_id = $2
+        ) AS followed
+      FROM teams
+      JOIN leagues ON leagues.id = teams.league_id
+      WHERE leagues.league_name = $1
+      OFFSET $3	
+      LIMIT $4
+    `,
+      [leagueName, userId, offset, limit]
     );
 
     return teams.rows;
@@ -163,18 +171,19 @@ class Teams {
     return teams.rows;
   }
 
-  static async findSuggested(userId, num) {
+  static async findSuggested(userId, offset, limit) {
     const teams = await pool.query(
       `
-        SELECT teams.id, teams.avatar, team_name, abbrev, league_name,
-        EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $1 AND teams.id = followers.team_id ) AS following
+        SELECT teams.*, leagues.league_name,
+        EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $1 AND teams.id = followers.team_id ) AS followed
         FROM teams
         JOIN leagues ON leagues.id = teams.league_id
         WHERE teams.avatar IS NOT NULL
         ORDER BY RANDOM()
-        LIMIT $2
+        OFFSET $2
+        LIMIT $3
         `,
-      [userId, num]
+      [userId, offset, limit]
     );
 
     return teams.rows;
@@ -263,6 +272,47 @@ class Teams {
         OFFSET $2
         LIMIT $3;`,
       [`%${query}%`, offset, limit]
+    );
+
+    return rows;
+  }
+
+  static async findRoster(abbrev, userId, offset, limit) {
+    const { rows } = await pool.query(
+      `
+      SELECT users.*,
+        EXISTS (
+          SELECT 1 
+          FROM scouts 
+          WHERE scouted_user_id = users.id AND scout_user_id = $2
+        ) AS scouted
+      FROM rosters
+      JOIN teams ON teams.id = team_id
+      JOIN users ON users.id = user_id
+      WHERE abbrev = $1
+      OFFSET $3
+      LIMIT $4`,
+      [abbrev, userId, offset, limit]
+    );
+
+    return rows;
+  }
+
+  static async findFollowers(teamId, userId, offset, limit) {
+    const { rows } = await pool.query(
+      `
+      SELECT users.*,
+        EXISTS (
+          SELECT 1 
+          FROM scouts 
+          WHERE scouted_user_id = users.id AND scout_user_id = $2
+        ) AS scouted
+      FROM followers
+      JOIN users ON users.id = followers.user_id
+      WHERE team_id = $1
+      OFFSET $3
+      LIMIT $4`,
+      [teamId, userId, offset, limit]
     );
 
     return rows;

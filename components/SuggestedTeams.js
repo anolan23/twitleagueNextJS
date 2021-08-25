@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import useUser from "../lib/useUser";
 import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
+import { getSuggestedTeams } from "../actions";
 import TwitCard from "../components/TwitCard";
 import backend from "../lib/backend";
 import { followTeam, unFollow } from "../actions";
@@ -15,25 +16,21 @@ function SuggestedTeams() {
   const { user } = useUser();
   const [teams, setTeams] = useState(null);
 
-  useEffect(() => {
-    if (user) {
-      fetchSuggestedTeams(user.id, 3);
+  useEffect(async () => {
+    if (!user) {
+      return;
     }
-  }, [user]);
-
-  const fetchSuggestedTeams = async (userId, num) => {
-    const response = await backend.get("/api/teams/suggested", {
-      params: {
-        userId,
-        num,
-      },
+    const teams = await getSuggestedTeams({
+      userId: user.id,
+      startIndex: 0,
+      stopIndex: 3,
     });
-    setTeams(response.data);
-  };
+    setTeams(teams);
+  }, [user]);
 
   const renderFooter = () => {
     return (
-      <Link href="/suggested">
+      <Link href="/suggested/teams">
         <div className={suggestedTeams["suggested-teams__footer"]}>
           <span className={suggestedTeams["suggested-teams__footer__text"]}>
             Show more

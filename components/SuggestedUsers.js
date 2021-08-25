@@ -3,37 +3,41 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
 import useUser from "../lib/useUser";
+import { getSuggestedUsers } from "../actions";
 import suggestedTeams from "../sass/components/SuggestedTeams.module.scss";
 import TwitCard from "./TwitCard";
 import backend from "../lib/backend";
 import Empty from "./Empty";
-import ScoutItem from "./ScoutItem";
 import TwitSpinner from "./TwitSpinner";
+import TwitItem from "./TwitItem";
+import ScoutButton from "./ScoutButton";
 
 function SuggestedUsers() {
   const { user } = useUser();
   const [users, setUsers] = useState(null);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (!user) {
       return;
     }
-    fetchSuggestedUsers(3);
+    const users = await getSuggestedUsers({
+      userId: user.id,
+      startIndex: 0,
+      stopIndex: 3,
+    });
+    setUsers(users);
   }, [user]);
 
-  const fetchSuggestedUsers = async (num) => {
-    const users = await backend.get("/api/users/suggested", {
-      params: {
-        num,
-        userId: user.id,
-      },
-    });
-    setUsers(users.data);
-  };
+  function updateUsers(user) {
+    let newUsers = [...users];
+    let index = newUsers.findIndex((newUser) => newUser.id === user.id);
+    newUsers[index] = user;
+    setUsers(newUsers);
+  }
 
   const renderFooter = () => {
     return (
-      <Link href="/suggested">
+      <Link href="/suggested/users">
         <div className={suggestedTeams["suggested-teams__footer"]}>
           <span className={suggestedTeams["suggested-teams__footer__text"]}>
             Show more
@@ -55,7 +59,17 @@ function SuggestedUsers() {
       );
     } else {
       return users.map((user, index) => {
-        return <ScoutItem key={index} user={user} />;
+        const { avatar, name, username } = user;
+        return (
+          <TwitItem
+            key={index}
+            avatar={avatar}
+            title={name}
+            subtitle={username}
+          >
+            <ScoutButton player={user} update={updateUsers} />
+          </TwitItem>
+        );
       });
     }
   };

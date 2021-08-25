@@ -36,14 +36,13 @@ function User({ userData }) {
   const router = useRouter();
   const { query, isReady, isFallback } = router;
   const { username } = query;
-  const [_username, filter = "posts"] = username || [];
 
   const [showEditProfilePopup, setShowEditProfilePopup] = useState(false);
-  const [tab, setTab] = useState(filter);
+  const [tab, setTab] = useState("posts");
   const [users, setUsers] = useState(null);
   const [posts, setPosts] = useState(null);
 
-  const getUser = async (url) => {
+  const fetcher = async (url) => {
     const response = await backend.get(url, {
       params: {
         userId: user.id,
@@ -54,7 +53,7 @@ function User({ userData }) {
 
   const { data: userProfile } = useSWR(
     userData && user ? `/api/users/${userData.username}` : null,
-    getUser,
+    fetcher,
     { initialData: userData, revalidateOnMount: true, revalidateOnFocus: false }
   );
 
@@ -67,12 +66,8 @@ function User({ userData }) {
       setPosts(null);
       ref.resetLoadMoreRowsCache();
     },
-    [filter]
+    [tab]
   );
-
-  useEffect(() => {
-    setTab(filter);
-  }, [filter]);
 
   useEffect(() => {
     getSuggestedUsers();
@@ -89,8 +84,8 @@ function User({ userData }) {
 
   function getData(startIndex, stopIndex) {
     return getUsersPosts({
-      username: _username,
-      filter,
+      username,
+      filter: tab,
       userId: user.id,
       startIndex,
       stopIndex,
@@ -105,16 +100,8 @@ function User({ userData }) {
   }
 
   function onTabSelect(event) {
-    const { username } = userProfile;
     const { id } = event.target;
-    const filter = id === "posts" ? "" : id;
-    router.push(
-      {
-        pathname: `/users/${username}/${filter}`,
-      },
-      undefined,
-      { shallow: true, scroll: false }
-    );
+    setTab(id);
   }
 
   const renderUsers = () => {
@@ -236,8 +223,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const { username } = context.params;
-  let userData = await Users.findOne(username[0], null);
-  console.log(userData);
+  let userData = await Users.findOne(username, null);
   userData = JSON.parse(JSON.stringify(userData));
 
   return {

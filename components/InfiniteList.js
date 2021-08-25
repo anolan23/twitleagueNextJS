@@ -17,6 +17,7 @@ function InfiniteList({
   item,
   updateList,
   id,
+  empty,
 }) {
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
   let listRef = useRef(null);
@@ -70,7 +71,7 @@ function InfiniteList({
 
   function rowRenderer({ key, index, style, parent }) {
     if (!list) {
-      return <TwitSpinner key={key} style={style} size={50} />;
+      return <TwitSpinner key={key} style={style} size={30} />;
     } else {
       return (
         <CellMeasurer
@@ -86,44 +87,54 @@ function InfiniteList({
     }
   }
 
+  function renderEmpty() {
+    if (!list) return null;
+    else if (list.length === 0) {
+      return <React.Fragment>{empty}</React.Fragment>;
+    } else return null;
+  }
+
   return (
-    <InfiniteLoader
-      key={id}
-      isRowLoaded={isRowLoaded}
-      loadMoreRows={loadMoreRows}
-      rowCount={10000}
-      minimumBatchSize={100}
-      ref={infiniteLoaderRef}
-    >
-      {({ onRowsRendered, registerChild }) => (
-        <WindowScroller>
-          {({ height, isScrolling, onChildScroll, scrollTop }) => (
-            <AutoSizer disableHeight>
-              {({ width }) => (
-                <List
-                  autoHeight
-                  height={height}
-                  isScrolling={isScrolling}
-                  onScroll={onChildScroll}
-                  deferredMeasurementCache={cache}
-                  onRowsRendered={onRowsRendered}
-                  ref={(reference) => {
-                    registerChild(reference);
-                    listRef.current = reference;
-                  }}
-                  rowCount={rowCount()}
-                  rowHeight={cache.rowHeight}
-                  rowRenderer={rowRenderer}
-                  scrollTop={scrollTop}
-                  width={width}
-                  overscanRowCount={5}
-                />
-              )}
-            </AutoSizer>
-          )}
-        </WindowScroller>
-      )}
-    </InfiniteLoader>
+    <React.Fragment>
+      {renderEmpty()}
+      <InfiniteLoader
+        key={id}
+        isRowLoaded={isRowLoaded}
+        loadMoreRows={loadMoreRows}
+        rowCount={10000}
+        minimumBatchSize={100}
+        ref={infiniteLoaderRef}
+      >
+        {({ onRowsRendered, registerChild }) => (
+          <WindowScroller>
+            {({ height, isScrolling, onChildScroll, scrollTop }) => (
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <List
+                    autoHeight
+                    height={height}
+                    isScrolling={isScrolling}
+                    onScroll={onChildScroll}
+                    deferredMeasurementCache={cache}
+                    onRowsRendered={onRowsRendered}
+                    ref={(reference) => {
+                      registerChild(reference);
+                      listRef.current = reference;
+                    }}
+                    rowCount={rowCount()}
+                    rowHeight={cache.rowHeight}
+                    rowRenderer={rowRenderer}
+                    scrollTop={scrollTop}
+                    width={width}
+                    overscanRowCount={5}
+                  />
+                )}
+              </AutoSizer>
+            )}
+          </WindowScroller>
+        )}
+      </InfiniteLoader>
+    </React.Fragment>
   );
 }
 

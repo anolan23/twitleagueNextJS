@@ -67,19 +67,83 @@ class Users {
     return rows;
   }
 
-  static async findSuggested(userId, num) {
-    const teams = await pool.query(
+  static async findSuggested(userId, offset, limit) {
+    const results = await pool.query(
       `
         SELECT *,
         EXISTS (SELECT 1 FROM scouts WHERE scout_user_id = $1 AND users.id = scouted_user_id) AS scouted
         FROM users
         ORDER BY avatar, RANDOM()
-        LIMIT $2
+        OFFSET $2
+        LIMIT $3
         `,
-      [userId, num]
+      [userId, offset, limit]
     );
 
-    return teams.rows;
+    return results.rows;
+  }
+
+  static async findUserScoutings(username, userId, offset, limit) {
+    const results = await pool.query(
+      `
+      SELECT u1.*,
+        EXISTS (
+          SELECT 1 
+          FROM scouts 
+          WHERE scouted_user_id = u1.id AND scout_user_id = $2
+        ) AS scouted
+      FROM scouts
+      JOIN users AS u1 ON u1.id = scouts.scouted_user_id
+      JOIN users AS u2 ON u2.id = scouts.scout_user_id
+      WHERE u2.username = $1
+      OFFSET $3
+      LIMIT $4`,
+      [username, userId, offset, limit]
+    );
+
+    return results.rows;
+  }
+
+  static async findUserScouts(username, userId, offset, limit) {
+    const results = await pool.query(
+      `
+      SELECT u1.*,
+        EXISTS (
+          SELECT 1 
+          FROM scouts 
+          WHERE scouted_user_id = u1.id AND scout_user_id = $2
+        ) AS scouted
+      FROM scouts
+      JOIN users AS u1 ON u1.id = scout_user_id
+      JOIN users AS u2 ON u2.id = scouted_user_id
+      WHERE u2.username = $1
+      OFFSET $3
+      LIMIT $4`,
+      [username, userId, offset, limit]
+    );
+
+    return results.rows;
+  }
+
+  static async findUserFollowings(username, userId, offset, limit) {
+    const results = await pool.query(
+      `
+      SELECT teams.*,
+        EXISTS (
+          SELECT 1 
+          FROM followers 
+          WHERE team_id = teams.id AND user_id = $2
+        ) AS followed
+      FROM followers
+      JOIN teams ON teams.id = followers.team_id
+      JOIN users ON users.id = followers.user_id
+      WHERE users.username = $1
+      OFFSET $3
+      LIMIT $4`,
+      [username, userId, offset, limit]
+    );
+
+    return results.rows;
   }
 }
 

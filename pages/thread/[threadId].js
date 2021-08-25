@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { fetchThreadReplies, clearReplies } from "../../actions";
+import { getThreadReplies } from "../../actions";
 import MainBody from "../../components/MainBody";
-import thread from "../../sass/components/Thread.module.scss";
+import threadStyle from "../../sass/pages/Thread.module.scss";
 import TopBar from "../../components/TopBar";
 import backend from "../../lib/backend";
 import Post from "../../components/Post";
@@ -13,23 +13,25 @@ import Divide from "../../components/Divide";
 import useUser from "../../lib/useUser";
 import useSWR from "swr";
 import TwitSpinner from "../../components/TwitSpinner";
+import InfiniteList from "../../components/InfiniteList";
 
 function ThreadPage({ threadData, threadId }) {
   const { user } = useUser();
   const router = useRouter();
+  const { query, isFallback, isReady } = router;
   const [replies, setReplies] = useState(null);
 
-  useEffect(async () => {
-    if (threadId && user) {
-      const results = await fetchThreadReplies(threadId, user.id);
-      console.log(results);
-      setReplies(results);
-    }
+  const infiniteLoaderRef = useCallback(
+    (ref) => {
+      if (!ref) {
+        return;
+      }
 
-    return () => {
-      clearReplies();
-    };
-  }, [threadId, user]);
+      setReplies(null);
+      ref.resetLoadMoreRowsCache();
+    },
+    [query]
+  );
 
   const getThread = async (url) => {
     const response = await backend.get(url, {
@@ -43,17 +45,37 @@ function ThreadPage({ threadData, threadId }) {
   const { data: thread } = useSWR(
     threadId && user ? `/api/thread/${threadId}` : null,
     getThread,
-    { initialData: threadData, revalidateOnMount: true }
+    {
+      initialData: threadData,
+      revalidateOnMount: true,
+      revalidateOnFocus: false,
+    }
   );
+
+  function getData(startIndex, stopIndex) {
+    return getThreadReplies({
+      threadId,
+      userId: user.id,
+      startIndex,
+      stopIndex,
+    });
+  }
+
+  function updateReplies(reply) {
+    let newReplies = [...replies];
+    let index = newReplies.findIndex((newReply) => newReply.id === reply.id);
+    newReplies[index] = reply;
+    setReplies(newReplies);
+  }
 
   const renderThread = () => {
     return thread.map((post, index) => {
       if (post.id != threadId) {
-        return <Post key={index} post={post} history />;
+        return <Post key={index} post={post} user={user} history />;
       } else if (post.id == threadId) {
         return (
           <React.Fragment key={index}>
-            <ActivePost post={post} />
+            <ActivePost post={post} user={user} />
             <Divide />
           </React.Fragment>
         );
@@ -61,20 +83,27 @@ function ThreadPage({ threadData, threadId }) {
     });
   };
 
-  const renderReplies = () => {
-    if (!replies) {
-      return <TwitSpinner size={50} />;
-    } else if (replies.length === 0) {
+  function renderReplies() {
+    if (!user || isFallback) {
       return null;
-    } else {
-      return replies.map((reply, index) => {
-        return <Post key={index} listItem={reply} />;
-      });
     }
-  };
+    return (
+      <InfiniteList
+        getData={getData}
+        list={replies}
+        item={itemRenderer}
+        updateList={(replies) => setReplies(replies)}
+        infiniteLoaderRef={infiniteLoaderRef}
+      />
+    );
+  }
 
-  if (router.isFallback) {
-    return <div>Loading...</div>;
+  function itemRenderer(item) {
+    return <Post post={item} update={updateReplies} user={user} />;
+  }
+
+  if (isFallback) {
+    return <TwitSpinner size={50} />;
   } else {
   }
   return (

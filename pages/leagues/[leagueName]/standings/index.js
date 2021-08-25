@@ -88,7 +88,12 @@ function Standings({ leagueData }) {
             <TwitSelect
               options={options()}
               defaultValue="2019"
-              onSelect={(seasonId) => router.push({ query: { seasonId } })}
+              onSelect={(seasonId) =>
+                router.replace({ query: { seasonId } }, undefined, {
+                  shallow: true,
+                  scroll: false,
+                })
+              }
             />
             {renderDivisions()}
           </div>

@@ -15,12 +15,26 @@ import TeamsPopup from "./modals/TeamsPopup";
 function LeagueProfile({ league, onAvatarClick }) {
   const { user } = useUser();
   const [showTeamsPopup, setShowTeamsPopup] = useState(false);
+  const {
+    owner_id,
+    owner,
+    current_season,
+    seasons,
+    banner,
+    avatar,
+    league_name,
+    bio,
+    sport,
+    created_at,
+    teams,
+    follower_count,
+  } = league;
 
   const renderButton = () => {
     if (!user) {
       return null;
     }
-    if (user.id === league.owner_id) {
+    if (user.id === owner_id) {
       return (
         <TwitButton onClick={onAvatarClick} color="primary" outline="primary">
           Edit profile
@@ -37,19 +51,17 @@ function LeagueProfile({ league, onAvatarClick }) {
 
   const renderOwner = () => {
     return (
-      <Link href={`/users/${league.owner}`} passHref>
-        <a className="twit-link">{`@${league.owner}`}</a>
+      <Link href={`/users/${owner}`} passHref>
+        <a className="twit-link">{`@${owner}`}</a>
       </Link>
     );
   };
 
   const renderSeason = () => {
-    if (league.current_season) {
+    if (current_season) {
       return (
         <div className={leagueProfile["league-profile__info__season"]}>
-          {league.current_season
-            ? getSeasonString(league.current_season, league.seasons)
-            : null}
+          {current_season ? getSeasonString(current_season, seasons) : null}
         </div>
       );
     } else {
@@ -64,8 +76,8 @@ function LeagueProfile({ league, onAvatarClick }) {
   return (
     <React.Fragment>
       <Profile
-        banner={league.banner}
-        avatar={league.avatar}
+        banner={banner}
+        avatar={avatar}
         onAvatarClick={onAvatarClick}
         action={renderButton()}
       >
@@ -73,32 +85,36 @@ function LeagueProfile({ league, onAvatarClick }) {
           <div
             className={`${leagueProfile["league-profile__teamname-box"]} u-margin-top-tiny`}
           >
-            <h1 className="heading-1">{league.league_name}</h1>
+            <h1 className="heading-1">{league_name}</h1>
           </div>
           {renderSeason()}
-          <Link href={`/leagues/${league.league_name}/seasons`} passHref>
+          <Link href={`/leagues/${league_name}/seasons`} passHref>
             <a className="twit-link">View all seasons</a>
           </Link>
-          {league.bio ? (
+          {bio ? (
             <p
               className={leagueProfile["league-profile__info__bio"] + " muted"}
             >
-              {league.bio}
+              {bio}
             </p>
           ) : null}
 
           <div className={leagueProfile["league-profile__attributes"]}>
-            <Attribute icon={"/sprites.svg#icon-map-pin"} text={league.sport} />
+            <Attribute icon={"/sprites.svg#icon-map-pin"} text={sport} />
             <Attribute
               icon={"/sprites.svg#icon-home"}
-              text={`Joined ${TwitDate.localeDateString(league.created_at)}`}
+              text={`Joined ${TwitDate.localeDateString(created_at)}`}
             />
           </div>
           <div className={leagueProfile["league-profile__counts"]}>
-            <Count href="/" value={league.follower_count} text="Followers" />
             <Count
-              onClick={() => setShowTeamsPopup(true)}
-              value={league.teams ? league.teams.length : 0}
+              href={`/leagues/${league_name}/followers`}
+              value={follower_count}
+              text="Followers"
+            />
+            <Count
+              href={`/leagues/${league_name}/teams`}
+              value={teams ? teams.length : 0}
               text="Teams"
             />
           </div>
@@ -107,7 +123,7 @@ function LeagueProfile({ league, onAvatarClick }) {
       <TeamsPopup
         show={showTeamsPopup}
         onHide={() => setShowTeamsPopup(false)}
-        teams={league.teams}
+        teams={teams}
         title="Teams"
       />
     </React.Fragment>

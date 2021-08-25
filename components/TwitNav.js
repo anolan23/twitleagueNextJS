@@ -32,6 +32,12 @@ function TwitNav() {
           icon="/sprites.svg#icon-home"
         />
       </TwitNavItem>
+      <TwitNavItem href="/search" title="Explore">
+        <TwitIcon
+          className={twitNavItem["twit-nav-item__icon"]}
+          icon="/sprites.svg#icon-search"
+        />
+      </TwitNavItem>
       <TwitNavItem href="/notifications" title="Notifications">
         <TwitIcon
           className={twitNavItem["twit-nav-item__icon"]}

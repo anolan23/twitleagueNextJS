@@ -180,52 +180,109 @@ class Posts {
     return rows;
   }
 
-  static async findByTeamId(userId, teamId, offset, limit) {
+  static async findTeamMentions(abbrev, userId, offset, limit) {
     const { rows } = await pool.query(
       `
-        SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
-          CASE 
-          WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
-          WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
-          ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-          END AS date,
-          EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND p1.id = likes.post_id ) AS liked
-        FROM team_mentions
-        JOIN posts AS p1 ON team_mentions.post_id = p1.id
-        JOIN users ON p1.author_id = users.id
-        WHERE team_id = $2
-        ORDER BY p1.created_at DESC
-        OFFSET $3
-        LIMIT $4
+      SELECT posts.*, users.name, users.username, users.avatar,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND posts.id = likes.post_id ) AS liked
+      FROM team_mentions
+      JOIN posts ON posts.id = team_mentions.post_id
+      JOIN teams ON teams.id = team_mentions.team_id
+      JOIN users ON users.id = posts.author_id 
+      WHERE teams.abbrev = $1
+      ORDER BY posts.created_at DESC
+      OFFSET $3
+      LIMIT $4
         `,
-      [userId, teamId, offset, limit]
+      [abbrev, userId, offset, limit]
     );
 
     return rows;
   }
 
-  static async findByLeagueId(leagueId) {
+  static async findTeamMedia(abbrev, userId, offset, limit) {
     const { rows } = await pool.query(
       `
-        SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
-          CASE 
-          WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') THEN (to_char(now() - p1.created_at, 'FMHHh'))
-          WHEN (now() - p1.created_at < '1 Hour') THEN (to_char(now() - p1.created_at, 'FMMIm'))
-          ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-          END AS date
-        FROM posts AS p1
-        JOIN (
-        SELECT DISTINCT post_id
+      SELECT posts.*, users.name, users.username, users.avatar,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND posts.id = likes.post_id ) AS liked
+      FROM team_mentions
+      JOIN posts ON posts.id = team_mentions.post_id
+      JOIN teams ON teams.id = team_mentions.team_id
+      JOIN users ON users.id = posts.author_id 
+      WHERE teams.abbrev = $1 AND posts.media IS NOT NULL
+      ORDER BY posts.created_at DESC
+      OFFSET $3
+      LIMIT $4
+        `,
+      [abbrev, userId, offset, limit]
+    );
+
+    return rows;
+  }
+
+  static async findByLeagueName(leagueName, userId, offset, limit) {
+    const { rows } = await pool.query(
+      `
+      WITH league_mentions AS (
+        SELECT p1.*, users.name, users.username, users.avatar, users.bio,
+          (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, 
+          (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+          (SELECT COUNT(*) FROM scouts WHERE scouted_user_id = p1.author_id) AS scouts,
+          (SELECT COUNT(*) FROM followers WHERE user_id = p1.author_id) AS following,
+          EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked,
+          EXISTS (SELECT 1 FROM scouts WHERE scouted_user_id = p1.author_id AND scout_user_id = $2 ) AS scouted,
+          ROW_NUMBER() OVER(PARTITION BY post_id) AS row_number
         FROM team_mentions
-        WHERE team_id IN (
-            SELECT id 
-            FROM teams
-            WHERE league_id = $1
-        )
-        ) AS t1 ON t1.post_id = p1.id
-        JOIN users ON p1.author_id = users.id
-        ORDER BY p1.created_at DESC`,
-      [leagueId]
+        JOIN teams ON teams.id = team_id
+        JOIN leagues ON leagues.id = teams.league_id
+        JOIN posts AS p1 ON p1.id = post_id
+        JOIN users ON users.id = p1.author_id
+        WHERE leagues.league_name = $1
+        ORDER BY p1.created_at DESC
+        OFFSET $3
+        LIMIT $4
+      )
+
+      SELECT *
+      FROM league_mentions
+      WHERE row_number = 1`,
+      [leagueName, userId, offset, limit]
+    );
+
+    return rows;
+  }
+
+  static async findLeagueMedia(leagueName, userId, offset, limit) {
+    const { rows } = await pool.query(
+      `
+      WITH league_mentions AS (
+        SELECT p1.*, users.name, users.username, users.avatar, users.bio,
+          (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, 
+          (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
+          (SELECT COUNT(*) FROM scouts WHERE scouted_user_id = p1.author_id) AS scouts,
+          (SELECT COUNT(*) FROM followers WHERE user_id = p1.author_id) AS following,
+          EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked,
+          EXISTS (SELECT 1 FROM scouts WHERE scouted_user_id = p1.author_id AND scout_user_id = $2 ) AS scouted,
+          ROW_NUMBER() OVER(PARTITION BY post_id) AS row_number
+        FROM team_mentions
+        JOIN teams ON teams.id = team_id
+        JOIN leagues ON leagues.id = teams.league_id
+        JOIN posts AS p1 ON p1.id = post_id
+        JOIN users ON users.id = p1.author_id
+        WHERE leagues.league_name = $1 AND p1.media IS NOT NULL
+        ORDER BY p1.created_at DESC
+        OFFSET $3
+        LIMIT $4
+      )
+
+      SELECT *
+      FROM league_mentions
+      WHERE row_number = 1`,
+      [leagueName, userId, offset, limit]
     );
 
     return rows;
@@ -256,26 +313,21 @@ class Posts {
     return rows;
   }
 
-  static async findThreadReplies(threadId, userId) {
+  static async findThreadReplies(threadId, userId, offset, limit) {
     const { rows } = await pool.query(
       `
-    SELECT p1.*, avatar, users.name, users.username,
-      (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, 
-      (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
-      CASE 
-        WHEN (now() - p1.created_at < '1 Day' AND now() - p1.created_at > '1 Hour') 
-        THEN (to_char(now() - p1.created_at, 'FMHHh'))
-        WHEN (now() - p1.created_at < '1 Hour') 
-        THEN (to_char(now() - p1.created_at, 'FMMIm'))
-        ELSE (to_char(p1.created_at, 'Mon FMDDth, YYYY'))
-      END AS date,
-      EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND p1.id = likes.post_id ) AS liked
-    FROM posts AS p1
-    JOIN users ON p1.author_id = users.id
-    WHERE in_reply_to_post_id = $1
-    ORDER BY likes DESC, replies DESC, p1.created_at DESC
+      SELECT posts.*, users.name, users.username, users.avatar,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
+        (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
+        EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $2 AND posts.id = likes.post_id ) AS liked
+      FROM posts
+      JOIN users ON posts.author_id = users.id
+      WHERE in_reply_to_post_id = $1
+      ORDER BY likes DESC, replies DESC, posts.created_at DESC
+      OFFSET $3
+      LIMIT $4
     `,
-      [threadId, userId]
+      [threadId, userId, offset, limit]
     );
 
     return rows;
@@ -603,13 +655,13 @@ class Posts {
             UNION
             SELECT * FROM scouted_user_posts
           )
-      SELECT ht.*, avatar, users.name, users.username, users.avatar, users.bio,
+      SELECT ht.*, users.name, users.username, users.avatar, users.bio,
         (SELECT COUNT(*) FROM scouts WHERE scouted_user_id = ht.author_id) AS scouts,
         (SELECT COUNT(*) FROM followers WHERE user_id = ht.author_id) AS following,
         (SELECT COUNT(*) FROM likes WHERE post_id = ht.id) AS likes, 
         (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = ht.id) AS replies,
         EXISTS (SELECT 1 FROM likes WHERE likes.user_id = $1 AND ht.id = likes.post_id ) AS liked,
-        EXISTS (SELECT 1 FROM scouts WHERE scouted_user_id = ht.author_id AND scout_user_id = 11 ) AS scouted
+        EXISTS (SELECT 1 FROM scouts WHERE scouted_user_id = ht.author_id AND scout_user_id = $1 ) AS scouted
       FROM home_timeline AS ht
       JOIN users ON users.id = ht.author_id
       ORDER BY ht.created_at DESC

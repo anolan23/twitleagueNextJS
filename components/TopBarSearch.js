@@ -2,7 +2,7 @@ import topBarSearch from "../sass/components/TopBarSearch.module.scss";
 import TwitSearch from "./TwitSearch";
 import TwitIcon from "../components/TwitIcon";
 
-function TopBarSearch({ onSearch, children }) {
+function TopBarSearch({ initialValue, onSearch, children }) {
   return (
     <div className={topBarSearch["top-bar-search"]}>
       <div className={topBarSearch["top-bar-search__search-holder"]}>
@@ -17,7 +17,12 @@ function TopBarSearch({ onSearch, children }) {
             className={topBarSearch["top-bar-search__icon"]}
             icon="/sprites.svg#icon-search"
           />
-          <TwitSearch inline placeHolder="Search" onSearch={onSearch} />
+          <TwitSearch
+            inline
+            placeHolder="Search"
+            onSearch={onSearch}
+            initialValue={initialValue}
+          />
         </div>
         <TwitIcon
           className={topBarSearch["top-bar-search__search-holder__more-icon"]}

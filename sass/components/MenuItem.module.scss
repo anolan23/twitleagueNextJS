@@ -9,18 +9,18 @@ $button-brightness: 110%;
   padding: 0.75rem 2rem;
   font-size: 1.3rem;
   font-weight: 700;
+  color: var(--color-text-secondary);
   cursor: pointer;
   user-select: none;
   transition: all 0.2s;
   border: none;
-  background-color: var(--color-primary);
-  color: white;
+  background-color: white;
   position: relative;
 
   &:not(:disabled),
   &:not([disabled]) {
     &:hover {
-      filter: brightness($button-brightness);
+      background-color: var(--color-light-gray);
     }
   }
 

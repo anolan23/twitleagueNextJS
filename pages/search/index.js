@@ -21,7 +21,6 @@ function Search() {
   const { query, filter } = router.query;
   const [list, setList] = useState(null);
   const [tab, setTab] = useState(null);
-
   const infiniteLoaderRef = useCallback(
     (ref) => {
       if (!ref) {
@@ -81,21 +80,6 @@ function Search() {
       );
     }
   }
-
-  const type = () => {
-    switch (filter) {
-      case "top":
-      case "latest":
-      case "media":
-        return "post";
-      case "users":
-      case "teams":
-      case "leagues":
-        return "item";
-      default:
-        return null;
-    }
-  };
 
   function getData(startIndex, stopIndex) {
     return search({
@@ -189,7 +173,7 @@ function Search() {
           <LeftColumn />
         </header>
         <main className="main">
-          <TopBarSearch onSearch={onSearch}>
+          <TopBarSearch onSearch={onSearch} initialValue={query}>
             <TwitTabs>
               <TwitTab
                 onClick={onTabClick}

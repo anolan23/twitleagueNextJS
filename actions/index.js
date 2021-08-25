@@ -230,6 +230,26 @@ export const saveTeamImages =
     }
   };
 
+export const getFollowers = async ({
+  teamId = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
+  console.log(teamId, userId, startIndex, stopIndex);
+
+  const response = await backend.get("/api/followers", {
+    params: {
+      teamId,
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+  console.log(response.data);
+  return response.data;
+};
+
 export const follow = async (teamId, userId) => {
   const response = await backend.post("/api/followers", { teamId, userId });
   return response.data;
@@ -359,10 +379,17 @@ export const createReply = async (reply, userId) => {
   return response.data;
 };
 
-export const fetchThreadReplies = async (threadId, userId) => {
+export const getThreadReplies = async ({
+  threadId,
+  userId,
+  startIndex,
+  stopIndex,
+}) => {
   const response = await backend.get(`/api/thread/${threadId}/replies`, {
     params: {
       userId,
+      startIndex,
+      stopIndex,
     },
   });
   return response.data;
@@ -400,21 +427,58 @@ export const fetchTeamPosts = (teamId) => async (dispatch, getState) => {
 };
 
 export const getTeamPosts = async ({
-  userId,
-  teamId,
-  startIndex,
-  stopIndex,
+  abbrev = null,
+  filter = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
 }) => {
-  const posts = await backend.get("/api/posts/team", {
+  const results = await backend.get(`/api/teams/${abbrev}/posts`, {
     params: {
+      filter,
       userId,
-      teamId,
       startIndex,
       stopIndex,
     },
   });
 
-  return posts.data;
+  return results.data;
+};
+
+export const getLeaguePosts = async ({
+  leagueName = null,
+  filter = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
+  const results = await backend.get(`/api/leagues/${leagueName}/posts`, {
+    params: {
+      filter,
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+
+  return results.data;
+};
+
+export const getLeagueTeams = async ({
+  leagueName = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
+  const results = await backend.get(`/api/leagues/${leagueName}/teams`, {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+
+  return results.data;
 };
 
 export const fetchWatchListPosts = () => async (dispatch, getState) => {
@@ -695,9 +759,20 @@ export const addPlayerToRoster = async ({ teamId, userId }) => {
   } catch (error) {}
 };
 
-export const fetchRoster = async (abbrev) => {
-  const roster = await backend.get(`/api/teams/${abbrev}/rosters`);
-  return roster.data;
+export const getRoster = async ({
+  abbrev = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
+  const results = await backend.get(`/api/teams/${abbrev}/rosters`, {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+  return results.data;
 };
 
 export const getStandings = async (league_name, seasonId) => {
@@ -775,4 +850,74 @@ export const fetchScores = async (seasonId) => {
     },
   });
   return scores.data;
+};
+
+export const getScouts = async ({
+  username = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
+  const results = await backend.get(`/api/users/${username}/scouts`, {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+  return results.data;
+};
+
+export const getScouting = async ({
+  username = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
+  const results = await backend.get(`/api/users/${username}/scouting`, {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+  return results.data;
+};
+
+export const getFollowing = async ({
+  username = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
+  const results = await backend.get(`/api/users/${username}/following`, {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+  return results.data;
+};
+
+export const getSuggestedTeams = async ({ userId, startIndex, stopIndex }) => {
+  const results = await backend.get("/api/teams/suggested", {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+  return results.data;
+};
+
+export const getSuggestedUsers = async ({ userId, startIndex, stopIndex }) => {
+  const results = await backend.get("/api/users/suggested", {
+    params: {
+      userId,
+      startIndex,
+      stopIndex,
+    },
+  });
+  return results.data;
 };

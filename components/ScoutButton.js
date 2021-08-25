@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import useUser from "../lib/useUser";
 import { scout, unScout } from "../actions";
 import TwitButton from "./TwitButton";
 
-function ScoutButton(props) {
+function ScoutButton({ player, update }) {
   const { user } = useUser();
-  const [scouted, setScouted] = useState(props.user.scouted);
+  const { id: playerId, scouted } = player;
 
-  useEffect(() => {
-    setScouted(props.user.scouted);
-  }, [props.user.scouted]);
-
-  const onScoutClick = async () => {
+  async function onScoutClick() {
     if (!user || !user.isSignedIn) {
       return;
     } else {
       if (!scouted) {
-        await scout(props.user.id, user.id);
-        setScouted(true);
+        try {
+          await scout(playerId, user.id);
+          update({ ...player, scouted: true });
+        } catch (error) {
+          console.log(error);
+        }
       } else {
-        await unScout(props.user.id, user.id);
-        setScouted(false);
+        try {
+          await unScout(playerId, user.id);
+          update({ ...player, scouted: false });
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
-  };
+  }
+
   const renderButton = () => {
     if (!scouted) {
       return (
