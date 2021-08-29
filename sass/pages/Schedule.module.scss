@@ -1,0 +1,20 @@
+.schedule {
+  &__filter {
+    display: grid;
+    padding: 1rem;
+    grid-template-columns: min-content min-content;
+    gap: 1rem;
+  }
+
+  & table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    position: relative;
+    user-select: none;
+    & th {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+  }
+}

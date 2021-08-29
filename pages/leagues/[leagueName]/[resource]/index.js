@@ -150,7 +150,7 @@ function LeagueResources({ leagueData }) {
         <LeftColumn setShowPopupCompose={null} />
       </header>
       <main className="main">
-        <TopBar main={league_name} sub={sport}></TopBar>
+        <TopBar main={league_name} sub="League"></TopBar>
         <TwitTabs>
           <TwitTab
             onClick={onTabSelect}

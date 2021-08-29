@@ -1,5 +1,5 @@
 .twit-nav-item {
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   align-items: flex-start;
   position: relative;
@@ -20,7 +20,7 @@
     padding: 1rem;
     // transition-duration: .2s;
     cursor: pointer;
-    color: var(--color-text-secondary);
+    color: var(--color-text);
     text-decoration: none;
     transition: all 0.2s;
 
@@ -56,7 +56,7 @@
   }
 
   &__text {
-    font-size: 1.6rem;
+    font-size: 1.9rem;
     color: rgb(20, 23, 26);
     color: inherit;
   }

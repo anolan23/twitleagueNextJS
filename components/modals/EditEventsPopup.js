@@ -9,15 +9,14 @@ import TwitButton from "../TwitButton";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 import TwitItemSelect from "../TwitItemSelect";
+import Empty from "../Empty";
 
 function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
   if (!show) {
     return null;
   }
-  // let teams = team.league.teams.filter((element) => element.id !== team.id);
-  const { current_season_teams } = league;
 
-  console.log(league);
+  const { current_season_teams, season_id } = league;
 
   const formik = useFormik({
     initialValues: {
@@ -31,7 +30,7 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
     onSubmit: async (values) => {
       const event = {
         ...values,
-        seasonId: league.season_id,
+        seasonId: season_id,
       };
       await createEvent(event);
       onHide();
@@ -57,6 +56,9 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
   };
 
   const renderHeading = () => {
+    if (!season_id) {
+      return null;
+    }
     return (
       <div className={editEventsPopup["edit-events-popup__heading"]}>
         <div className={editEventsPopup["edit-events-popup__heading__actions"]}>
@@ -170,6 +172,16 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
   };
 
   const renderBody = () => {
+    if (!season_id) {
+      return (
+        <Empty
+          main="Currently in offseason"
+          sub="You can't schedule events during the offseason"
+          actionText="Message league"
+          onActionClick={() => {}}
+        />
+      );
+    }
     return (
       <div className={editEventsPopup["edit-events-popup__body"]}>
         {renderContent()}

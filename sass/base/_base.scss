@@ -17,6 +17,8 @@
   --RED_BACKGROUND: #ffecec;
   --GRAY_BACKGROUND: rgba(0, 0, 0, 0.03);
 
+  //test
+
   --color-card: whitesmoke;
   --color-light-gray: rgba(15, 20, 25, 0.1);
 
@@ -90,13 +92,13 @@ a {
   grid-template-columns: [container-start header-start] 1fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
 
   @media only screen and (max-width: 1240px) {
-    grid-template-columns: [container-start header-start] 0.25fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
+    grid-template-columns: [container-start header-start] .25fr[header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
   }
   @media only screen and (max-width: 1048px) {
     grid-template-columns: [container-start header-start] 1fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
   }
   @media only screen and (max-width: 760px) {
-    grid-template-columns: [container-start header-start] 7.5rem [header-end main-start] 1fr [main-end container-end];
+    grid-template-columns: [container-start header-start] min-content [header-end main-start] 1fr [main-end container-end];
   }
   @media only screen and (max-width: 500px) {
     grid-template-columns: [container-start main-start] 1fr [container-end main-end];
@@ -125,18 +127,17 @@ a {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    position: fixed;
+    position: sticky;
+    top: 0;
     height: 100vh;
-    margin-right: 5rem;
+    margin-right: 3rem;
 
     align-items: center;
     z-index: 1;
     @media only screen and (max-width: 1240px) {
-      margin-right: 1rem;
+      margin: 0 1rem;
     }
-    @media only screen and (max-width: 760px) {
-      margin-right: 0;
-    }
+
     @media only screen and (max-width: 500px) {
       flex-direction: row;
       justify-content: center;
@@ -202,7 +203,7 @@ a {
 .right-bar {
   grid-column: right-bar-start/right-bar-end;
   background-color: var(--globalBackground);
-  @media only screen and (max-width: 994px) {
+  @media only screen and (max-width: 1048px) {
     display: none;
   }
 

@@ -17,8 +17,6 @@ import { createPost, getTeamPosts } from "../../../actions";
 import { getSeasonString } from "../../../lib/twit-helpers";
 import TopBar from "../../../components/TopBar";
 import teamStyle from "../../../sass/pages/Team.module.scss";
-import Event from "../../../components/Event";
-import TwitSelect from "../../../components/TwitSelect";
 import LeftColumn from "../../../components/LeftColumn";
 import RightColumn from "../../../components/RightColumn";
 import StandingsCard from "../../../components/StandingsCard";
@@ -92,31 +90,31 @@ function Team({ teamData, standings }) {
   }
 
   async function onPostSubmit(values) {
-    const post = await createPost(values, user.id);
-    return post;
-  }
-
-  async function fetchEventsBySeasonId(seasonId) {
-    const events = await backend.get(
-      `api/teams/${team.abbrev.substring(1)}/events`,
-      {
-        params: {
-          seasonId: seasonId,
-          userId: user.id,
-        },
-      }
-    );
-    setEvents(events.data);
+    try {
+      const post = await createPost(values, user.id);
+      setPosts((prevArray) => [post, ...prevArray]);
+      return post;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function renderEmpty() {
     switch (tab) {
       case "mentions":
+        return (
+          <Empty
+            main="No mentions"
+            sub="No posts mentioning this team"
+            onActionClick={() => setShowPopupCompose(true)}
+            actionText="Be the first"
+          />
+        );
       case "media":
         return (
           <Empty
-            main="Empty"
-            sub={`${team.abbrev} hasn't been mentioned in a post yet`}
+            main="No media"
+            sub="Nothing showcasing this team"
             onActionClick={() => setShowPopupCompose(true)}
             actionText="Be the first"
           />
@@ -147,53 +145,6 @@ function Team({ teamData, standings }) {
     return <Post post={item} update={updatePosts} user={user} />;
   }
 
-  function renderContent() {
-    if (tab === "mentions") {
-      return null;
-    } else if (tab === "schedule") {
-      if (!events) {
-        return <TwitSpinner size={50} />;
-      } else if (events.length === 0) {
-        if (user.id === team.owner_id) {
-          return (
-            <React.Fragment>
-              {renderTwitSelect()}
-              <Empty
-                main="No events"
-                sub="Nothing scheduled for the current season"
-                actionText="Schedule event"
-                onActionClick={() => setShowEditEventsPopup(true)}
-              />
-            </React.Fragment>
-          );
-        } else {
-          return (
-            <React.Fragment>
-              {renderTwitSelect()}
-              <Empty
-                main="No events"
-                sub="Nothing scheduled for the current season"
-              />
-            </React.Fragment>
-          );
-        }
-      } else {
-        return (
-          <React.Fragment>
-            {renderTwitSelect()}
-            {renderEvents()}
-          </React.Fragment>
-        );
-      }
-    }
-  }
-
-  function renderEvents() {
-    return events.map((event, index) => {
-      return <Event key={index} event={event} teamId={team.id} />;
-    });
-  }
-
   function renderMenu() {
     if (!user) {
       return null;
@@ -205,32 +156,11 @@ function Team({ teamData, standings }) {
             Profile
           </MenuItem>
           <MenuItem onClick={editRoster}>Add players</MenuItem>
-          <MenuItem onClick={() => {}}>Coaches</MenuItem>
           <MenuItem onClick={editEvents}>Schedule event</MenuItem>
         </Menu>
       );
     } else {
       return null;
-    }
-  }
-
-  function renderTwitSelect() {
-    if (!team.seasons) {
-      return null;
-    } else {
-      const options = team.seasons.map((_season) => {
-        return {
-          ..._season,
-          text: getSeasonString(_season, team.seasons),
-        };
-      });
-      return (
-        <TwitSelect
-          onSelect={fetchEventsBySeasonId}
-          options={options}
-          defaultValue={getSeasonString(team.current_season, team.seasons)}
-        />
-      );
     }
   }
 
@@ -263,8 +193,8 @@ function Team({ teamData, standings }) {
         </header>
         <main className="main">
           <TopBar
-            main={team.team_name}
-            sub={`${team.num_posts} Posts`}
+            main={`${team.abbrev}`}
+            sub="Team"
             menu={renderMenu()}
           ></TopBar>
           <TeamProfile
@@ -278,12 +208,6 @@ function Team({ teamData, standings }) {
               id={"mentions"}
               active={tab === "mentions"}
               title="Mentions"
-            />
-            <TwitTab
-              onClick={onTabSelect}
-              id={"schedule"}
-              active={tab === "schedule"}
-              title="Schedule"
             />
             <TwitTab
               onClick={onTabSelect}
@@ -320,7 +244,7 @@ function Team({ teamData, standings }) {
       />
       <EditEventsPopup
         show={showEditEventsPopup}
-        homeTeam={null}
+        homeTeam={team}
         awayTeam={null}
         league={team.league}
         onHide={() => setShowEditEventsPopup(false)}

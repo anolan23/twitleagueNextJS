@@ -40,12 +40,13 @@ function TwitItemSelect({ id, options, defaultValue, onSelect, disabled }) {
       return <TwitSpinner size={30} />;
     }
     return options.map((option, index) => {
+      const { avatar, title, subtitle } = option;
       return (
         <TwitItem
           key={index}
-          avatar={option.avatar}
-          title={option.title}
-          subtitle={option.subtitle}
+          avatar={avatar}
+          title={title}
+          subtitle={subtitle}
           onClick={() => onOptionClick(option)}
           small
         />

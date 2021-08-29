@@ -62,13 +62,6 @@ function CountPages({ team }) {
           startIndex,
           stopIndex,
         });
-      case "coaches":
-        return getRoster({
-          abbrev,
-          userId: user.id,
-          startIndex,
-          stopIndex,
-        });
       case "followers":
         return getFollowers({
           teamId,
@@ -124,14 +117,6 @@ function CountPages({ team }) {
     switch (resource) {
       case "players":
         return <Empty main="No players" sub="Roster is empty" />;
-      case "coaches":
-        return (
-          <Empty
-            main="No coaches"
-            sub="There aren't any coaches on this team"
-          />
-        );
-
       case "followers":
         return (
           <Empty main="No followers" sub="No one is following this team" />
@@ -148,19 +133,13 @@ function CountPages({ team }) {
         <LeftColumn setShowPopupCompose={null} />
       </header>
       <main className="main">
-        <TopBar main={team_name} sub={`${abbrev}`}></TopBar>
+        <TopBar main={abbrev} sub="Team"></TopBar>
         <TwitTabs>
           <TwitTab
             onClick={onTabSelect}
             id={"players"}
             active={tab === "players"}
             title="Players"
-          />
-          <TwitTab
-            onClick={onTabSelect}
-            id={"coaches"}
-            active={tab === "coaches"}
-            title="Coaches"
           />
           <TwitTab
             onClick={onTabSelect}

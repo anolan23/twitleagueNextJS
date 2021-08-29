@@ -177,7 +177,7 @@ function MainInput({
       return { location: uploadedFile.Location, type: type };
     });
     media = JSON.stringify(media);
-    let newPost = { ...post, media: media };
+    let newPost = { ...post, media };
     const _post = await onSubmit(newPost);
     setCreatedPost(_post);
     setMedia(null);

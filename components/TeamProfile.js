@@ -4,15 +4,7 @@ import Link from "next/link";
 
 import useUser from "../lib/useUser";
 import { useRouter } from "next/router";
-import {
-  follow,
-  unFollow,
-  toggleEditTeamPopup,
-  toggleScheduleModal,
-  toggleEditRosterPopup,
-  toggleEditEventsPopup,
-  sendNotification,
-} from "../actions";
+import { follow, unFollow, sendNotification } from "../actions";
 import Profile from "./Profile";
 import teamProfile from "../sass/components/TeamProfile.module.scss";
 import TwitButton from "./TwitButton";
@@ -173,13 +165,13 @@ function TeamProfile({ team, standings, onAvatarClick }) {
           <div
             className={`${teamProfile["team-profile__teamname-box"]} u-margin-top-tiny`}
           >
-            <h1
-              className={teamProfile["team-profile__info__abbrev"]}
-            >{`${team.abbrev.substring(1)}`}</h1>
+            <h1 className={teamProfile["team-profile__info__abbrev"]}>
+              {team.team_name}
+            </h1>
           </div>
           <div className={teamProfile["team-profile__info__name"]}>
             <div className={teamProfile["team-profile__info__name__league"]}>
-              {team.team_name}
+              {team.abbrev}
             </div>
             {renderLeagueName()}
           </div>
@@ -204,11 +196,6 @@ function TeamProfile({ team, standings, onAvatarClick }) {
               href={`/teams/${team.abbrev.substring(1)}/players`}
               value={team.players}
               text="Players"
-            />
-            <Count
-              href={`/teams/${team.abbrev.substring(1)}/coaches`}
-              value={team.players}
-              text="Coaches"
             />
             <Count
               href={`/teams/${team.abbrev.substring(1)}/followers`}

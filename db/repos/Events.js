@@ -208,6 +208,64 @@ class Events {
 
     return rows;
   }
+
+  static async findSeasonEvents(seasonId) {
+    const { rows } = await pool.query(
+      `
+      WITH league_data AS (
+        SELECT leagues.id
+        FROM seasons
+        JOIN leagues ON leagues.id = seasons.league_id
+        WHERE seasons.id = $1
+      )
+      SELECT 
+        (
+        SELECT jsonb_agg(nested_teams)
+        FROM (
+          SELECT *
+          FROM season_teams
+          WHERE season_id = $1
+        ) AS nested_teams
+        ) AS teams,
+        (
+        SELECT jsonb_agg(nested_event)
+        FROM (
+          SELECT *,
+            (
+              SELECT row_to_json(home_team) AS home_team
+              FROM (
+                SELECT *
+                FROM season_teams 
+                WHERE id = events.home_season_team_id
+              ) AS home_team
+            ),
+            (
+              SELECT row_to_json(away_team) AS away_team
+              FROM (
+                SELECT *
+                FROM season_teams 
+                WHERE id = events.away_season_team_id
+              ) AS away_team
+            )	
+          FROM events
+          WHERE season_id = $1
+          ORDER BY events.date DESC
+        ) AS nested_event
+        ) AS events,
+        (
+        SELECT jsonb_agg(nested_season)
+        FROM (
+          SELECT *
+          FROM seasons
+          WHERE league_id = (SELECT id FROM league_data)
+        ) AS nested_season
+        ) AS seasons
+    `,
+      [seasonId]
+    );
+
+    return rows[0];
+  }
 }
 
 export default Events;

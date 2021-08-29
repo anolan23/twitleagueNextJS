@@ -7,7 +7,12 @@ import useSWR from "swr";
 import leagueStyle from "../../../sass/components/League.module.scss";
 import Leagues from "../../../db/repos/Leagues";
 import useUser from "../../../lib/useUser";
-import { startSeason, endSeason, getLeaguePosts } from "../../../actions";
+import {
+  startSeason,
+  endSeason,
+  getLeaguePosts,
+  createPost,
+} from "../../../actions";
 import TopBar from "../../../components/TopBar";
 import backend from "../../../lib/backend";
 import Empty from "../../../components/Empty";
@@ -26,6 +31,7 @@ import Menu from "../../../components/Menu";
 import MenuItem from "../../../components/MenuItem";
 import InfiniteList from "../../../components/InfiniteList";
 import TwitSpinner from "../../../components/TwitSpinner";
+import PopupCompose from "../../../components/modals/PopupCompose";
 
 function League({ leagueData }) {
   const router = useRouter();
@@ -34,6 +40,7 @@ function League({ leagueData }) {
   const { user } = useUser();
   const [tab, setTab] = useState("mentions");
   const [posts, setPosts] = useState(null);
+  const [showPopupCompose, setShowPopupCompose] = useState(false);
   const [showStartSeasonPrompt, setShowStartSeasonPrompt] = useState(false);
   const [showEndSeasonPrompt, setShowEndSeasonPrompt] = useState(false);
   const [showEditLeaguePopup, setShowEditLeaguePopup] = useState(false);
@@ -112,30 +119,14 @@ function League({ leagueData }) {
     setTab(k.target.id);
   };
 
-  const renderContent = () => {
-    switch (tab) {
-      case "mentions":
-        if (posts === null) {
-          return;
-        } else if (posts.length === 0) {
-          return (
-            <Empty
-              main="No team mentions yet"
-              sub="Be the first to make a post mentioning a team within this league"
-              actionText="Post now"
-            />
-          );
-        } else {
-          return posts.map((post, index) => {
-            return <Post key={index} post={post} user={user} />;
-          });
-        }
-      case "media":
-        return null;
-      default:
-        return null;
+  async function onPostSubmit(values) {
+    try {
+      const post = await createPost(values, user.id);
+      return post;
+    } catch (error) {
+      console.log(error);
     }
-  };
+  }
 
   function updatePosts(post) {
     let newPosts = [...posts];
@@ -291,11 +282,15 @@ function League({ leagueData }) {
     <React.Fragment>
       <div className="twit-container">
         <header className="header">
-          <LeftColumn />
+          <LeftColumn setShowPopupCompose={setShowPopupCompose} />
         </header>
         <main className="main">
           <div className={leagueStyle["league"]}>
-            <TopBar main={league_name} sub={sport} menu={renderMenu()}></TopBar>
+            <TopBar
+              main={league_name}
+              sub="League"
+              menu={renderMenu()}
+            ></TopBar>
             <LeagueProfile
               league={league}
               onAvatarClick={() => setShowEditLeaguePopup(!showEditLeaguePopup)}
@@ -324,6 +319,11 @@ function League({ leagueData }) {
           </RightColumn>
         </div>
       </div>
+      <PopupCompose
+        show={showPopupCompose}
+        onHide={() => setShowPopupCompose(false)}
+        onSubmit={onPostSubmit}
+      />
       <EditLeaguePopup
         show={showEditLeaguePopup}
         onHide={() => setShowEditLeaguePopup(false)}

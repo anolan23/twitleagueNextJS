@@ -99,30 +99,6 @@ export const toggleSignupPopup = () => {
   return { type: "TOGGLE_SIGNUP_POPUP" };
 };
 
-export const toggleEditProfilePopup = () => (dispatch, getState) => {
-  dispatch({ type: "TOGGLE_EDIT_PROFILE_MODAL" });
-};
-
-export const toggleEditTeamPopup = () => (dispatch) => {
-  dispatch({ type: "TOGGLE_EDIT_TEAM_MODAL" });
-};
-
-export const toggleEditRosterPopup = () => (dispatch) => {
-  dispatch({ type: "TOGGLE_EDIT_ROSTER_POPUP" });
-};
-
-export const toggleEditEventsPopup = () => (dispatch) => {
-  dispatch({ type: "TOGGLE_EDIT_EVENTS_POPUP" });
-};
-
-export const toggleEditDivisionsPopup = () => (dispatch) => {
-  dispatch({ type: "TOGGLE_EDIT_DIVISIONS_POPUP" });
-};
-
-export const toggleUpdateScorePopup = () => (dispatch) => {
-  dispatch({ type: "TOGGLE_UPDATE_SCORE_POPUP" });
-};
-
 export const togglePanel = () => {
   return { type: "TOGGLE_PANEL" };
 };
@@ -919,5 +895,10 @@ export const getSuggestedUsers = async ({ userId, startIndex, stopIndex }) => {
       stopIndex,
     },
   });
+  return results.data;
+};
+
+export const getSeasonEvents = async (seasonId) => {
+  const results = await backend.get(`/api/seasons/${seasonId}/events`);
   return results.data;
 };
