@@ -284,6 +284,7 @@ function Post({ history, post, style, update, user }) {
         onHide={() => setShowPopupCompose(false)}
         reply={post}
         onSubmit={onReplySubmit}
+        user={user}
       />
     </div>
   );

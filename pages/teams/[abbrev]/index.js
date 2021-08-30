@@ -189,7 +189,11 @@ function Team({ teamData, standings }) {
     <React.Fragment>
       <div className="twit-container">
         <header className="header">
-          <LeftColumn setShowPopupCompose={setShowPopupCompose} />
+          <LeftColumn
+            setShowPopupCompose={setShowPopupCompose}
+            initialValue={team.abbrev}
+            onSubmit={onPostSubmit}
+          />
         </header>
         <main className="main">
           <TopBar
@@ -232,6 +236,13 @@ function Team({ teamData, standings }) {
         </div>
       </div>
       <AuthBanner />
+      <PopupCompose
+        show={showPopupCompose}
+        onHide={() => setShowPopupCompose(false)}
+        initialValue={team.abbrev}
+        onSubmit={onPostSubmit}
+        user={user}
+      />
       <EditTeamPopup
         show={showEditTeamPopup}
         onHide={() => setShowEditTeamPopup(false)}
@@ -248,12 +259,6 @@ function Team({ teamData, standings }) {
         awayTeam={null}
         league={team.league}
         onHide={() => setShowEditEventsPopup(false)}
-      />
-      <PopupCompose
-        show={showPopupCompose}
-        onHide={() => setShowPopupCompose(false)}
-        initialValue={team.abbrev}
-        onSubmit={onPostSubmit}
       />
     </React.Fragment>
   );

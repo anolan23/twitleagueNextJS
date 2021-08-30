@@ -158,7 +158,7 @@ function Divisions({ leagueData }) {
           <LeftColumn />
         </header>
         <main className="main">
-          <TopBar main={`${league.league_name} Divisions`}>
+          <TopBar main={league.league_name} sub="Divisions">
             <TwitButton color="primary" onClick={create}>
               New division
             </TwitButton>

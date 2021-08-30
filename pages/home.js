@@ -60,7 +60,7 @@ function HomePage() {
     <React.Fragment>
       <div className="twit-container">
         <header className="header">
-          <LeftColumn setShowPopupCompose={setShowPopupCompose} />
+          <LeftColumn onSubmit={onPostSubmit} />
         </header>
         <main className="main">
           <div className={home["home"]}>
@@ -70,6 +70,7 @@ function HomePage() {
               initialValue=""
               buttonText="Post"
               onSubmit={onPostSubmit}
+              user={user}
             />
             <Divide first />
             <InfiniteList
@@ -88,11 +89,6 @@ function HomePage() {
           </RightColumn>
         </div>
       </div>
-      <PopupCompose
-        show={showPopupCompose}
-        onHide={() => setShowPopupCompose(false)}
-        onSubmit={onPostSubmit}
-      />
     </React.Fragment>
   );
 }

@@ -3,7 +3,6 @@ import reactStringReplace from "react-string-replace";
 import ContentEditable from "react-contenteditable";
 
 import mainInput from "../sass/components/MainInput.module.scss";
-import useUser from "../lib/useUser";
 import TwitButton from "./TwitButton";
 import TwitMedia from "./TwitMedia";
 import Avatar from "./Avatar";
@@ -27,8 +26,8 @@ function MainInput({
   initialValue,
   inputRef,
   focusOnMount,
+  user,
 }) {
-  const { user } = useUser();
   const contentEditableRef = useRef();
   const hiddenFileInput = useRef(null);
   const dropdownRef = useRef(null);

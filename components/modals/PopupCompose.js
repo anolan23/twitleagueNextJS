@@ -6,7 +6,7 @@ import MainInput from "../MainInput";
 import TwitButton from "../TwitButton";
 import Post from "../Post";
 
-function PopupCompose({ show, onHide, initialValue, onSubmit, reply }) {
+function PopupCompose({ show, onHide, initialValue, onSubmit, reply, user }) {
   if (!show) {
     return null;
   }
@@ -21,7 +21,7 @@ function PopupCompose({ show, onHide, initialValue, onSubmit, reply }) {
     if (!reply) {
       return null;
     } else {
-      return <Post listItem={reply} history />;
+      return <Post post={reply} history />;
     }
   };
 
@@ -38,6 +38,7 @@ function PopupCompose({ show, onHide, initialValue, onSubmit, reply }) {
           onSubmit={onSubmit}
           inputRef={inputRef}
           focusOnMount
+          user={user}
         />
       </React.Fragment>
     );

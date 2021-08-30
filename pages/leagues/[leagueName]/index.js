@@ -282,7 +282,7 @@ function League({ leagueData }) {
     <React.Fragment>
       <div className="twit-container">
         <header className="header">
-          <LeftColumn setShowPopupCompose={setShowPopupCompose} />
+          <LeftColumn onSubmit={onPostSubmit} />
         </header>
         <main className="main">
           <div className={leagueStyle["league"]}>
@@ -323,6 +323,7 @@ function League({ leagueData }) {
         show={showPopupCompose}
         onHide={() => setShowPopupCompose(false)}
         onSubmit={onPostSubmit}
+        user={user}
       />
       <EditLeaguePopup
         show={showEditLeaguePopup}
