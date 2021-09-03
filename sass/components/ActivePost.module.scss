@@ -1,138 +1,131 @@
-.active-post{
+.active-post {
+  display: flex;
+  flex-direction: column;
+
+  font-size: 1.5rem;
+  line-height: 1.3125;
+  padding: 1rem 1.5rem;
+  cursor: default;
+  transition: background-color 0.2s;
+  border-bottom: var(--border);
+
+  &__user {
+    display: flex;
+    cursor: pointer;
+  }
+
+  &__avatar {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+  }
+
+  &__user-text {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 
-    font-size: 1.5rem;
-    line-height: 1.3125;
-    padding: 1rem 1.5rem;
-    cursor: default;
-    transition: background-color .2s;
+    margin-left: 1rem;
+  }
+
+  &__name {
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  &__username {
+    color: var(--color-text-secondary);
+  }
+
+  &__body {
+    font-size: 2.3rem;
+    line-height: 3rem;
+    white-space: pre-wrap;
+    margin: 1rem 0;
+    cursor: text;
+  }
+
+  &__timestamp {
+    color: var(--color-text-secondary);
+    margin: 1.5rem 0;
+  }
+
+  &__stats {
+    padding: 1.5rem 0.5rem;
+    border-top: var(--border);
     border-bottom: var(--border);
+    cursor: pointer;
+  }
 
-    &__user{
-        display: flex;
-        cursor: pointer;
+  &__stat-box {
+    text-decoration: none;
 
+    &:hover {
+      text-decoration: underline;
     }
+  }
 
-    &__avatar{
-        height: 50px;
-        width: 50px;
-        object-fit: cover;
+  &__value {
+    font-weight: 700;
+  }
 
-    }
+  &__stat {
+    color: var(--color-text-secondary);
+    margin-left: 0.5rem;
+  }
 
-    &__user-text{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+  &__icons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
 
-        margin-left: 1rem;
-    }
+    &__holder {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      position: relative;
+      color: var(--color-text-secondary);
+      fill: currentColor;
 
-    &__name{
-        font-weight: 700;
-        color:#101010;
-        text-decoration: none;
-        display:inline-block;
-    }
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 175%;
+        height: 175%;
+        border-radius: 50%;
+        opacity: 0;
+        transition: all 0.2s;
+      }
 
-    &__username{
-        color: var(--color-text-secondary);
-    }
-
-    &__body{
-        font-size: 2.3rem;
-        line-height: 3rem;
-        white-space: pre-wrap;
-        margin: 1rem 0;
-        cursor: text;
-    }
-
-    &__timestamp{
-        color: var(--color-text-secondary);
-        margin: 1.5rem 0;
-
-    }
-
-    &__stats{
-        padding: 1.5rem .5rem;
-        border-top: var(--border);
-        border-bottom: var(--border);
-        cursor: pointer;
-    }
-
-    &__stat-box{
-        text-decoration: none;
-
-        &:hover{
-            text-decoration: underline;
+      &:hover {
+        &::before {
+          opacity: 0.15;
+          color: inherit;
+          background-color: currentColor;
         }
+      }
+
+      &__active {
+        color: rgb(224, 36, 94);
+        fill: currentColor;
+      }
     }
+  }
 
-    &__value{
-        font-weight: 700;
-    }
-
-    &__stat{
-        color: var(--color-text-secondary);
-        margin-left: .5rem;
-
-
-    }
-
-    &__icons{
-        display: flex;
-        justify-content: space-around;
-        margin-top: 1rem;
-
-        &__holder{
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            position: relative;
-            color: var(--color-text-secondary);
-            fill: currentColor;
-
-            &::before{
-                content: "";
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 175%;
-                height: 175%;
-                border-radius: 50%;
-                opacity: 0;
-                transition: all .2s;
-              }
-        
-              &:hover{
-                &::before{
-                  opacity: .15;
-                  color: inherit;
-                  background-color: currentColor;
-                }
-              }
-      
-            &__active{
-              color: rgb(224, 36, 94);
-              fill: currentColor;
-            }
-          }
-    }
-
-    &__icon{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        align-self: center;
-        height: 18.5px;
-        width: 18.5px;
-        fill: inherit;
-        position: relative;
-        transition: all .2s;
-    }
-
-
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    height: 18.5px;
+    width: 18.5px;
+    fill: inherit;
+    position: relative;
+    transition: all 0.2s;
+  }
 }

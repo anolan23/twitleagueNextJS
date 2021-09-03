@@ -1,14 +1,13 @@
 :root {
-  // original
+  // lightmode
   --color-text: rgb(15, 20, 25);
   --color-text-secondary: rgb(91, 112, 131);
   --color-text-link: rgb(27, 149, 224);
   --color-primary: rgb(29, 161, 242);
   --color-secondary: var(--color-light-gray);
   --color-tertiary: #00adb5;
-  --color-four: #eeeeee;
   --color-background: white;
-  --color-background-secondary: white;
+  --color-background-secondary: lightgray;
   --GREEN_TEXT: #0aba74;
   --RED_TEXT: #ff3e3e;
   --HIGHLIGHT: #f6f6f6;
@@ -17,49 +16,16 @@
   --RED_BACKGROUND: #ffecec;
   --GRAY_BACKGROUND: rgba(0, 0, 0, 0.03);
 
-  //test
-
-  --color-card: whitesmoke;
+  --color-card: rgba(0, 0, 0, 0.2);
+  --color-input: white;
+  --color-input-border: 1px solid lightgray;
+  --color-divide: rgb(247, 249, 250);
   --color-light-gray: rgba(15, 20, 25, 0.1);
-
-  --gradient-primary: linear-gradient(
-    to bottom,
-    rgb(29, 161, 242),
-    rgb(24, 148, 224)
-  );
 
   --border: 1px solid var(--color-light-gray);
   --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px,
     rgb(101 119 134 / 25%) 0px 1px 3px 1px;
   --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
-
-  --globalBackground: white;
-  --globalSecondaryBackground: white;
-  --globalTertiaryBackground: white;
-
-  //chess.com
-  // --globalBackground: white;
-  // --globalSecondaryBackground: white;
-  // --globalTertiaryBackground: white;
-  // --globalAccentBackground: hsla(0, 0%, 100%, 0.14);
-  // --subtleButtonBackground: hsla(0, 0%, 100%, 0.16);
-  // --globalBorder: hsla(0, 0%, 100%, 0.1);
-  // --globalGray: hsla(0, 0%, 100%, 0.08);
-  // --globalGraySoft: hsla(0, 0%, 100%, 0.08);
-  // --globalChartBackground: hsla(0, 0%, 100%, 0.05);
-  // --globalColorThemeFull: #fff;
-  // --globalColorThemeHigh: hsla(0, 0%, 100%, 0.8);
-  // --globalColorThemeMid: hsla(0, 0%, 100%, 0.65);
-  // --globalColorThemeLow: hsla(0, 0%, 100%, 0.4);
-  // --globalColorThemeLink: #52b1dc;
-  // --globalColorThemeBlueToMid: hsla(0, 0%, 100%, 0.65);
-  // --globalColorThemeBlueToMidHover: hsla(0, 0%, 100%, 0.8);
-  // --globalColorThemeBlueToHigh: hsla(0, 0%, 100%, 0.8);
-  // --globalColorThemeBlueToHighHover: #fff;
-  // --globalColorThemeHighToMid: hsla(0, 0%, 100%, 0.65);
-  // --globalColorThemeFullToMid: hsla(0, 0%, 100%, 0.65);
-  // --globalColorNeutral100: rgba(0, 0, 0, 0.2);
-  // --globalColorNeutral200: rgba(0, 0, 0, 0.4);
 }
 
 *,
@@ -78,15 +44,74 @@ body {
   box-sizing: border-box;
   padding: 0rem;
   overflow-y: scroll;
+  background-color: var(--color-background);
 }
 
 a {
   color: var(--color-text-link);
 }
 
+.lightmode {
+  --color-text: rgb(15, 20, 25);
+  --color-text-secondary: rgb(91, 112, 131);
+  --color-text-link: rgb(27, 149, 224);
+
+  --color-primary: rgb(29, 161, 242);
+  --color-secondary: var(--color-light-gray);
+
+  --color-background: white;
+  --color-background-secondary: lightgray;
+
+  --color-button-primary: var(--color-primary);
+  --color-button-primary-text: var(--color-text);
+
+  --color-card: rgba(0, 0, 0, 0.2);
+  --color-input: white;
+  --color-input-border: 1px solid lightgray;
+  --color-divide: rgb(247, 249, 250);
+  --color-light-gray: rgba(15, 20, 25, 0.1);
+
+  --border: 1px solid var(--color-light-gray);
+  --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px,
+    rgb(101 119 134 / 25%) 0px 1px 3px 1px;
+  --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
+}
+
+.darkmode {
+  --color-text: white;
+  --color-text-secondary: rgb(255, 255, 255, 0.65);
+  --color-text-link: #52b1dc;
+
+  --color-primary: #00aeff;
+  --color-secondary: var(--color-light-gray);
+
+  --color-background: #51504d;
+  --color-background-secondary: rgba(0, 0, 0, 0.2);
+
+  --color-button-primary: var(--color-primary);
+  --color-button-primary-text: white;
+
+  --color-card: var(--color-background-secondary);
+  --color-input: rgba(255, 255, 255, 0.1);
+  --color-input-border: none;
+
+  --color-divide: rgba(0, 0, 0, 0.2);
+  --color-light-gray: rgba(15, 20, 25, 0.1);
+
+  --border: 1px solid rgba(255, 255, 255, 0.1);
+  --box-shadow: 0px 0px 10px 0px #000000;
+  --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
+
+  caret-color: white;
+  color-scheme: dark;
+
+  .twit-input {
+    background-color: black;
+  }
+}
+
 .twit-container {
   min-height: 100vh;
-  background-color: var(--globalBackground);
 
   display: grid;
   grid-template-columns: [container-start header-start] 1fr [header-end main-start] 600px [main-end right-bar-start] 1fr [right-bar-end container-end];
@@ -109,7 +134,6 @@ a {
 .header {
   display: flex;
   justify-content: flex-end;
-  background-color: var(--globalBackground);
 
   @media only screen and (max-width: 1240px) {
     justify-content: flex-end;
@@ -144,7 +168,6 @@ a {
       align-items: center;
       height: 50px;
       bottom: 0;
-      background-color: white;
       width: 100%;
       border-top: var(--border);
     }
@@ -187,9 +210,9 @@ a {
 .main {
   grid-column: main-start/main-end;
   width: 600px;
-  background-color: var(--globalTertiaryBackground);
   border-right: var(--border);
   border-left: var(--border);
+  background-color: var(--color-background-secondary);
 
   @media only screen and (max-width: 760px) {
     width: 100%;
@@ -202,7 +225,6 @@ a {
 
 .right-bar {
   grid-column: right-bar-start/right-bar-end;
-  background-color: var(--globalBackground);
   @media only screen and (max-width: 1048px) {
     display: none;
   }
@@ -254,7 +276,7 @@ a {
 
     &__input-box {
       position: sticky;
-      background-color: white;
+      background-color: var(--color-background);
       height: 50px;
       width: 100%;
       display: flex;
@@ -267,7 +289,7 @@ a {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        background-color: var(--color-light-gray);
+        background-color: var(--color-background-secondary);
 
         height: 38px;
 
@@ -279,7 +301,7 @@ a {
       height: 2rem;
       width: 2rem;
       margin-left: 1.5rem;
-      fill: var(--color-text-secondary);
+      fill: var(--color-text);
     }
   }
 }
@@ -300,7 +322,7 @@ a {
 
   &__box {
     height: 50px;
-    background-color: var(--globalBackground);
+    background-color: var(--color-background);
     border-bottom: var(--border);
 
     display: flex;

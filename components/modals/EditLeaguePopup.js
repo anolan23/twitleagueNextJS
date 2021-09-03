@@ -47,30 +47,16 @@ function EditLeaguePopup(props) {
       <div className={editProfilePopup["edit-profile-popup"]}>
         <Profile avatar={formik.values.avatar} banner={formik.values.banner} />
         <TwitForm id="edit-team-form" onSubmit={formik.handleSubmit}>
-          <div className={twitForm["twit-form__group"]}>
-            <label htmlFor="avatar" className={twitForm["twit-form__label"]}>
-              Avatar URL
-            </label>
-            <input
+          <TwitInputGroup id="avatar" labelText="Avatar URL">
+            <TwitInput
               id="avatar"
+              type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.avatar}
               name="avatar"
-              type="text"
-              autoComplete="off"
-              className={
-                formik.errors.avatar && formik.touched.avatar
-                  ? twitForm["twit-form__input--errors"]
-                  : twitForm["twit-form__input"]
-              }
             />
-            {formik.errors.avatar && formik.touched.avatar ? (
-              <div className={twitForm["twit-form__errors"]}>
-                {formik.errors.avatar}
-              </div>
-            ) : null}
-          </div>
+          </TwitInputGroup>
           <TwitInputGroup id="banner" labelText="Banner URL">
             <TwitInput
               id="banner"
@@ -81,30 +67,16 @@ function EditLeaguePopup(props) {
               name="banner"
             />
           </TwitInputGroup>
-          <div className={twitForm["twit-form__group"]}>
-            <label htmlFor="bio" className={twitForm["twit-form__label"]}>
-              Bio
-            </label>
-            <input
+          <TwitInputGroup id="bio" labelText="Bio">
+            <TwitInput
               id="bio"
+              type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.bio}
               name="bio"
-              type="text"
-              autoComplete="off"
-              className={
-                formik.errors.bio && formik.touched.bio
-                  ? twitForm["twit-form__input--errors"]
-                  : twitForm["twit-form__input"]
-              }
             />
-            {formik.errors.bio && formik.touched.bio ? (
-              <div className={twitForm["twit-form__errors"]}>
-                {formik.errors.bio}
-              </div>
-            ) : null}
-          </div>
+          </TwitInputGroup>
         </TwitForm>
       </div>
     );

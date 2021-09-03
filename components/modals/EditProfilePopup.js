@@ -8,6 +8,9 @@ import { updateUserProfile } from "../../actions";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss";
 import Profile from "../Profile";
+import TwitForm from "../TwitForm";
+import TwitInputGroup from "../TwitInputGroup";
+import TwitInput from "../TwitInput";
 
 function EditProfilePopup({ show, onHide }) {
   const formik = useFormik({
@@ -35,133 +38,61 @@ function EditProfilePopup({ show, onHide }) {
 
   const renderForm = () => {
     return (
-      <form
-        id="edit-profile-form"
-        onSubmit={formik.handleSubmit}
-        className={editProfilePopup["edit-profile-popup"]}
-      >
+      <React.Fragment>
         <Profile avatar={formik.values.avatar} banner={formik.values.banner} />
-        <div className={twitForm["twit-form__group"]}>
-          <label htmlFor="avatar" className={twitForm["twit-form__label"]}>
-            Avatar URL
-          </label>
-          <input
-            id="avatar"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.avatar}
-            name="avatar"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.avatar && formik.touched.avatar
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
-          />
-          {formik.errors.avatar && formik.touched.avatar ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.avatar}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label htmlFor="name" className={twitForm["twit-form__label"]}>
-            Name
-          </label>
-          <input
-            id="name"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.name}
-            name="name"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.name && formik.touched.name
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
-          />
-          {formik.errors.name && formik.touched.name ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.name}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label htmlFor="bio" className={twitForm["twit-form__label"]}>
-            Bio
-          </label>
-          <input
-            id="bio"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.bio}
-            name="bio"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.bio && formik.touched.bio
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
-          />
-          {formik.errors.bio && formik.touched.bio ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.bio}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label htmlFor="website" className={twitForm["twit-form__label"]}>
-            Website
-          </label>
-          <input
-            id="website"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.website}
-            name="website"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.website && formik.touched.website
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
-          />
-          {formik.errors.website && formik.touched.website ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.website}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label htmlFor="dob" className={twitForm["twit-form__label"]}>
-            Birth Date
-          </label>
-          <input
-            id="dob"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.dob}
-            name="dob"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.dob && formik.touched.dob
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
-          />
-          {formik.errors.dob && formik.touched.dob ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.dob}
-            </div>
-          ) : null}
-        </div>
-      </form>
+        <TwitForm id="edit-profile-form" onSubmit={formik.handleSubmit}>
+          <TwitInputGroup id="avatar" labelText="Avatar URL">
+            <TwitInput
+              id="avatar"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.avatar}
+              name="avatar"
+            />
+          </TwitInputGroup>
+          <TwitInputGroup id="name" labelText="Name">
+            <TwitInput
+              id="name"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.name}
+              name="name"
+            />
+          </TwitInputGroup>
+          <TwitInputGroup id="bio" labelText="Bio">
+            <TwitInput
+              id="bio"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.bio}
+              name="bio"
+            />
+          </TwitInputGroup>
+          <TwitInputGroup id="website" labelText="Website">
+            <TwitInput
+              id="website"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.website}
+              name="website"
+            />
+          </TwitInputGroup>
+          <TwitInputGroup id="dob" labelText="Date of birth">
+            <TwitInput
+              id="dob"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.dob}
+              name="dob"
+            />
+          </TwitInputGroup>
+        </TwitForm>
+      </React.Fragment>
     );
   };
 

@@ -1,12 +1,12 @@
-.divide{
-    // border-top: var(--border);
-    border-bottom: var(--border);
-    height: 10px;
-    background-color: rgb(247, 249, 250);
+.divide {
+  // border-top: var(--border);
+  border-bottom: var(--border);
+  height: 10px;
+  background-color: var(--color-divide);
 
-    &__first{
-        @media only screen and (max-width: 500px){
-            display: none;
-          }
+  &__first {
+    @media only screen and (max-width: 500px) {
+      display: none;
     }
+  }
 }

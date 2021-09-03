@@ -14,7 +14,7 @@ $button-brightness: 110%;
   user-select: none;
   transition: all 0.2s;
   border: none;
-  background-color: white;
+  background-color: var(--color-background);
   position: relative;
 
   &:not(:disabled),

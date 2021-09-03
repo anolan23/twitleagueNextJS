@@ -1,32 +1,31 @@
-.auto-complete-input{
-    position: relative;
+.auto-complete-input {
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  font-size: 1.5rem;
+  font-family: inherit;
+  display: block;
+  background-color: transparent;
+  color: var(--color-text);
+  border: none;
+  &:focus {
+    outline: none;
+  }
+
+  &__dropdown {
+    position: absolute;
     width: 100%;
-    padding: 10px;
-    font-size: 1.5rem;
-    font-family: inherit;
-    display: block;
-    background-color: transparent;
-    border: none;
-    &:focus{
-        outline: none;
-    }
-    
+    bottom: 0;
+  }
 
-    &__dropdown {
-        position: absolute;
-        width: 100%;
-        bottom: 0;
-    }
+  &__header {
+    font-size: 1.3rem;
+    font-weight: 700;
+    background-color: var(--color-primary);
+    color: white;
 
-    &__header{
-        font-size: 1.3rem;
-        font-weight: 700;
-        background-color: var(--color-primary);
-        color: white;
-
-        &__text{
-            margin-left: 1rem;
-        }
+    &__text {
+      margin-left: 1rem;
     }
+  }
 }
-

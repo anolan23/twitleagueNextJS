@@ -25,7 +25,7 @@ export default class MyDocument extends Document {
             }}
           />
         </Head>
-        <body>
+        <body className="darkmode">
           <Main />
           <NextScript />
           <div id="portal"></div>

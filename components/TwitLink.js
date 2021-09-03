@@ -82,7 +82,7 @@ function TwitLink({
             action={renderAction()}
             info={
               info
-                ? { ...info, main: info.name, secondary: info.username }
+                ? { ...info, main: info.name, secondary: `@${info.username}` }
                 : null
             }
             href={href}

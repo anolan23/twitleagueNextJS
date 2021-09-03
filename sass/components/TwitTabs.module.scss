@@ -3,10 +3,9 @@
   border-bottom: var(--border);
 
   &__tab {
-    background-color: white;
     font-size: 1.5rem;
     font-weight: 500;
-    color: var(--color-text-secondary);
+    color: var(--color-text);
     flex: 1;
     padding: 1.5rem;
     user-select: none;
@@ -19,7 +18,7 @@
     position: relative;
 
     &--active {
-      color: var(--color-text-primary);
+      color: var(--color-text);
       font-weight: 700;
       &::after {
         content: "";

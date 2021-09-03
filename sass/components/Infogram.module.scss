@@ -2,7 +2,7 @@
   width: 300px;
   border-radius: 1.6rem;
   position: absolute;
-  background-color: white;
+  background-color: var(--color-background);
   box-shadow: var(--box-shadow);
   cursor: pointer;
   z-index: 10;
@@ -36,7 +36,7 @@
       &:link,
       &:visited {
         font-weight: 700;
-        color: #101010;
+        color: var(--color-text);
         text-decoration: none;
         display: inline-block;
       }
