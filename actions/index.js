@@ -898,7 +898,11 @@ export const getSuggestedUsers = async ({ userId, startIndex, stopIndex }) => {
   return results.data;
 };
 
-export const getSeasonEvents = async (seasonId) => {
-  const results = await backend.get(`/api/seasons/${seasonId}/events`);
+export const getSchedule = async (leagueName, seasonId) => {
+  const results = await backend.get(`/api/leagues/${leagueName}/schedule`, {
+    params: {
+      seasonId,
+    },
+  });
   return results.data;
 };

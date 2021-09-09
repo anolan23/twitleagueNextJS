@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
+import { createPost } from "../actions";
 import TwitNav from "./TwitNav";
 import UserToggle from "./UserToggle";
 import TwitButton from "./TwitButton";
@@ -12,6 +13,16 @@ import PopupCompose from "./modals/PopupCompose";
 function LeftColumn({ initialValue, onSubmit, children }) {
   const { user } = useUser();
   const [showPopupCompose, setShowPopupCompose] = useState(false);
+
+  async function onComposeSubmit(values) {
+    if (!onSubmit) {
+      const post = await createPost(values, user.id);
+      return post;
+    } else {
+      const post = await onSubmit(values);
+      return post;
+    }
+  }
 
   return (
     <div className="header__left-column">
@@ -38,7 +49,7 @@ function LeftColumn({ initialValue, onSubmit, children }) {
         show={showPopupCompose}
         onHide={() => setShowPopupCompose(false)}
         initialValue={initialValue}
-        onSubmit={onSubmit}
+        onSubmit={onComposeSubmit}
         user={user}
       />
     </div>

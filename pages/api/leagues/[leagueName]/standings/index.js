@@ -5,7 +5,7 @@ export default async (req, res) => {
   const { leagueName, seasonId } = req.query;
   if (method === "POST") {
   } else if (method === "GET") {
-    const standings = await Leagues.standings(leagueName, seasonId);
+    const standings = await Leagues.findStandings(leagueName, seasonId);
     res.send(standings);
   } else {
     res

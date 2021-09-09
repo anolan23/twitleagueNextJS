@@ -36,7 +36,7 @@
 
   &__sidebar {
     position: sticky;
-    background-color: white;
+    background-color: var(--color-background);
     width: 300px;
     min-width: 300px;
     grid-column: 1/2;

@@ -15,12 +15,18 @@ import TwitSpinner from "../../../../components/TwitSpinner";
 import Empty from "../../../../components/Empty";
 import Division from "../../../../components/Division";
 import TwitSelect from "../../../../components/TwitSelect";
+import TwitInput from "../../../../components/TwitInput";
 import backend from "../../../../lib/backend";
 
 function Standings({ leagueData }) {
   const router = useRouter();
+  const { query, isFallback, isReady } = router;
+  const { leagueName, seasonId } = query;
+
   const { user } = useUser();
   const [standings, setStandings] = useState({});
+  const { divisions, teams } = standings;
+  const [seasonOption, setSeasonOption] = useState("");
 
   const fetcher = async (url) => {
     const response = await backend.get(url);
@@ -33,35 +39,64 @@ function Standings({ leagueData }) {
     { initialData: leagueData, revalidateOnMount: true }
   );
 
-  useEffect(async () => {
-    if (!router.isReady) {
+  useEffect(() => {
+    if (!isReady || isFallback) {
       return;
     }
-    const { leagueName, seasonId } = router.query;
-    const standings = await getStandings(leagueName, seasonId);
-    setStandings(standings);
-  }, [router.query]);
+    changeSeason(seasonId);
+  }, [isReady, isFallback]);
 
-  if (router.isFallback) {
-    return <TwitSpinner size={50} />;
+  function onSeasonChange(event) {
+    const seasonId = event.target.value;
+    router.replace({ query: { seasonId } }, undefined, {
+      shallow: true,
+      scroll: false,
+    });
+    changeSeason(seasonId);
   }
 
-  const { divisions, teams } = standings;
-
-  const options = () => {
-    if (!league) {
-      return [];
-    } else if (!league.seasons) {
-      return [];
+  async function changeSeason(seasonId) {
+    if (!seasonId) {
+      let { seasons } = league;
+      seasons = seasons || [];
+      const latestSeason = seasons[seasons.length - 1];
+      if (!latestSeason) {
+        setStandings({ divisions: [], teams: [] });
+        return;
+      }
+      seasonId = latestSeason.id;
     }
-    return league.seasons.map((season) => {
-      return { id: season.id, text: getSeasonString(season, league.seasons) };
-    });
-  };
+
+    const standings = await getStandings(leagueName, seasonId);
+    setStandings(standings);
+    setSeasonOption(seasonId);
+  }
+
+  function renderSeasonOptions() {
+    if (!league) return;
+    if (!league.seasons) return;
+    else {
+      return league.seasons.map((season, index) => {
+        const { id, created_at } = season;
+        return (
+          <option key={index} value={id}>
+            {getSeasonString(season, league.seasons)}
+          </option>
+        );
+      });
+    }
+  }
 
   function renderDivisions() {
     if (!divisions) {
-      return null;
+      return <TwitSpinner size={30} />;
+    } else if (divisions.length === 0) {
+      return (
+        <Empty
+          main="No standings"
+          sub="This league has no standings to display"
+        />
+      );
     } else {
       return divisions.map((division, index) => {
         let divisionTeams = teams.filter(
@@ -76,6 +111,11 @@ function Standings({ leagueData }) {
       });
     }
   }
+
+  if (isFallback) {
+    return <TwitSpinner size={50} />;
+  }
+
   return (
     <React.Fragment>
       <div className="twit-container">
@@ -83,18 +123,14 @@ function Standings({ leagueData }) {
           <LeftColumn />
         </header>
         <main className="main">
-          <div className={standingsStyle["league"]}>
-            <TopBar main="Standings"></TopBar>
-            <TwitSelect
-              options={options()}
-              defaultValue="2019"
-              onSelect={(seasonId) =>
-                router.replace({ query: { seasonId } }, undefined, {
-                  shallow: true,
-                  scroll: false,
-                })
-              }
-            />
+          <div className={standingsStyle["standings"]}>
+            <TopBar main={league.league_name} sub="Standings"></TopBar>
+            <div className={standingsStyle["standings__filter"]}>
+              <TwitInput select onChange={onSeasonChange} value={seasonOption}>
+                {renderSeasonOptions()}
+              </TwitInput>
+            </div>
+
             {renderDivisions()}
           </div>
         </main>

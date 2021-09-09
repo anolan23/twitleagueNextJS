@@ -209,7 +209,66 @@ class Events {
     return rows;
   }
 
-  static async findSeasonEvents(seasonId) {
+  static async findScheduleByLeagueName(leagueName) {
+    const { rows } = await pool.query(
+      `
+      WITH league_data AS (
+        SELECT *
+        FROM leagues
+        WHERE league_name = $1
+      )
+      SELECT 
+        (
+        SELECT jsonb_agg(nested_team)
+        FROM (
+          SELECT *
+          FROM season_teams
+          WHERE season_id = (SELECT season_id FROM league_data)
+          ORDER BY team_name
+        ) AS nested_team
+        ) AS teams,
+        (
+        SELECT jsonb_agg(nested_event)
+        FROM (
+          SELECT *,
+          (
+            SELECT row_to_json(home_team) AS home_team
+            FROM (
+            SELECT *
+            FROM season_teams 
+            WHERE id = events.home_season_team_id
+            ) AS home_team
+          ),
+          (
+            SELECT row_to_json(away_team) AS away_team
+            FROM (
+            SELECT *
+            FROM season_teams 
+            WHERE id = events.away_season_team_id
+            ) AS away_team
+          )	
+          FROM events
+          WHERE season_id = (SELECT season_id FROM league_data)
+          ORDER BY events.date DESC
+        ) AS nested_event
+        ) AS events,
+        (
+        SELECT jsonb_agg(nested_season)
+        FROM (
+          SELECT *
+          FROM seasons
+          WHERE league_id = (SELECT id FROM league_data)
+          ORDER BY created_at
+        ) AS nested_season
+        ) AS seasons
+    `,
+      [leagueName]
+    );
+
+    return rows[0];
+  }
+
+  static async findScheduleBySeasonId(seasonId) {
     const { rows } = await pool.query(
       `
       WITH league_data AS (
@@ -225,6 +284,7 @@ class Events {
           SELECT *
           FROM season_teams
           WHERE season_id = $1
+          ORDER BY team_name
         ) AS nested_teams
         ) AS teams,
         (
@@ -258,6 +318,7 @@ class Events {
           SELECT *
           FROM seasons
           WHERE league_id = (SELECT id FROM league_data)
+          ORDER BY created_at
         ) AS nested_season
         ) AS seasons
     `,

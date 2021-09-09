@@ -88,8 +88,11 @@ function LeagueProfile({ league, onAvatarClick }) {
             <h1 className="heading-1">{league_name}</h1>
           </div>
           {renderSeason()}
-          <Link href={`/leagues/${league_name}/seasons`} passHref>
-            <a className="twit-link">View all seasons</a>
+          <Link href={`/leagues/${league_name}/schedule`} passHref>
+            <a className="twit-link">View schedules</a>
+          </Link>
+          <Link href={`/leagues/${league_name}/standings`} passHref>
+            <a className="twit-link">View standings</a>
           </Link>
           {bio ? (
             <p

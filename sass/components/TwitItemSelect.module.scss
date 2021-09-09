@@ -1,21 +1,18 @@
 .twit-select {
   position: relative;
-  cursor: pointer;
   display: flex;
   color: var(--color-primary);
   align-items: center;
   gap: 5px;
-  border: 1px solid lightgray;
+  border: var(--color-input-border);
   border-radius: 3px;
   width: 100%;
   max-width: 100%;
+  background-color: var(--color-input);
+  transition: background-color 0.2s;
 
   div {
     border: none;
-  }
-
-  &:hover {
-    background-color: var(--GRAY_BACKGROUND);
   }
 
   &__disabled {

@@ -15,6 +15,10 @@
   margin-top: auto;
   width: 100%;
 
+  &:hover {
+    background-color: var(--color-background-secondary);
+  }
+
   @media only screen and (max-width: 1240px) {
     display: none;
   }
@@ -58,9 +62,5 @@
 
   &__item {
     font-size: 1.5rem;
-  }
-
-  &:hover {
-    background-color: var(--BLUE_BACKGROUND);
   }
 }

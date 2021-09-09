@@ -245,7 +245,7 @@ class Leagues {
     return format.rows;
   }
 
-  static async standings(leagueName, seasonId) {
+  static async findStandings(leagueName, seasonId) {
     const { rows } = await pool.query(
       `
       WITH league_data AS (

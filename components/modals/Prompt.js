@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import prompt from "../../sass/components/Prompt.module.scss";
 import TwitButton from "../../components/TwitButton";
@@ -13,18 +13,26 @@ function Prompt({
   secondaryActionText,
   onHide,
 }) {
-  const onPromptClick = (event) => {
+  const windowRef = useRef(null);
+
+  function onBackgroundClick(event) {
     event.stopPropagation();
+    if (!windowRef.current) {
+      return;
+    }
+    if (windowRef.current.contains(event.target)) {
+      return;
+    }
     onHide();
-  };
+  }
 
   if (show) {
     return (
       <div
         className={`${prompt["prompt"]} ${prompt["prompt__show"]}`}
-        onClick={onPromptClick}
+        onClick={onBackgroundClick}
       >
-        <div className={prompt["prompt__window"]}>
+        <div className={prompt["prompt__window"]} ref={windowRef}>
           <span className={prompt["prompt__window__main"]}>{main}</span>
           <p className={prompt["prompt__window__sub"]}>{sub}</p>
           <div className={prompt["prompt__window__actions"]}>

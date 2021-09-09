@@ -25,7 +25,6 @@ function StandingsCard({ league, title }) {
   function onFooterClick() {
     router.push({
       pathname: `/leagues/${league.league_name}/standings`,
-      query: { seasonId: league.season_id },
     });
   }
 

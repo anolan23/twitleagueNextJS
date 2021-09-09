@@ -9,7 +9,7 @@ import TwitSpinner from "./TwitSpinner";
 function TwitItemSelect({ id, options, defaultValue, onSelect, disabled }) {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(defaultValue);
-  const ref = useRef();
+  const ref = useRef(null);
 
   const onClick = () => {
     if (disabled) {
@@ -19,21 +19,23 @@ function TwitItemSelect({ id, options, defaultValue, onSelect, disabled }) {
   };
 
   useEffect(() => {
-    document.body.addEventListener("click", clickOutsideDropdownButton);
+    document.body.addEventListener("click", clickOutsideSelect);
     return () => {
-      document.body.removeEventListener("click", clickOutsideDropdownButton);
+      document.body.removeEventListener("click", clickOutsideSelect);
     };
   }, []);
 
-  const clickOutsideDropdownButton = (event) => {
+  function clickOutsideSelect(event) {
     if (!ref.current) {
       return;
     }
+    console.log(ref.current.contains(event.target));
+
     if (ref.current.contains(event.target)) {
       return;
     }
     setShow(false);
-  };
+  }
 
   const renderOptions = () => {
     if (!options) {
@@ -64,11 +66,11 @@ function TwitItemSelect({ id, options, defaultValue, onSelect, disabled }) {
   return (
     <div
       id={id}
+      ref={ref}
       onClick={onClick}
       className={`${twitItemSelect["twit-select"]} ${
         disabled ? twitItemSelect["twit-select__disabled"] : ""
       }`}
-      ref={ref}
     >
       <TwitItem
         small

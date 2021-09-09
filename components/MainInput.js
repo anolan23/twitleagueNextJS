@@ -168,7 +168,34 @@ function MainInput({
     return chars() === 0 || chars() > allowableChars;
   };
 
-  const onUploadToS3 = async (uploadedFiles) => {
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (files) {
+      let promises = [];
+      files.forEach((file) => {
+        promises.push(uploadToS3(file, "posts"));
+      });
+      Promise.all(promises).then((uploadedFiles) =>
+        onUploadToS3(uploadedFiles)
+      );
+    } else {
+      const stringifyMedia = media ? JSON.stringify(media) : null;
+      let newPost = { ...post, media: stringifyMedia };
+      try {
+        const _post = await onSubmit(newPost);
+        setCreatedPost(_post);
+        setShowAlert(true);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        html.current = "";
+        setMedia(null);
+        setFiles(null);
+      }
+    }
+  }
+
+  async function onUploadToS3(uploadedFiles) {
     let media = uploadedFiles.map((uploadedFile) => {
       let type = uploadedFile.Location.substring(
         uploadedFile.Location.lastIndexOf(".") + 1
@@ -183,29 +210,7 @@ function MainInput({
     setFiles(null);
     html.current = "";
     setShowAlert(true);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (files) {
-      let promises = [];
-      files.forEach((file) => {
-        promises.push(uploadToS3(file, "posts"));
-      });
-      Promise.all(promises).then((uploadedFiles) =>
-        onUploadToS3(uploadedFiles)
-      );
-    } else {
-      const stringifyMedia = media ? JSON.stringify(media) : null;
-      let newPost = { ...post, media: stringifyMedia };
-      const _post = await onSubmit(newPost);
-      setCreatedPost(_post);
-      setMedia(null);
-      setFiles(null);
-      html.current = "";
-      setShowAlert(true);
-    }
-  };
+  }
 
   const onTwitMediaClose = () => {
     setMedia(null);

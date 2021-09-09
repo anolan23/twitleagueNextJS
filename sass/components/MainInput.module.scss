@@ -87,9 +87,14 @@
     &__icon {
       height: 22.5px;
       width: 22.5px;
-      color: var(--color-text);
+      color: var(--color-text-secondary);
       fill: currentColor;
       cursor: pointer;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--color-primary);
+      }
     }
   }
 

@@ -1,9 +1,25 @@
 .schedule {
   &__filter {
     display: grid;
+    justify-content: flex-end;
     padding: 1rem;
     grid-template-columns: min-content min-content;
     gap: 1rem;
+  }
+
+  &__table {
+    &__column {
+      &__date {
+        width: 150px;
+      }
+
+      &__opponent {
+      }
+
+      &__score {
+        width: 100px;
+      }
+    }
   }
 
   & table {

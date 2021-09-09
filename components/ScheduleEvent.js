@@ -1,16 +1,18 @@
 import React from "react";
+import { useRouter } from "next/router";
 
 import style from "../sass/components/ScheduleEvent.module.scss";
 import TwitDate from "../lib/twit-date";
 import Avatar from "./Avatar";
 
 function ScheduleEvent({ event, seasonTeamId }) {
-  const { date, home_team, away_team, home_team_points, away_team_points } =
+  const router = useRouter();
+  const { id, date, home_team, away_team, home_team_points, away_team_points } =
     event;
   const isHomeTeam = home_team.id == seasonTeamId;
 
   function onClick() {
-    return () => {};
+    router.push(`/events/${id}`);
   }
 
   function renderOpponent() {
@@ -31,7 +33,7 @@ function ScheduleEvent({ event, seasonTeamId }) {
   return (
     <tr className={style["schedule-event"]} onClick={onClick}>
       <td className={style["schedule-event__date"]}>
-        {TwitDate.localeDateString(date)}
+        {TwitDate.localeDateStringShort(date)}
       </td>
       {renderOpponent()}
       <td className={style["schedule-event__score"]}>

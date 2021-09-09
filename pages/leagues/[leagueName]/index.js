@@ -267,6 +267,7 @@ function League({ leagueData }) {
       return (
         <Prompt
           show={showEndSeasonPrompt}
+          onHide={() => setShowEndSeasonPrompt(false)}
           main="End season"
           sub="Are you sure you want to enter the offseason?"
           secondaryActionText="Cancel"
