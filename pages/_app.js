@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import * as gtag from "../lib/gtag";
 
 import { TwitProvider } from "../context/Store";
-import TwitPanel from "../components/TwitPanel";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();

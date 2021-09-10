@@ -99,7 +99,7 @@ a {
   --color-light-gray: rgba(15, 20, 25, 0.1);
 
   --border: 1px solid rgba(255, 255, 255, 0.1);
-  --box-shadow: 0px 0px 10px 0px #000000;
+  --box-shadow: 0px 0px 10px 0px #0000005e;
   --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
 
   caret-color: white;
@@ -134,6 +134,9 @@ a {
 .header {
   display: flex;
   justify-content: flex-end;
+  position: sticky;
+  z-index: 2;
+  background-color: var(--color-background);
 
   @media only screen and (max-width: 1240px) {
     justify-content: flex-end;
@@ -144,7 +147,8 @@ a {
   @media only screen and (max-width: 500px) {
     grid-row: header-start/header-end;
     grid-column: container-start/container-end;
-    position: relative;
+    bottom: 0;
+    border-top: var(--border);
   }
 
   &__left-column {
@@ -169,7 +173,6 @@ a {
       height: 50px;
       bottom: 0;
       width: 100%;
-      border-top: var(--border);
     }
   }
 
