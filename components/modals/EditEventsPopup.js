@@ -61,11 +61,9 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
     }
     return (
       <div className={editEventsPopup["edit-events-popup__heading"]}>
-        <div className={editEventsPopup["edit-events-popup__heading__actions"]}>
-          <TwitButton form="add-event-form" color="primary">
-            Save
-          </TwitButton>
-        </div>
+        <TwitButton form="add-event-form" color="primary">
+          Save
+        </TwitButton>
       </div>
     );
   };

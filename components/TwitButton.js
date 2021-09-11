@@ -18,6 +18,7 @@ function TwitButton({
   href,
   icon,
   className,
+  buttonRef,
 }) {
   const determineType = () => {
     if (type === "square") {
@@ -30,7 +31,7 @@ function TwitButton({
   const onButtonClick = (event) => {
     if (onClick) {
       event.stopPropagation();
-      onClick();
+      onClick(event);
     }
   };
 
@@ -108,7 +109,8 @@ function TwitButton({
         className={`${determineType()} ${determineColor()} ${determineSize()} ${determineOutline()} ${determineCollapse()} ${determineExpanded()} ${className}`}
         onClick={onButtonClick}
         disabled={disabled}
-        form={form ? form : null}
+        form={form}
+        ref={buttonRef}
       >
         {renderIcon()}
         {children}

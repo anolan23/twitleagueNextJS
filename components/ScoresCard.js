@@ -38,7 +38,7 @@ function ScoresCard({ seasonId }) {
   };
 
   return (
-    <TwitCard title={"Scores"} footer={renderFooter()} color="clear">
+    <TwitCard title={"Scores"} footer={renderFooter()}>
       {renderBody()}
     </TwitCard>
   );

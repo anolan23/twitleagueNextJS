@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useSWR, { mutate } from "swr";
@@ -14,6 +14,7 @@ import {
   likeEvent,
   unLikeEvent,
   approveEvent,
+  sendEventReply,
 } from "../../actions";
 import TwitButton from "../../components/TwitButton";
 import SmallInput from "../../components/SmallInput";
@@ -24,14 +25,28 @@ import backend from "../../lib/backend";
 import Like from "../../components/Like";
 import TwitSpinner from "../../components/TwitSpinner";
 import UpdateScorePopup from "../../components/modals/UpdateScorePopup";
-import PopupEventReply from "../../components/modals/PopupEventReply";
+import PopupCompose from "../../components/modals/PopupCompose";
+import TwitDate from "../../lib/twit-date";
+import InfiniteList from "../../components/InfiniteList";
 
 function EventsPage({ eventData }) {
   const { user } = useUser();
   const router = useRouter();
-  const [posts, setPosts] = useState(null);
+  const { query, isFallback, isReady } = router;
+  const [replies, setReplies] = useState(null);
   const [showUpdateScorePopup, setShowUpdateScorePopup] = useState(false);
-  const [showPopupEventReply, setShowPopupEventReply] = useState(false);
+  const [showPopupCompose, setShowPopupCompose] = useState(false);
+  const infiniteLoaderRef = useCallback(
+    (ref) => {
+      if (!ref) {
+        return;
+      }
+
+      setReplies(null);
+      ref.resetLoadMoreRowsCache();
+    },
+    [query]
+  );
 
   const fetcher = async (url) => {
     const event = await backend.get(url, {
@@ -44,12 +59,12 @@ function EventsPage({ eventData }) {
   const { data: event, mutate } = useSWR(
     eventData && user ? `/api/events/${eventData.id}` : null,
     fetcher,
-    { initialData: eventData, revalidateOnMount: true }
+    {
+      initialData: eventData,
+      revalidateOnMount: true,
+      revalidateOnFocus: false,
+    }
   );
-
-  useEffect(() => {
-    getPosts();
-  }, [event, user]);
 
   if (router.isFallback) {
     return <TwitSpinner size={50} />;
@@ -61,16 +76,6 @@ function EventsPage({ eventData }) {
     home_season_team.owner_id,
     away_season_team.owner_id,
   ];
-
-  async function getPosts() {
-    if (!event) {
-      return;
-    }
-    if (event.id && user) {
-      const posts = await fetchEventPosts(event.id, user.id);
-      setPosts(posts);
-    }
-  }
 
   const onUpdateScoreClick = () => {
     setShowUpdateScorePopup(true);
@@ -95,6 +100,33 @@ function EventsPage({ eventData }) {
     }
   };
 
+  async function onReplySubmit(newPost) {
+    try {
+      const replyObj = { ...newPost, event_conversation_id: event.id };
+      const reply = await sendEventReply(replyObj, user.id);
+      setReplies((prevArray) => [reply, ...prevArray]);
+      return reply;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function getData(startIndex, stopIndex) {
+    return fetchEventPosts({
+      eventId: event.id,
+      userId: user.id,
+      startIndex,
+      stopIndex,
+    });
+  }
+
+  function updateReplies(reply) {
+    let newReplies = [...replies];
+    let index = newReplies.findIndex((newReply) => newReply.id === reply.id);
+    newReplies[index] = reply;
+    setReplies(newReplies);
+  }
+
   const renderEvent = () => {
     if (event === null) {
       return <TwitSpinner size={50} />;
@@ -105,7 +137,7 @@ function EventsPage({ eventData }) {
         <div className={eventsStyle["events__event"]}>
           <Matchup event={event} />
           <div className={activePost["active-post__timestamp"]}>
-            {event.created_at} · twitleague Web App
+            {TwitDate.dynamicPostDate(event.created_at)} · twitleague Web App
           </div>
           <div className={activePost["active-post__stats"]}>
             <div className={activePost["active-post__stat-box"]}>
@@ -169,19 +201,24 @@ function EventsPage({ eventData }) {
     }
   };
 
-  const renderPosts = () => {
-    if (posts === null) {
-      return <TwitSpinner size={50} />;
-    } else if (posts.length === 0) {
-      return (
-        <Empty main="No posts" sub="Be the first to post about this event" />
-      );
-    } else {
-      return posts.map((post, index) => {
-        return <Post key={index} post={post} user={user} />;
-      });
+  function renderReplies() {
+    if (!user || isFallback) {
+      return null;
     }
-  };
+    return (
+      <InfiniteList
+        getData={getData}
+        list={replies}
+        item={itemRenderer}
+        updateList={(replies) => setReplies(replies)}
+        infiniteLoaderRef={infiniteLoaderRef}
+      />
+    );
+  }
+
+  function itemRenderer(item) {
+    return <Post post={item} update={updateReplies} user={user} />;
+  }
 
   const renderApproveAction = () => {
     if (!user) {
@@ -216,25 +253,30 @@ function EventsPage({ eventData }) {
   return (
     <React.Fragment>
       <MainBody>
-        <TopBar main="Event">
+        <TopBar
+          main={`${away_season_team.team_name} at ${home_season_team.team_name}`}
+          sub={"Event"}
+        >
           <div className={eventsStyle["events__event__more-info__actions"]}>
             {renderUpdateScoreAction()}
             {renderApproveAction()}
           </div>
         </TopBar>
         <div className={eventsStyle["events"]}>{renderEvent()}</div>
-        <SmallInput onClick={() => setShowPopupEventReply(true)} />
-        {renderPosts()}
+        <SmallInput onClick={() => setShowPopupCompose(true)} />
+        {renderReplies()}
       </MainBody>
       <UpdateScorePopup
         show={showUpdateScorePopup}
         onHide={() => setShowUpdateScorePopup(false)}
         event={event}
       />
-      <PopupEventReply
-        show={showPopupEventReply}
-        onHide={() => setShowPopupEventReply(false)}
+      <PopupCompose
+        show={showPopupCompose}
+        onHide={() => setShowPopupCompose(false)}
         event={event}
+        onSubmit={onReplySubmit}
+        user={user}
       />
     </React.Fragment>
   );

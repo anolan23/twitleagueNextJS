@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import reactStringReplace from "react-string-replace";
 import ContentEditable from "react-contenteditable";
 
+import { useStore } from "../context/Store";
+import { addAlert } from "../actions";
 import mainInput from "../sass/components/MainInput.module.scss";
 import TwitButton from "./TwitButton";
 import TwitMedia from "./TwitMedia";
@@ -14,7 +16,6 @@ import TwitIcon from "./TwitIcon";
 import { uploadToS3 } from "../lib/aws-helpers";
 import { setCaret } from "../lib/twit-helpers";
 import ReactPlayer from "react-player";
-import TwitAlert from "./TwitAlert";
 import GifPopup from "./modals/GifPopup";
 
 function MainInput({
@@ -25,9 +26,11 @@ function MainInput({
   placeHolder,
   initialValue,
   inputRef,
+  buttonRef,
   focusOnMount,
   user,
 }) {
+  const [state, dispatch] = useStore();
   const contentEditableRef = useRef();
   const hiddenFileInput = useRef(null);
   const dropdownRef = useRef(null);
@@ -39,7 +42,6 @@ function MainInput({
   const [createdPost, setCreatedPost] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showGifPopup, setShowGifPopup] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
   const [options, setOptions] = useState([]);
   const [cursor, setCursor] = useState(0);
   const [media, setMedia] = useState(null);
@@ -182,15 +184,20 @@ function MainInput({
       const stringifyMedia = media ? JSON.stringify(media) : null;
       let newPost = { ...post, media: stringifyMedia };
       try {
-        const _post = await onSubmit(newPost);
-        setCreatedPost(_post);
-        setShowAlert(true);
-      } catch (error) {
-        console.log(error);
-      } finally {
         html.current = "";
         setMedia(null);
         setFiles(null);
+        const _post = await onSubmit(newPost);
+        setCreatedPost(_post);
+        dispatch(
+          addAlert({
+            message: "Post created",
+            href: `/thread/${_post.id}`,
+            duration: 5000,
+          })
+        );
+      } catch (error) {
+        console.log(error);
       }
     }
   }
@@ -209,7 +216,13 @@ function MainInput({
     setMedia(null);
     setFiles(null);
     html.current = "";
-    setShowAlert(true);
+    dispatch(
+      addAlert({
+        message: "Post created",
+        href: `/thread/${_post.id}`,
+        duration: 5000,
+      })
+    );
   }
 
   const onTwitMediaClose = () => {
@@ -409,7 +422,7 @@ function MainInput({
         >
           {allowableChars - chars()}
         </div>
-        <TwitButton disabled={disabled()} color="primary">
+        <TwitButton disabled={disabled()} color="primary" buttonRef={buttonRef}>
           {buttonText}
         </TwitButton>
       </div>
@@ -502,13 +515,6 @@ function MainInput({
           {renderAction()}
         </div>
       </form>
-      <TwitAlert
-        show={showAlert}
-        onHide={() => setShowAlert(false)}
-        duration={5000}
-        href={createdPost ? `/thread/${createdPost.id}` : null}
-        message="Post created"
-      />
       <GifPopup show={showGifPopup} onHide={() => setShowGifPopup(false)} />
     </React.Fragment>
   );

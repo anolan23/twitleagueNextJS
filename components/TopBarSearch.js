@@ -3,12 +3,18 @@ import TwitSearch from "./TwitSearch";
 import TwitIcon from "../components/TwitIcon";
 
 function TopBarSearch({ initialValue, onSearch, children }) {
+  function goBack() {
+    if (typeof window !== "undefined") {
+      window.history.back();
+    }
+  }
   return (
     <div className={topBarSearch["top-bar-search"]}>
       <div className={topBarSearch["top-bar-search__search-holder"]}>
         <TwitIcon
           className={topBarSearch["top-bar-search__search-holder__back-icon"]}
           icon="/sprites.svg#icon-arrow-left"
+          onClick={goBack}
         />
         <div
           className={topBarSearch["top-bar-search__search-holder__search-bar"]}

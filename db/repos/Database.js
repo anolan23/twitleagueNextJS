@@ -48,7 +48,7 @@ class Database {
       (
       SELECT jsonb_agg(nested_user)
       FROM (
-          SELECT *
+          SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio
           FROM users
           WHERE (LOWER(username) LIKE $1)
       ) AS nested_user

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import matchup from "../sass/components/Matchup.module.scss";
 import { dateString } from "../lib/twit-helpers";
+import TwitDate from "../lib/twit-date";
 import Avatar from "./Avatar";
 
 function Matchup({ event }) {
@@ -15,6 +16,7 @@ function Matchup({ event }) {
     notes,
     home_team_points,
     away_team_points,
+    date,
   } = event;
 
   const { league } = season;
@@ -52,29 +54,16 @@ function Matchup({ event }) {
       );
     }
   };
+
   return (
     <div className={matchup["matchup"]}>
       <div className={matchup["matchup__info"]}>
         <Link href={`/leagues/${league.league_name}`} passHref>
           <a className="twit-link">{league.league_name}</a>
         </Link>
-        &nbsp; · &nbsp;
-        <span className={matchup["matchup__info__date"]}>
-          {dateString(event.date)}
-        </span>
         {renderPlayPeriod()}
       </div>
       <div className={matchup["matchup__matchup"]}>
-        <div className={matchup["matchup__matchup__team"]}>
-          <Avatar
-            className={matchup["matchup__matchup__team__avatar"]}
-            src={home_season_team.avatar}
-          />
-          <span className={matchup["matchup__matchup__team__name"]}>
-            {home_season_team.team_name}
-          </span>
-        </div>
-        {renderScore()}
         <div className={matchup["matchup__matchup__team"]}>
           <Avatar
             className={matchup["matchup__matchup__team__avatar"]}
@@ -84,9 +73,20 @@ function Matchup({ event }) {
             {away_season_team.team_name}
           </span>
         </div>
+        {renderScore()}
+        <div className={matchup["matchup__matchup__team"]}>
+          <Avatar
+            className={matchup["matchup__matchup__team__avatar"]}
+            src={home_season_team.avatar}
+          />
+          <span className={matchup["matchup__matchup__team__name"]}>
+            {home_season_team.team_name}
+          </span>
+        </div>
       </div>
       <div className={matchup["matchup__more-info"]}>
-        <span className={matchup["matchup__more-info__info"]}>{type}</span>
+        <span>{TwitDate.localeDateStringShort(date)}</span>
+        <span>{`${TwitDate.formatAMPM(date)}`}</span>
         <span className={matchup["matchup__more-info__info"]}>
           {location ? location : "Unknown location"}
         </span>

@@ -1,5 +1,6 @@
 import themeReducer from "./themeReducer";
 import playoffReducer from "./playoffsReducer";
+import alertsReducer from "./alertsReducer";
 
 const combineReducers = (slices) => (state, action) =>
   Object.keys(slices).reduce(
@@ -13,4 +14,5 @@ const combineReducers = (slices) => (state, action) =>
 export default combineReducers({
   theme: themeReducer,
   playoffs: playoffReducer,
+  alerts: alertsReducer,
 });

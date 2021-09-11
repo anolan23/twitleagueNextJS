@@ -10,6 +10,7 @@ import {
   getLeaguePlayoff,
   createPlayoffs,
   deletePlayoffs,
+  addAlert,
 } from "../../../../actions";
 import playoffStyle from "../../../../sass/pages/Playoffs.module.scss";
 import Bracket from "../../../../components/Bracket";
@@ -24,7 +25,7 @@ import TwitIcon from "../../../../components/TwitIcon";
 
 function Playoffs() {
   const [state, dispatch] = useStore();
-  const { user } = useUser();
+  const { user } = useUser({ redirectTo: "/" });
   const [offset, startPan] = usePan();
   const router = useRouter();
   const empty = [...Array(32)];
@@ -327,9 +328,26 @@ function Playoffs() {
       seeds: seedsArray,
       in_progress: true,
     };
-    await createPlayoffs(router.query.seasonId, playoffs);
-    setInProgress(true);
-    setShowAlert(true);
+    try {
+      await createPlayoffs(router.query.seasonId, playoffs);
+      setInProgress(true);
+      dispatch(
+        addAlert({
+          message: "Saved",
+          href: null,
+          duration: 3000,
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        addAlert({
+          message: "Error",
+          href: null,
+          duration: 3000,
+        })
+      );
+    }
   }
 
   async function reset() {
@@ -343,6 +361,15 @@ function Playoffs() {
         champion: null,
         seasonId: seasonId,
       });
+    }
+  }
+
+  function onWheel(event) {
+    const { deltaY } = event;
+    if (deltaY > 0) {
+      setScale(scale - 0.1);
+    } else if (deltaY < 0) {
+      setScale(scale + 0.1);
     }
   }
 
@@ -517,6 +544,7 @@ function Playoffs() {
         <div
           className={playoffStyle["playoffs__viewport"]}
           onMouseDown={startPan}
+          onWheel={onWheel}
         >
           <Bracket advanceTeam={advanceTeam} offset={offset} scale={scale} />
           <div className={playoffStyle["playoffs__viewport__zoom"]}>
@@ -544,12 +572,6 @@ function Playoffs() {
           </div>
         </div>
       </div>
-      <TwitAlert
-        show={showAlert}
-        onHide={() => setShowAlert(false)}
-        duration={3000}
-        message="Saved"
-      />
     </React.Fragment>
   );
 }

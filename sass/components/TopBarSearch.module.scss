@@ -1,56 +1,55 @@
-.top-bar-search{
-    position: sticky;
-    background-color: white;
+.top-bar-search {
+  position: sticky;
+  background-color: var(--color-background);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 0;
+  z-index: 2;
+  height: max-content;
+
+  &__search-holder {
+    height: 50px;
     width: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    top: 0;
-    z-index: 2;
-    height: max-content;
 
-    &__search-holder{
-        background-color: white;
-        height: 50px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-
-        &__search-bar{
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            background-color: var(--color-light-gray);
-            height: 38px;
-            border-radius: 100px;
-        }
-
-        &__back-icon{
-            height: 2rem;
-            width: 3rem;
-            margin: 1rem;
-            fill: var(--color-primary);
-            cursor: pointer;
-        }
-
-        &__more-icon{
-            height: 3rem;
-            width: 3rem;
-            margin: 1rem;
-            fill: var(--color-primary);
-            cursor: pointer;
-        }
+    &__search-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background-color: var(--color-input);
+      height: 38px;
+      border-radius: 100px;
     }
 
-    &__icon{
-        height: 2rem;
-        width: 2rem;
-        margin-left: 1.5rem;
-        fill: var(--color-text-secondary);
+    &__back-icon {
+      height: 2rem;
+      width: 3rem;
+      margin: 1rem;
+      fill: var(--color-primary);
+      cursor: pointer;
     }
 
-    &__tabs{
-        width: 100%;
+    &__more-icon {
+      height: 3rem;
+      width: 3rem;
+      margin: 1rem;
+      fill: var(--color-text);
+      cursor: pointer;
     }
+  }
+
+  &__icon {
+    height: 2rem;
+    width: 2rem;
+    margin-left: 1.5rem;
+    fill: var(--color-text-secondary);
+  }
+
+  &__tabs {
+    width: 100%;
+  }
 }

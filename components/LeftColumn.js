@@ -14,12 +14,12 @@ function LeftColumn({ initialValue, onSubmit, children }) {
   const { user } = useUser();
   const [showPopupCompose, setShowPopupCompose] = useState(false);
 
-  async function onComposeSubmit(values) {
+  async function onComposeSubmit(newPost) {
     if (!onSubmit) {
-      const post = await createPost(values, user.id);
+      const post = await createPost(newPost, user.id);
       return post;
     } else {
-      const post = await onSubmit(values);
+      const post = await onSubmit(newPost);
       return post;
     }
   }

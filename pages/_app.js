@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import * as gtag from "../lib/gtag";
 
 import { TwitProvider } from "../context/Store";
+import TwitAlerts from "../components/TwitAlerts";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -21,6 +22,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <TwitProvider>
       <Component {...pageProps} />
+      <TwitAlerts />
     </TwitProvider>
   );
 }

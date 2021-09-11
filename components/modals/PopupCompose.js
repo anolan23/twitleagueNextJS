@@ -1,28 +1,62 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 
 import popupCompose from "../../sass/components/PopupCompose.module.scss";
 import Popup from "./Popup";
 import MainInput from "../MainInput";
 import TwitButton from "../TwitButton";
 import Post from "../Post";
+import Matchup from "../Matchup";
 
-function PopupCompose({ show, onHide, initialValue, onSubmit, reply, user }) {
+function PopupCompose({
+  show,
+  onHide,
+  initialValue,
+  onSubmit,
+  post,
+  event,
+  user,
+}) {
+  const buttonRef = useRef(null);
+  const inputRef = useCallback((ref) => {
+    if (!ref) {
+      return;
+    }
+    ref.focus();
+  }, []);
+
+  const setButtonRef = useCallback((ref) => {
+    if (!ref) {
+      return;
+    }
+    console.log(ref);
+    buttonRef.current = ref;
+  }, []);
+
   if (!show) {
     return null;
   }
-  const inputRef = useRef(null);
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+
+  async function onComposeSubmit(newPost) {
+    try {
+      const post = await onSubmit(newPost);
+      return post;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      onHide();
     }
-  }, [inputRef]);
+  }
+
+  async function onHeadingButtonClick(event) {
+    buttonRef.current.click();
+  }
 
   const renderReply = () => {
-    if (!reply) {
-      return null;
-    } else {
-      return <Post post={reply} history />;
-    }
+    if (post) {
+      return <Post post={post} history />;
+    } else if (event) {
+      return <Matchup event={event} />;
+    } else return null;
   };
 
   const renderBody = () => {
@@ -34,9 +68,10 @@ function PopupCompose({ show, onHide, initialValue, onSubmit, reply, user }) {
           compose
           placeHolder="$Team or @Username"
           initialValue={initialValue}
-          buttonText={!reply ? "Post" : "Reply"}
-          onSubmit={onSubmit}
+          buttonText={post || event ? "Reply" : "Post"}
+          onSubmit={onComposeSubmit}
           inputRef={inputRef}
+          buttonRef={setButtonRef}
           focusOnMount
           user={user}
         />
@@ -47,8 +82,8 @@ function PopupCompose({ show, onHide, initialValue, onSubmit, reply, user }) {
   const renderHeading = () => {
     return (
       <div className={popupCompose["popup-compose"]}>
-        <TwitButton form="main-input-form" color="primary">
-          {!reply ? "Post" : "Reply"}
+        <TwitButton color="primary" onClick={onHeadingButtonClick}>
+          {post || event ? "Reply" : "Post"}
         </TwitButton>
       </div>
     );

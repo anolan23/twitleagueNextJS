@@ -8,7 +8,7 @@ class Notifications {
         (
           SELECT row_to_json(recipient) AS recipient
           FROM (
-            SELECT *
+            SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio
             FROM users
             WHERE id = notifications.user_id
           ) AS recipient
@@ -16,7 +16,7 @@ class Notifications {
         (
           SELECT row_to_json(sender) AS sender
           FROM (
-            SELECT *
+            SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio
             FROM users
             WHERE id = notifications.sender_id
           ) AS sender

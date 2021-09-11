@@ -106,7 +106,14 @@ function Standings({ leagueData }) {
           a.place > b.place ? 1 : b.place > a.place ? -1 : 0
         );
         return (
-          <Division key={index} division={division} teams={divisionTeams} />
+          <Division
+            key={index}
+            division={division}
+            teams={divisionTeams}
+            onTeamClick={(team) =>
+              router.push(`/teams/${team.abbrev.substring(1)}`)
+            }
+          />
         );
       });
     }

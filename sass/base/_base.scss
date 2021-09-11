@@ -1,31 +1,4 @@
 :root {
-  // lightmode
-  --color-text: rgb(15, 20, 25);
-  --color-text-secondary: rgb(91, 112, 131);
-  --color-text-link: rgb(27, 149, 224);
-  --color-primary: rgb(29, 161, 242);
-  --color-secondary: var(--color-light-gray);
-  --color-tertiary: #00adb5;
-  --color-background: white;
-  --color-background-secondary: lightgray;
-  --GREEN_TEXT: #0aba74;
-  --RED_TEXT: #ff3e3e;
-  --HIGHLIGHT: #f6f6f6;
-  --BLUE_BACKGROUND: rgba(29, 161, 242, 0.1);
-  --GREEN_BACKGROUND: #e6f8f1;
-  --RED_BACKGROUND: #ffecec;
-  --GRAY_BACKGROUND: rgba(0, 0, 0, 0.03);
-
-  --color-card: rgba(0, 0, 0, 0.2);
-  --color-input: white;
-  --color-input-border: 1px solid lightgray;
-  --color-divide: rgb(247, 249, 250);
-  --color-light-gray: rgba(15, 20, 25, 0.1);
-
-  --border: 1px solid var(--color-light-gray);
-  --box-shadow: rgb(101 119 134 / 20%) 0px 0px 8px,
-    rgb(101 119 134 / 25%) 0px 1px 3px 1px;
-  --box-shadow-light: rgba(0, 0, 0, 0.1) 0px 8px 28px;
 }
 
 *,
@@ -63,7 +36,8 @@ a {
   --color-background-secondary: lightgray;
 
   --color-button-primary: var(--color-primary);
-  --color-button-primary-text: var(--color-text);
+  --color-primary-button-text: var(--color-text);
+  --color-white-button-text: var(--color-primary);
 
   --color-card: rgba(0, 0, 0, 0.2);
   --color-input: white;
@@ -89,7 +63,8 @@ a {
   --color-background-secondary: rgba(0, 0, 0, 0.2);
 
   --color-button-primary: var(--color-primary);
-  --color-button-primary-text: white;
+  --color-primary-button-text: white;
+  --color-white-button-text: var(--color-primary);
 
   --color-card: var(--color-background-secondary);
   --color-input: rgba(255, 255, 255, 0.1);

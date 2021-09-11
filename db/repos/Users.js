@@ -8,7 +8,7 @@ class Users {
       `
             INSERT INTO users (name, email, username, password)
             VALUES ($1, $2, $3, $4)
-            RETURNING *;
+            RETURNING id, created_at, updated_at, name, email, username, dob, avatar, bio;
         `,
       [name, email, username, password]
     );
@@ -17,7 +17,10 @@ class Users {
   }
 
   static async find() {
-    const { rows } = await pool.query("SELECT * FROM users");
+    const { rows } = await pool.query(
+      `SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio 
+      FROM users`
+    );
 
     return rows;
   }
@@ -45,7 +48,7 @@ class Users {
         UPDATE users
         SET avatar = $2
         WHERE id = $1
-        RETURNING *`,
+        RETURNING id, created_at, updated_at, name, email, username, dob, avatar, bio`,
       [userId, values.avatar]
     );
 
@@ -55,7 +58,7 @@ class Users {
   static async findAllLike(query, offset, limit) {
     const { rows } = await pool.query(
       `
-        SELECT *
+        SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio,
         FROM users
         WHERE (LOWER(username) LIKE $1) OR (LOWER(name) LIKE $1)
         ORDER BY username
@@ -70,7 +73,7 @@ class Users {
   static async findSuggested(userId, offset, limit) {
     const results = await pool.query(
       `
-        SELECT *,
+        SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio,
         EXISTS (SELECT 1 FROM scouts WHERE scout_user_id = $1 AND users.id = scouted_user_id) AS scouted
         FROM users
         ORDER BY avatar, RANDOM()
@@ -86,7 +89,7 @@ class Users {
   static async findUserScoutings(username, userId, offset, limit) {
     const results = await pool.query(
       `
-      SELECT u1.*,
+      SELECT u1.id, u1.created_at, u1.updated_at, u1.name, u1.email, u1.username, u1.dob, u1.avatar, u1.bio,
         EXISTS (
           SELECT 1 
           FROM scouts 
@@ -107,7 +110,7 @@ class Users {
   static async findUserScouts(username, userId, offset, limit) {
     const results = await pool.query(
       `
-      SELECT u1.*,
+      SELECT u1.id, u1.created_at, u1.updated_at, u1.name, u1.email, u1.username, u1.dob, u1.avatar, u1.bio,,
         EXISTS (
           SELECT 1 
           FROM scouts 

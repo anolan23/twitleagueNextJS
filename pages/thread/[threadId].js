@@ -20,7 +20,6 @@ function ThreadPage({ threadData, threadId }) {
   const router = useRouter();
   const { query, isFallback, isReady } = router;
   const [replies, setReplies] = useState(null);
-
   const infiniteLoaderRef = useCallback(
     (ref) => {
       if (!ref) {

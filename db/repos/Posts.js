@@ -288,7 +288,7 @@ class Posts {
     return rows;
   }
 
-  static async findByEventConversationId(event_conversation_id, userId) {
+  static async findByEventConversationId({ eventId, userId, offset, limit }) {
     const { rows } = await pool.query(
       `
       SELECT p1.*, avatar, users.name, users.username,
@@ -306,8 +306,10 @@ class Posts {
       JOIN users ON p1.author_id = users.id
       WHERE event_conversation_id = $1 AND in_reply_to_post_id IS NULL
       ORDER BY p1.created_at DESC
+      OFFSET $3
+      LIMIT $4
       `,
-      [event_conversation_id, userId]
+      [eventId, userId, offset, limit]
     );
 
     return rows;

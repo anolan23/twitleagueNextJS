@@ -25,10 +25,9 @@ function HomePage() {
   const router = useRouter();
   const [posts, setPosts] = useState(null);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
-  console.log(posts);
 
-  const onPostSubmit = async (values) => {
-    const post = await createPost(values, user.id);
+  const onPostSubmit = async (newPost) => {
+    const post = await createPost(newPost, user.id);
     setPosts((prevArray) => [post, ...prevArray]);
     return post;
   };

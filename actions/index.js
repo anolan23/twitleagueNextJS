@@ -24,6 +24,7 @@ export const fetchUserByUsername = async (username, userId) => {
 
 export const loginUser = async (values) => {
   const response = await backend.post("/api/login", values);
+  console.log(response.data);
   return response.data;
 };
 
@@ -371,20 +372,24 @@ export const getThreadReplies = async ({
   return response.data;
 };
 
-export const sendEventReply = (reply) => async (dispatch, getState) => {
-  const state = getState();
-  const userId = state.user.id;
+export const sendEventReply = async (reply, userId) => {
   const response = await backend.post(`/api/events/posts`, {
     reply: { ...reply, userId },
   });
-  dispatch({ type: "SEND_EVENT_POST", payload: response.data });
-  dispatch(togglePopupEventReply());
+  return response.data;
 };
 
-export const fetchEventPosts = async (eventId, userId) => {
+export const fetchEventPosts = async ({
+  eventId = null,
+  userId = null,
+  startIndex = null,
+  stopIndex = null,
+}) => {
   const posts = await backend.get(`/api/events/${eventId}/posts`, {
     params: {
       userId,
+      startIndex,
+      stopIndex,
     },
   });
   return posts.data;
@@ -905,4 +910,20 @@ export const getSchedule = async (leagueName, seasonId) => {
     },
   });
   return results.data;
+};
+
+export const addAlert = ({ message, href, duration }) => {
+  return {
+    type: "ADD_ALERT",
+    message,
+    href,
+    duration,
+  };
+};
+
+export const removeAlert = (index) => {
+  return {
+    type: "REMOVE_ALERT",
+    index,
+  };
 };

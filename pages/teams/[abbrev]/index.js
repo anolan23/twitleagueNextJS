@@ -89,9 +89,9 @@ function Team({ teamData, standings }) {
     setPosts(newPosts);
   }
 
-  async function onPostSubmit(values) {
+  async function onPostSubmit(newPost) {
     try {
-      const post = await createPost(values, user.id);
+      const post = await createPost(newPost, user.id);
       setPosts((prevArray) => [post, ...prevArray]);
       return post;
     } catch (error) {

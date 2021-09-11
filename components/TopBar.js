@@ -2,25 +2,28 @@ import React from "react";
 
 import useUser from "../lib/useUser";
 import Avatar from "./Avatar";
+import TwitIcon from "./TwitIcon";
 import { togglePanel } from "../actions";
 
 function TopBar({ main, sub, menu, children }) {
   const { user } = useUser();
 
-  const goBack = () => {
+  function goBack() {
     if (typeof window !== "undefined") {
       window.history.back();
     }
-  };
+  }
 
   const renderBackArrow = () => {
     if (main === "Home") {
       return null;
     } else {
       return (
-        <svg className="top-bar__icon" onClick={goBack}>
-          <use xlinkHref="/sprites.svg#icon-arrow-left" />
-        </svg>
+        <TwitIcon
+          className="top-bar__icon"
+          icon="/sprites.svg#icon-arrow-left"
+          onClick={goBack}
+        />
       );
     }
   };

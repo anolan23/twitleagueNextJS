@@ -22,7 +22,7 @@ import TwitButton from "../../../../components/TwitButton";
 import backend from "../../../../lib/backend";
 
 function Divisions({ leagueData }) {
-  const { user } = useUser();
+  const { user } = useUser({ redirectTo: "/" });
   const router = useRouter();
   const [team, setTeam] = useState(null);
 

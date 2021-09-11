@@ -2,21 +2,19 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import ReactDOM from "react-dom";
 
+import { useStore } from "../context/Store";
+import { removeAlert } from "../actions";
 import twitAlert from "../sass/components/TwitAlert.module.scss";
 
-function TwitAlert({ href, message, show, onHide, duration, color }) {
-  if (!show) {
-    return null;
-  }
+function TwitAlert({ alert }) {
+  const [state, dispatch] = useStore();
+  const { index, message, href, duration } = alert;
+
   const router = useRouter();
 
-  useEffect(() => {
-    const timeId = setTimeout(() => onHide(), duration);
-
-    return () => {
-      clearTimeout(timeId);
-    };
-  }, []);
+  setTimeout(() => {
+    dispatch(removeAlert(index));
+  }, duration);
 
   function onAlertClick(event) {
     if (!href) {

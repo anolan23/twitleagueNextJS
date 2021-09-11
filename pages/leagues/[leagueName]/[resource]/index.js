@@ -17,7 +17,7 @@ import FollowButton from "../../../../components/FollowButton";
 import Empty from "../../../../components/Empty";
 
 function LeagueResources({ leagueData }) {
-  const { user } = useUser();
+  const { user } = useUser({ redirectTo: "/" });
   const router = useRouter();
   const { isFallback, query, isReady } = router;
   const { resource } = query;

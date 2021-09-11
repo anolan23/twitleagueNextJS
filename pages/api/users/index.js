@@ -19,6 +19,7 @@ export default async (req, res) => {
             const username = decoded.username;
             let user = await Users.findOne(username);
             user = { ...user, isSignedIn: true };
+            delete user["password"];
             res.send(user);
           } else {
             res.send({ isSignedIn: false });

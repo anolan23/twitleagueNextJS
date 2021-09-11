@@ -42,7 +42,7 @@ $button-brightness: 110%;
   }
 
   &--white {
-    color: var(--color-button-primary-text) !important;
+    color: var(--color-white-button-text) !important;
     background-color: white;
     transition: all 0.2s;
 
@@ -55,7 +55,7 @@ $button-brightness: 110%;
   }
 
   &--primary {
-    color: var(--color-button-primary-text) !important;
+    color: var(--color-primary-button-text) !important;
     background-color: var(--color-button-primary);
     transition: all 0.2s;
 

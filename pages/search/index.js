@@ -45,7 +45,7 @@ function Search() {
   }
 
   function onTabClick(event) {
-    router.push({ query: { query: query, filter: event.target.id } });
+    router.replace({ query: { query: query, filter: event.target.id } });
   }
 
   function renderEmpty() {
@@ -93,7 +93,7 @@ function Search() {
 
   function onSearch(query) {
     console.log(router.query);
-    router.push({ query: { ...router.query, query: query } });
+    router.replace({ query: { ...router.query, query: query } });
   }
 
   function renderList() {
