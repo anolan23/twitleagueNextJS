@@ -142,7 +142,7 @@ function Team({ teamData, standings }) {
   }
 
   function itemRenderer(item) {
-    return <Post post={item} update={updatePosts} user={user} />;
+    return <Post post={item} update={updatePosts} user={user} fadeIn />;
   }
 
   function renderMenu() {

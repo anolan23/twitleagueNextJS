@@ -98,7 +98,7 @@ function ThreadPage({ threadData, threadId }) {
   }
 
   function itemRenderer(item) {
-    return <Post post={item} update={updateReplies} user={user} />;
+    return <Post post={item} update={updateReplies} user={user} fadeIn />;
   }
 
   if (isFallback) {

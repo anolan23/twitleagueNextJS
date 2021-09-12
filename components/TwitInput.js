@@ -12,6 +12,8 @@ function TwitInput({
   select,
   autoComplete,
   onChange,
+  isError,
+  errors,
   children,
 }) {
   const [show, setShow] = useState(false);
@@ -25,6 +27,15 @@ function TwitInput({
       setShow(false);
     }
   };
+
+  function renderErrors() {
+    if (!isError) return null;
+    else {
+      return (
+        <div className={twitInput["twit-input__error-message"]}>{errors}</div>
+      );
+    }
+  }
 
   if (select) {
     if (!children) {
@@ -64,17 +75,22 @@ function TwitInput({
     );
   } else {
     return (
-      <input
-        id={id}
-        type={type}
-        autoComplete="off"
-        className={twitInput["twit-input"]}
-        placeholder={placeHolder}
-        onChange={onChange}
-        onBlur={onBlur}
-        value={value}
-        name={name}
-      />
+      <React.Fragment>
+        <input
+          id={id}
+          type={type}
+          autoComplete="off"
+          className={`${twitInput["twit-input"]} ${
+            isError ? twitInput["twit-input--error"] : null
+          }`}
+          placeholder={placeHolder}
+          onChange={onChange}
+          onBlur={onBlur}
+          value={value}
+          name={name}
+        />
+        {renderErrors()}
+      </React.Fragment>
     );
   }
 }

@@ -217,7 +217,7 @@ function EventsPage({ eventData }) {
   }
 
   function itemRenderer(item) {
-    return <Post post={item} update={updateReplies} user={user} />;
+    return <Post post={item} update={updateReplies} user={user} fadeIn />;
   }
 
   const renderApproveAction = () => {

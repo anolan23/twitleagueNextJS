@@ -4,7 +4,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import useUser from "../lib/useUser";
-import twitForm from "../sass/components/TwitForm.module.scss";
+import TwitForm from "./TwitForm";
+import TwitInputGroup from "./TwitInputGroup";
+import TwitInput from "./TwitInput";
 import TopBar from "./TopBar";
 import TwitButton from "./TwitButton";
 import AutoCompleteInput from "../components/modals/AutoCompleteInput";
@@ -88,140 +90,74 @@ function CreateTeam(props) {
   return (
     <div className="create-team">
       <TopBar main="Create team" />
-      <form onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
-        <div className={twitForm["twit-form__group"]}>
-          <label for="team-name" className={twitForm["twit-form__label"]}>
-            Team Name
-          </label>
-          <input
-            id="team-name"
+      <TwitForm onSubmit={formik.handleSubmit}>
+        <TwitInputGroup id="teamName" labelText="Team name">
+          <TwitInput
+            id="teamName"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            type="text"
             value={formik.values.teamName}
             name="teamName"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.teamName && formik.touched.teamName
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
+            isError={formik.errors.teamName && formik.touched.teamName}
+            errors={formik.errors.teamName}
           />
-          {formik.errors.teamName && formik.touched.teamName ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.teamName}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label
-            for="team-abbreviation"
-            className={twitForm["twit-form__label"]}
-          >
-            Team Abbreviation
-          </label>
-          <input
-            id="team-abbreviation"
+        </TwitInputGroup>
+        <TwitInputGroup id="abbrev" labelText="Team abbrev">
+          <TwitInput
+            id="abbrev"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            type="text"
             value={formik.values.abbrev}
             name="abbrev"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.abbrev && formik.touched.abbrev
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
+            isError={formik.errors.abbrev && formik.touched.abbrev}
+            errors={formik.errors.abbrev}
           />
-          {formik.errors.abbrev && formik.touched.abbrev ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.abbrev}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label for="leagueName" className={twitForm["twit-form__label"]}>
-            League
-          </label>
-          <AutoCompleteInput
-            show={show}
-            name="leagueName"
+        </TwitInputGroup>
+        <TwitInputGroup id="leagueName" labelText="League name">
+          <TwitInput
+            autoComplete
             id="leagueName"
-            type="text"
-            placeholder="Search leagues"
-            autoComplete="off"
             onChange={onAutoCompleteChange}
             onBlur={formik.handleBlur}
+            type="text"
             value={formik.values.leagueName}
-            header="Active Leagues"
-            className={
-              formik.errors.leagueName && formik.touched.leagueName
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
-            isValid={formik.touched.leagueName && !formik.errors.leagueName}
+            name="leagueName"
+            isError={formik.errors.leagueName && formik.touched.leagueName}
+            errors={formik.errors.leagueName}
           >
             {renderOptions()}
-          </AutoCompleteInput>
-          {formik.errors.leagueName && formik.touched.leagueName ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.leagueName}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label for="city" className={twitForm["twit-form__label"]}>
-            City
-          </label>
-          <input
+          </TwitInput>
+        </TwitInputGroup>
+        <TwitInputGroup id="city" labelText="City">
+          <TwitInput
             id="city"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            type="text"
             value={formik.values.city}
             name="city"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.city && formik.touched.city
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
+            isError={formik.errors.city && formik.touched.city}
+            errors={formik.errors.city}
           />
-          {formik.errors.city && formik.touched.city ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.city}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label for="state" className={twitForm["twit-form__label"]}>
-            State
-          </label>
-          <input
+        </TwitInputGroup>
+        <TwitInputGroup id="state" labelText="State">
+          <TwitInput
             id="state"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            type="text"
             value={formik.values.state}
             name="state"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.state && formik.touched.state
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
+            isError={formik.errors.state && formik.touched.state}
+            errors={formik.errors.state}
           />
-          {formik.errors.state && formik.touched.state ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.state}
-            </div>
-          ) : null}
-        </div>
+        </TwitInputGroup>
         <TwitButton expanded color="primary" size="large">
           Create team
         </TwitButton>
-      </form>
+      </TwitForm>
     </div>
   );
 }

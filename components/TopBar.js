@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 
 import useUser from "../lib/useUser";
 import Avatar from "./Avatar";
 import TwitIcon from "./TwitIcon";
-import { togglePanel } from "../actions";
+import TwitPanel from "./TwitPanel";
 
 function TopBar({ main, sub, menu, children }) {
   const { user } = useUser();
+  const [showPanel, setShowPanel] = useState(false);
 
   function goBack() {
     if (typeof window !== "undefined") {
@@ -28,15 +29,15 @@ function TopBar({ main, sub, menu, children }) {
     }
   };
 
-  const renderAvatar = () => {
+  const renderPanelIcon = () => {
     if (main !== "Home") {
       return null;
     } else {
       return (
-        <Avatar
-          onClick={togglePanel}
-          className="top-bar__avatar"
-          src={user.avatar}
+        <TwitIcon
+          onClick={() => setShowPanel(true)}
+          className="top-bar__panel-icon"
+          icon="/sprites.svg#icon-menu"
         />
       );
     }
@@ -50,26 +51,22 @@ function TopBar({ main, sub, menu, children }) {
     }
   };
 
-  const renderMenu = () => {
-    if (!menu) {
-      return null;
-    }
-    return menu;
-  };
-
   return (
-    <div className="top-bar">
-      <div className="top-bar__box">
-        {renderAvatar()}
-        {renderBackArrow()}
-        <div className="top-bar__text">
-          <div className="top-bar__text--main">{main}</div>
-          <div className="top-bar__text--sub muted">{sub}</div>
+    <React.Fragment>
+      <div className="top-bar">
+        <div className="top-bar__box">
+          {renderPanelIcon()}
+          {renderBackArrow()}
+          <div className="top-bar__text">
+            <div className="top-bar__text--main">{main}</div>
+            <div className="top-bar__text--sub muted">{sub}</div>
+          </div>
+          {renderAction()}
         </div>
-        {renderAction()}
+        {menu}
       </div>
-      {menu}
-    </div>
+      <TwitPanel show={showPanel} onHide={() => setShowPanel(false)} />
+    </React.Fragment>
   );
 }
 

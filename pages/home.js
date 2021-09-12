@@ -52,7 +52,7 @@ function HomePage() {
   }
 
   function itemRenderer(item) {
-    return <Post post={item} update={updatePosts} user={user} />;
+    return <Post post={item} update={updatePosts} user={user} fadeIn />;
   }
 
   return (

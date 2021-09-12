@@ -20,20 +20,20 @@
     &--active {
       color: var(--color-text);
       font-weight: 700;
-      &::after {
-        content: "";
-        width: 50%;
-        height: 4px;
-        border-radius: 9999px;
-        background-color: var(--color-primary);
-        position: absolute;
-        bottom: 0;
-        align-self: center;
-      }
+    }
+
+    &__bar {
+      width: 50%;
+      height: 4px;
+      border-radius: 9999px;
+      background-color: var(--color-primary);
+      position: absolute;
+      bottom: 0;
+      align-self: center;
     }
 
     &:hover {
-      background-color: var(--color-light-gray);
+      background-color: var(--color-background-secondary);
     }
   }
 }

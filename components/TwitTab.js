@@ -7,16 +7,23 @@ function TwitTab({ active, onClick, id, title }) {
     onClick(event);
   };
 
-  const calcActive = () => {
-    if (active) {
-      return `${twitTabs["twit-tabs__tab"]} ${twitTabs["twit-tabs__tab--active"]}`;
-    } else {
-      return twitTabs["twit-tabs__tab"];
+  function renderBar() {
+    if (!active) return null;
+    else {
+      return <div className={twitTabs["twit-tabs__tab__bar"]}></div>;
     }
-  };
+  }
+
   return (
-    <div onClick={handleClick} className={calcActive()} id={id}>
+    <div
+      id={id}
+      onClick={handleClick}
+      className={`${twitTabs["twit-tabs__tab"]} ${
+        active ? twitTabs["twit-tabs__tab--active"] : null
+      }`}
+    >
       {title}
+      {renderBar()}
     </div>
   );
 }

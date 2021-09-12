@@ -68,7 +68,7 @@ a {
 
   --color-card: var(--color-background-secondary);
   --color-input: rgba(255, 255, 255, 0.1);
-  --color-input-border: none;
+  --color-input-border: 1px solid transparent;
 
   --color-divide: rgba(0, 0, 0, 0.2);
   --color-light-gray: rgba(15, 20, 25, 0.1);
@@ -312,6 +312,19 @@ a {
     &__action {
       margin-left: auto;
       margin-right: 1rem;
+    }
+  }
+
+  &__panel-icon {
+    display: none;
+    height: 3rem;
+    width: 3rem;
+    margin-left: 1rem;
+    fill: var(--color-background-secondary);
+    cursor: pointer;
+
+    @media only screen and (max-width: 500px) {
+      display: block;
     }
   }
 

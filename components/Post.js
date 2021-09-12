@@ -17,7 +17,7 @@ import ScoutButton from "./ScoutButton";
 import Linkify from "./Linkify";
 import PopupCompose from "./modals/PopupCompose";
 
-function Post({ history, post, style, update, user }) {
+function Post({ history, post, style, update, fadeIn, user }) {
   if (!post) {
     return null;
   }
@@ -140,6 +140,7 @@ function Post({ history, post, style, update, user }) {
     const in_reply_to_post_id = post.id;
     const reply = { ...values, conversation_id, in_reply_to_post_id };
     const result = await createReply(reply, user.id);
+    return result;
   };
 
   const renderDropDownItems = () => {
@@ -190,7 +191,7 @@ function Post({ history, post, style, update, user }) {
       onClick={onPostClick}
       className={`${postStyle["post"]} ${
         history ? postStyle["post--history"] : null
-      }`}
+      } ${fadeIn ? postStyle["post__fade-in"] : null}`}
     >
       <Avatar
         roundedCircle
@@ -282,7 +283,7 @@ function Post({ history, post, style, update, user }) {
       <PopupCompose
         show={showPopupCompose}
         onHide={() => setShowPopupCompose(false)}
-        reply={post}
+        post={post}
         onSubmit={onReplySubmit}
         user={user}
       />

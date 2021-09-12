@@ -139,7 +139,7 @@ function User({ userData }) {
   }
 
   function itemRenderer(item) {
-    return <Post post={item} update={updatePosts} user={user} />;
+    return <Post post={item} update={updatePosts} user={user} fadeIn />;
   }
 
   const renderPosts = () => {

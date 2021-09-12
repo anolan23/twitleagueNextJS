@@ -1,15 +1,22 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import { useRouter } from "next/router";
 
 import useUser from "../lib/useUser";
 import twitPanel from "../sass/components/TwitPanel.module.scss";
-import { togglePanel, logOutUser } from "../actions";
+import { logOutUser } from "../actions";
 import Avatar from "./Avatar";
 import TwitPanelItem from "./TwitPanelItem";
+import TwitIcon from "./TwitIcon";
+import Count from "./Count";
 
-function TwitPanel({ show }) {
+function TwitPanel({ show, onHide }) {
   const { user } = useUser();
   const router = useRouter();
+
+  if (!user) {
+    return null;
+  }
 
   const background = () => {
     if (show) {
@@ -29,24 +36,21 @@ function TwitPanel({ show }) {
 
   const logOut = async () => {
     await logOutUser();
-    togglePanel();
+    onHide();
   };
 
-  return (
+  return ReactDOM.createPortal(
     <div className={background()}>
       <div className={panel()}>
         <div className={twitPanel["twit-panel__heading"]}>
           <h1 className={twitPanel["twit-panel__heading__text"]}>
             Account info
           </h1>
-          <div
-            onClick={togglePanel}
-            className={twitPanel["twit-panel__heading__icon-box"]}
-          >
-            <svg className={twitPanel["twit-panel__heading__icon"]}>
-              <use xlinkHref="/sprites.svg#icon-x" />
-            </svg>
-          </div>
+          <TwitIcon
+            icon="/sprites.svg#icon-x"
+            className={twitPanel["twit-panel__heading__icon"]}
+            onClick={onHide}
+          />
         </div>
         <div className={twitPanel["twit-panel__content"]}>
           <div className={twitPanel["twit-panel__user"]}>
@@ -64,50 +68,41 @@ function TwitPanel({ show }) {
             </div>
           </div>
           <div className={twitPanel["twit-panel__follow"]}>
-            <div className={twitPanel["twit-panel__follow__item"]}>
-              <span className={twitPanel["twit-panel__follow__item__count"]}>
-                4
-              </span>
-              <span className={twitPanel["twit-panel__follow__item__text"]}>
-                Following
-              </span>
-            </div>
-            <div className={twitPanel["twit-panel__follow__item"]}>
-              <span className={twitPanel["twit-panel__follow__item__count"]}>
-                1
-              </span>
-              <span className={twitPanel["twit-panel__follow__item__text"]}>
-                Followers
-              </span>
-            </div>
+            <Count
+              href={`/users/${user.username}/scouts`}
+              text="Scouts"
+              value={user.scouts}
+            />
+            <Count
+              href={`/users/${user.username}/scouting`}
+              text="Scouting"
+              value={user.scouting}
+            />
+            <Count
+              href={`/users/${user.username}/following`}
+              text="Following"
+              value={user.following}
+            />
           </div>
           <nav className={twitPanel["twit-panel__nav"]}>
             <TwitPanelItem
               text="Profile"
               href={`/users/${user.username}`}
-              onClick={togglePanel}
+              onClick={onHide}
             >
               <use xlinkHref="/sprites.svg#icon-user" />
             </TwitPanelItem>
             <TwitPanelItem
               text="Create team"
               href="/teams/create"
-              onClick={togglePanel}
+              onClick={onHide}
             >
               <use xlinkHref="/sprites.svg#icon-plus" />
             </TwitPanelItem>
-            <TwitPanelItem
-              text="My teams"
-              href="/myTeams"
-              onClick={togglePanel}
-            >
+            <TwitPanelItem text="My teams" href="/myTeams" onClick={onHide}>
               <use xlinkHref="/sprites.svg#icon-server" />
             </TwitPanelItem>
-            <TwitPanelItem
-              text="My leagues"
-              href="/myLeagues"
-              onClick={togglePanel}
-            >
+            <TwitPanelItem text="My leagues" href="/myLeagues" onClick={onHide}>
               <use xlinkHref="/sprites.svg#icon-user" />
             </TwitPanelItem>
             <TwitPanelItem text="Log out" href="/" onClick={logOut}>
@@ -116,7 +111,8 @@ function TwitPanel({ show }) {
           </nav>
         </div>
       </div>
-    </div>
+    </div>,
+    document.getElementById("portal")
   );
 }
 

@@ -84,7 +84,7 @@ function Notifications(props) {
     }
     if (mentionedPosts.length > 0) {
       return mentionedPosts.map((post, index) => {
-        return <Post key={index} post={post} />;
+        return <Post key={index} post={post} fadeIn />;
       });
     } else if (mentionedPosts.length === 0) {
       return (
