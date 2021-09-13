@@ -17,6 +17,7 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
   }
 
   const { current_season_teams, season_id } = league;
+  console.log(current_season_teams);
 
   const formik = useFormik({
     initialValues: {

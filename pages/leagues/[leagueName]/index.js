@@ -203,7 +203,6 @@ function League({ leagueData }) {
           </MenuItem>
           <MenuItem
             onClick={() => router.push(`/leagues/${league_name}/divisions`)}
-            disabled={season_id}
           >
             Divisions
           </MenuItem>
