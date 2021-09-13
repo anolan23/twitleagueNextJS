@@ -20,9 +20,9 @@ export default async (req, res) => {
       res.send(leagues);
     }
   } else if (method === "POST") {
-    const league = req.body;
-    Leagues.create(league);
-    res.send({});
+    const { league, ownerId } = req.body;
+    const results = await Leagues.create(league, ownerId);
+    res.send(results);
   } else {
     res.status(405).json({ message: "api/league only supports POST" });
   }

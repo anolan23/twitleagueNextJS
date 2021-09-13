@@ -4,15 +4,18 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 
-import twitForm from "../sass/components/TwitForm.module.scss";
+import useUser from "../lib/useUser";
 import TopBar from "./TopBar";
 import TwitButton from "./TwitButton";
-import TwitInputGroup from "./TwitInputGroup";
 import { createLeague } from "../actions";
 import backend from "../lib/backend";
+import Profile from "./Profile";
+import TwitForm from "./TwitForm";
+import TwitInputGroup from "./TwitInputGroup";
 import TwitInput from "./TwitInput";
 
 function CreateLeague() {
+  const { user } = useUser();
   const router = useRouter();
 
   const validationSchema = Yup.object({
@@ -36,10 +39,14 @@ function CreateLeague() {
     initialValues: {
       leagueName: "",
       sport: "",
+      avatar: "",
+      banner: "",
+      bio: "",
     },
-    onSubmit: (values) => {
-      createLeague(values);
-      router.push(`/leagues/${values.leagueName}`);
+
+    onSubmit: async (league) => {
+      await createLeague(user.id, league);
+      router.push(`/leagues/${league.leagueName}`);
     },
     validate,
     validationSchema,
@@ -48,48 +55,33 @@ function CreateLeague() {
   return (
     <div className="create-team">
       <TopBar main="Create league" />
-      <form onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
-        <div className={twitForm["twit-form__group"]}>
-          <label for="leagueName" className={twitForm["twit-form__label"]}>
-            League Name
-          </label>
-          <input
+      <Profile banner={formik.values.banner} avatar={formik.values.avatar} />
+      <TwitForm onSubmit={formik.handleSubmit}>
+        <TwitInputGroup id="leagueName" labelText="League name">
+          <TwitInput
             id="leagueName"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            type="text"
             value={formik.values.leagueName}
             name="leagueName"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.leagueName && formik.touched.leagueName
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
+            placeHolder="League name"
+            isError={formik.errors.leagueName && formik.touched.leagueName}
+            errors={formik.errors.leagueName}
           />
-          {formik.errors.leagueName && formik.touched.leagueName ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.leagueName}
-            </div>
-          ) : null}
-        </div>
-        <div className={twitForm["twit-form__group"]}>
-          <label for="sport" className={twitForm["twit-form__label"]}>
-            Sport
-          </label>
-          <select
+        </TwitInputGroup>
+        <TwitInputGroup id="sport" labelText="Sport">
+          <TwitInput
+            select
             id="sport"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            type="text"
             value={formik.values.sport}
             name="sport"
-            type="text"
-            autoComplete="off"
-            className={
-              formik.errors.sport && formik.touched.sport
-                ? twitForm["twit-form__input--errors"]
-                : twitForm["twit-form__input"]
-            }
+            placeHolder="Sport"
+            isError={formik.errors.sport && formik.touched.sport}
+            errors={formik.errors.sport}
           >
             <option value={null}>Choose</option>
             <option value="baseball">Baseball</option>
@@ -99,17 +91,45 @@ function CreateLeague() {
             <option value="hockey">Hockey</option>
             <option value="soccer">Soccer</option>
             <option value="other">Other</option>
-          </select>
-          {formik.errors.sport && formik.touched.sport ? (
-            <div className={twitForm["twit-form__errors"]}>
-              {formik.errors.sport}
-            </div>
-          ) : null}
-        </div>
+          </TwitInput>
+        </TwitInputGroup>
+        <TwitInputGroup id="avatar" labelText="Avatar">
+          <TwitInput
+            id="avatar"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            type="text"
+            value={formik.values.avatar}
+            name="avatar"
+            placeHolder="Image url"
+          />
+        </TwitInputGroup>
+        <TwitInputGroup id="banner" labelText="Banner">
+          <TwitInput
+            id="banner"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            type="text"
+            value={formik.values.banner}
+            name="banner"
+            placeHolder="Image url"
+          />
+        </TwitInputGroup>
+        <TwitInputGroup id="bio" labelText="Bio">
+          <TwitInput
+            id="bio"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            type="text"
+            value={formik.values.bio}
+            name="bio"
+            placeHolder="Bio"
+          />
+        </TwitInputGroup>
         <TwitButton expanded color="primary" size="large">
           Create league
         </TwitButton>
-      </form>
+      </TwitForm>
     </div>
   );
 }

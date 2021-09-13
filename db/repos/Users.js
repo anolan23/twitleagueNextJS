@@ -58,7 +58,7 @@ class Users {
   static async findAllLike(query, offset, limit) {
     const { rows } = await pool.query(
       `
-        SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio,
+        SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio
         FROM users
         WHERE (LOWER(username) LIKE $1) OR (LOWER(name) LIKE $1)
         ORDER BY username

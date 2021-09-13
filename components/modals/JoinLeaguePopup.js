@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 
 import { search, sendNotification } from "../../actions";
-import scoutPopupStyle from "../../sass/components/ScoutPopup.module.scss";
+import style from "../../sass/components/JoinLeaguePopup.module.scss";
 import Popup from "./Popup";
 import TwitItem from "../TwitItem";
 import TwitInput from "../TwitInput";
 import Empty from "../Empty";
 import TwitButton from "../TwitButton";
 
-function ScoutPopup({ team, show, onHide, userId }) {
-  const [users, setUsers] = useState(null);
+function JoinLeaguePopup({ team, show, onHide, userId }) {
+  const [leagues, setLeagues] = useState(null);
 
   const formik = useFormik({
     initialValues: {
@@ -20,24 +20,24 @@ function ScoutPopup({ team, show, onHide, userId }) {
 
   const onChange = async (event) => {
     formik.handleChange(event);
-    const users = await search({
+    const leagues = await search({
       query: event.target.value,
-      filter: "users",
+      filter: "leagues",
       userId,
       startIndex: 0,
       stopIndex: 10,
     });
 
-    setUsers(users);
+    setLeagues(leagues);
   };
 
-  async function onInviteClick(user) {
+  async function onJoinClick(league) {
     const notification = {
-      type: "Join Team Invite",
-      user_id: user.id,
+      type: "Join League Request",
+      user_id: league.owner_id,
       sender_id: null,
       team_id: team.id,
-      league_id: null,
+      league_id: league.id,
       event_id: null,
     };
     const sentNotification = await sendNotification(notification);
@@ -45,7 +45,7 @@ function ScoutPopup({ team, show, onHide, userId }) {
 
   const renderBody = () => {
     return (
-      <div className={scoutPopupStyle["scout-popup__content"]}>
+      <div className={style["join-league-popup__content"]}>
         {renderContent()}
       </div>
     );
@@ -53,46 +53,39 @@ function ScoutPopup({ team, show, onHide, userId }) {
 
   const renderContent = () => {
     return (
-      <div className={scoutPopupStyle["scout-popup__content__invite"]}>
+      <div className={style["join-league-popup__content__invite"]}>
         <div
-          className={
-            scoutPopupStyle["scout-popup__content__invite__input-holder"]
-          }
+          className={style["join-league-popup__content__invite__input-holder"]}
         >
           <TwitInput
             type="text"
-            placeHolder="Invite players"
+            placeHolder="Join a league"
             name="search"
             onChange={onChange}
             value={formik.values.search}
           />
         </div>
-        {renderUsers()}
+        {renderLeagues()}
       </div>
     );
   };
 
-  const renderUsers = () => {
-    if (!users) {
+  const renderLeagues = () => {
+    if (!leagues) {
       return (
-        <Empty
-          main="Invite players"
-          sub={`Search above for players to add to the team`}
-          actionText="Search"
-        />
+        <Empty main="Join a league" sub="Search above for leagues to join" />
       );
     } else {
-      return users.map((user, index) => {
+      return leagues.map((league, index) => {
         return (
           <TwitItem
             key={index}
-            avatar={user.avatar}
-            title={user.name}
-            subtitle={`@${user.username}`}
-            actionText="Invite"
+            avatar={league.avatar}
+            title={league.league_name}
+            subtitle={league.sport}
           >
-            <TwitButton color="primary" onClick={() => onInviteClick(user)}>
-              Invite
+            <TwitButton color="primary" onClick={() => onJoinClick(league)}>
+              Request join
             </TwitButton>
           </TwitItem>
         );
@@ -103,4 +96,4 @@ function ScoutPopup({ team, show, onHide, userId }) {
   return <Popup show={show} body={renderBody()} onHide={onHide} />;
 }
 
-export default ScoutPopup;
+export default JoinLeaguePopup;

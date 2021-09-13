@@ -1,95 +1,47 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
+import { search, createTeam } from "../actions";
 import useUser from "../lib/useUser";
 import TwitForm from "./TwitForm";
 import TwitInputGroup from "./TwitInputGroup";
 import TwitInput from "./TwitInput";
 import TopBar from "./TopBar";
 import TwitButton from "./TwitButton";
-import AutoCompleteInput from "../components/modals/AutoCompleteInput";
-import TwitDropdownItem from "../components/TwitDropdownItem";
-import { createTeam } from "../actions";
-import backend from "../lib/backend";
+import Profile from "./Profile";
 
-function CreateTeam(props) {
+function CreateTeam() {
   const { user } = useUser();
-  const [options, setOptions] = useState([]);
-  const [show, setShow] = useState(false);
   const router = useRouter();
 
   const validationSchema = Yup.object({
     teamName: Yup.string().required("Required").min(3).max(30),
     abbrev: Yup.string().required("Required").max(6),
-    city: Yup.string().required("Required"),
-    state: Yup.string().required("Required"),
-    leagueName: Yup.string().required("Required"),
   });
-
-  const validate = async (values) => {
-    let errors = {};
-    return backend.get(`/api/leagues/${values.leagueName}`).then((results) => {
-      if (Object.keys(results.data).length === 0) {
-        errors.leagueName = "You must join an active league";
-      }
-      return errors;
-    });
-  };
 
   const formik = useFormik({
     initialValues: {
       teamName: "",
       abbrev: "",
-      leagueName: "",
+      avatar: "",
+      banner: "",
+      bio: "",
       city: "",
       state: "",
     },
-    onSubmit: (values) => {
-      onSubmit(values);
+    onSubmit: async (team) => {
+      await createTeam(user.id, team);
+      router.push(`/teams/${team.abbrev.substring(1)}`);
     },
-    validate,
     validationSchema,
   });
-
-  const onSubmit = async (values) => {
-    await createTeam(user.id, values);
-    router.push(`/teams/${values.abbrev.substring(1)}`);
-  };
-
-  const onAutoCompleteChange = async (event) => {
-    formik.handleChange(event);
-    const results = await backend.get("/api/leagues", {
-      params: { leagueName: event.target.value },
-    });
-    setOptions(results.data);
-
-    if (results.data.length > 0 && event.target.value) {
-      setShow(true);
-    } else {
-      setShow(false);
-    }
-  };
-
-  const onDropdownItemClick = (option) => {
-    formik.setFieldValue("leagueName", option.league_name);
-    setShow(false);
-  };
-
-  const renderOptions = () => {
-    return options.map((option, index) => {
-      return (
-        <TwitDropdownItem onClick={() => onDropdownItemClick(option)}>
-          {option.league_name}
-        </TwitDropdownItem>
-      );
-    });
-  };
 
   return (
     <div className="create-team">
       <TopBar main="Create team" />
+      <Profile banner={formik.values.banner} avatar={formik.values.avatar} />
       <TwitForm onSubmit={formik.handleSubmit}>
         <TwitInputGroup id="teamName" labelText="Team name">
           <TwitInput
@@ -99,6 +51,7 @@ function CreateTeam(props) {
             type="text"
             value={formik.values.teamName}
             name="teamName"
+            placeHolder="Team name"
             isError={formik.errors.teamName && formik.touched.teamName}
             errors={formik.errors.teamName}
           />
@@ -111,24 +64,43 @@ function CreateTeam(props) {
             type="text"
             value={formik.values.abbrev}
             name="abbrev"
+            placeHolder="Team abbrev"
             isError={formik.errors.abbrev && formik.touched.abbrev}
             errors={formik.errors.abbrev}
           />
         </TwitInputGroup>
-        <TwitInputGroup id="leagueName" labelText="League name">
+        <TwitInputGroup id="avatar" labelText="Avatar">
           <TwitInput
-            autoComplete
-            id="leagueName"
-            onChange={onAutoCompleteChange}
+            id="avatar"
+            onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             type="text"
-            value={formik.values.leagueName}
-            name="leagueName"
-            isError={formik.errors.leagueName && formik.touched.leagueName}
-            errors={formik.errors.leagueName}
-          >
-            {renderOptions()}
-          </TwitInput>
+            value={formik.values.avatar}
+            name="avatar"
+            placeHolder="Image url"
+          />
+        </TwitInputGroup>
+        <TwitInputGroup id="banner" labelText="Banner">
+          <TwitInput
+            id="banner"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            type="text"
+            value={formik.values.banner}
+            name="banner"
+            placeHolder="Image url"
+          />
+        </TwitInputGroup>
+        <TwitInputGroup id="bio" labelText="Bio">
+          <TwitInput
+            id="bio"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            type="text"
+            value={formik.values.bio}
+            name="bio"
+            placeHolder="Bio"
+          />
         </TwitInputGroup>
         <TwitInputGroup id="city" labelText="City">
           <TwitInput
@@ -138,8 +110,7 @@ function CreateTeam(props) {
             type="text"
             value={formik.values.city}
             name="city"
-            isError={formik.errors.city && formik.touched.city}
-            errors={formik.errors.city}
+            placeHolder="City"
           />
         </TwitInputGroup>
         <TwitInputGroup id="state" labelText="State">
@@ -150,8 +121,7 @@ function CreateTeam(props) {
             type="text"
             value={formik.values.state}
             name="state"
-            isError={formik.errors.state && formik.touched.state}
-            errors={formik.errors.state}
+            placeHolder="State"
           />
         </TwitInputGroup>
         <TwitButton expanded color="primary" size="large">

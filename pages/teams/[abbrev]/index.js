@@ -27,6 +27,7 @@ import TwitSpinner from "../../../components/TwitSpinner";
 import PopupCompose from "../../../components/modals/PopupCompose";
 import EditEventsPopup from "../../../components/modals/EditEventsPopup";
 import ScoutPopup from "../../../components/modals/ScoutPopup";
+import JoinLeaguePopup from "../../../components/modals/JoinLeaguePopup";
 import ScoresCard from "../../../components/ScoresCard";
 import Menu from "../../../components/Menu";
 import MenuItem from "../../../components/MenuItem";
@@ -42,6 +43,7 @@ function Team({ teamData, standings }) {
   const [posts, setPosts] = useState(null);
   const [showEditTeamPopup, setShowEditTeamPopup] = useState(false);
   const [showScoutPopup, setShowScoutPopup] = useState(false);
+  const [showJoinLeaguePopup, setShowJoinLeaguePopup] = useState(false);
   const [showEditEventsPopup, setShowEditEventsPopup] = useState(false);
   const [showPopupCompose, setShowPopupCompose] = useState(false);
   const infiniteLoaderRef = useCallback(
@@ -74,7 +76,7 @@ function Team({ teamData, standings }) {
 
   function getData(startIndex, stopIndex) {
     return getTeamPosts({
-      abbrev: team.abbrev.substring(1),
+      abbrev: abbrev.substring(1),
       filter: tab,
       userId: user.id,
       startIndex,
@@ -149,13 +151,20 @@ function Team({ teamData, standings }) {
     if (!user) {
       return null;
     }
-    if (user.id === team.owner_id) {
+    if (user.id === owner_id) {
+      console.log(team);
       return (
         <Menu>
           <MenuItem onClick={() => setShowEditTeamPopup(true)}>
             Profile
           </MenuItem>
-          <MenuItem onClick={editRoster}>Add players</MenuItem>
+          <MenuItem
+            onClick={() => setShowJoinLeaguePopup(true)}
+            hide={league_id}
+          >
+            Join a league
+          </MenuItem>
+          <MenuItem onClick={editRoster}>Invite players</MenuItem>
           <MenuItem onClick={editEvents}>Schedule event</MenuItem>
         </Menu>
       );
@@ -170,13 +179,13 @@ function Team({ teamData, standings }) {
   }
 
   function editRoster() {
-    if (user.id === team.owner_id) {
+    if (user.id === owner_id) {
       setShowScoutPopup(true);
     }
   }
 
   function editEvents() {
-    if (user.id === team.owner_id) {
+    if (user.id === owner_id) {
       setShowEditEventsPopup(true);
     }
   }
@@ -185,22 +194,20 @@ function Team({ teamData, standings }) {
     return <TwitSpinner size={50} />;
   }
 
+  const { abbrev, owner_id, current_season, league, league_id } = team;
+
   return (
     <React.Fragment>
       <div className="twit-container">
         <header className="header">
           <LeftColumn
             setShowPopupCompose={setShowPopupCompose}
-            initialValue={team.abbrev}
+            initialValue={abbrev}
             onSubmit={onPostSubmit}
           />
         </header>
         <main className="main">
-          <TopBar
-            main={`${team.abbrev}`}
-            sub="Team"
-            menu={renderMenu()}
-          ></TopBar>
+          <TopBar main={`${abbrev}`} sub="Team" menu={renderMenu()}></TopBar>
           <TeamProfile
             team={team}
             onAvatarClick={() => setShowEditTeamPopup(true)}
@@ -224,12 +231,10 @@ function Team({ teamData, standings }) {
         </main>
         <div className="right-bar">
           <RightColumn>
-            <ScoresCard
-              seasonId={team.current_season ? team.current_season.id : null}
-            />
+            <ScoresCard seasonId={current_season ? current_season.id : null} />
             <StandingsCard
               standings={standings}
-              league={team.league}
+              league={league}
               title="Standings"
             />
           </RightColumn>
@@ -239,7 +244,7 @@ function Team({ teamData, standings }) {
       <PopupCompose
         show={showPopupCompose}
         onHide={() => setShowPopupCompose(false)}
-        initialValue={team.abbrev}
+        initialValue={abbrev}
         onSubmit={onPostSubmit}
         user={user}
       />
@@ -253,11 +258,16 @@ function Team({ teamData, standings }) {
         team={team}
         onHide={() => setShowScoutPopup(false)}
       />
+      <JoinLeaguePopup
+        show={showJoinLeaguePopup}
+        team={team}
+        onHide={() => setShowJoinLeaguePopup(false)}
+      />
       <EditEventsPopup
         show={showEditEventsPopup}
         homeTeam={team}
         awayTeam={null}
-        league={team.league}
+        league={league}
         onHide={() => setShowEditEventsPopup(false)}
       />
     </React.Fragment>

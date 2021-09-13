@@ -2,24 +2,14 @@ import pool from "../pool";
 
 class Teams {
   static async create(userId, team) {
-    const { teamName, abbrev, city, state, leagueName } = team;
+    const { teamName, abbrev, avatar, banner, bio, city, state } = team;
     const results = await pool.query(
       `
-        WITH created_team AS (
-            INSERT INTO teams (owner_id, team_name, abbrev, city, state)
-            VALUES
-            ($1, $2, $3, $4, $5)
-            RETURNING id
-            ), league_data AS (
-                SELECT id, owner_id
-                FROM leagues
-                WHERE league_name = $6
-            )
-            
-        INSERT INTO notifications (user_id, type, team_id, league_id)
-        VALUES 
-        ((SELECT owner_id FROM league_data), 'Join League Request', (SELECT id FROM created_team), (SELECT id FROM league_data))`,
-      [userId, teamName, abbrev, city, state, leagueName]
+      INSERT INTO teams (owner_id, team_name, abbrev, avatar, banner, bio, city, state)
+      VALUES
+      ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *`,
+      [userId, teamName, abbrev, avatar, banner, bio, city, state]
     );
 
     return results.rows[0];

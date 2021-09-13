@@ -1,15 +1,17 @@
 import pool from "../pool";
 
 class Leagues {
-  static async create(leagueData) {
-    const { ownerId, leagueName, sport } = leagueData;
+  static async create(league, ownerId) {
+    const { leagueName, sport, avatar, banner, bio } = league;
     const { rows } = await pool.query(
       `
-        INSERT INTO leagues (owner_id, league_name, sport)
+        INSERT INTO leagues (owner_id, league_name, sport, avatar, banner, bio)
         VALUES
-        ($1, $2, $3)`,
-      [ownerId, leagueName, sport]
+        ($1, $2, $3, $4, $5, $6)
+        RETURNING *`,
+      [ownerId, leagueName, sport, avatar, banner, bio]
     );
+    return rows[0];
   }
 
   static async findOne(leagueName) {

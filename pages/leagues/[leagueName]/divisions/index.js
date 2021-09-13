@@ -44,7 +44,8 @@ function Divisions({ leagueData }) {
   if (router.isFallback) {
     return <TwitSpinner size={50} />;
   }
-  const { teams, divisions } = league;
+  let { teams, divisions } = league;
+  teams = teams || [];
 
   function renderUnassignedTeams() {
     if (!teams) {

@@ -2,10 +2,10 @@ import React from "react";
 import twitTabs from "../sass/components/TwitTabs.module.scss";
 
 function TwitTab({ active, onClick, id, title }) {
-  const handleClick = (event) => {
+  function handleClick(event) {
     event.preventDefault();
     onClick(event);
-  };
+  }
 
   function renderBar() {
     if (!active) return null;

@@ -188,7 +188,7 @@ function TeamProfile({ team, standings, onAvatarClick }) {
             />
             <Attribute
               icon={"/sprites.svg#icon-home"}
-              text={`Joined ${TwitDate.localeDateString(team.created_at)}`}
+              text={`Joined ${TwitDate.localeDateStringShort(team.created_at)}`}
             />
           </div>
           <div className={teamProfile["team-profile__counts"]}>

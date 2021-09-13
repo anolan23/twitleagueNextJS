@@ -42,13 +42,14 @@ function MyLeagues() {
       );
     } else {
       return leagues.map((league, index) => {
+        const { league_name, sport, avatar } = league;
         return (
           <TwitItem
             key={index}
-            title={league.league_name}
-            subtitle={league.sport}
-            onClick={() => router.push(`/leagues/${league.league_name}`)}
-            avatar={league.avatar}
+            title={league_name}
+            subtitle={sport.charAt(0).toUpperCase() + sport.slice(1)}
+            onClick={() => router.push(`/leagues/${league_name}`)}
+            avatar={avatar}
           />
         );
       });

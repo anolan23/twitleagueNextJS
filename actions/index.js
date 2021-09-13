@@ -307,9 +307,12 @@ export const updateTeamByAbbrev = async (abbrev, columns) => {
   return team.data;
 };
 
-export const createLeague = (values) => async (dispatch, getState) => {
-  const ownerId = getState().user.id;
-  backend.post("/api/leagues", { ...values, ownerId });
+export const createLeague = async (userId, league) => {
+  const results = await backend.post("/api/leagues", {
+    league,
+    ownerId: userId,
+  });
+  return results.data;
 };
 
 export const createLeagueAndFetchUser = (formValues) => async (dispatch) => {

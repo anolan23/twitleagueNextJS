@@ -186,7 +186,7 @@ function Post({ history, post, style, update, fadeIn, user }) {
   }
 
   return (
-    <div
+    <article
       style={style}
       onClick={onPostClick}
       className={`${postStyle["post"]} ${
@@ -287,7 +287,7 @@ function Post({ history, post, style, update, fadeIn, user }) {
         onSubmit={onReplySubmit}
         user={user}
       />
-    </div>
+    </article>
   );
 }
 

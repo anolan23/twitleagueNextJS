@@ -39,7 +39,7 @@ function TwitItem({
   }
 
   return (
-    <div
+    <article
       onClick={onClick}
       className={`${twitItem["twit-item"]} ${
         active ? twitItem["twit-item--active"] : ""
@@ -59,7 +59,7 @@ function TwitItem({
         {renderParagraph()}
       </div>
       {renderAction()}
-    </div>
+    </article>
   );
 }
 

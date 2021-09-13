@@ -129,7 +129,7 @@ function EventsPage({ eventData }) {
 
   const renderEvent = () => {
     if (event === null) {
-      return <TwitSpinner size={50} />;
+      return <TwitSpinner size={30} />;
     } else if (event.length === 0) {
       return null;
     } else {

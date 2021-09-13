@@ -4,11 +4,11 @@ import { useFormik } from "formik";
 import Popup from "./Popup";
 import TwitButton from "../TwitButton";
 import { updateTeamById } from "../../actions";
-import twitForm from "../../sass/components/TwitForm.module.scss";
 import editProfilePopup from "../../sass/components/EditProfilePopup.module.scss";
 import TwitInputGroup from "../TwitInputGroup";
 import TwitInput from "../TwitInput";
 import Profile from "../Profile";
+import TwitForm from "../TwitForm";
 
 function EditTeamPopup({ team, show, onHide }) {
   if (!show) {
@@ -21,8 +21,14 @@ function EditTeamPopup({ team, show, onHide }) {
       banner: team.banner ? team.banner : "",
       bio: team.bio ? team.bio : "",
     },
-    onSubmit: (values) => {
-      updateTeamById(team.id, values);
+    onSubmit: async (values) => {
+      try {
+        await updateTeamById(team.id, values);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        onHide();
+      }
     },
   });
 
@@ -44,11 +50,7 @@ function EditTeamPopup({ team, show, onHide }) {
     return (
       <div className={editProfilePopup["edit-profile-popup"]}>
         <Profile avatar={formik.values.avatar} banner={formik.values.banner} />
-        <form
-          id="edit-team-form"
-          onSubmit={formik.handleSubmit}
-          className={twitForm["twit-form"]}
-        >
+        <TwitForm id="edit-team-form" onSubmit={formik.handleSubmit}>
           <TwitInputGroup id="teamName" labelText="Team name">
             <TwitInput
               id="team_name"
@@ -89,7 +91,7 @@ function EditTeamPopup({ team, show, onHide }) {
               name="bio"
             />
           </TwitInputGroup>
-        </form>
+        </TwitForm>
       </div>
     );
   };

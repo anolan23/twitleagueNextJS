@@ -42,6 +42,7 @@ function LoginPage() {
             type="text"
             value={formik.values.username}
             name="username"
+            placeHolder="Username"
           />
         </TwitInputGroup>
         <TwitInputGroup id="password" labelText="Password">
@@ -52,6 +53,7 @@ function LoginPage() {
             type="password"
             value={formik.values.password}
             name="password"
+            placeHolder="Password"
           />
         </TwitInputGroup>
         <TwitButton color="primary" size="large" expanded>

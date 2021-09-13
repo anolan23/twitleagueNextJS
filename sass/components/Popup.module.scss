@@ -56,7 +56,7 @@
     &__body {
       max-width: 60rem;
       height: 100%;
-      overflow: auto;
+      overflow-y: auto;
       padding: 0 1rem;
 
       @media only screen and (max-width: 760px) {

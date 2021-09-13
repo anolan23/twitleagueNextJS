@@ -71,7 +71,7 @@ function UpdateScorePopup({ show, onHide, event }) {
 
   const renderBody = () => {
     if (!event) {
-      return <TwitSpinner size={50} />;
+      return <TwitSpinner size={30} />;
     } else {
       return (
         <form

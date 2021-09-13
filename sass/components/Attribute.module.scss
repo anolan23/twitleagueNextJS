@@ -1,17 +1,19 @@
-.attribute{
-    color: var(--color-text-secondary);
-    display: flex;
-    align-items: center;
-    margin-right: 1.2rem;
-    &__icon{
-        height: 1.6rem;
-        width: 1.6rem;
-        color: inherit;
-        fill: currentColor;
-        margin-right: 5px;
-    }
+.attribute {
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  margin-right: 1.2rem;
+  &__icon {
+    height: 1.6rem;
+    width: 1.6rem;
+    color: inherit;
+    fill: currentColor;
+    margin-right: 5px;
+  }
 
-    &__text{
-
+  &__text {
+    &::first-letter {
+      text-transform: uppercase;
     }
+  }
 }
