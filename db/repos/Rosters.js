@@ -9,6 +9,7 @@ class Rosters {
         RETURNING *`,
       [teamId, userId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -23,6 +24,7 @@ class Rosters {
         WHERE team_id = $1`,
       [teamId]
     );
+    pool.end();
 
     return rows;
   }
@@ -37,6 +39,7 @@ class Rosters {
         WHERE abbrev = $1`,
       [`$${abbrev}`]
     );
+    pool.end();
 
     return rows;
   }

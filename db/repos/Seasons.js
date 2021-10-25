@@ -17,6 +17,7 @@ class Seasons {
         `,
       [leagueId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -44,6 +45,7 @@ class Seasons {
       RETURNING *`,
       [leagueId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -69,6 +71,7 @@ class Seasons {
         `,
       [leagueId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -113,6 +116,7 @@ class Seasons {
         WHERE id = $1`,
       [seasonId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -122,6 +126,7 @@ class Seasons {
         SELECT *
         FROM seasons
         `);
+    pool.end();
 
     return rows;
   }
@@ -136,6 +141,7 @@ class Seasons {
         ORDER BY created_at DESC`,
       [leagueName]
     );
+    pool.end();
 
     return rows;
   }
@@ -149,6 +155,7 @@ class Seasons {
       WHERE seasons.id = $1`,
       [seasonId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -162,6 +169,7 @@ class Seasons {
         RETURNING *`,
       [seasonId, seed]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -174,6 +182,7 @@ class Seasons {
         RETURNING *`,
       [seasonId, seed]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -187,6 +196,7 @@ class Seasons {
         RETURNING *`,
       [teamId, seasonId, seed]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -226,6 +236,7 @@ class Seasons {
       `,
       [seasonId]
     );
+    pool.end();
 
     return rows[0];
   }

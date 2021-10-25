@@ -21,6 +21,7 @@ class Database {
     };
 
     const { rows } = await pool.query(sqlQuery(), Object.values(columns));
+    pool.end();
 
     return rows[0];
   }
@@ -71,6 +72,7 @@ class Database {
         `,
       [`%${query}%`, offset, limit, userId]
     );
+    pool.end();
 
     return rows[0];
   }

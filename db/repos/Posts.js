@@ -89,6 +89,7 @@ class Posts {
       OFFSET $4`,
       [targetUserId, userId, num, offset]
     );
+    pool.end();
 
     return rows;
   }
@@ -111,6 +112,7 @@ class Posts {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -131,6 +133,7 @@ class Posts {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -153,6 +156,7 @@ class Posts {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -176,6 +180,7 @@ class Posts {
     OFFSET $3`,
       [userId, num, offset]
     );
+    pool.end();
 
     return rows;
   }
@@ -198,6 +203,7 @@ class Posts {
         `,
       [abbrev, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -220,6 +226,7 @@ class Posts {
         `,
       [abbrev, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -252,6 +259,7 @@ class Posts {
       WHERE row_number = 1`,
       [leagueName, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -284,6 +292,7 @@ class Posts {
       WHERE row_number = 1`,
       [leagueName, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -311,6 +320,7 @@ class Posts {
       `,
       [eventId, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -331,6 +341,7 @@ class Posts {
     `,
       [threadId, userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -362,6 +373,7 @@ class Posts {
   `,
       [threadId, userId]
     );
+    pool.end();
 
     return rows;
   }
@@ -603,6 +615,8 @@ class Posts {
         RETURNING *`,
       [postId, userId]
     );
+    pool.end();
+
     return rows;
   }
 
@@ -614,6 +628,8 @@ class Posts {
       RETURNING *`,
       [postId, userId]
     );
+    pool.end();
+
     return rows;
   }
 
@@ -636,6 +652,7 @@ class Posts {
       OFFSET $3`,
       [userId, num, offset]
     );
+    pool.end();
 
     return rows;
   }
@@ -671,6 +688,7 @@ class Posts {
       LIMIT $3`,
       [userId, offset, limit]
     );
+    pool.end();
 
     return rows;
   }
@@ -691,6 +709,7 @@ class Posts {
     `,
       [postId, userId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -711,6 +730,7 @@ class Posts {
       `,
       [query, offset, limit, userId]
     );
+    pool.end();
 
     return rows;
   }
@@ -731,6 +751,7 @@ class Posts {
       `,
       [query, offset, limit, userId]
     );
+    pool.end();
 
     return rows;
   }
@@ -751,6 +772,7 @@ class Posts {
       `,
       [query, offset, limit, userId]
     );
+    pool.end();
 
     return rows;
   }
@@ -771,6 +793,7 @@ class Posts {
       `,
       [query, offset, limit, userId]
     );
+    pool.end();
 
     return rows;
   }
@@ -785,6 +808,7 @@ class Posts {
     `,
       [postId]
     );
+    pool.end();
 
     return rows;
   }
@@ -798,6 +822,7 @@ class Posts {
   `,
       [postId]
     );
+    pool.end();
 
     return rows[0];
   }

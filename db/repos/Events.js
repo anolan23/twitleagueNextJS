@@ -12,6 +12,7 @@ class Events {
             RETURNING *`,
       [homeTeamId, type, awayTeamId, date, location, notes, seasonId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -23,6 +24,7 @@ class Events {
         FROM events`,
       []
     );
+    pool.end();
 
     return rows;
   }
@@ -54,6 +56,7 @@ class Events {
       LIMIT 2`,
       [seasonId]
     );
+    pool.end();
 
     return rows;
   }
@@ -75,6 +78,7 @@ class Events {
         ORDER BY date`,
       [teamId]
     );
+    pool.end();
 
     return rows;
   }
@@ -109,6 +113,7 @@ class Events {
       ORDER BY date`,
       [abbrev, seasonId, userId]
     );
+    pool.end();
 
     return rows;
   }
@@ -158,6 +163,7 @@ class Events {
       WHERE events.id = $1`,
       [eventId, userId]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -181,6 +187,7 @@ class Events {
         LEFT JOIN leagues ON t1.league_id = leagues.id`,
       Object.values(values)
     );
+    pool.end();
 
     return rows[0];
   }
@@ -193,6 +200,8 @@ class Events {
         RETURNING *`,
       [eventId, userId]
     );
+    pool.end();
+
     return rows;
   }
 
@@ -204,6 +213,8 @@ class Events {
       RETURNING *`,
       [eventId, userId]
     );
+    pool.end();
+
     return rows;
   }
 
@@ -217,6 +228,7 @@ class Events {
     `,
       [eventId]
     );
+    pool.end();
 
     return rows;
   }
@@ -276,6 +288,7 @@ class Events {
     `,
       [leagueName]
     );
+    pool.end();
 
     return rows[0];
   }
@@ -336,6 +349,7 @@ class Events {
     `,
       [seasonId]
     );
+    pool.end();
 
     return rows[0];
   }
