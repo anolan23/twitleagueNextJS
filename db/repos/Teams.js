@@ -11,7 +11,6 @@ class Teams {
       RETURNING *`,
       [userId, teamName, abbrev, avatar, banner, bio, city, state]
     );
-    pool.end();
 
     return results.rows[0];
   }
@@ -83,7 +82,6 @@ class Teams {
       WHERE abbrev = $1`,
       [abbrev, userId]
     );
-    pool.end();
 
     return team.rows[0];
   }
@@ -97,7 +95,6 @@ class Teams {
         WHERE teams.owner_id = $1`,
       [ownerId]
     );
-    pool.end();
 
     return teams.rows;
   }
@@ -114,7 +111,6 @@ class Teams {
         `,
       [username]
     );
-    pool.end();
 
     return teams.rows;
   }
@@ -148,7 +144,6 @@ class Teams {
     `,
       [leagueName, userId, offset, limit]
     );
-    pool.end();
 
     return teams.rows;
   }
@@ -158,7 +153,6 @@ class Teams {
         SELECT *
         FROM teams
         `);
-    pool.end();
 
     return teams.rows;
   }
@@ -177,7 +171,6 @@ class Teams {
         `,
       [userId, offset, limit]
     );
-    pool.end();
 
     return teams.rows;
   }
@@ -196,7 +189,6 @@ class Teams {
                 ) AS popular_teams
             JOIN teams ON teams.id = popular_teams.team_id;
         `);
-    pool.end();
 
     return teams.rows;
   }
@@ -209,7 +201,6 @@ class Teams {
         WHERE id = $2`,
       [leagueId, teamId]
     );
-    pool.end();
 
     return team.rows;
   }
@@ -226,7 +217,6 @@ class Teams {
             RETURNING *`,
         [teamId, values.avatar, values.banner, values.bio]
       );
-      pool.end();
 
       return rows[0];
     } else if (values.divisionId || values.divisionId === null) {
@@ -238,7 +228,6 @@ class Teams {
             RETURNING *`,
         [teamId, values.divisionId]
       );
-      pool.end();
 
       return rows[0];
     }
@@ -254,7 +243,6 @@ class Teams {
         WHERE events.team_id = $1 OR events.opponent_id = $1`,
       [teamId]
     );
-    pool.end();
 
     return rows;
   }
@@ -271,7 +259,6 @@ class Teams {
         LIMIT $3;`,
       [`%${query}%`, offset, limit]
     );
-    pool.end();
 
     return rows;
   }
@@ -293,7 +280,6 @@ class Teams {
       LIMIT $4`,
       [abbrev, userId, offset, limit]
     );
-    pool.end();
 
     return rows;
   }
@@ -314,7 +300,6 @@ class Teams {
       LIMIT $4`,
       [teamId, userId, offset, limit]
     );
-    pool.end();
 
     return rows;
   }

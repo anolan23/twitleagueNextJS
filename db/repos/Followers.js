@@ -10,7 +10,6 @@ class Followers {
         WHERE team_id = $1`,
       [teamId]
     );
-    pool.end();
 
     return rows;
   }
@@ -23,7 +22,6 @@ class Followers {
         WHERE user_id = $1`,
       [userId]
     );
-    pool.end();
 
     return rows;
   }
@@ -36,7 +34,6 @@ class Followers {
         RETURNING *`,
       [teamId, userId]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -49,7 +46,6 @@ class Followers {
         RETURNING *`,
       [teamId, userId]
     );
-    pool.end();
 
     return rows[0];
   }

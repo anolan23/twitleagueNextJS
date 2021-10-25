@@ -9,7 +9,6 @@ class Scouts {
         WHERE user_id = $1`,
       [userId]
     );
-    pool.end();
 
     return rows;
   }
@@ -22,7 +21,6 @@ class Scouts {
         RETURNING *`,
       [scouted_user_id, scout_user_id]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -35,7 +33,6 @@ class Scouts {
         RETURNING *`,
       [scouted_user_id, scout_user_id]
     );
-    pool.end();
 
     return rows[0];
   }

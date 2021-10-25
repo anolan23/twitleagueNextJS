@@ -11,7 +11,6 @@ class Leagues {
         RETURNING *`,
       [ownerId, leagueName, sport, avatar, banner, bio]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -67,7 +66,6 @@ class Leagues {
       WHERE leagues.league_name = $1`,
       [leagueName]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -113,7 +111,6 @@ class Leagues {
       WHERE leagues.league_name = $1`,
       [leagueName, seasonId]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -138,7 +135,6 @@ class Leagues {
         WHERE id = $1`,
       [leagueId]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -148,7 +144,6 @@ class Leagues {
         SELECT *
         FROM leagues
         `);
-    pool.end();
 
     return leagues.rows;
   }
@@ -164,7 +159,6 @@ class Leagues {
         LIMIT $3;`,
       [`%${query}%`, offset, limit]
     );
-    pool.end();
 
     return rows;
   }
@@ -178,7 +172,6 @@ class Leagues {
         `,
       [leagueId, seasonId]
     );
-    pool.end();
 
     return division.rows[0];
   }
@@ -192,7 +185,6 @@ class Leagues {
         `,
       [divisionId]
     );
-    pool.end();
 
     return division.rows[0];
   }
@@ -207,7 +199,6 @@ class Leagues {
         `,
       [divisionId, newDivisionName]
     );
-    pool.end();
 
     return division.rows[0];
   }
@@ -234,7 +225,6 @@ class Leagues {
         `,
       [leagueId]
     );
-    pool.end();
 
     return division.rows;
   }
@@ -317,7 +307,6 @@ class Leagues {
         `,
       [leagueName, seasonId]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -395,7 +384,6 @@ class Leagues {
         `,
       [leagueName]
     );
-    pool.end();
 
     return rows;
   }
@@ -420,7 +408,6 @@ class Leagues {
     };
 
     const { rows } = await pool.query(sqlQuery(), Object.values(columns));
-    pool.end();
 
     return rows[0];
   }
@@ -430,7 +417,6 @@ class Leagues {
         SELECT *
         FROM leagues
         `);
-    pool.end();
 
     return leagues.rows;
   }

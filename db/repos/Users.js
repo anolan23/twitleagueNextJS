@@ -11,7 +11,7 @@ class Users {
         `,
       [name, email, username, password]
     );
-    pool.end();
+
     return rows[0];
   }
 
@@ -20,7 +20,7 @@ class Users {
       `SELECT id, created_at, updated_at, name, email, username, dob, avatar, bio 
       FROM users`
     );
-    pool.end();
+
     return rows;
   }
 
@@ -37,7 +37,7 @@ class Users {
         WHERE username = $1`,
       [username, userId]
     );
-    pool.end();
+
     return rows[0];
   }
 
@@ -50,7 +50,7 @@ class Users {
         RETURNING id, created_at, updated_at, name, email, username, dob, avatar, bio`,
       [userId, values.avatar]
     );
-    pool.end();
+
     return rows[0];
   }
 
@@ -65,7 +65,7 @@ class Users {
         LIMIT $3;`,
       [`%${query}%`, offset, limit]
     );
-    pool.end();
+
     return rows;
   }
 
@@ -81,7 +81,7 @@ class Users {
         `,
       [userId, offset, limit]
     );
-    pool.end();
+
     return results.rows;
   }
 
@@ -102,7 +102,7 @@ class Users {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
-    pool.end();
+
     return results.rows;
   }
 
@@ -123,7 +123,7 @@ class Users {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
-    pool.end();
+
     return results.rows;
   }
 
@@ -144,7 +144,7 @@ class Users {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
-    pool.end();
+
     return results.rows;
   }
 }

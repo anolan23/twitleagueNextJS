@@ -66,7 +66,6 @@ class Notifications {
       ORDER BY notifications.created_at DESC`,
       [userId]
     );
-    pool.end();
 
     return notifications.rows;
   }
@@ -81,7 +80,6 @@ class Notifications {
         RETURNING *`,
       [type, user_id, sender_id, team_id, league_id, event_id]
     );
-    pool.end();
 
     return results.rows[0];
   }
@@ -94,7 +92,6 @@ class Notifications {
         RETURNING *`,
       [notificationId]
     );
-    pool.end();
 
     return notifications.rows[0];
   }

@@ -11,7 +11,6 @@ class Playoffs {
         `,
       [seasonId, bracket, seeds, in_progress]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -25,7 +24,6 @@ class Playoffs {
         `,
       [seasonId]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -38,7 +36,6 @@ class Playoffs {
         `,
       []
     );
-    pool.end();
 
     return rows;
   }
@@ -78,7 +75,6 @@ class Playoffs {
         `,
       [seasonId]
     );
-    pool.end();
 
     return rows[0];
   }
@@ -99,7 +95,6 @@ class Playoffs {
     };
 
     const { rows } = await pool.query(sqlQuery(), Object.values(columns));
-    pool.end();
 
     return rows[0];
   }
