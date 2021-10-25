@@ -19,7 +19,12 @@ function TwitButton({
   icon,
   className,
   buttonRef,
+  hide,
 }) {
+  if (hide) {
+    return null;
+  }
+
   const determineType = () => {
     if (type === "square") {
       return twitButton["twit-button--square"];

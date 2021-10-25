@@ -158,9 +158,14 @@ export const findEventsByTeamId = async (teamId) => {
   return response.data;
 };
 
-export const findEventsByTeamAbbrev = async (abbrev) => {
-  const response = await backend.get(`/api/teams/${abbrev}/events`);
-  return response.data;
+export const getTeamEvents = async ({ abbrev, seasonId, userId }) => {
+  const results = await backend.get(`/api/teams/${abbrev}/events`, {
+    params: {
+      seasonId,
+      userId,
+    },
+  });
+  return results.data;
 };
 
 export const findSeasonsByLeagueName = async (leagueName) => {
@@ -295,8 +300,15 @@ export const updateLeagueByName = async (leagueName, columns) => {
 };
 
 export const updateTeamById = async (teamId, columns) => {
-  const team = await backend.patch("/api/teams", { teamId, columns });
-  return team.data;
+  const results = await backend.patch("/api/teams", { teamId, columns });
+  return results.data;
+};
+
+export const updateSeasonTeamById = async (seasonTeamId, columns) => {
+  const results = await backend.patch(`/api/season-teams/${seasonTeamId}`, {
+    columns,
+  });
+  return results.data;
 };
 
 export const updateTeamByAbbrev = async (abbrev, columns) => {
@@ -906,8 +918,8 @@ export const getSuggestedUsers = async ({ userId, startIndex, stopIndex }) => {
   return results.data;
 };
 
-export const getSchedule = async (leagueName, seasonId) => {
-  const results = await backend.get(`/api/leagues/${leagueName}/schedule`, {
+export const getSchedules = async (leagueName, seasonId) => {
+  const results = await backend.get(`/api/leagues/${leagueName}/schedules`, {
     params: {
       seasonId,
     },

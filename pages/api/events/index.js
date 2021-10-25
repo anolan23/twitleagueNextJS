@@ -5,6 +5,8 @@ export default async (req, res) => {
 
   if (method === "POST") {
     const { event } = req.body;
+    console.log(event);
+
     const createdEvent = await Events.createEvent(event);
     res.send(createdEvent);
   } else if (method === "GET") {

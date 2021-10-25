@@ -28,7 +28,7 @@ import PopupCompose from "../../../components/modals/PopupCompose";
 import EditEventsPopup from "../../../components/modals/EditEventsPopup";
 import ScoutPopup from "../../../components/modals/ScoutPopup";
 import JoinLeaguePopup from "../../../components/modals/JoinLeaguePopup";
-import ScoresCard from "../../../components/ScoresCard";
+import ScheduleCard from "../../../components/ScheduleCard";
 import Menu from "../../../components/Menu";
 import MenuItem from "../../../components/MenuItem";
 
@@ -152,7 +152,6 @@ function Team({ teamData, standings }) {
       return null;
     }
     if (user.id === owner_id) {
-      console.log(team);
       return (
         <Menu>
           <MenuItem onClick={() => setShowEditTeamPopup(true)}>
@@ -231,7 +230,7 @@ function Team({ teamData, standings }) {
         </main>
         <div className="right-bar">
           <RightColumn>
-            <ScoresCard seasonId={current_season ? current_season.id : null} />
+            <ScheduleCard team={team} seasonTeamId={team.season_team_id} />
             <StandingsCard
               standings={standings}
               league={league}
@@ -265,7 +264,7 @@ function Team({ teamData, standings }) {
       />
       <EditEventsPopup
         show={showEditEventsPopup}
-        homeTeam={team}
+        homeTeam={null}
         awayTeam={null}
         league={league}
         onHide={() => setShowEditEventsPopup(false)}

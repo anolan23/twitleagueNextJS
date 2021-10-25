@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import Link from "next/link";
 
 import standingsStyle from "../../../../sass/pages/Standings.module.scss";
 import { getStandings } from "../../../../actions";
@@ -17,6 +18,7 @@ import Division from "../../../../components/Division";
 import TwitSelect from "../../../../components/TwitSelect";
 import TwitInput from "../../../../components/TwitInput";
 import backend from "../../../../lib/backend";
+import TwitIcon from "../../../../components/TwitIcon";
 
 function Standings({ leagueData }) {
   const router = useRouter();
@@ -133,9 +135,23 @@ function Standings({ leagueData }) {
           <div className={standingsStyle["standings"]}>
             <TopBar main={league.league_name} sub="Standings"></TopBar>
             <div className={standingsStyle["standings__filter"]}>
+              <div className={standingsStyle["standings__filter__category"]}>
+                Season
+              </div>
               <TwitInput select onChange={onSeasonChange} value={seasonOption}>
                 {renderSeasonOptions()}
               </TwitInput>
+              <div className={standingsStyle["standings__filter__link"]}>
+                <Link
+                  passHref
+                  href={{
+                    pathname: `/leagues/${league.league_name}/playoffs`,
+                    query: { seasonId: seasonOption },
+                  }}
+                >
+                  <a className="twit-link">Final playoff results</a>
+                </Link>
+              </div>
             </div>
 
             {renderDivisions()}

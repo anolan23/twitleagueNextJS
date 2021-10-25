@@ -38,12 +38,20 @@ class Leagues {
         (
         SELECT jsonb_agg(nested_team)
           FROM (
-            SELECT teams.*, divisions.division_name
+            SELECT teams.*
             FROM teams
-            FULL JOIN divisions ON divisions.id = teams.division_id
             WHERE teams.league_id = leagues.id
           ) AS nested_team
         ) AS teams,
+        (
+          SELECT jsonb_agg(nested_season_team)
+            FROM (
+            SELECT season_teams.*, divisions.division_name
+            FROM season_teams
+            FULL JOIN divisions ON divisions.id = season_teams.division_id
+            WHERE season_teams.season_id = leagues.season_id
+            ) AS nested_season_team
+          ) AS season_teams,
         (
           SELECT jsonb_agg(nested_division)
             FROM (
@@ -205,11 +213,11 @@ class Leagues {
                     SELECT jsonb_agg(nested_team)
                     FROM (
                         SELECT
-                            teams.*	
-                        FROM teams
-                        WHERE teams.division_id = divisions.id
+                          season_teams.*	
+                        FROM season_teams
+                        WHERE season_teams.division_id = divisions.id
                     ) AS nested_team
-                ) AS teams
+                ) AS season_teams
             FROM divisions
             WHERE divisions.league_id = $1
         ) AS final;
@@ -218,33 +226,6 @@ class Leagues {
     );
 
     return division.rows;
-  }
-
-  static async getFormat(leagueName, seasonId) {
-    const format = await pool.query(
-      `
-      WITH league_data AS (
-        SELECT id
-        FROM leagues
-        WHERE league_name = $1
-        )
-      SELECT
-        divisions.*,
-        (
-           SELECT jsonb_agg(nested_team)
-           FROM (
-             SELECT *
-             FROM teams
-             WHERE teams.division_id = divisions.id
-           ) AS nested_team
-        ) AS teams
-        FROM divisions
-        WHERE divisions.league_id = (SELECT id FROM league_data) AND divisions.season_id IS NOT DISTINCT FROM $2
-        `,
-      [leagueName, seasonId]
-    );
-
-    return format.rows;
   }
 
   static async findStandings(leagueName, seasonId) {

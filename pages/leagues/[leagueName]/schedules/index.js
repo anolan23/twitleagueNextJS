@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import scheduleStyle from "../../../../sass/pages/Schedule.module.scss";
-import { getSchedule, getStandings } from "../../../../actions";
+import { getSchedules, getStandings } from "../../../../actions";
 import Leagues from "../../../../db/repos/Leagues";
 import { getSeasonString } from "../../../../lib/twit-helpers";
 import useUser from "../../../../lib/useUser";
@@ -15,8 +15,9 @@ import Empty from "../../../../components/Empty";
 import Event from "../../../../components/Event";
 import ScheduleEvent from "../../../../components/ScheduleEvent";
 import TwitInput from "../../../../components/TwitInput";
+import Schedule from "../../../../components/Schedule";
 
-function Schedule({ league }) {
+function SchedulePage({ league }) {
   const router = useRouter();
   const { isFallback, isReady, query } = router;
   const { leagueName, seasonTeamId, seasonId } = query;
@@ -26,41 +27,16 @@ function Schedule({ league }) {
   const [seasons, setSeasons] = useState(null);
   const [schedule, setSchedule] = useState(null);
 
-  const [team, setTeamOption] = useState("");
-  const [season, setSeasonOption] = useState("");
+  const [teamOption, setTeamOption] = useState("");
+  const [seasonOption, setSeasonOption] = useState("");
 
   useEffect(() => {
     if (isFallback || !isReady) return;
-    start();
+    changeSeason(seasonId, seasonTeamId);
   }, [isFallback, isReady]);
 
-  async function start() {
-    if (!seasonTeamId) {
-      changeSeason(seasonId);
-    } else {
-      let { teams, events, seasons } = await getSchedule(leagueName, seasonId);
-      teams = teams || [];
-      events = events || [];
-      seasons = seasons || [];
-
-      if (seasonId) {
-        setSeasonOption(seasonId);
-      } else {
-        const latestSeason = seasons[seasons.length - 1];
-        if (!latestSeason) return;
-        setSeasonOption(latestSeason.id);
-      }
-      setTeamOption(seasonTeamId);
-      setTeams(teams);
-      setEvents(events);
-      setSeasons(seasons);
-
-      filterEvents(seasonTeamId, events, teams);
-    }
-  }
-
-  async function changeSeason(seasonId) {
-    let { teams, events, seasons } = await getSchedule(leagueName, seasonId);
+  async function changeSeason(seasonId, seasonTeamId) {
+    let { teams, events, seasons } = await getSchedules(leagueName, seasonId);
     teams = teams || [];
     events = events || [];
     seasons = seasons || [];
@@ -68,22 +44,31 @@ function Schedule({ league }) {
     if (seasonId) {
       setSeasonOption(seasonId);
     } else {
-      console.log(seasons);
       const latestSeason = seasons[seasons.length - 1];
-      if (!latestSeason) return;
+      if (!latestSeason) {
+        setSchedule([]);
+        return;
+      }
       setSeasonOption(latestSeason.id);
     }
+
+    if (seasonTeamId) {
+      setTeamOption(seasonTeamId);
+      filterEvents(seasonTeamId, events, teams);
+    } else {
+      const firstTeam = teams[0];
+      if (!firstTeam) {
+        setSchedule([]);
+        return;
+      } else {
+        setTeamOption(firstTeam.id);
+        filterEvents(firstTeam.id, events, teams);
+      }
+    }
+
     setTeams(teams);
     setEvents(events);
     setSeasons(seasons);
-    const firstTeam = teams[0];
-    if (!firstTeam) {
-      setSchedule([]);
-      return;
-    } else {
-      setTeamOption(firstTeam.id);
-      filterEvents(firstTeam.id, events, teams);
-    }
   }
 
   function filterEvents(seasonTeamId, events, teams) {
@@ -100,12 +85,10 @@ function Schedule({ league }) {
         seasonTeamId = firstTeam.id;
       }
     }
-
     const schedule = events.filter((event) => {
       const { home_team, away_team } = event;
       return seasonTeamId == home_team.id || seasonTeamId == away_team.id;
     });
-    console.log(schedule);
     setSchedule(schedule);
   }
 
@@ -115,7 +98,7 @@ function Schedule({ league }) {
       shallow: true,
       scroll: false,
     });
-    changeSeason(seasonId);
+    changeSeason(seasonId, undefined);
   }
 
   function onTeamChange(event) {
@@ -134,18 +117,9 @@ function Schedule({ league }) {
 
   const { league_name } = league;
 
-  function renderSchedule() {
-    if (!schedule) return null;
-    else {
-      return schedule.map((event, index) => {
-        return <ScheduleEvent key={index} event={event} seasonTeamId={team} />;
-      });
-    }
-  }
-
   function renderSeasonOptions() {
     if (!seasons) return null;
-    else if (seasons.length === 0) return null;
+    else if (!seasons.length) return null;
     else {
       return seasons.map((season, index) => {
         const { id, created_at } = season;
@@ -160,7 +134,7 @@ function Schedule({ league }) {
 
   function renderTeamOptions() {
     if (!teams) return null;
-    else if (teams.length === 0) return null;
+    else if (!teams.length) return null;
     else {
       return teams.map((team, index) => {
         const { id, team_name } = team;
@@ -173,36 +147,16 @@ function Schedule({ league }) {
     }
   }
 
-  const renderHead = () => {
-    return (
-      <thead>
-        <tr>
-          <th className={scheduleStyle["schedule__table__column__date"]}>
-            Date
-          </th>
-          <th className={scheduleStyle["schedule__table__column__opponent"]}>
-            Opponent
-          </th>
-          <th className={scheduleStyle["schedule__table__column__score"]}>
-            Score
-          </th>
-        </tr>
-      </thead>
-    );
-  };
-
-  function renderTable() {
+  function renderSchedule() {
     if (!schedule) return <TwitSpinner size={30} />;
-    if (schedule.length == 0) {
-      return <Empty main="No events" sub="No events have been scheduled" />;
-    } else {
+    else if (!schedule.length) {
       return (
-        <table>
-          {renderHead()}
-          <tbody>{renderSchedule()}</tbody>
-        </table>
+        <Empty
+          main="No events"
+          sub={`An event has yet to be scheduled for this team during for this season`}
+        />
       );
-    }
+    } else return <Schedule events={schedule} seasonTeamId={teamOption} />;
   }
 
   return (
@@ -213,16 +167,16 @@ function Schedule({ league }) {
         </header>
         <main className="main">
           <div className={scheduleStyle["schedule"]}>
-            <TopBar main={league_name} sub="Schedule"></TopBar>
+            <TopBar main={league_name} sub="Schedules"></TopBar>
             <form className={scheduleStyle["schedule__filter"]}>
-              <TwitInput select onChange={onSeasonChange} value={season}>
+              <TwitInput select onChange={onSeasonChange} value={seasonOption}>
                 {renderSeasonOptions()}
               </TwitInput>
-              <TwitInput select onChange={onTeamChange} value={team}>
+              <TwitInput select onChange={onTeamChange} value={teamOption}>
                 {renderTeamOptions()}
               </TwitInput>
             </form>
-            {renderTable()}
+            {renderSchedule()}
           </div>
         </main>
         <div className="right-bar">
@@ -250,4 +204,4 @@ export async function getStaticProps(context) {
   };
 }
 
-export default Schedule;
+export default SchedulePage;

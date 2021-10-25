@@ -38,9 +38,6 @@ function TwitInput({
   }
 
   if (select) {
-    if (!children) {
-      return null;
-    }
     return (
       <select
         id={id}

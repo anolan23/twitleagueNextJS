@@ -99,7 +99,7 @@ function TwitPanel({ show, onHide }) {
             >
               <use xlinkHref="/sprites.svg#icon-plus" />
             </TwitPanelItem>
-            <TwitPanelItem text="My teams" href="/myTeams" onClick={onHide}>
+            <TwitPanelItem text="My teams" href="/my-teams" onClick={onHide}>
               <use xlinkHref="/sprites.svg#icon-server" />
             </TwitPanelItem>
             <TwitPanelItem text="My leagues" href="/myLeagues" onClick={onHide}>

@@ -10,12 +10,14 @@ export default async (req, res) => {
   if (method === "POST") {
     let user = await Users.findOne(username);
     user = { ...user, isSignedIn: true };
+
     const result = await compare(password, user.password);
     if (result) {
       const claims = {
         sub: user.id,
-        username: user.username,
+        user,
       };
+      delete user["password"];
       const jwt = sign(claims, process.env.AUTH_TOKEN_SECRET, {
         expiresIn: "144h",
       });

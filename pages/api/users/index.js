@@ -4,8 +4,8 @@ import Notifications from "../../../db/repos/Notifications";
 import Followers from "../../../db/repos/Followers";
 
 export default async (req, res) => {
-  const method = req.method;
-  const search = req.query.search ? req.query.search.toLowerCase() : null;
+  const { method, query } = req;
+  const search = query.search ? query.search.toLowerCase() : null;
   if (method === "GET")
     if (search) {
       const users = await Users.findLike(search);
@@ -14,13 +14,14 @@ export default async (req, res) => {
       verify(
         req.cookies.auth,
         process.env.AUTH_TOKEN_SECRET,
-        async function (err, decoded) {
-          if (!err && decoded) {
-            const username = decoded.username;
-            let user = await Users.findOne(username);
-            user = { ...user, isSignedIn: true };
-            delete user["password"];
-            res.send(user);
+        async function (err, payload) {
+          if (!err && payload) {
+            const { user } = payload;
+            let foundUser = await Users.findOne(user.username);
+            foundUser = { ...user, isSignedIn: true };
+            console.log(payload);
+            delete foundUser["password"];
+            res.send(foundUser);
           } else {
             res.send({ isSignedIn: false });
           }

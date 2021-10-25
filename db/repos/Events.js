@@ -72,30 +72,42 @@ class Events {
         LEFT JOIN season_teams AS t1 ON events.home_season_team_id = t1.id
         LEFT JOIN season_teams AS t2 ON events.away_season_team_id = t2.id
         WHERE events.home_season_team_id = $1 OR events.away_season_team_id = $1
-        ORDER BY date DESC`,
+        ORDER BY date`,
       [teamId]
     );
 
     return rows;
   }
 
-  static async findEventsByTeamAbbrev(teamAbbrev, userId) {
+  static async findTeamEvents({ abbrev, seasonId, userId }) {
     const { rows } = await pool.query(
       `
-        SELECT events.*, 
-            to_char(events.date, 'HH12:MIAM') AS time, 
-            t1.team_name, t1.abbrev, t1.avatar, t1.owner_id AS team_owner_id, 
-            t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar, 
-            t2.owner_id AS opponent_owner_id,
-            (SELECT COUNT(*) FROM posts WHERE event_conversation_id = events.id) AS replies,
-            EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $2 AND events.id = event_likes.event_id ) AS liked,
-            (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes
-        FROM events
-        LEFT JOIN season_teams AS t1 ON events.home_season_team_id = t1.id
-        LEFT JOIN season_teams AS t2 ON events.away_season_team_id = t2.id
-        WHERE t1.abbrev = $1 OR t2.abbrev = $1
-        ORDER BY date DESC`,
-      [teamAbbrev, userId]
+      SELECT events.*, 
+      (
+          SELECT row_to_json(home_team) AS home_team
+          FROM (
+            SELECT *
+            FROM season_teams 
+            WHERE id = events.home_season_team_id
+          ) AS home_team
+        ),
+        (
+          SELECT row_to_json(away_team) AS away_team
+          FROM (
+            SELECT *
+            FROM season_teams 
+            WHERE id = events.away_season_team_id
+          ) AS away_team
+        ),
+        (SELECT COUNT(*) FROM posts WHERE event_conversation_id = events.id) AS replies,
+        (SELECT COUNT(*) FROM event_likes WHERE event_id = events.id) AS likes,
+        EXISTS (SELECT 1 FROM event_likes WHERE event_likes.user_id = $3 AND events.id = event_likes.event_id ) AS liked
+      FROM events
+      LEFT JOIN season_teams AS t1 ON events.home_season_team_id = t1.id
+      LEFT JOIN season_teams AS t2 ON events.away_season_team_id = t2.id
+      WHERE (t1.abbrev = $1 OR t2.abbrev = $1) AND events.season_id = $2
+      ORDER BY date`,
+      [abbrev, seasonId, userId]
     );
 
     return rows;
@@ -249,7 +261,7 @@ class Events {
           )	
           FROM events
           WHERE season_id = (SELECT season_id FROM league_data)
-          ORDER BY events.date DESC
+          ORDER BY events.date
         ) AS nested_event
         ) AS events,
         (
@@ -309,7 +321,7 @@ class Events {
             )	
           FROM events
           WHERE season_id = $1
-          ORDER BY events.date DESC
+          ORDER BY events.date
         ) AS nested_event
         ) AS events,
         (

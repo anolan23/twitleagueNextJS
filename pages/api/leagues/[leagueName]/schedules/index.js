@@ -7,6 +7,7 @@ export default async (req, res) => {
   } else if (method === "GET") {
     if (!seasonId) {
       const schedule = await Events.findScheduleByLeagueName(leagueName);
+      console.log(schedule);
       res.send(schedule);
     } else {
       const schedule = await Events.findScheduleBySeasonId(seasonId);
@@ -14,7 +15,7 @@ export default async (req, res) => {
     }
   } else {
     res.status(405).json({
-      message: "api/leagues/[leagueName]/schedule only supports GET",
+      message: "api/leagues/[leagueName]/schedules only supports GET",
     });
   }
 };

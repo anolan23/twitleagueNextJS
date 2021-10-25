@@ -11,10 +11,10 @@ const options = () => {
     };
   } else {
     return {
-      user: "twitleague",
-      host: "twitleague.chynzy0qazsi.us-east-2.rds.amazonaws.com",
-      database: "twitleague",
-      password: "Zeta095458!",
+      user: "idmblski",
+      host: "fanny.db.elephantsql.com",
+      database: "idmblski",
+      password: "gMwWSlDnvGizIuMQDWtbblbFrfCyIlvp",
       port: 5432,
     };
   }

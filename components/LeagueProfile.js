@@ -88,7 +88,7 @@ function LeagueProfile({ league, onAvatarClick }) {
             <h1 className="heading-1">{league_name}</h1>
           </div>
           {renderSeason()}
-          <Link href={`/leagues/${league_name}/schedule`} passHref>
+          <Link href={`/leagues/${league_name}/schedules`} passHref>
             <a className="twit-link">View schedules</a>
           </Link>
           <Link href={`/leagues/${league_name}/standings`} passHref>
@@ -106,7 +106,7 @@ function LeagueProfile({ league, onAvatarClick }) {
             <Attribute icon={"/sprites.svg#icon-map-pin"} text={sport} />
             <Attribute
               icon={"/sprites.svg#icon-home"}
-              text={`Joined ${TwitDate.localeDateString(created_at)}`}
+              text={`Joined ${TwitDate.localeDateStringShort(created_at)}`}
             />
           </div>
           <div className={leagueProfile["league-profile__counts"]}>

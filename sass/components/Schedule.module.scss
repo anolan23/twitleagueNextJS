@@ -1,0 +1,40 @@
+.schedule {
+  &__filter {
+    display: grid;
+    justify-content: flex-end;
+    padding: 1rem;
+    grid-template-columns: min-content min-content;
+    gap: 1rem;
+  }
+
+  &__table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    position: relative;
+    user-select: none;
+
+    & th {
+      padding: 5px 0;
+      font-size: 1rem;
+      font-weight: 400;
+      border-bottom: var(--border);
+    }
+
+    & td {
+      font-size: 1.3rem;
+    }
+
+    &__column {
+      &__date {
+      }
+
+      &__opponent {
+      }
+
+      &__score {
+        width: 100px;
+      }
+    }
+  }
+}

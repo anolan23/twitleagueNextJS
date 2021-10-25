@@ -23,7 +23,7 @@ import { numberSuffix, getSeasonString } from "../lib/twit-helpers";
 function TeamProfile({ team, standings, onAvatarClick }) {
   const { user } = useUser();
   const router = useRouter();
-  const { league, division, seasons } = team;
+  const { league, division, seasons, season_team_id } = team;
   const [showRequestToJoin, setShowRequestToJoin] = useState(false);
   const [showRosterPopup, setShowRosterPopup] = useState(false);
   const foundTeam = findTeamInStandings();
@@ -153,6 +153,26 @@ function TeamProfile({ team, standings, onAvatarClick }) {
     }
   };
 
+  function renderLinks() {
+    if (!league) return null;
+    return (
+      <React.Fragment>
+        <Link
+          href={{
+            pathname: `/leagues/${league.league_name}/schedules`,
+            query: season_team_id ? { seasonTeamId: season_team_id } : null,
+          }}
+          passHref
+        >
+          <a className="twit-link">Team schedule</a>
+        </Link>
+        <Link href={`/leagues/${league.league_name}/standings`} passHref>
+          <a className="twit-link">Standings</a>
+        </Link>
+      </React.Fragment>
+    );
+  }
+
   return (
     <React.Fragment>
       <Profile
@@ -176,6 +196,7 @@ function TeamProfile({ team, standings, onAvatarClick }) {
             {renderLeagueName()}
           </div>
           {renderRecord()}
+          {renderLinks()}
           {team.bio ? (
             <div className={teamProfile["team-profile__info__bio"] + " muted"}>
               <Linkify string={team.bio} user={user} hasTwitLinks />

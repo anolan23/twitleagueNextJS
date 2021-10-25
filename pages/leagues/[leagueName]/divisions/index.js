@@ -6,9 +6,10 @@ import useSWR from "swr";
 import useUser from "../../../../lib/useUser";
 import divisionsStyle from "../../../../sass/pages/Divisions.module.scss";
 import {
-  updateTeamById,
+  updateSeasonTeamById,
   createDivision,
   divisionDelete,
+  startSeason,
 } from "../../../../actions";
 import Leagues from "../../../../db/repos/Leagues";
 import { getSeasonString } from "../../../../lib/twit-helpers";
@@ -20,11 +21,13 @@ import TwitSpinner from "../../../../components/TwitSpinner";
 import Empty from "../../../../components/Empty";
 import TwitButton from "../../../../components/TwitButton";
 import backend from "../../../../lib/backend";
+import Prompt from "../../../../components/modals/Prompt";
 
 function Divisions({ leagueData }) {
   const { user } = useUser({ redirectTo: "/" });
   const router = useRouter();
-  const [team, setTeam] = useState(null);
+  const [seasonTeam, setSeasonTeam] = useState(null);
+  const [showStartSeasonPrompt, setShowStartSeasonPrompt] = useState(false);
 
   const fetcher = async (url) => {
     const response = await backend.get(url);
@@ -44,20 +47,30 @@ function Divisions({ leagueData }) {
   if (router.isFallback) {
     return <TwitSpinner size={50} />;
   }
-  let { teams, divisions } = league;
-  teams = teams || [];
+  let { season_teams, divisions, season_id, id, league_name, owner_id } =
+    league;
+
+  season_teams = season_teams || [];
+  divisions = divisions || [];
+
+  async function startNewSeason() {
+    const season = await startSeason(id);
+    setShowStartSeasonPrompt(false);
+  }
 
   function renderUnassignedTeams() {
-    if (!teams) {
+    if (!season_teams) {
       return <TwitSpinner size={30} />;
-    } else if (teams.length === 0) {
+    } else if (season_teams.length === 0) {
       return null;
     } else {
-      let unassignedTeams = teams.filter((team) => team.division_id === null);
+      let unassignedTeams = season_teams.filter(
+        (team) => team.division_id === null
+      );
       return (
         <Division
           division={{}}
-          team={team}
+          team={seasonTeam}
           teams={unassignedTeams}
           onTeamClick={onTeamClick}
         />
@@ -72,7 +85,7 @@ function Divisions({ leagueData }) {
       return null;
     } else {
       return divisions.map((division, index) => {
-        let divisionTeams = teams.filter(
+        let divisionTeams = season_teams.filter(
           (team) => team.division_id === division.id
         );
         divisionTeams = divisionTeams.sort((a, b) =>
@@ -83,12 +96,12 @@ function Divisions({ leagueData }) {
             key={index}
             league={league}
             division={division}
-            team={team}
+            team={seasonTeam}
             teams={divisionTeams}
             onTeamClick={onTeamClick}
             onDivisionClick={() => onDivisionClick(division)}
             onDelete={() => deleteDivision(division)}
-            editable={user ? user.id === league.owner_id : false}
+            editable={user ? user.id === owner_id : false}
           />
         );
       });
@@ -96,38 +109,43 @@ function Divisions({ leagueData }) {
   }
 
   function renderMessage() {
-    const assignedToDivisions = teams.every(
-      (team) => team.division_id !== null
-    );
-    if (assignedToDivisions) {
-      return null;
+    console.log(season_id);
+    if (!season_id) {
+      return (
+        <Empty
+          main="Notice"
+          sub="A season must be started before you can assign teams to divisions"
+          onActionClick={() => setShowStartSeasonPrompt(true)}
+          actionText="Start season"
+        />
+      );
     } else {
       return (
         <Empty
-          main="Assign teams"
-          sub="All teams must be assigned to a division before starting a new season"
+          main="Notice"
+          sub="Teams that join a league midseason will not be displayed"
         />
       );
     }
   }
 
   function onTeamClick(clickedTeam) {
-    if (team) {
-      setTeam(null);
+    if (seasonTeam) {
+      setSeasonTeam(null);
     } else {
-      setTeam(clickedTeam);
+      setSeasonTeam(clickedTeam);
     }
   }
 
   async function onDivisionClick(clickedDivision) {
-    if (!team) {
-      setTeam(null);
+    if (!seasonTeam) {
+      setSeasonTeam(null);
       return;
     } else {
-      const updatedTeam = await updateTeamById(team.id, {
+      const updatedTeam = await updateSeasonTeamById(seasonTeam.id, {
         division_id: clickedDivision.id,
       });
-      let updatedTeams = [...teams];
+      let updatedTeams = [...season_teams];
       const index = updatedTeams.findIndex(
         (team) => team.id === updatedTeam.id
       );
@@ -135,16 +153,19 @@ function Divisions({ leagueData }) {
       } else {
         updatedTeams[index] = updatedTeam;
       }
-      mutateLeague({ ...league, teams: updatedTeams }, false);
-      setTeam(null);
+      mutateLeague({ ...league, season_teams: updatedTeams }, false);
+      setSeasonTeam(null);
     }
   }
 
   async function create() {
-    const division = await createDivision(league.id, league.season_id);
-    let updatedDivisions = divisions ? [...divisions] : [];
-    updatedDivisions.push(division);
-    mutateLeague({ ...league, divisions: updatedDivisions }, false);
+    try {
+      const division = await createDivision(id, season_id);
+      let updatedDivisions = [...divisions, division];
+      mutateLeague({ ...league, divisions: updatedDivisions }, false);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function deleteDivision(division) {
@@ -159,8 +180,8 @@ function Divisions({ leagueData }) {
           <LeftColumn />
         </header>
         <main className="main">
-          <TopBar main={league.league_name} sub="Divisions">
-            <TwitButton color="primary" onClick={create}>
+          <TopBar main={league_name} sub="Divisions">
+            <TwitButton color="primary" onClick={create} hide={!season_id}>
               New division
             </TwitButton>
           </TopBar>
@@ -174,6 +195,16 @@ function Divisions({ leagueData }) {
           <RightColumn></RightColumn>
         </div>
       </div>
+      <Prompt
+        show={showStartSeasonPrompt}
+        onHide={() => setShowStartSeasonPrompt(false)}
+        main="Start season"
+        sub={`This will start a new season for ${league_name}`}
+        secondaryActionText="Cancel"
+        primaryActionText="Continue"
+        onSecondaryActionClick={() => setShowStartSeasonPrompt(false)}
+        onPrimaryActionClick={startNewSeason}
+      />
     </React.Fragment>
   );
 }

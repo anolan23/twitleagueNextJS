@@ -53,7 +53,7 @@ function TwitNav() {
       </TwitNavItem>
       <TwitNavItem
         className={twitNav["twit-nav__hide"]}
-        href="/myLeagues"
+        href="/my-leagues"
         title="My Leagues"
       >
         <TwitIcon
@@ -63,7 +63,7 @@ function TwitNav() {
       </TwitNavItem>
       <TwitNavItem
         className={twitNav["twit-nav__hide"]}
-        href="/myTeams"
+        href="/my-teams"
         title="My Teams"
       >
         <TwitIcon

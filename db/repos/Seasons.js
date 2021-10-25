@@ -32,18 +32,14 @@ class Seasons {
         UPDATE leagues
         SET season_id = (SELECT id FROM insert_season)
         WHERE id = $1
-      ), update_divisions AS (
-        UPDATE divisions
-        SET season_id = (SELECT id FROM insert_season)
-        WHERE league_id = $1 AND season_id IS NULL
       ), league_teams AS(
         SELECT *
         FROM teams
         WHERE league_id = $1
       )
       
-      INSERT INTO season_teams(season_id, team_id, owner_id, league_id, division_id, team_name, abbrev, avatar, banner, city, state, bio)
-      SELECT (SELECT id FROM insert_season), league_teams.id, owner_id, league_id, division_id, team_name, abbrev, avatar, banner, city, state, bio
+      INSERT INTO season_teams(season_id, team_id, owner_id, league_id, team_name, abbrev, avatar, banner, city, state, bio)
+      SELECT (SELECT id FROM insert_season), league_teams.id, owner_id, league_id, team_name, abbrev, avatar, banner, city, state, bio
       FROM league_teams
       RETURNING *`,
       [leagueId]
@@ -64,11 +60,6 @@ class Seasons {
                 UPDATE leagues
                 SET season_id = NULL
                 WHERE id = $1
-            ),
-            teams_update AS (
-              UPDATE teams
-              SET division_id = NULL
-              WHERE league_id = $1
             )
         
         UPDATE seasons

@@ -44,14 +44,6 @@ class Teams {
         ) AS league
       ),
       (
-        SELECT row_to_json(division) AS division
-        FROM (
-        SELECT *
-        FROM divisions
-        WHERE id = teams.division_id
-        ) AS division
-      ), 
-      (
         SELECT row_to_json(current_season) AS current_season
         FROM (
         SELECT *
@@ -68,6 +60,11 @@ class Teams {
         ) AS nested_season
       ) AS seasons,
       (
+        SELECT id
+        FROM season_teams
+        WHERE season_id = leagues.season_id AND team_id = teams.id
+      ) AS season_team_id,
+      (
         SELECT jsonb_agg(nested_player)
         FROM (
         SELECT users.*
@@ -82,7 +79,6 @@ class Teams {
       EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $2 AND teams.id = followers.team_id ) AS following
       FROM teams
       LEFT JOIN leagues ON teams.league_id = leagues.id
-      LEFT JOIN divisions ON teams.division_id = divisions.id
       WHERE abbrev = $1`,
       [abbrev, userId]
     );

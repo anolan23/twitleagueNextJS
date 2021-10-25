@@ -185,6 +185,12 @@ function EventsPage({ eventData }) {
     }
   };
 
+  async function AddTeam(){
+    if(user.id === leagues.owner_id){
+      ///api call
+    }
+  }
+
   const renderUpdateScoreAction = () => {
     if (!user) {
       return null;
@@ -254,7 +260,7 @@ function EventsPage({ eventData }) {
     <React.Fragment>
       <MainBody>
         <TopBar
-          main={`${away_season_team.team_name} at ${home_season_team.team_name}`}
+          main={`${away_season_team.abbrev} at ${home_season_team.abbrev}`}
           sub={"Event"}
         >
           <div className={eventsStyle["events__event__more-info__actions"]}>

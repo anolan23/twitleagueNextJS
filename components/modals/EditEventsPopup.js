@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 
-import { createEvent } from "../../actions";
+import { useStore } from "../../context/Store";
+import { createEvent, addAlert } from "../../actions";
 import editEventsPopup from "../../sass/components/EditEventsPopup.module.scss";
 import twitForm from "../../sass/components/TwitForm.module.scss";
 import Popup from "./Popup";
@@ -12,6 +13,8 @@ import TwitItemSelect from "../TwitItemSelect";
 import Empty from "../Empty";
 
 function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
+  const [state, dispatch] = useStore();
+
   if (!show) {
     return null;
   }
@@ -33,8 +36,20 @@ function EditEventsPopup({ show, homeTeam, awayTeam, league, onHide }) {
         ...values,
         seasonId: season_id,
       };
-      await createEvent(event);
-      onHide();
+      try {
+        const createdEvent = await createEvent(event);
+        dispatch(
+          addAlert({
+            message: "Event created",
+            href: `/events/${createdEvent.id}`,
+            duration: 5000,
+          })
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        onHide();
+      }
     },
   });
 
