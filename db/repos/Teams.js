@@ -2,8 +2,10 @@ import pool from "../pool";
 
 class Teams {
   static async create(userId, team) {
+    const client = await pool.connect();
+
     const { teamName, abbrev, avatar, banner, bio, city, state } = team;
-    const results = await pool.query(
+    const results = await client.query(
       `
       INSERT INTO teams (owner_id, team_name, abbrev, avatar, banner, bio, city, state)
       VALUES
@@ -11,12 +13,15 @@ class Teams {
       RETURNING *`,
       [userId, teamName, abbrev, avatar, banner, bio, city, state]
     );
+    client.release();
 
     return results.rows[0];
   }
 
   static async findOne(abbrev, userId) {
-    const team = await pool.query(
+    const client = await pool.connect();
+
+    const team = await client.query(
       `
       SELECT teams.*,
       (
@@ -82,12 +87,15 @@ class Teams {
       WHERE abbrev = $1`,
       [abbrev, userId]
     );
+    client.release();
 
     return team.rows[0];
   }
 
   static async findByOwnerId(ownerId) {
-    const teams = await pool.query(
+    const client = await pool.connect();
+
+    const teams = await client.query(
       `
         SELECT teams.abbrev, teams.team_name, teams.avatar, teams.city, leagues.league_name
         FROM teams
@@ -95,12 +103,15 @@ class Teams {
         WHERE teams.owner_id = $1`,
       [ownerId]
     );
+    client.release();
 
     return teams.rows;
   }
 
   static async findByUsername(username) {
-    const teams = await pool.query(
+    const client = await pool.connect();
+
+    const teams = await client.query(
       `
         SELECT teams.*, leagues.league_name
         FROM teams
@@ -111,24 +122,30 @@ class Teams {
         `,
       [username]
     );
+    client.release();
 
     return teams.rows;
   }
 
   static async findByLeagueId(leagueId) {
-    const teams = await pool.query(
+    const client = await pool.connect();
+
+    const teams = await client.query(
       `
         SELECT *
         FROM teams
         WHERE teams.league_id = $1`,
       [leagueId]
     );
+    client.release();
 
     return teams.rows;
   }
 
   static async findByLeagueName(leagueName, userId, offset, limit) {
-    const teams = await pool.query(
+    const client = await pool.connect();
+
+    const teams = await client.query(
       `
       SELECT teams.*,
         EXISTS (
@@ -144,21 +161,27 @@ class Teams {
     `,
       [leagueName, userId, offset, limit]
     );
+    client.release();
 
     return teams.rows;
   }
 
   static async find() {
-    const teams = await pool.query(`
+    const client = await pool.connect();
+
+    const teams = await client.query(`
         SELECT *
         FROM teams
         `);
+    client.release();
 
     return teams.rows;
   }
 
   static async findSuggested(userId, offset, limit) {
-    const teams = await pool.query(
+    const client = await pool.connect();
+
+    const teams = await client.query(
       `
         SELECT teams.*, leagues.league_name,
         EXISTS (SELECT 1 FROM followers WHERE followers.user_id = $1 AND teams.id = followers.team_id ) AS followed
@@ -171,12 +194,15 @@ class Teams {
         `,
       [userId, offset, limit]
     );
+    client.release();
 
     return teams.rows;
   }
 
   static async findTrending() {
-    const teams = await pool.query(`
+    const client = await pool.connect();
+
+    const teams = await client.query(`
         SELECT teams.*, count
             FROM (
                 SELECT team_id, count(*)
@@ -189,25 +215,31 @@ class Teams {
                 ) AS popular_teams
             JOIN teams ON teams.id = popular_teams.team_id;
         `);
+    client.release();
 
     return teams.rows;
   }
 
   static async joinLeague(leagueId, teamId) {
-    const team = await pool.query(
+    const client = await pool.connect();
+
+    const team = await client.query(
       `
         UPDATE teams
         SET league_id = $1
         WHERE id = $2`,
       [leagueId, teamId]
     );
+    client.release();
 
     return team.rows;
   }
 
   static async update(teamId, values) {
+    const client = await pool.connect();
+
     if (values.avatar || values.banner || values.bio) {
-      const { rows } = await pool.query(
+      const { rows } = await client.query(
         `
             UPDATE teams
             SET avatar = $2,
@@ -220,7 +252,7 @@ class Teams {
 
       return rows[0];
     } else if (values.divisionId || values.divisionId === null) {
-      const { rows } = await pool.query(
+      const { rows } = await client.query(
         `
             UPDATE teams
             SET division_id = $2
@@ -228,13 +260,16 @@ class Teams {
             RETURNING *`,
         [teamId, values.divisionId]
       );
+      client.release();
 
       return rows[0];
     }
   }
 
   static async findEventsByTeamId(teamId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
         SELECT events.*, to_char(events.date, 'Mon') AS month, to_char(events.date, 'DD') AS day, to_char(events.date, 'HH12:MIAM') AS time, t1.team_name, t1.abbrev, t1.avatar, t2.team_name AS opponent_team_name, t2.abbrev AS opponent_abbrev, t2.avatar AS opponent_avatar
         FROM events
@@ -243,12 +278,15 @@ class Teams {
         WHERE events.team_id = $1 OR events.opponent_id = $1`,
       [teamId]
     );
+    client.release();
 
     return rows;
   }
 
   static async findAllLike(query, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
         SELECT teams.*, leagues.league_name
         FROM teams
@@ -259,12 +297,15 @@ class Teams {
         LIMIT $3;`,
       [`%${query}%`, offset, limit]
     );
+    client.release();
 
     return rows;
   }
 
   static async findRoster(abbrev, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT users.*,
         EXISTS (
@@ -280,12 +321,15 @@ class Teams {
       LIMIT $4`,
       [abbrev, userId, offset, limit]
     );
+    client.release();
 
     return rows;
   }
 
   static async findFollowers(teamId, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT users.*,
         EXISTS (
@@ -300,6 +344,7 @@ class Teams {
       LIMIT $4`,
       [teamId, userId, offset, limit]
     );
+    client.release();
 
     return rows;
   }

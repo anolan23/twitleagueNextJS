@@ -72,7 +72,9 @@ class Posts {
   }
 
   static async findByUserId(targetUserId, userId, num, offset) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
         CASE 
@@ -89,12 +91,15 @@ class Posts {
       OFFSET $4`,
       [targetUserId, userId, num, offset]
     );
+    client.release();
 
     return rows;
   }
 
   static async findByUsername(username, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
         CASE 
@@ -111,12 +116,14 @@ class Posts {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
-
+    client.release();
     return rows;
   }
 
   static async findByUsernameWithMedia(username, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT p1.*, 
         users.avatar, users.name, users.username, 
@@ -131,12 +138,14 @@ class Posts {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
-
+    client.release();
     return rows;
   }
 
   static async findLikedByUsername(username, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT p1.*,
         u1.avatar, u1.name, u1.username, 
@@ -153,12 +162,14 @@ class Posts {
       LIMIT $4`,
       [username, userId, offset, limit]
     );
-
+    client.release();
     return rows;
   }
 
   static async findUserMentioned(userId, num, offset) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
     SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
       CASE 
@@ -176,12 +187,14 @@ class Posts {
     OFFSET $3`,
       [userId, num, offset]
     );
-
+    client.release();
     return rows;
   }
 
   static async findTeamMentions(abbrev, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT posts.*, users.name, users.username, users.avatar,
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
@@ -198,12 +211,14 @@ class Posts {
         `,
       [abbrev, userId, offset, limit]
     );
-
+    client.release();
     return rows;
   }
 
   static async findTeamMedia(abbrev, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT posts.*, users.name, users.username, users.avatar,
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
@@ -220,12 +235,14 @@ class Posts {
         `,
       [abbrev, userId, offset, limit]
     );
-
+    client.release();
     return rows;
   }
 
   static async findByLeagueName(leagueName, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       WITH league_mentions AS (
         SELECT p1.*, users.name, users.username, users.avatar, users.bio,
@@ -252,12 +269,14 @@ class Posts {
       WHERE row_number = 1`,
       [leagueName, userId, offset, limit]
     );
-
+    client.release();
     return rows;
   }
 
   static async findLeagueMedia(leagueName, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       WITH league_mentions AS (
         SELECT p1.*, users.name, users.username, users.avatar, users.bio,
@@ -284,12 +303,14 @@ class Posts {
       WHERE row_number = 1`,
       [leagueName, userId, offset, limit]
     );
-
+    client.release();
     return rows;
   }
 
   static async findByEventConversationId({ eventId, userId, offset, limit }) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT p1.*, avatar, users.name, users.username,
         (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, 
@@ -331,12 +352,14 @@ class Posts {
     `,
       [threadId, userId, offset, limit]
     );
-
+    client.release();
     return rows;
   }
 
   static async findThreadHistory(threadId, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
     WITH RECURSIVE history AS (
       SELECT * FROM posts WHERE id = $1
@@ -362,6 +385,7 @@ class Posts {
   `,
       [threadId, userId]
     );
+    client.release();
 
     return rows;
   }
@@ -608,19 +632,23 @@ class Posts {
   }
 
   static async unLike(postId, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       DELETE FROM likes
       WHERE post_id = $1 AND user_id = $2
       RETURNING *`,
       [postId, userId]
     );
-
+    client.release();
     return rows;
   }
 
   static async findFollowedTeamsPosts(userId, num, offset) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT DISTINCT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
         CASE 
@@ -638,12 +666,14 @@ class Posts {
       OFFSET $3`,
       [userId, num, offset]
     );
-
+    client.release();
     return rows;
   }
 
   static async homeTimeline(userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       WITH followed_team_posts AS (
         SELECT posts.*
@@ -673,12 +703,15 @@ class Posts {
       LIMIT $3`,
       [userId, offset, limit]
     );
+    client.release();
 
     return rows;
   }
 
   static async findOne(postId, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
     SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
         CASE 
@@ -693,12 +726,15 @@ class Posts {
     `,
       [postId, userId]
     );
+    client.release();
 
     return rows[0];
   }
 
   static async search(query, offset, limit, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT posts.*, users.name, users.username, users.avatar, 
         (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
@@ -713,12 +749,15 @@ class Posts {
       `,
       [query, offset, limit, userId]
     );
+    client.release();
 
     return rows;
   }
 
   static async searchTop(query, offset, limit, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT posts.*, users.name, users.username, users.avatar, 
         (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
@@ -733,12 +772,15 @@ class Posts {
       `,
       [query, offset, limit, userId]
     );
+    client.release();
 
     return rows;
   }
 
   static async searchLatest(query, offset, limit, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT posts.*, users.name, users.username, users.avatar, 
         (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
@@ -753,12 +795,15 @@ class Posts {
       `,
       [query, offset, limit, userId]
     );
+    client.release();
 
     return rows;
   }
 
   static async searchMedia(query, offset, limit, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT posts.*, users.name, users.username, users.avatar, 
         (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = posts.id) AS replies,
@@ -773,12 +818,15 @@ class Posts {
       `,
       [query, offset, limit, userId]
     );
+    client.release();
 
     return rows;
   }
 
   static async findUsersWhoLiked(postId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
     SELECT likes.*, users.name, users.username, users.avatar
     FROM likes
@@ -787,12 +835,14 @@ class Posts {
     `,
       [postId]
     );
-
+    client.release();
     return rows;
   }
 
   static async delete(postId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
   DELETE FROM posts
   WHERE id = $1
@@ -800,7 +850,7 @@ class Posts {
   `,
       [postId]
     );
-
+    client.release();
     return rows[0];
   }
 }
