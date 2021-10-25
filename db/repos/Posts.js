@@ -337,7 +337,9 @@ class Posts {
   }
 
   static async findThreadReplies(threadId, userId, offset, limit) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT posts.*, users.name, users.username, users.avatar,
         (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes, 
@@ -620,13 +622,16 @@ class Posts {
   }
 
   static async like(postId, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
         INSERT INTO likes (post_id, user_id)
         VALUES ($1, $2)
         RETURNING *`,
       [postId, userId]
     );
+    client.release();
 
     return rows;
   }

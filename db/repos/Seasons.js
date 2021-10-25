@@ -127,7 +127,9 @@ class Seasons {
   }
 
   static async findByLeagueName(leagueName) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
         SELECT seasons.*
         FROM seasons
@@ -136,12 +138,14 @@ class Seasons {
         ORDER BY created_at DESC`,
       [leagueName]
     );
-
+    client.release();
     return rows;
   }
 
   static async findById(seasonId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT *
       FROM seasons
@@ -149,6 +153,7 @@ class Seasons {
       WHERE seasons.id = $1`,
       [seasonId]
     );
+    client.release();
 
     return rows[0];
   }

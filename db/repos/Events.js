@@ -224,7 +224,9 @@ class Events {
   }
 
   static async findScheduleByLeagueName(leagueName) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       WITH league_data AS (
         SELECT *
@@ -278,12 +280,15 @@ class Events {
     `,
       [leagueName]
     );
+    client.release();
 
     return rows[0];
   }
 
   static async findScheduleBySeasonId(seasonId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       WITH league_data AS (
         SELECT leagues.id
@@ -338,7 +343,7 @@ class Events {
     `,
       [seasonId]
     );
-
+    client.release();
     return rows[0];
   }
 }

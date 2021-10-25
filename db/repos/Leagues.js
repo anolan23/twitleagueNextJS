@@ -2,8 +2,10 @@ import pool from "../pool";
 
 class Leagues {
   static async create(league, ownerId) {
+    const client = await pool.connect();
+
     const { leagueName, sport, avatar, banner, bio } = league;
-    const { rows } = await pool.query(
+    const { rows } = await client.query(
       `
         INSERT INTO leagues (owner_id, league_name, sport, avatar, banner, bio)
         VALUES
@@ -11,6 +13,7 @@ class Leagues {
         RETURNING *`,
       [ownerId, leagueName, sport, avatar, banner, bio]
     );
+    client.release();
 
     return rows[0];
   }
@@ -230,7 +233,9 @@ class Leagues {
   }
 
   static async findStandings(leagueName, seasonId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       WITH league_data AS (
         SELECT id
@@ -307,12 +312,15 @@ class Leagues {
         `,
       [leagueName, seasonId]
     );
+    client.release();
 
     return rows[0];
   }
 
   static async currentSeasonStandings(leagueName) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       WITH league_data AS (
         SELECT *
@@ -384,6 +392,7 @@ class Leagues {
         `,
       [leagueName]
     );
+    client.release();
 
     return rows;
   }

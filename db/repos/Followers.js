@@ -2,7 +2,9 @@ import pool from "../pool";
 
 class Followers {
   static async findByTeamId(teamId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
         SELECT * 
         FROM followers
@@ -10,6 +12,7 @@ class Followers {
         WHERE team_id = $1`,
       [teamId]
     );
+    client.release();
 
     return rows;
   }

@@ -2,7 +2,9 @@ import pool from "../pool";
 
 class Notifications {
   static async findByUserId(userId) {
-    const notifications = await pool.query(
+    const client = await pool.connect();
+
+    const notifications = await client.query(
       `
       SELECT notifications.*,
         (
@@ -66,6 +68,7 @@ class Notifications {
       ORDER BY notifications.created_at DESC`,
       [userId]
     );
+    client.release();
 
     return notifications.rows;
   }

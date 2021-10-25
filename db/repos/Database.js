@@ -26,7 +26,9 @@ class Database {
   }
 
   static async search(query, offset, limit, userId) {
-    const { rows } = await pool.query(
+    const client = await pool.connect();
+
+    const { rows } = await client.query(
       `
       SELECT 
       (
@@ -71,6 +73,7 @@ class Database {
         `,
       [`%${query}%`, offset, limit, userId]
     );
+    client.release();
 
     return rows[0];
   }
