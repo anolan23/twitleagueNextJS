@@ -5,19 +5,15 @@ import * as Yup from "yup";
 import { useRouter } from "next/router";
 
 import { createUser } from "../../actions";
-import twitForm from "../../sass/components/TwitForm.module.scss";
-import signupPopup from "../../sass/components/SignupPopup.module.scss";
+import styles from "../../sass/components/SignupPopup.module.scss";
 import Popup from "./Popup";
 import TwitButton from "../TwitButton";
+import TwitForm from "../TwitForm";
+import TwitInputGroup from "../TwitInputGroup";
+import TwitInput from "../TwitInput";
 
 function SignupPopup({ show, onHide }) {
   const router = useRouter();
-
-  const signUp = async (values) => {
-    await createUser(values);
-    onHide();
-    router.push("/home");
-  };
 
   const SignupSchema = Yup.object().shape({
     name: Yup.string()
@@ -41,8 +37,16 @@ function SignupPopup({ show, onHide }) {
       username: "",
       password: "",
     },
-    onSubmit: (values) => {
-      signUp(values);
+    onSubmit: async (values) => {
+      let user;
+      try {
+        user = await createUser(values);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        onHide();
+        router.push(`/users/${user.username}`);
+      }
     },
     validationSchema: SignupSchema,
   });
@@ -58,113 +62,63 @@ function SignupPopup({ show, onHide }) {
 
   const renderBody = () => {
     return (
-      <div className={signupPopup["signup-popup"]}>
-        <form onSubmit={formik.handleSubmit} className={twitForm["twit-form"]}>
-          <h1 className={signupPopup["signup-popup__title"]}>
-            Create your account
-          </h1>
-          <div className={twitForm["twit-form__group"]}>
-            <label htmlFor="name" className={twitForm["twit-form__label"]}>
-              Name
-            </label>
-            <input
+      <div className={styles["signup-popup"]}>
+        <TwitForm onSubmit={formik.handleSubmit}>
+          <h1 className={styles["signup-popup__title"]}>Create your account</h1>
+          <TwitInputGroup id="name" labelText="Name">
+            <TwitInput
               id="name"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              type="text"
               value={formik.values.name}
               name="name"
-              type="text"
-              autoComplete="off"
-              className={
-                formik.errors.name && formik.touched.name
-                  ? twitForm["twit-form__input--errors"]
-                  : twitForm["twit-form__input"]
-              }
+              isError={formik.errors.name && formik.touched.name}
+              errors={formik.errors.name}
             />
-            {formik.errors.name && formik.touched.name ? (
-              <div className={twitForm["twit-form__errors"]}>
-                {formik.errors.name}
-              </div>
-            ) : null}
-          </div>
-          <div className={twitForm["twit-form__group"]}>
-            <label htmlFor="email" className={twitForm["twit-form__label"]}>
-              Email
-            </label>
-            <input
+          </TwitInputGroup>
+          <TwitInputGroup id="email" labelText="Email">
+            <TwitInput
               id="email"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.teamAbbrev}
-              name="email"
               type="text"
-              autoComplete="off"
-              className={
-                formik.errors.email && formik.touched.email
-                  ? twitForm["twit-form__input--errors"]
-                  : twitForm["twit-form__input"]
-              }
+              value={formik.values.email}
+              name="email"
+              isError={formik.errors.email && formik.touched.email}
+              errors={formik.errors.email}
             />
-            {formik.errors.email && formik.touched.email ? (
-              <div className={twitForm["twit-form__errors"]}>
-                {formik.errors.email}
-              </div>
-            ) : null}
-          </div>
-          <div className={twitForm["twit-form__group"]}>
-            <label htmlFor="username" className={twitForm["twit-form__label"]}>
-              Username
-            </label>
-            <input
+          </TwitInputGroup>
+          <TwitInputGroup id="username" labelText="Username">
+            <TwitInput
               id="username"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              type="text"
               value={formik.values.username}
               name="username"
-              type="text"
-              autoComplete="off"
-              className={
-                formik.errors.username && formik.touched.username
-                  ? twitForm["twit-form__input--errors"]
-                  : twitForm["twit-form__input"]
-              }
+              isError={formik.errors.username && formik.touched.username}
+              errors={formik.errors.username}
             />
-            {formik.errors.username && formik.touched.username ? (
-              <div className={twitForm["twit-form__errors"]}>
-                {formik.errors.username}
-              </div>
-            ) : null}
-          </div>
-          <div className={twitForm["twit-form__group"]}>
-            <label htmlFor="password" className={twitForm["twit-form__label"]}>
-              Password
-            </label>
-            <input
+          </TwitInputGroup>
+          <TwitInputGroup id="password" labelText="Password">
+            <TwitInput
               id="password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              type="password"
               value={formik.values.password}
               name="password"
-              type="password"
-              autoComplete="off"
-              className={
-                formik.errors.password && formik.touched.password
-                  ? twitForm["twit-form__input--errors"]
-                  : twitForm["twit-form__input"]
-              }
+              isError={formik.errors.password && formik.touched.password}
+              errors={formik.errors.password}
             />
-            {formik.errors.password && formik.touched.password ? (
-              <div className={twitForm["twit-form__errors"]}>
-                {formik.errors.password}
-              </div>
-            ) : null}
-          </div>
-          <div className={signupPopup["signup-popup__action"]}>
+          </TwitInputGroup>
+          <div className={styles["signup-popup__action"]}>
             <TwitButton color="primary" size="large">
               Sign up
             </TwitButton>
           </div>
-        </form>
+        </TwitForm>
       </div>
     );
   };

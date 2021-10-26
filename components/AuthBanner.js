@@ -1,13 +1,14 @@
-import React from "react";
-
-import { toggleSignUpModal } from "../actions";
+import React, { useState } from "react";
 
 import TwitButton from "./TwitButton";
 import authBanner from "../sass/components/AuthBanner.module.scss";
 import useUser from "../lib/useUser";
+import SignupPopup from "./modals/SignupPopup";
 
 function AuthBanner() {
   const { user } = useUser();
+  const [showSignupPopup, setShowSignupPopup] = useState(false);
+
   if (!user) {
     return null;
   }
@@ -25,10 +26,14 @@ function AuthBanner() {
           <TwitButton href="/login" color="white" outline="white">
             Log in
           </TwitButton>
-          <TwitButton onClick={toggleSignUpModal} color="white">
+          <TwitButton onClick={() => setShowSignupPopup(true)} color="white">
             Sign up
           </TwitButton>
         </div>
+        <SignupPopup
+          show={showSignupPopup}
+          onHide={() => setShowSignupPopup(false)}
+        />
       </div>
     );
   } else if (user.isSignedIn) {
