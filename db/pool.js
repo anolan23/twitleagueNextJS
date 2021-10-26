@@ -13,13 +13,13 @@ const options = () => {
     return {
       connectionString:
         "postgres://zaqshrnkoddgui:77cf7e12d6e458c3b42e40e5db54844be4e045852cf203f94057b5ccfd748ecf@ec2-54-172-169-87.compute-1.amazonaws.com:5432/d4q9qkfjsq5fvm",
-        ssl: {
-          rejectUnauthorized: false
-        }
+      ssl: {
+        rejectUnauthorized: false,
+      },
     };
   }
 };
 
-const pool = new pg.Pool({options()});
+const pool = new pg.Pool(options());
 
 export default pool;
