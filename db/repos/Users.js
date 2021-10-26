@@ -30,9 +30,7 @@ class Users {
   }
 
   static async findOne(username, userId) {
-    const client = await pool.connect();
-
-    const { rows } = await client.query(
+    const { rows } = await pool.query(
       `
         SELECT *,
             (SELECT count(*) FROM scouts WHERE scouted_user_id = users.id) AS scouts,
@@ -44,7 +42,6 @@ class Users {
         WHERE username = $1`,
       [username, userId]
     );
-    client.release();
 
     return rows[0];
   }
