@@ -20,7 +20,7 @@ import TopBar from "../../../components/TopBar";
 import FeedCard from "../../../components/FeedCard";
 import UserProfile from "../../../components/UserProfile";
 import backend from "../../../lib/backend";
-import userStyle from "../../../sass/components/User.module.scss";
+import styles from "../../../sass/components/User.module.scss";
 import InfiniteList from "../../../components/InfiniteList";
 import SuggestedUsers from "../../../components/SuggestedUsers";
 import WhatsHappening from "../../../components/WhatsHappening";
@@ -104,7 +104,7 @@ function User({ userData }) {
     setTab(id);
   }
 
-  const renderUsers = () => {
+  function renderUsers() {
     if (users === null) {
       return <TwitSpinner size={30} />;
     } else if (users.length === 0) {
@@ -124,7 +124,7 @@ function User({ userData }) {
         );
       });
     }
-  };
+  }
 
   function renderEmpty() {
     if (!posts) {
@@ -142,7 +142,7 @@ function User({ userData }) {
     return <Post post={item} update={updatePosts} user={user} fadeIn />;
   }
 
-  const renderPosts = () => {
+  function renderPosts() {
     if (!user || !isReady) {
       return null;
     }
@@ -155,66 +155,66 @@ function User({ userData }) {
         infiniteLoaderRef={infiniteLoaderRef}
       />
     );
-  };
-
-  if (isFallback) {
-    return <div>Loading...</div>;
   }
 
-  return (
-    <React.Fragment>
-      <div className="twit-container">
-        <header className="header">
-          <LeftColumn />
-        </header>
-        <main className="main">
-          <div className={userStyle["user"]}>
-            <TopBar main={userProfile.username} />
-            <UserProfile
-              userProfile={userProfile}
-              onAvatarClick={() => setShowEditProfilePopup(true)}
-            />
-            <TwitTabs>
-              <TwitTab
-                onClick={onTabSelect}
-                id="posts"
-                active={tab === "posts" ? true : false}
-                title="Posts"
+  if (isFallback) {
+    return <TwitSpinner size={50} />;
+  } else {
+    return (
+      <React.Fragment>
+        <div className="twit-container">
+          <header className="header">
+            <LeftColumn />
+          </header>
+          <main className="main">
+            <div className={styles["user"]}>
+              <TopBar main={userProfile.username} />
+              <UserProfile
+                userProfile={userProfile}
+                onAvatarClick={() => setShowEditProfilePopup(true)}
               />
-              <TwitTab
-                onClick={onTabSelect}
-                id="media"
-                active={tab === "media" ? true : false}
-                title="Media"
-              />
-              <TwitTab
-                onClick={onTabSelect}
-                id="likes"
-                active={tab === "likes" ? true : false}
-                title="Likes"
-              />
-            </TwitTabs>
-            <div className={userStyle["user__feed-holder"]}>
-              {renderEmpty()}
-              {renderPosts()}
-              <FeedCard title="Who to Scout">{renderUsers()}</FeedCard>
+              <TwitTabs>
+                <TwitTab
+                  onClick={onTabSelect}
+                  id="posts"
+                  active={tab === "posts" ? true : false}
+                  title="Posts"
+                />
+                <TwitTab
+                  onClick={onTabSelect}
+                  id="media"
+                  active={tab === "media" ? true : false}
+                  title="Media"
+                />
+                <TwitTab
+                  onClick={onTabSelect}
+                  id="likes"
+                  active={tab === "likes" ? true : false}
+                  title="Likes"
+                />
+              </TwitTabs>
+              <div className={styles["user__feed-holder"]}>
+                {renderEmpty()}
+                {renderPosts()}
+                <FeedCard title="Who to Scout">{renderUsers()}</FeedCard>
+              </div>
             </div>
+          </main>
+          <div className="right-bar">
+            <RightColumn>
+              <WhatsHappening />
+              <SuggestedTeams />
+              <SuggestedUsers />
+            </RightColumn>
           </div>
-        </main>
-        <div className="right-bar">
-          <RightColumn>
-            <WhatsHappening />
-            <SuggestedTeams />
-            <SuggestedUsers />
-          </RightColumn>
         </div>
-      </div>
-      <EditProfilePopup
-        show={showEditProfilePopup}
-        onHide={() => setShowEditProfilePopup(false)}
-      />
-    </React.Fragment>
-  );
+        <EditProfilePopup
+          show={showEditProfilePopup}
+          onHide={() => setShowEditProfilePopup(false)}
+        />
+      </React.Fragment>
+    );
+  }
 }
 
 export async function getStaticPaths() {

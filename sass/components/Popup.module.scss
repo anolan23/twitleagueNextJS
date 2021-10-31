@@ -42,9 +42,9 @@
       align-items: center;
       height: 5.3rem;
 
-      @media only screen and (max-width: 760px) {
-        border-bottom: var(--border);
-      }
+      // @media only screen and (max-width: 760px) {
+      //   border-bottom: var(--border);
+      // }
 
       &__title {
         font-size: 2.3rem;
