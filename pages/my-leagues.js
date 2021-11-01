@@ -13,7 +13,7 @@ import Empty from "../components/Empty";
 import TwitSpinner from "../components/TwitSpinner";
 
 function MyLeagues() {
-  const { user } = useUser({ redirectTo: "/" });
+  const { user } = useUser();
   const router = useRouter();
   const [leagues, setLeagues] = useState(null);
 

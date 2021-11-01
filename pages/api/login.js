@@ -15,7 +15,7 @@ export default async (req, res) => {
     if (result) {
       const claims = {
         sub: user.id,
-        user,
+        username: user.username,
       };
       delete user["password"];
       const jwt = sign(claims, process.env.AUTH_TOKEN_SECRET, {

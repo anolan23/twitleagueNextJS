@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Head from "next/head";
+import Image from "next/image";
 import index from "../sass/pages/Index.module.scss";
 import Link from "next/link";
 
@@ -56,25 +57,11 @@ function IndexPage() {
             </Link>
           </div>
         </div>
-        <div className={index["index__main__showcase"]}>
-          <div className={index["index__main__showcase__content"]}>
-            <div className={index["index__main__showcase__content__video-box"]}>
-              <video
-                className={
-                  index["index__main__showcase__content__video-box__video"]
-                }
-                loop
-                autoPlay
-                muted
-              >
-                <source
-                  src="https://s3.amazonaws.com/st-assets/production/new-web/home-animation.mp4"
-                  type="video/mp4"
-                />
-              </video>
-            </div>
-          </div>
-        </div>
+        <img
+          src="/twit_mobile_mockup.png"
+          alt="app mobile mockup"
+          className={index["index__main__image"]}
+        />
       </div>
       <SignupPopup
         show={showSignupPopup}

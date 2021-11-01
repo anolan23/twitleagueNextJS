@@ -24,7 +24,7 @@ import backend from "../../../../lib/backend";
 import Prompt from "../../../../components/modals/Prompt";
 
 function Divisions({ leagueData }) {
-  const { user } = useUser({ redirectTo: "/" });
+  const { user } = useUser();
   const router = useRouter();
   const [seasonTeam, setSeasonTeam] = useState(null);
   const [showStartSeasonPrompt, setShowStartSeasonPrompt] = useState(false);

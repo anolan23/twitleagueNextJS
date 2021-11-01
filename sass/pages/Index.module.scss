@@ -1,25 +1,46 @@
 .index {
   position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
   &__navbar {
     &__actions {
       display: grid;
       grid-template-columns: min-content min-content;
-      gap: 1rem;
+      gap: 1.6rem;
+
+      @media only screen and (max-width: 500px) {
+        display: none;
+      }
     }
   }
 
   &__main {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 5rem;
-    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3.2rem;
+    margin: 6.4rem;
+    flex: 1;
+    align-items: center;
+
+    @media only screen and (max-width: 1000px) {
+      grid-template-columns: 1fr;
+      margin: 3.2rem 2.4rem;
+    }
     &__content {
-      width: 556px;
-      margin-top: 20rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       &__title {
         font-size: 4.8rem;
-        font-weight: 700;
+        font-weight: 900;
         margin-bottom: 2rem;
+        line-height: 1;
+
+        @media only screen and (max-width: 1000px) {
+          font-size: 4rem;
+        }
       }
 
       &__sub-title {
@@ -39,32 +60,8 @@
       }
     }
 
-    &__showcase {
-      width: 420px;
-      position: relative;
-      top: 0;
-
-      &__content {
-        padding-bottom: 202.6%;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-image: url("https://s3.amazonaws.com/st-assets/production/new-web/i-phone-xs.jpg");
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &__video-box {
-          border-radius: 18px;
-          position: absolute;
-          top: 23%;
-          left: 24%;
-          width: 53%;
-          overflow: hidden;
-          &__video {
-          }
-        }
-      }
+    &__image {
+      width: 100%;
     }
   }
 }

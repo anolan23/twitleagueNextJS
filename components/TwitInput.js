@@ -15,6 +15,7 @@ function TwitInput({
   isError,
   errors,
   children,
+  autocomplete = "off",
 }) {
   const [show, setShow] = useState(false);
 
@@ -42,7 +43,7 @@ function TwitInput({
       <select
         id={id}
         type={type}
-        autoComplete="off"
+        autoComplete={autocomplete}
         className={twitInput["twit-input"]}
         placeholder={placeHolder}
         onChange={onChange}
@@ -59,7 +60,7 @@ function TwitInput({
         <input
           id={id}
           type={type}
-          autoComplete="off"
+          autoComplete={autocomplete}
           className={twitInput["twit-input"]}
           placeholder={placeHolder}
           onChange={handleChange}
@@ -76,7 +77,7 @@ function TwitInput({
         <input
           id={id}
           type={type}
-          autoComplete="off"
+          autoComplete={autocomplete}
           className={`${twitInput["twit-input"]} ${
             isError ? twitInput["twit-input--error"] : null
           }`}

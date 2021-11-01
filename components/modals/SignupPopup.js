@@ -44,7 +44,6 @@ function SignupPopup({ show, onHide }) {
       } catch (error) {
         console.log(error);
       } finally {
-        onHide();
         router.push(`/users/${user.username}`);
       }
     },
@@ -73,6 +72,7 @@ function SignupPopup({ show, onHide }) {
               type="text"
               value={formik.values.name}
               name="name"
+              autocomplete="on"
               isError={formik.errors.name && formik.touched.name}
               errors={formik.errors.name}
             />
@@ -85,6 +85,7 @@ function SignupPopup({ show, onHide }) {
               type="text"
               value={formik.values.email}
               name="email"
+              autocomplete="on"
               isError={formik.errors.email && formik.touched.email}
               errors={formik.errors.email}
             />

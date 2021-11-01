@@ -16,10 +16,9 @@ export default async (req, res) => {
         process.env.AUTH_TOKEN_SECRET,
         async function (err, payload) {
           if (!err && payload) {
-            const { user } = payload;
-            let foundUser = await Users.findOne(user.username);
-            foundUser = { ...user, isSignedIn: true };
-            console.log(payload);
+            const { username } = payload;
+            let foundUser = await Users.findOne(username);
+            foundUser = { ...foundUser, isSignedIn: true };
             delete foundUser["password"];
             res.send(foundUser);
           } else {

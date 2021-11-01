@@ -15,7 +15,7 @@ import backend from "../lib/backend";
 import TwitSpinner from "../components/TwitSpinner";
 
 function Notifications(props) {
-  const { user } = useUser({ redirectTo: `/` });
+  const { user } = useUser();
   const [tab, setTab] = useState("all");
   const [mentionedPosts, setMentionedPosts] = useState(null);
   const [notifications, setNotifications] = useState(null);
