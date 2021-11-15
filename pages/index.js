@@ -8,13 +8,14 @@ import useUser from "../lib/useUser";
 import SignupPopup from "../components/modals/SignupPopup";
 import TwitButton from "../components/TwitButton";
 import NavBar from "../components/NavBar";
+import TwitSpinner from "../components/TwitSpinner";
 
 function IndexPage() {
   const { user } = useUser({ redirectIfFound: true, redirectTo: "/home" });
   const [showSignupPopup, setShowSignupPopup] = useState(false);
 
   if (!user) {
-    return <div>...Loading user</div>;
+    return <TwitSpinner size={50} />;
   } else if (user.isSignedIn) {
     return <div>redirecting...</div>;
   }
@@ -23,7 +24,7 @@ function IndexPage() {
     <div className={index["index"]}>
       <NavBar title="twitleague">
         <div className={index["index__navbar__actions"]}>
-          <TwitButton href="/login" color="primary" outline="primary">
+          <TwitButton href="/login" color="white">
             Login
           </TwitButton>
           <TwitButton onClick={() => setShowSignupPopup(true)} color="primary">

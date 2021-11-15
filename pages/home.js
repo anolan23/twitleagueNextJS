@@ -51,6 +51,23 @@ function HomePage() {
     );
   }
 
+  function renderEmpty() {
+    if (!posts) {
+      return null;
+    } else if (posts.length > 0) {
+      return null;
+    } else {
+      return (
+        <Empty
+          main="No posts"
+          sub={`Follow teams and/or scout players to populate your home timeline`}
+          actionText="View suggestions"
+          onActionClick={() => router.push("/suggested/teams")}
+        />
+      );
+    }
+  }
+
   function itemRenderer(item) {
     return <Post post={item} update={updatePosts} user={user} fadeIn />;
   }
@@ -72,6 +89,7 @@ function HomePage() {
               user={user}
             />
             <Divide first />
+            {renderEmpty()}
             <InfiniteList
               getData={getData}
               list={posts}

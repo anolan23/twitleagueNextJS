@@ -19,8 +19,8 @@ function UserToggle() {
 
   const logOut = async () => {
     await logOutUser();
-    mutateUser();
-    // router.push("/");
+    // mutateUser();
+    router.push("/");
   };
 
   useEffect(() => {

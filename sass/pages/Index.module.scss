@@ -17,6 +17,7 @@
   }
 
   &__main {
+    background-color: var(--color-background);
     display: grid;
     grid-template-columns: 1fr 1.5fr;
     gap: 3.2rem;

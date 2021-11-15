@@ -7,13 +7,13 @@ function Empty({ onActionClick, actionText, actionHref, main, sub }) {
   const renderAction = () => {
     if (onActionClick) {
       return (
-        <TwitButton onClick={onActionClick} color="primary">
+        <TwitButton onClick={onActionClick} color="primary" size="large">
           {actionText}
         </TwitButton>
       );
     } else if (actionHref) {
       return (
-        <TwitButton href={actionHref} color="primary">
+        <TwitButton href={actionHref} color="primary" size="large">
           {actionText}
         </TwitButton>
       );

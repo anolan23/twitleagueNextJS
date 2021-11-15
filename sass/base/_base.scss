@@ -43,9 +43,9 @@ a {
 .lightmode {
   --color-text: rgb(15, 20, 25);
   --color-text-secondary: rgb(91, 112, 131);
-  --color-text-link: rgb(27, 149, 224);
+  --color-text-link: #1da1f2;
 
-  --color-primary: rgb(29, 161, 242);
+  --color-primary: #1da1f2;
   --color-secondary: var(--color-light-gray);
 
   --color-background: white;
@@ -70,9 +70,9 @@ a {
 .darkmode {
   --color-text: white;
   --color-text-secondary: rgb(255, 255, 255, 0.65);
-  --color-text-link: #52b1dc;
+  --color-text-link: #1da1f2;
 
-  --color-primary: #00aeff;
+  --color-primary: #1da1f2;
   --color-secondary: var(--color-light-gray);
 
   --color-background: #51504d;
