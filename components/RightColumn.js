@@ -1,18 +1,18 @@
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-import TwitSearch from "./TwitSearch";
-import TwitIcon from "./TwitIcon";
+import TwitSearch from './TwitSearch';
+import TwitIcon from './TwitIcon';
 
 function RightColumn({ children }) {
   const router = useRouter();
   function onSearch(query) {
     router.push({
-      pathname: "/search",
+      pathname: '/search',
       query: {
         query,
-        filter: "top",
+        filter: 'top',
       },
     });
   }
@@ -34,31 +34,22 @@ function RightColumn({ children }) {
       {children}
       <div className="right-bar__right-column__footer">
         <nav className="right-bar__right-column__footer__nav">
-          <Link passHref href="/">
-            <a className="right-bar__right-column__footer__nav__item">
-              Terms of Service
-            </a>
+          <Link href="/" className="right-bar__right-column__footer__nav__item">
+            Terms of Service
           </Link>
-          <Link passHref href="/">
-            <a className="right-bar__right-column__footer__nav__item">
-              Privacy Policy
-            </a>
+          <Link className="right-bar__right-column__footer__nav__item" href="/">
+            Privacy Policy
           </Link>
-          <Link passHref href="/">
-            <a className="right-bar__right-column__footer__nav__item">
-              Cookie Policy
-            </a>
+          <Link className="right-bar__right-column__footer__nav__item" href="/">
+            Cookie Policy
           </Link>
-          <Link passHref href="/">
-            <a className="right-bar__right-column__footer__nav__item">
-              Ads info
-            </a>
+          <Link className="right-bar__right-column__footer__nav__item" href="/">
+            Ads info
           </Link>
-          <Link passHref href="/">
-            <a className="right-bar__right-column__footer__nav__item">More</a>
+          <Link className="right-bar__right-column__footer__nav__item" href="/">
+            More
           </Link>
           <span className="right-bar__right-column__footer__nav__copyright">
-            {" "}
             &copy; {new Date().getFullYear()} twitleague
           </span>
         </nav>

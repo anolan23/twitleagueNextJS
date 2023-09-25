@@ -1,8 +1,8 @@
-import React from "react";
-import Link from "next/link";
+import React from 'react';
+import Link from 'next/link';
 
-import twitButton from "../sass/components/TwitButton.module.scss";
-import TwitIcon from "./TwitIcon";
+import twitButton from '../sass/components/TwitButton.module.scss';
+import TwitIcon from './TwitIcon';
 
 function TwitButton({
   color,
@@ -26,10 +26,10 @@ function TwitButton({
   }
 
   const determineType = () => {
-    if (type === "square") {
-      return twitButton["twit-button--square"];
+    if (type === 'square') {
+      return twitButton['twit-button--square'];
     } else {
-      return twitButton["twit-button"];
+      return twitButton['twit-button'];
     }
   };
 
@@ -41,30 +41,30 @@ function TwitButton({
   };
 
   const determineColor = () => {
-    if (color === "primary") {
-      return twitButton["twit-button--primary"];
-    } else if (color === "white") {
-      return twitButton["twit-button--white"];
-    } else if (color === "red") {
-      return twitButton["twit-button--red"];
+    if (color === 'primary') {
+      return twitButton['twit-button--primary'];
+    } else if (color === 'white') {
+      return twitButton['twit-button--white'];
+    } else if (color === 'red') {
+      return twitButton['twit-button--red'];
     }
   };
 
   const determineSize = () => {
-    if (size === "small") {
-      return twitButton["twit-button--small"];
-    } else if (size === "large") {
-      return twitButton["twit-button--large"];
+    if (size === 'small') {
+      return twitButton['twit-button--small'];
+    } else if (size === 'large') {
+      return twitButton['twit-button--large'];
     } else {
       return null;
     }
   };
 
   const determineOutline = () => {
-    if (outline === "primary") {
-      return twitButton["twit-button--primary--outline"];
-    } else if (outline === "white") {
-      return twitButton["twit-button--white--outline"];
+    if (outline === 'primary') {
+      return twitButton['twit-button--primary--outline'];
+    } else if (outline === 'white') {
+      return twitButton['twit-button--white--outline'];
     } else {
       return null;
     }
@@ -72,7 +72,7 @@ function TwitButton({
 
   const determineCollapse = () => {
     if (collapse) {
-      return twitButton["twit-button--collapse"];
+      return twitButton['twit-button--collapse'];
     } else {
       return null;
     }
@@ -80,7 +80,7 @@ function TwitButton({
 
   const determineExpanded = () => {
     if (expanded) {
-      return twitButton["twit-button--expanded"];
+      return twitButton['twit-button--expanded'];
     } else {
       return null;
     }
@@ -89,22 +89,21 @@ function TwitButton({
   const renderIcon = () => {
     if (icon) {
       return (
-        <TwitIcon className={twitButton["twit-button__icon"]} icon={icon} />
+        <TwitIcon className={twitButton['twit-button__icon']} icon={icon} />
       );
     } else return null;
   };
 
   if (href) {
     return (
-      <Link href={href} passHref>
-        <a
-          className={`${determineType()} ${determineColor()} ${determineSize()} ${determineOutline()} ${determineCollapse()} ${determineExpanded()} ${className}`}
-          onClick={onButtonClick}
-          disabled={disabled}
-        >
-          {renderIcon()}
-          {children}
-        </a>
+      <Link
+        href={href}
+        className={`${determineType()} ${determineColor()} ${determineSize()} ${determineOutline()} ${determineCollapse()} ${determineExpanded()} ${className}`}
+        onClick={onButtonClick}
+        disabled={disabled}
+      >
+        {renderIcon()}
+        {children}
       </Link>
     );
   } else {

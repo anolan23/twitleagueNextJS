@@ -1,15 +1,15 @@
-import backend from "../lib/backend";
+import backend from '../lib/backend';
 
 //User Action Creators
 export const createUser = async (formValues) => {
-  const response = await backend.post("/api/signup", formValues);
+  const response = await backend.post('/api/signup', formValues);
 
   return response.data;
 };
 
 export const fetchUser = () => async (dispatch) => {
-  const response = await backend.get("/api/users");
-  dispatch({ type: "FETCH_USER", payload: response.data });
+  const response = await backend.get('/api/users');
+  dispatch({ type: 'FETCH_USER', payload: response.data });
 };
 
 export const fetchUserByUsername = async (username, userId) => {
@@ -22,18 +22,18 @@ export const fetchUserByUsername = async (username, userId) => {
 };
 
 export const loginUser = async (values) => {
-  const response = await backend.post("/api/login", values);
+  const response = await backend.post('/api/login', values);
   console.log(response.data);
   return response.data;
 };
 
 export const logOutUser = async () => {
-  const response = await backend.get("/api/logout");
+  const response = await backend.get('/api/logout');
   return response.data;
 };
 
 export const deleteNotification = async (notificationId) => {
-  const notification = await backend.delete("/api/notifications", {
+  const notification = await backend.delete('/api/notifications', {
     params: {
       notificationId,
     },
@@ -46,71 +46,67 @@ export const updateUserProfile = (values) => async (dispatch, getState) => {
   if (!userId) {
     return;
   }
-  const response = await backend.patch("/api/users", {
+  const response = await backend.patch('/api/users', {
     userId,
     values,
   });
 
-  dispatch({ type: "UPDATE_USER_PROFILE", payload: response.data });
+  dispatch({ type: 'UPDATE_USER_PROFILE', payload: response.data });
 };
 
 //Modal Action Creators
 export const toggleSignUpModal = () => {
-  return { type: "TOGGLE_SIGNUP_MODAL" };
+  return { type: 'TOGGLE_SIGNUP_MODAL' };
 };
 
 export const toggleLoginModal = () => {
-  return { type: "TOGGLE_LOGIN_MODAL" };
+  return { type: 'TOGGLE_LOGIN_MODAL' };
 };
 
 export const toggleCreateTeamModal = () => {
-  return { type: "TOGGLE_CREATE_TEAM_MODAL" };
+  return { type: 'TOGGLE_CREATE_TEAM_MODAL' };
 };
 
 export const toggleCreateLeagueModal = () => {
-  return { type: "TOGGLE_CREATE_LEAGUE_MODAL" };
-};
-
-export const toggleGifPopup = () => {
-  return { type: "TOGGLE_GIF_POPUP" };
+  return { type: 'TOGGLE_CREATE_LEAGUE_MODAL' };
 };
 
 export const togglePostModal = () => {
-  return { type: "TOGGLE_POST_MODAL" };
+  return { type: 'TOGGLE_POST_MODAL' };
 };
 
 export const toggleScheduleModal = () => {
-  return { type: "TOGGLE_SCHEDULE_MODAL" };
+  return { type: 'TOGGLE_SCHEDULE_MODAL' };
 };
 
 export const toggleRosterModal = () => {
-  return { type: "TOGGLE_ROSTER_MODAL" };
+  return { type: 'TOGGLE_ROSTER_MODAL' };
 };
 
 export const togglePopupReply = () => {
-  return { type: "TOGGLE_POPUP_REPLY" };
+  return { type: 'TOGGLE_POPUP_REPLY' };
 };
 
 export const togglePopupEventReply = () => {
-  return { type: "TOGGLE_POPUP_EVENT_REPLY" };
+  return { type: 'TOGGLE_POPUP_EVENT_REPLY' };
 };
 
 export const toggleSignupPopup = () => {
-  return { type: "TOGGLE_SIGNUP_POPUP" };
+  return { type: 'TOGGLE_SIGNUP_POPUP' };
 };
 
 export const togglePanel = () => {
-  return { type: "TOGGLE_PANEL" };
+  return { type: 'TOGGLE_PANEL' };
 };
 
 //Team Action Creators
 
 export const setTeam = (team) => (dispatch) => {
-  dispatch({ type: "SET_TEAM", payload: team });
+  dispatch({ type: 'SET_TEAM', payload: team });
 };
 
 export const createTeam = async (userId, team) => {
-  const response = await backend.post("api/teams", {
+  const response = await backend.post('api/teams', {
     userId,
     team,
   });
@@ -205,9 +201,9 @@ export const saveTeamImages =
         teamImageUrl,
         bannerImageUrl,
       });
-      dispatch({ type: "SAVE_TEAM_IMAGES", payload: response.data });
+      dispatch({ type: 'SAVE_TEAM_IMAGES', payload: response.data });
     } else {
-      console.error("owner !== userId");
+      console.error('owner !== userId');
     }
   };
 
@@ -219,7 +215,7 @@ export const getFollowers = async ({
 }) => {
   console.log(teamId, userId, startIndex, stopIndex);
 
-  const response = await backend.get("/api/followers", {
+  const response = await backend.get('/api/followers', {
     params: {
       teamId,
       userId,
@@ -232,12 +228,12 @@ export const getFollowers = async ({
 };
 
 export const follow = async (teamId, userId) => {
-  const response = await backend.post("/api/followers", { teamId, userId });
+  const response = await backend.post('/api/followers', { teamId, userId });
   return response.data;
 };
 
 export const unFollow = async (teamId, userId) => {
-  const response = await backend.delete("/api/followers", {
+  const response = await backend.delete('/api/followers', {
     params: {
       userId,
       teamId,
@@ -247,7 +243,7 @@ export const unFollow = async (teamId, userId) => {
 };
 
 export const scout = async (scouted_user_id, scout_user_id) => {
-  const response = await backend.post("/api/scouts", {
+  const response = await backend.post('/api/scouts', {
     scouted_user_id,
     scout_user_id,
   });
@@ -255,7 +251,7 @@ export const scout = async (scouted_user_id, scout_user_id) => {
 };
 
 export const unScout = async (scouted_user_id, scout_user_id) => {
-  const response = await backend.delete("/api/scouts", {
+  const response = await backend.delete('/api/scouts', {
     params: {
       scouted_user_id,
       scout_user_id,
@@ -274,8 +270,8 @@ export const unwatchTeam = () => async (dispatch, getState) => {
   const userId = state.user._id;
   const teamId = state.team._id;
   if (userId && teamId) {
-    const response = await backend.patch("/unwatch", { userId, teamId });
-    dispatch({ type: "UNFOLLOW_TEAM", payload: response.data });
+    const response = await backend.patch('/unwatch', { userId, teamId });
+    dispatch({ type: 'UNFOLLOW_TEAM', payload: response.data });
   }
 };
 
@@ -285,7 +281,7 @@ export const unwatchTeamAndFetchUser = () => async (dispatch) => {
 };
 
 export const sendNotification = async (notification) => {
-  const response = await backend.post("/api/notifications", {
+  const response = await backend.post('/api/notifications', {
     notification,
   });
   return response.data;
@@ -299,7 +295,7 @@ export const updateLeagueByName = async (leagueName, columns) => {
 };
 
 export const updateTeamById = async (teamId, columns) => {
-  const results = await backend.patch("/api/teams", { teamId, columns });
+  const results = await backend.patch('/api/teams', { teamId, columns });
   return results.data;
 };
 
@@ -319,7 +315,7 @@ export const updateTeamByAbbrev = async (abbrev, columns) => {
 };
 
 export const createLeague = async (userId, league) => {
-  const results = await backend.post("/api/leagues", {
+  const results = await backend.post('/api/leagues', {
     league,
     ownerId: userId,
   });
@@ -337,7 +333,7 @@ export const fetchLeague = async (leagueName) => {
 };
 
 export const fetchLeagues = async (userId) => {
-  const leagues = await backend.get("/api/leagues", {
+  const leagues = await backend.get('/api/leagues', {
     params: {
       ownerId: userId,
     },
@@ -346,11 +342,11 @@ export const fetchLeagues = async (userId) => {
 };
 
 export const setLeague = (league) => (dispatch) => {
-  dispatch({ type: "SET_LEAGUE", payload: league });
+  dispatch({ type: 'SET_LEAGUE', payload: league });
 };
 
 export const createPost = async (post, userId) => {
-  const response = await backend.post("/api/posts", { ...post, userId });
+  const response = await backend.post('/api/posts', { ...post, userId });
   return response.data;
 };
 
@@ -411,14 +407,14 @@ export const fetchEventPosts = async ({
 
 export const fetchTeamPosts = (teamId) => async (dispatch, getState) => {
   const userId = getState().user.id;
-  const response = await backend.get("/api/posts/team", {
+  const response = await backend.get('/api/posts/team', {
     params: {
       userId,
       teamId,
     },
   });
 
-  dispatch({ type: "FETCH_TEAM_POSTS", payload: response.data });
+  dispatch({ type: 'FETCH_TEAM_POSTS', payload: response.data });
 };
 
 export const getTeamPosts = async ({
@@ -479,18 +475,18 @@ export const getLeagueTeams = async ({
 export const fetchWatchListPosts = () => async (dispatch, getState) => {
   const watchList = getState().user.watchList;
   if (watchList) {
-    const response = await backend.get("api/posts/watchlist", {
+    const response = await backend.get('api/posts/watchlist', {
       params: {
         watchList,
       },
     });
 
-    dispatch({ type: "FETCH_WATCHLIST_POSTS", payload: response.data });
+    dispatch({ type: 'FETCH_WATCHLIST_POSTS', payload: response.data });
   }
 };
 
 export const fetchHomeTimeline = async (userId, startIndex, stopIndex) => {
-  const homeTimeLine = await backend.get("/api/posts/home", {
+  const homeTimeLine = await backend.get('/api/posts/home', {
     params: {
       userId,
       startIndex,
@@ -554,13 +550,13 @@ export const fetchLikedPostsByUsername = async ({
 };
 
 export const fetchLeaguePosts = (leagueId) => async (dispatch) => {
-  const response = await backend.get("/api/posts/league", {
+  const response = await backend.get('/api/posts/league', {
     params: {
       leagueId: leagueId,
     },
   });
 
-  dispatch({ type: "FETCH_LEAGUE_POSTS", payload: response.data });
+  dispatch({ type: 'FETCH_LEAGUE_POSTS', payload: response.data });
 };
 
 export const search = async ({
@@ -570,7 +566,7 @@ export const search = async ({
   startIndex = null,
   stopIndex = null,
 }) => {
-  const results = await backend.get("/api/search", {
+  const results = await backend.get('/api/search', {
     params: {
       query,
       filter,
@@ -585,14 +581,14 @@ export const search = async ({
 
 export const fetchThreadPosts = (postId) => async (dispatch, getState) => {
   const userId = getState().user.id;
-  const response = await backend.get("/api/posts/thread", {
+  const response = await backend.get('/api/posts/thread', {
     params: {
       userId,
       postId,
     },
   });
 
-  dispatch({ type: "FETCH_THREAD_POSTS", payload: response.data });
+  dispatch({ type: 'FETCH_THREAD_POSTS', payload: response.data });
 };
 
 export const fetchUserAndWatchListPosts = () => async (dispatch) => {
@@ -633,42 +629,42 @@ export const unLikeEvent = async (eventId, userId) => {
 };
 
 export const clearPosts = () => async (dispatch) => {
-  dispatch({ type: "CLEAR_POSTS", payload: null });
+  dispatch({ type: 'CLEAR_POSTS', payload: null });
 };
 
 export const clearReplies = () => async (dispatch) => {
-  dispatch({ type: "CLEAR_REPLIES", payload: null });
+  dispatch({ type: 'CLEAR_REPLIES', payload: null });
 };
 
 //Post Action Creators
 export const saveCurrentPostText = (body) => {
-  return { type: "SAVE_CURRENT_BODY", payload: body };
+  return { type: 'SAVE_CURRENT_BODY', payload: body };
 };
 
 export const setMedia = (media) => async (dispatch) => {
-  dispatch({ type: "SET_MEDIA", payload: media });
+  dispatch({ type: 'SET_MEDIA', payload: media });
 };
 
 export const closeMedia = () => {
-  return { type: "CLOSE_MEDIA" };
+  return { type: 'CLOSE_MEDIA' };
 };
 
 export const saveCurrentOutlook = (outlook) => {
-  return { type: "SAVE_CURRENT_OUTLOOK", payload: outlook };
+  return { type: 'SAVE_CURRENT_OUTLOOK', payload: outlook };
 };
 
 export const emptyPostData = () => {
-  return { type: "EMPTY_POST_DATA" };
+  return { type: 'EMPTY_POST_DATA' };
 };
 
 //Tracked Post Action Creators
 export const trackClickedPost = (post) => {
-  return { type: "TRACK_CLICKED_POST", payload: post };
+  return { type: 'TRACK_CLICKED_POST', payload: post };
 };
 
 //Notifications Action Creators
 export const fetchNotifications = async (userId) => {
-  const response = await backend.get("/api/notifications", {
+  const response = await backend.get('/api/notifications', {
     params: {
       userId,
     },
@@ -682,7 +678,7 @@ export const fetchEvent = async (eventId) => {
 };
 
 export const createEvent = async (event) => {
-  const response = await backend.post("/api/events", {
+  const response = await backend.post('/api/events', {
     event,
   });
   return response.data;
@@ -690,7 +686,7 @@ export const createEvent = async (event) => {
 
 export const setEvent = (event) => (dispatch) => {
   if (event) {
-    dispatch({ type: "SET_EVENT", payload: event });
+    dispatch({ type: 'SET_EVENT', payload: event });
   }
 };
 
@@ -712,7 +708,7 @@ export const approveEvent = async (eventId) => {
 };
 
 export const createDivision = async (leagueId, seasonId) => {
-  const division = await backend.post("/api/leagues/divisions", {
+  const division = await backend.post('/api/leagues/divisions', {
     leagueId,
     seasonId,
   });
@@ -720,7 +716,7 @@ export const createDivision = async (leagueId, seasonId) => {
 };
 
 export const updateDivision = async (divisionId, columns) => {
-  const response = await backend.patch("/api/leagues/divisions", columns, {
+  const response = await backend.patch('/api/leagues/divisions', columns, {
     params: {
       divisionId,
     },
@@ -729,7 +725,7 @@ export const updateDivision = async (divisionId, columns) => {
 };
 
 export const divisionDelete = async (divisionId) => {
-  const reponse = await backend.delete("/api/leagues/divisions", {
+  const reponse = await backend.delete('/api/leagues/divisions', {
     params: {
       divisionId,
     },
@@ -738,7 +734,7 @@ export const divisionDelete = async (divisionId) => {
 };
 
 export const assignDivision = async (leagueId) => {
-  const division = await backend.post("/api/leagues/divisions", {
+  const division = await backend.post('/api/leagues/divisions', {
     leagueId,
   });
   return division.data;
@@ -746,7 +742,7 @@ export const assignDivision = async (leagueId) => {
 
 export const addPlayerToRoster = async ({ teamId, userId }) => {
   try {
-    const player = await backend.post("/api/teams/rosters", {
+    const player = await backend.post('/api/teams/rosters', {
       teamId,
       userId,
     });
@@ -896,7 +892,7 @@ export const getFollowing = async ({
 };
 
 export const getSuggestedTeams = async ({ userId, startIndex, stopIndex }) => {
-  const results = await backend.get("/api/teams/suggested", {
+  const results = await backend.get('/api/teams/suggested', {
     params: {
       userId,
       startIndex,
@@ -907,7 +903,7 @@ export const getSuggestedTeams = async ({ userId, startIndex, stopIndex }) => {
 };
 
 export const getSuggestedUsers = async ({ userId, startIndex, stopIndex }) => {
-  const results = await backend.get("/api/users/suggested", {
+  const results = await backend.get('/api/users/suggested', {
     params: {
       userId,
       startIndex,
@@ -928,7 +924,7 @@ export const getSchedules = async (leagueName, seasonId) => {
 
 export const addAlert = ({ message, href, duration }) => {
   return {
-    type: "ADD_ALERT",
+    type: 'ADD_ALERT',
     message,
     href,
     duration,
@@ -937,7 +933,7 @@ export const addAlert = ({ message, href, duration }) => {
 
 export const removeAlert = (index) => {
   return {
-    type: "REMOVE_ALERT",
+    type: 'REMOVE_ALERT',
     index,
   };
 };

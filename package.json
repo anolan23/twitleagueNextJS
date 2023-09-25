@@ -1,5 +1,5 @@
 {
-  "name": "twitleague-nextjs",
+  "name": "twitleague",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,26 +9,24 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
-    "@giphy/js-fetch-api": "^1.7.0",
-    "@giphy/react-components": "^1.9.1",
     "aws-sdk": "^2.848.0",
-    "axios": "^0.21.1",
-    "bcrypt": "^5.0.0",
+    "axios": "^1.5.0",
+    "bcrypt": "^5.1.1",
     "cookie": "^0.4.1",
-    "formik": "^2.2.1",
-    "jsonwebtoken": "^8.5.1",
+    "formik": "^2.4.5",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^5.12.2",
-    "next": "^10.2.2",
-    "pg": "^8.5.1",
-    "react": "17.0.1",
+    "next": "^13.5.2",
+    "pg": "^8.11.3",
+    "react": "^18.2.0",
     "react-contenteditable": "^3.3.5",
-    "react-dom": "17.0.1",
-    "react-player": "^2.8.2",
-    "react-spinners": "^0.11.0",
+    "react-dom": "^18.2.0",
+    "react-player": "^2.13.0",
+    "react-spinners": "^0.13.8",
     "react-string-replace": "^0.4.4",
-    "react-virtualized": "^9.22.3",
-    "sass": "^1.29.0",
-    "swr": "^0.5.4",
-    "yup": "^0.29.3"
+    "react-virtualized": "^9.22.5",
+    "sass": "^1.68.0",
+    "swr": "^2.2.2",
+    "yup": "^1.3.0"
   }
 }

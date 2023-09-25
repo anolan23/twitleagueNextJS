@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import useUser from "../lib/useUser";
-import Profile from "./Profile";
-import userProfileStyle from "../sass/components/UserProfile.module.scss";
-import Attribute from "./Attribute";
-import Count from "./Count";
-import ScoutButton from "./ScoutButton";
-import Linkify from "./Linkify";
+import useUser from '../lib/useUser';
+import Profile from './Profile';
+import userProfileStyle from '../sass/components/UserProfile.module.scss';
+import Attribute from './Attribute';
+import Count from './Count';
+import ScoutButton from './ScoutButton';
+import Linkify from './Linkify';
 
 function UserProfile({ userProfile, onAvatarClick }) {
   const { user } = useUser();
@@ -20,7 +20,7 @@ function UserProfile({ userProfile, onAvatarClick }) {
     scouts,
     scouting,
     following,
-  } = userProfile;
+  } = userProfile || {};
 
   const editUser = () => {
     if (user.id === userId) {
@@ -47,42 +47,42 @@ function UserProfile({ userProfile, onAvatarClick }) {
         onAvatarClick={editUser}
         action={renderButton()}
       >
-        <div className={userProfileStyle["user-profile__info"]}>
+        <div className={userProfileStyle['user-profile__info']}>
           <div
-            className={`${userProfileStyle["user-profile__name"]} u-margin-top-tiny`}
+            className={`${userProfileStyle['user-profile__name']} u-margin-top-tiny`}
           >
             <h1 className="heading-1">{name}</h1>
           </div>
-          <div className={userProfileStyle["user-profile__info__username-box"]}>
+          <div className={userProfileStyle['user-profile__info__username-box']}>
             <h3
               className={
-                userProfileStyle["user-profile__info__username-box__username"]
+                userProfileStyle['user-profile__info__username-box__username']
               }
             >{`@${username}`}</h3>
           </div>
           {bio ? (
             <div
-              className={userProfileStyle["user-profile__info__bio"] + " muted"}
+              className={userProfileStyle['user-profile__info__bio'] + ' muted'}
             >
               <Linkify string={bio} user={user} hasTwitLinks />
             </div>
           ) : null}
-          <div className={userProfileStyle["user-profile__attributes"]}>
-            <Attribute icon={"/sprites.svg#icon-map-pin"} text="Chicago, IL" />
+          <div className={userProfileStyle['user-profile__attributes']}>
+            <Attribute icon={'/sprites.svg#icon-map-pin'} text="Chicago, IL" />
             <Attribute
-              icon={"/sprites.svg#icon-trending-up"}
+              icon={'/sprites.svg#icon-trending-up'}
               text="mywebsite.com"
             />
             <Attribute
-              icon={"/sprites.svg#icon-home"}
+              icon={'/sprites.svg#icon-home'}
               text="Joined December 2010"
             />
           </div>
-          <div className={userProfileStyle["user-profile__counts"]}>
+          <div className={userProfileStyle['user-profile__counts']}>
             <Count
               href={`/users/${username}/scouts`}
               value={scouts}
-              text={scouts == 1 ? "Scout" : "Scouts"}
+              text={scouts == 1 ? 'Scout' : 'Scouts'}
             />
             <Count
               href={`/users/${username}/scouting`}

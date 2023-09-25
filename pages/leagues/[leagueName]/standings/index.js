@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from "react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import useSWR from "swr";
-import Link from "next/link";
+import React, { useEffect, useState } from 'react';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
+import Link from 'next/link';
 
-import standingsStyle from "../../../../sass/pages/Standings.module.scss";
-import { getStandings } from "../../../../actions";
-import Leagues from "../../../../db/repos/Leagues";
-import { getSeasonString } from "../../../../lib/twit-helpers";
-import useUser from "../../../../lib/useUser";
-import TopBar from "../../../../components/TopBar";
-import LeftColumn from "../../../../components/LeftColumn";
-import RightColumn from "../../../../components/RightColumn";
-import TwitSpinner from "../../../../components/TwitSpinner";
-import Empty from "../../../../components/Empty";
-import Division from "../../../../components/Division";
-import TwitSelect from "../../../../components/TwitSelect";
-import TwitInput from "../../../../components/TwitInput";
-import backend from "../../../../lib/backend";
-import TwitIcon from "../../../../components/TwitIcon";
+import standingsStyle from '../../../../sass/pages/Standings.module.scss';
+import { getStandings } from '../../../../actions';
+import Leagues from '../../../../db/repos/Leagues';
+import { getSeasonString } from '../../../../lib/twit-helpers';
+import useUser from '../../../../lib/useUser';
+import TopBar from '../../../../components/TopBar';
+import LeftColumn from '../../../../components/LeftColumn';
+import RightColumn from '../../../../components/RightColumn';
+import TwitSpinner from '../../../../components/TwitSpinner';
+import Empty from '../../../../components/Empty';
+import Division from '../../../../components/Division';
+import TwitSelect from '../../../../components/TwitSelect';
+import TwitInput from '../../../../components/TwitInput';
+import backend from '../../../../lib/backend';
+import TwitIcon from '../../../../components/TwitIcon';
 
 function Standings({ leagueData }) {
   const router = useRouter();
@@ -28,7 +28,7 @@ function Standings({ leagueData }) {
   const { user } = useUser();
   const [standings, setStandings] = useState({});
   const { divisions, teams } = standings;
-  const [seasonOption, setSeasonOption] = useState("");
+  const [seasonOption, setSeasonOption] = useState('');
 
   const fetcher = async (url) => {
     const response = await backend.get(url);
@@ -132,16 +132,16 @@ function Standings({ leagueData }) {
           <LeftColumn />
         </header>
         <main className="main">
-          <div className={standingsStyle["standings"]}>
+          <div className={standingsStyle['standings']}>
             <TopBar main={league.league_name} sub="Standings"></TopBar>
-            <div className={standingsStyle["standings__filter"]}>
-              <div className={standingsStyle["standings__filter__category"]}>
+            <div className={standingsStyle['standings__filter']}>
+              <div className={standingsStyle['standings__filter__category']}>
                 Season
               </div>
               <TwitInput select onChange={onSeasonChange} value={seasonOption}>
                 {renderSeasonOptions()}
               </TwitInput>
-              <div className={standingsStyle["standings__filter__link"]}>
+              <div className={standingsStyle['standings__filter__link']}>
                 <Link
                   passHref
                   href={{
@@ -149,7 +149,7 @@ function Standings({ leagueData }) {
                     query: { seasonId: seasonOption },
                   }}
                 >
-                  <a className="twit-link">Final playoff results</a>
+                  Final playoff results
                 </Link>
               </div>
             </div>

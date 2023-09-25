@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState } from 'react';
+import Link from 'next/link';
 
-import { createPost } from "../actions";
-import TwitNav from "./TwitNav";
-import UserToggle from "./UserToggle";
-import TwitButton from "./TwitButton";
-import TwitPostCircle from "./TwitPostCircle";
-import Avatar from "./Avatar";
-import useUser from "../lib/useUser";
-import PopupCompose from "./modals/PopupCompose";
+import { createPost } from '../actions';
+import TwitNav from './TwitNav';
+import UserToggle from './UserToggle';
+import TwitButton from './TwitButton';
+import TwitPostCircle from './TwitPostCircle';
+import Avatar from './Avatar';
+import useUser from '../lib/useUser';
+import PopupCompose from './modals/PopupCompose';
 
 function LeftColumn({ initialValue, onSubmit, children }) {
   const { user } = useUser();
@@ -26,10 +26,11 @@ function LeftColumn({ initialValue, onSubmit, children }) {
 
   return (
     <div className="header__left-column">
-      <Link href="/home" passHref>
-        <a className="header__logo heading-1 u-margin-bottom-small u-margin-top-small">
-          twitleague
-        </a>
+      <Link
+        href="/home"
+        className="header__logo heading-1 u-margin-bottom-small u-margin-top-small"
+      >
+        twitleague
       </Link>
       <TwitNav />
       <TwitButton

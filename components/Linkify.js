@@ -1,9 +1,9 @@
-import Link from "next/link";
-import reactStringReplace from "react-string-replace";
+import Link from 'next/link';
+import reactStringReplace from 'react-string-replace';
 
-import { fetchTeam, fetchUserByUsername } from "../actions";
-import { truncate } from "../lib/twit-helpers";
-import TwitLink from "./TwitLink";
+import { fetchTeam, fetchUserByUsername } from '../actions';
+import { truncate } from '../lib/twit-helpers';
+import TwitLink from './TwitLink';
 
 function Linkify({ string, user, hasTwitLinks }) {
   let linkifiedString;
@@ -22,8 +22,8 @@ function Linkify({ string, user, hasTwitLinks }) {
       );
     } else {
       return (
-        <Link key={match + i} passHref href={`/teams/${match}`}>
-          <a className="twit-link">{`$${match}`}</a>
+        <Link key={match + i} className="twit-link" href={`/teams/${match}`}>
+          {`$${match}`}
         </Link>
       );
     }
@@ -47,8 +47,8 @@ function Linkify({ string, user, hasTwitLinks }) {
         );
       } else {
         return (
-          <Link key={match + i} passHref href={`/users/${match}`}>
-            <a className="twit-link">{`@${match}`}</a>
+          <Link key={match + i} className="twit-link" href={`/users/${match}`}>
+            {`@${match}`}
           </Link>
         );
       }
@@ -59,10 +59,13 @@ function Linkify({ string, user, hasTwitLinks }) {
     linkifiedString,
     /(https?:\/\/\S+)/g,
     (match, i) => (
-      <Link key={match + i} href={match}>
-        <a onClick={(e) => e.stopPropagation()} className="twit-link">
-          {truncate(match, 35)}
-        </a>
+      <Link
+        key={match + i}
+        href={match}
+        className="twit-link"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {truncate(match, 35)}
       </Link>
     )
   );

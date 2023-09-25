@@ -1,22 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
-import reactStringReplace from "react-string-replace";
-import ContentEditable from "react-contenteditable";
+import React, { useState, useEffect, useRef } from 'react';
+import reactStringReplace from 'react-string-replace';
+import ContentEditable from 'react-contenteditable';
 
-import { useStore } from "../context/Store";
-import { addAlert } from "../actions";
-import mainInput from "../sass/components/MainInput.module.scss";
-import TwitButton from "./TwitButton";
-import TwitMedia from "./TwitMedia";
-import Avatar from "./Avatar";
-import TwitDropdown from "./TwitDropdown";
-import TwitItem from "./TwitItem";
-import backend from "../lib/backend";
-import TwitBadge from "./TwitBadge";
-import TwitIcon from "./TwitIcon";
-import { uploadToS3 } from "../lib/aws-helpers";
-import { setCaret } from "../lib/twit-helpers";
-import ReactPlayer from "react-player";
-import GifPopup from "./modals/GifPopup";
+import { useStore } from '../context/Store';
+import { addAlert } from '../actions';
+import mainInput from '../sass/components/MainInput.module.scss';
+import TwitButton from './TwitButton';
+import TwitMedia from './TwitMedia';
+import Avatar from './Avatar';
+import TwitDropdown from './TwitDropdown';
+import TwitItem from './TwitItem';
+import backend from '../lib/backend';
+import TwitBadge from './TwitBadge';
+import TwitIcon from './TwitIcon';
+import { uploadToS3 } from '../lib/aws-helpers';
+import { setCaret } from '../lib/twit-helpers';
+import ReactPlayer from 'react-player';
 
 function MainInput({
   expanded,
@@ -38,10 +37,9 @@ function MainInput({
     body: null,
     outlook: null,
   });
-  const html = useRef(initialValue ? `${initialValue} ` : "");
+  const html = useRef(initialValue ? `${initialValue} ` : '');
   const [createdPost, setCreatedPost] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showGifPopup, setShowGifPopup] = useState(false);
   const [options, setOptions] = useState([]);
   const [cursor, setCursor] = useState(0);
   const [media, setMedia] = useState(null);
@@ -52,12 +50,12 @@ function MainInput({
       ? contentEditableRef.current.innerText.length
       : 0;
   const expandStyle = expanded
-    ? mainInput["main-input__text-area--expanded"]
+    ? mainInput['main-input__text-area--expanded']
     : null;
 
   useEffect(() => {
-    window.addEventListener("click", clickOutsideDropdown);
-    window.addEventListener("gif-click", onGifClick);
+    window.addEventListener('click', clickOutsideDropdown);
+    window.addEventListener('gif-click', onGifClick);
     if (focusOnMount) {
       setCaret(contentEditableRef.current);
     }
@@ -67,8 +65,8 @@ function MainInput({
     }
 
     return () => {
-      window.removeEventListener("click", clickOutsideDropdown);
-      window.removeEventListener("gif-click", onGifClick);
+      window.removeEventListener('click', clickOutsideDropdown);
+      window.removeEventListener('gif-click', onGifClick);
     };
   }, []);
 
@@ -88,14 +86,14 @@ function MainInput({
 
   function smartTyping(event) {
     const selection = getSelection();
-    if (selection.type === "Caret") {
+    if (selection.type === 'Caret') {
       const parentElement = selection.anchorNode.parentElement;
       if (parentElement) {
         const id = parentElement.id;
         const { innerText } = parentElement;
-        if (id === "team") {
+        if (id === 'team') {
           teamSearch(innerText);
-        } else if (id === "user") {
+        } else if (id === 'user') {
           userSearch(innerText);
         } else if (event.keyCode !== 38 && event.keyCode !== 40) {
           setShowDropdown(false);
@@ -116,7 +114,7 @@ function MainInput({
   };
 
   const onGifClick = (event) => {
-    setMedia([{ location: event.detail.gif.id, type: "giphy" }]);
+    setMedia([{ location: event.detail.gif.id, type: 'giphy' }]);
   };
 
   const teamSearch = async (search) => {
@@ -124,7 +122,7 @@ function MainInput({
     if (!searchTerm) {
       return;
     }
-    const teams = await backend.get("/api/teams", {
+    const teams = await backend.get('/api/teams', {
       params: {
         search: searchTerm,
       },
@@ -138,7 +136,7 @@ function MainInput({
     if (!searchTerm) {
       return;
     }
-    const users = await backend.get("/api/users", {
+    const users = await backend.get('/api/users', {
       params: {
         search: searchTerm,
       },
@@ -175,7 +173,7 @@ function MainInput({
     if (files) {
       let promises = [];
       files.forEach((file) => {
-        promises.push(uploadToS3(file, "posts"));
+        promises.push(uploadToS3(file, 'posts'));
       });
       Promise.all(promises).then((uploadedFiles) =>
         onUploadToS3(uploadedFiles)
@@ -184,14 +182,14 @@ function MainInput({
       const stringifyMedia = media ? JSON.stringify(media) : null;
       let newPost = { ...post, media: stringifyMedia };
       try {
-        html.current = "";
+        html.current = '';
         setMedia(null);
         setFiles(null);
         const _post = await onSubmit(newPost);
         setCreatedPost(_post);
         dispatch(
           addAlert({
-            message: "Post created",
+            message: 'Post created',
             href: `/thread/${_post.id}`,
             duration: 5000,
           })
@@ -205,7 +203,7 @@ function MainInput({
   async function onUploadToS3(uploadedFiles) {
     let media = uploadedFiles.map((uploadedFile) => {
       let type = uploadedFile.Location.substring(
-        uploadedFile.Location.lastIndexOf(".") + 1
+        uploadedFile.Location.lastIndexOf('.') + 1
       );
       return { location: uploadedFile.Location, type: type };
     });
@@ -215,10 +213,10 @@ function MainInput({
     setCreatedPost(_post);
     setMedia(null);
     setFiles(null);
-    html.current = "";
+    html.current = '';
     dispatch(
       addAlert({
-        message: "Post created",
+        message: 'Post created',
         href: `/thread/${_post.id}`,
         duration: 5000,
       })
@@ -250,11 +248,11 @@ function MainInput({
 
   const onOptionClick = (option) => {
     const selection = getSelection();
-    if (selection.type === "Caret") {
+    if (selection.type === 'Caret') {
       const { parentElement } = selection.anchorNode;
       if (parentElement) {
         const id = parentElement.id;
-        if (id === "team") {
+        if (id === 'team') {
           parentElement.innerText = `${option.abbrev} `;
           const _html = contentEditableRef.current.innerHTML;
           html.current = _html;
@@ -262,7 +260,7 @@ function MainInput({
 
           setShowDropdown(false);
           setCursor(0);
-        } else if (id === "user") {
+        } else if (id === 'user') {
           parentElement.innerText = `@${option.username} `;
           const _html = contentEditableRef.current.innerHTML;
           html.current = _html;
@@ -279,14 +277,14 @@ function MainInput({
 
   const onMoneyClick = () => {
     let _html = html.current;
-    _html = _html.concat("$");
+    _html = _html.concat('$');
     html.current = _html;
     contentEditableRef.current.focus();
   };
 
   const onAtClick = () => {
     let _html = html.current;
-    _html = _html.concat("@");
+    _html = _html.concat('@');
     html.current = _html;
     contentEditableRef.current.focus();
   };
@@ -330,9 +328,9 @@ function MainInput({
   const handleUploadChange = (event) => {
     let files = event.target.files;
     files = Object.values(files);
-    const videos = files.filter((file) => file.type.includes("video"));
-    const images = files.filter((file) => file.type.includes("image"));
-    const gifs = files.filter((file) => file.type.includes("gif"));
+    const videos = files.filter((file) => file.type.includes('video'));
+    const images = files.filter((file) => file.type.includes('image'));
+    const gifs = files.filter((file) => file.type.includes('gif'));
     const numVideos = videos.length;
     const numImages = images.length;
     const numGifs = gifs.length;
@@ -377,7 +375,7 @@ function MainInput({
           })
       );
     } else {
-      alert("Please choose either 1 Gif or up to 4 photos");
+      alert('Please choose either 1 Gif or up to 4 photos');
       setFiles(null);
     }
   };
@@ -415,9 +413,9 @@ function MainInput({
 
   const renderAction = () => {
     return (
-      <div className={mainInput["main-input__action"]}>
+      <div className={mainInput['main-input__action']}>
         <div
-          className={mainInput["main-input__action__char-count"]}
+          className={mainInput['main-input__action__char-count']}
           disabled={chars() > allowableChars}
         >
           {allowableChars - chars()}
@@ -435,20 +433,20 @@ function MainInput({
         id="main-input-form"
         className={
           compose
-            ? `${mainInput["main-input"]} ${mainInput["main-input__compose"]}`
-            : mainInput["main-input"]
+            ? `${mainInput['main-input']} ${mainInput['main-input__compose']}`
+            : mainInput['main-input']
         }
         onSubmit={handleSubmit}
         onKeyDown={handleKeyDown}
       >
         <Avatar
           roundedCircle
-          className={mainInput["main-input__image"]}
+          className={mainInput['main-input__image']}
           src={user ? user.avatar : null}
         />
-        <div className={mainInput["main-input__text-area-container"]}>
+        <div className={mainInput['main-input__text-area-container']}>
           <ContentEditable
-            className={`${mainInput["main-input__text-area"]} ${expandStyle}`}
+            className={`${mainInput['main-input__text-area']} ${expandStyle}`}
             onChange={onChange}
             html={html.current}
             innerRef={contentEditableRef}
@@ -456,10 +454,10 @@ function MainInput({
             disabled={false}
             placeholder={placeHolder}
           />
-          <div className={mainInput["main-input__dropdown-wrapper"]}>
+          <div className={mainInput['main-input__dropdown-wrapper']}>
             <TwitDropdown
               show={showDropdown}
-              className={mainInput["main-input__dropdown-wrapper__dropdown"]}
+              className={mainInput['main-input__dropdown-wrapper__dropdown']}
               dropdownRef={dropdownRef}
             >
               {renderOptions()}
@@ -467,14 +465,14 @@ function MainInput({
           </div>
         </div>
 
-        <div className={mainInput["main-input__media-grid"]}>
+        <div className={mainInput['main-input__media-grid']}>
           {renderMedia()}
         </div>
-        <div className={mainInput["main-input__actions"]}>
-          <div className={mainInput["main-input__media-types"]}>
+        <div className={mainInput['main-input__actions']}>
+          <div className={mainInput['main-input__media-types']}>
             <TwitIcon
               onClick={onUploadClick}
-              className={mainInput["main-input__media-types__icon"]}
+              className={mainInput['main-input__media-types__icon']}
               icon="/sprites.svg#icon-image"
             ></TwitIcon>
             <input
@@ -482,25 +480,24 @@ function MainInput({
               type="file"
               ref={hiddenFileInput}
               onChange={handleUploadChange}
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
             ></input>
             <TwitIcon
-              onClick={() => setShowGifPopup(true)}
-              className={mainInput["main-input__media-types__icon"]}
+              className={mainInput['main-input__media-types__icon']}
               icon="/sprites.svg#icon-plus-circle"
             >
               GIF
             </TwitIcon>
             <TwitIcon
               onClick={onMoneyClick}
-              className={mainInput["main-input__media-types__icon"]}
+              className={mainInput['main-input__media-types__icon']}
               icon="/sprites.svg#icon-map-pin"
             >
               $
             </TwitIcon>
             <TwitIcon
               onClick={onAtClick}
-              className={mainInput["main-input__media-types__icon"]}
+              className={mainInput['main-input__media-types__icon']}
               icon="/sprites.svg#icon-bookmark"
             >
               @
@@ -515,7 +512,6 @@ function MainInput({
           {renderAction()}
         </div>
       </form>
-      <GifPopup show={showGifPopup} onHide={() => setShowGifPopup(false)} />
     </React.Fragment>
   );
 
@@ -531,7 +527,7 @@ function MainInput({
           let media = [
             {
               location: match,
-              type: "link",
+              type: 'link',
             },
           ];
           setMedia(media);
@@ -555,7 +551,7 @@ function MainInput({
       /(https?:\/\/\S+)/g,
       (match, i) => `<a class="twit-link" id="link">${match}</a>`
     );
-    replacedText = replacedText.join("");
+    replacedText = replacedText.join('');
     return replacedText;
   }
 }

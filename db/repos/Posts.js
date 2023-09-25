@@ -1,4 +1,4 @@
-import pool from "../pool";
+import pool from '../pool';
 
 class Posts {
   static async create(post, teamMentions, userMentions) {
@@ -8,7 +8,7 @@ class Posts {
       const client = await pool.connect();
 
       try {
-        await client.query("BEGIN");
+        await client.query('BEGIN');
         createdPost = await client.query(
           `WITH inserted_post AS (
               INSERT INTO posts (author_id, body, media, outlook, conversation_id)
@@ -60,9 +60,9 @@ class Posts {
           });
         }
 
-        await client.query("COMMIT");
+        await client.query('COMMIT');
       } catch (e) {
-        await client.query("ROLLBACK");
+        await client.query('ROLLBACK');
         throw e;
       } finally {
         client.release();
@@ -400,7 +400,7 @@ class Posts {
     await (async () => {
       const client = await pool.connect();
       try {
-        await client.query("BEGIN");
+        await client.query('BEGIN');
         activePost = await client.query(
           `
                   SELECT p1.id, p1.created_at, conversation_id, in_reply_to_post_id, author_id, avatar, users.name, users.username, body, media, outlook, (SELECT COUNT(*) FROM likes WHERE post_id = p1.id) AS likes, (SELECT COUNT(*) FROM posts AS p2 WHERE in_reply_to_post_id = p1.id) AS replies,
@@ -470,9 +470,9 @@ class Posts {
 
         posts = [...posts, ...replies.rows];
 
-        await client.query("COMMIT");
+        await client.query('COMMIT');
       } catch (e) {
-        await client.query("ROLLBACK");
+        await client.query('ROLLBACK');
         throw e;
       } finally {
         await client.release();
@@ -494,7 +494,7 @@ class Posts {
     await (async () => {
       const client = await pool.connect();
       try {
-        await client.query("BEGIN");
+        await client.query('BEGIN');
         createdPost = await client.query(
           `WITH inserted_post AS (
                     INSERT INTO posts (author_id, body, media, outlook, conversation_id, in_reply_to_post_id)
@@ -543,9 +543,9 @@ class Posts {
             );
           });
         }
-        await client.query("COMMIT");
+        await client.query('COMMIT');
       } catch (e) {
-        await client.query("ROLLBACK");
+        await client.query('ROLLBACK');
         throw e;
       } finally {
         await client.release();
@@ -560,7 +560,7 @@ class Posts {
     await (async () => {
       const client = await pool.connect();
       try {
-        await client.query("BEGIN");
+        await client.query('BEGIN');
         createdPost = await client.query(
           `WITH insert_post AS (
                   INSERT INTO posts (author_id, body, media, outlook, event_conversation_id)
@@ -610,9 +610,9 @@ class Posts {
             );
           });
         }
-        await client.query("COMMIT");
+        await client.query('COMMIT');
       } catch (e) {
-        await client.query("ROLLBACK");
+        await client.query('ROLLBACK');
         throw e;
       } finally {
         await client.release();
@@ -676,7 +676,13 @@ class Posts {
   }
 
   static async homeTimeline(userId, offset, limit) {
+    console.log('totalCount', pool.totalCount);
+    console.log('idleCount', pool.idleCount);
+    console.log('waitingCount', pool.waitingCount);
     const client = await pool.connect();
+    console.log('totalCount after', pool.totalCount);
+    console.log('idleCount after', pool.idleCount);
+    console.log('waitingCount after', pool.waitingCount);
 
     const { rows } = await client.query(
       `
